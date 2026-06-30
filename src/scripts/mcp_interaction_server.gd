@@ -1517,6 +1517,40 @@ func _handle_command(json_str: String) -> void:
 			_cmd_set_animated_sprite_2d_speed(params)
 		"get_animated_sprite_2d_frame":
 			_cmd_get_animated_sprite_2d_frame(params)
+		"look_at_3d":
+			_cmd_look_at_3d(params)
+		"rotate_node_x":
+			_cmd_rotate_node_x(params)
+		"rotate_node_y":
+			_cmd_rotate_node_y(params)
+		"rotate_node_z":
+			_cmd_rotate_node_z(params)
+		"translate_node_local":
+			_cmd_translate_node_local(params)
+		"translate_node_global":
+			_cmd_translate_node_global(params)
+		"get_node_3d_global_position":
+			_cmd_get_node_3d_global_position(params)
+		"get_node_3d_global_rotation":
+			_cmd_get_node_3d_global_rotation(params)
+		"reset_node_3d_transform":
+			_cmd_reset_node_3d_transform(params)
+		"get_distance_to_3d":
+			_cmd_get_distance_to_3d(params)
+		"set_particle_amount":
+			_cmd_set_particle_amount(params)
+		"get_particle_info":
+			_cmd_get_particle_info(params)
+		"set_particle_speed_scale":
+			_cmd_set_particle_speed_scale(params)
+		"set_particle_explosiveness":
+			_cmd_set_particle_explosiveness(params)
+		"set_particle_randomness":
+			_cmd_set_particle_randomness(params)
+		"set_particle_lifetime":
+			_cmd_set_particle_lifetime(params)
+		"set_particle_one_shot":
+			_cmd_set_particle_one_shot(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -12765,6 +12799,254 @@ func _cmd_get_animated_sprite_2d_frame(params: Dictionary) -> void:
 		return
 	var s := node as AnimatedSprite2D
 	_send_response({"success": true, "frame": s.frame, "animation": s.animation, "is_playing": s.is_playing(), "speed_scale": s.speed_scale})
+
+
+func _cmd_look_at_3d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var tx: float = params.get("tx", 0.0)
+	var ty: float = params.get("ty", 0.0)
+	var tz: float = params.get("tz", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node3D:
+		_send_response({"error": "Node3D not found: " + node_path})
+		return
+	(node as Node3D).look_at(Vector3(tx, ty, tz))
+	_send_response({"success": true, "target": {"x": tx, "y": ty, "z": tz}})
+
+
+func _cmd_rotate_node_x(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var degrees: float = params.get("degrees", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node3D:
+		_send_response({"error": "Node3D not found: " + node_path})
+		return
+	(node as Node3D).rotate_x(deg_to_rad(degrees))
+	_send_response({"success": true, "degrees": degrees})
+
+
+func _cmd_rotate_node_y(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var degrees: float = params.get("degrees", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node3D:
+		_send_response({"error": "Node3D not found: " + node_path})
+		return
+	(node as Node3D).rotate_y(deg_to_rad(degrees))
+	_send_response({"success": true, "degrees": degrees})
+
+
+func _cmd_rotate_node_z(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var degrees: float = params.get("degrees", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node3D:
+		_send_response({"error": "Node3D not found: " + node_path})
+		return
+	(node as Node3D).rotate_z(deg_to_rad(degrees))
+	_send_response({"success": true, "degrees": degrees})
+
+
+func _cmd_translate_node_local(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var dx: float = params.get("dx", 0.0)
+	var dy: float = params.get("dy", 0.0)
+	var dz: float = params.get("dz", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node3D:
+		_send_response({"error": "Node3D not found: " + node_path})
+		return
+	(node as Node3D).translate(Vector3(dx, dy, dz))
+	_send_response({"success": true, "translated": {"dx": dx, "dy": dy, "dz": dz}})
+
+
+func _cmd_translate_node_global(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var dx: float = params.get("dx", 0.0)
+	var dy: float = params.get("dy", 0.0)
+	var dz: float = params.get("dz", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node3D:
+		_send_response({"error": "Node3D not found: " + node_path})
+		return
+	(node as Node3D).global_translate(Vector3(dx, dy, dz))
+	_send_response({"success": true, "global_translated": {"dx": dx, "dy": dy, "dz": dz}})
+
+
+func _cmd_get_node_3d_global_position(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node3D:
+		_send_response({"error": "Node3D not found: " + node_path})
+		return
+	var gp: Vector3 = (node as Node3D).global_position
+	_send_response({"success": true, "global_position": {"x": gp.x, "y": gp.y, "z": gp.z}})
+
+
+func _cmd_get_node_3d_global_rotation(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node3D:
+		_send_response({"error": "Node3D not found: " + node_path})
+		return
+	var gr: Vector3 = (node as Node3D).global_rotation_degrees
+	_send_response({"success": true, "global_rotation_degrees": {"x": gr.x, "y": gr.y, "z": gr.z}})
+
+
+func _cmd_reset_node_3d_transform(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node3D:
+		_send_response({"error": "Node3D not found: " + node_path})
+		return
+	var n3 := node as Node3D
+	n3.position = Vector3.ZERO
+	n3.rotation = Vector3.ZERO
+	n3.scale = Vector3.ONE
+	_send_response({"success": true, "reset": true})
+
+
+func _cmd_get_distance_to_3d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var target_path: String = params.get("target_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	var target = get_tree().root.get_node_or_null(NodePath(target_path))
+	if node == null or not node is Node3D:
+		_send_response({"error": "Node3D not found: " + node_path})
+		return
+	if target == null or not target is Node3D:
+		_send_response({"error": "Target Node3D not found: " + target_path})
+		return
+	var dist = (node as Node3D).global_position.distance_to((target as Node3D).global_position)
+	_send_response({"success": true, "distance": dist})
+
+
+func _cmd_set_particle_amount(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var amount: int = params.get("amount", 8)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is CPUParticles2D:
+		(node as CPUParticles2D).amount = amount
+	elif node is CPUParticles3D:
+		(node as CPUParticles3D).amount = amount
+	elif node is GPUParticles2D:
+		(node as GPUParticles2D).amount = amount
+	elif node is GPUParticles3D:
+		(node as GPUParticles3D).amount = amount
+	else:
+		_send_response({"error": "Not a particle node: " + node_path})
+		return
+	_send_response({"success": true, "amount": amount})
+
+
+func _cmd_get_particle_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is CPUParticles2D:
+		var p := node as CPUParticles2D
+		_send_response({"success": true, "type": "CPUParticles2D", "amount": p.amount, "emitting": p.emitting, "lifetime": p.lifetime, "speed_scale": p.speed_scale})
+	elif node is GPUParticles2D:
+		var p := node as GPUParticles2D
+		_send_response({"success": true, "type": "GPUParticles2D", "amount": p.amount, "emitting": p.emitting, "lifetime": p.lifetime, "speed_scale": p.speed_scale})
+	elif node is CPUParticles3D:
+		var p := node as CPUParticles3D
+		_send_response({"success": true, "type": "CPUParticles3D", "amount": p.amount, "emitting": p.emitting, "lifetime": p.lifetime, "speed_scale": p.speed_scale})
+	elif node is GPUParticles3D:
+		var p := node as GPUParticles3D
+		_send_response({"success": true, "type": "GPUParticles3D", "amount": p.amount, "emitting": p.emitting, "lifetime": p.lifetime, "speed_scale": p.speed_scale})
+	else:
+		_send_response({"error": "Not a particle node: " + node_path})
+
+
+func _cmd_set_particle_speed_scale(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var speed_scale: float = params.get("speed_scale", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is CPUParticles2D: (node as CPUParticles2D).speed_scale = speed_scale
+	elif node is CPUParticles3D: (node as CPUParticles3D).speed_scale = speed_scale
+	elif node is GPUParticles2D: (node as GPUParticles2D).speed_scale = speed_scale
+	elif node is GPUParticles3D: (node as GPUParticles3D).speed_scale = speed_scale
+	else:
+		_send_response({"error": "Not a particle node: " + node_path})
+		return
+	_send_response({"success": true, "speed_scale": speed_scale})
+
+
+func _cmd_set_particle_explosiveness(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var explosiveness: float = params.get("explosiveness", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is CPUParticles2D: (node as CPUParticles2D).explosiveness = explosiveness
+	elif node is CPUParticles3D: (node as CPUParticles3D).explosiveness = explosiveness
+	elif node is GPUParticles2D: (node as GPUParticles2D).explosiveness = explosiveness
+	elif node is GPUParticles3D: (node as GPUParticles3D).explosiveness = explosiveness
+	else:
+		_send_response({"error": "Not a particle node: " + node_path})
+		return
+	_send_response({"success": true, "explosiveness": explosiveness})
+
+
+func _cmd_set_particle_randomness(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var randomness: float = params.get("randomness", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is CPUParticles2D: (node as CPUParticles2D).randomness = randomness
+	elif node is CPUParticles3D: (node as CPUParticles3D).randomness = randomness
+	elif node is GPUParticles2D: (node as GPUParticles2D).randomness = randomness
+	elif node is GPUParticles3D: (node as GPUParticles3D).randomness = randomness
+	else:
+		_send_response({"error": "Not a particle node: " + node_path})
+		return
+	_send_response({"success": true, "randomness": randomness})
+
+
+func _cmd_set_particle_lifetime(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var lifetime: float = params.get("lifetime", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is CPUParticles2D: (node as CPUParticles2D).lifetime = lifetime
+	elif node is CPUParticles3D: (node as CPUParticles3D).lifetime = lifetime
+	elif node is GPUParticles2D: (node as GPUParticles2D).lifetime = lifetime
+	elif node is GPUParticles3D: (node as GPUParticles3D).lifetime = lifetime
+	else:
+		_send_response({"error": "Not a particle node: " + node_path})
+		return
+	_send_response({"success": true, "lifetime": lifetime})
+
+
+func _cmd_set_particle_one_shot(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var one_shot: bool = params.get("one_shot", false)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is CPUParticles2D: (node as CPUParticles2D).one_shot = one_shot
+	elif node is CPUParticles3D: (node as CPUParticles3D).one_shot = one_shot
+	elif node is GPUParticles2D: (node as GPUParticles2D).one_shot = one_shot
+	elif node is GPUParticles3D: (node as GPUParticles3D).one_shot = one_shot
+	else:
+		_send_response({"error": "Not a particle node: " + node_path})
+		return
+	_send_response({"success": true, "one_shot": one_shot})
 
 
 func _exit_tree() -> void:

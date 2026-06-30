@@ -16914,6 +16914,135 @@ class GodotServer {
         description: 'Reimport a file in the Godot editor filesystem.',
         inputSchema: { type: 'object', properties: { filePath: { type: 'string' } }, required: ['filePath'] },
       },
+      // Batch 56 — Group A: Node3D runtime transform tools
+      {
+        name: 'look_at_3d',
+        description: 'Make a Node3D look at a world position.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, tx: { type: 'number' }, ty: { type: 'number' }, tz: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'rotate_node_x',
+        description: 'Rotate a Node3D by degrees around local X axis.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, degrees: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'rotate_node_y',
+        description: 'Rotate a Node3D by degrees around local Y axis.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, degrees: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'rotate_node_z',
+        description: 'Rotate a Node3D by degrees around local Z axis.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, degrees: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'translate_node_local',
+        description: 'Translate a Node3D along its local axes.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, dx: { type: 'number' }, dy: { type: 'number' }, dz: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'translate_node_global',
+        description: 'Translate a Node3D along global world axes.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, dx: { type: 'number' }, dy: { type: 'number' }, dz: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_node_3d_global_position',
+        description: 'Get global world position of a Node3D.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_node_3d_global_rotation',
+        description: 'Get global world rotation (degrees) of Node3D.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'reset_node_3d_transform',
+        description: 'Reset position/rotation/scale of a Node3D to default.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_distance_to_3d',
+        description: 'Get distance between two Node3D nodes.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, targetPath: { type: 'string' } }, required: ['nodePath', 'targetPath'] },
+      },
+      // Batch 56 — Group B: Particles runtime tools
+      {
+        name: 'set_particle_amount',
+        description: 'Set emission amount of a CPUParticles2D/3D or GPU node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, amount: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_particle_info',
+        description: 'Get info about a particle system node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_particle_speed_scale',
+        description: 'Set speed scale of a particle system node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, speedScale: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_particle_explosiveness',
+        description: 'Set explosiveness of a particle system node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, explosiveness: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_particle_randomness',
+        description: 'Set randomness of a particle system node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, randomness: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_particle_lifetime',
+        description: 'Set lifetime of particles in a particle system.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, lifetime: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_particle_one_shot',
+        description: 'Set one-shot mode on a particle system node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, oneShot: { type: 'boolean' } }, required: ['nodePath'] },
+      },
+      // Batch 56 — Group C: GDScript template writers
+      {
+        name: 'write_player_controller_script',
+        description: 'Write a CharacterBody2D player controller script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, speed: { type: 'number' }, jumpVelocity: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_player_3d_controller_script',
+        description: 'Write a CharacterBody3D FPS controller script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, speed: { type: 'number' }, jumpVelocity: { type: 'number' }, mouseSensitivity: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_health_system_script',
+        description: 'Write a reusable health system GDScript.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, maxHealth: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_enemy_patrol_script',
+        description: 'Write a simple enemy patrol/chase AI script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, speed: { type: 'number' }, detectionRange: { type: 'number' }, chaseRange: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_save_load_script',
+        description: 'Write a save/load game data GDScript (JSON).',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, savePath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_singleton_autoload_script',
+        description: 'Write a singleton/autoload GDScript template.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, className: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_state_machine_script',
+        description: 'Write a generic state machine GDScript template.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, states: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      // Batch 56 — Group D: More node adders (headlessOp)
+      {
+        name: 'add_anchor_3d_to_scene',
+        description: 'Add an Anchor3D node to a scene.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' }, nodeName: { type: 'string' }, parentNodePath: { type: 'string' } }, required: ['projectPath', 'scenePath'] },
+      },
       ],
     }));
 
@@ -19242,6 +19371,60 @@ class GodotServer {
           return await this.handleEditorAttachScript(request.params.arguments);
         case 'editor_reimport_file':
           return await this.handleEditorReimportFile(request.params.arguments);
+        // Batch 56 — Group A: Node3D runtime transform tools
+        case 'look_at_3d':
+          return await this.handleLookAt3d(request.params.arguments);
+        case 'rotate_node_x':
+          return await this.handleRotateNodeX(request.params.arguments);
+        case 'rotate_node_y':
+          return await this.handleRotateNodeY(request.params.arguments);
+        case 'rotate_node_z':
+          return await this.handleRotateNodeZ(request.params.arguments);
+        case 'translate_node_local':
+          return await this.handleTranslateNodeLocal(request.params.arguments);
+        case 'translate_node_global':
+          return await this.handleTranslateNodeGlobal(request.params.arguments);
+        case 'get_node_3d_global_position':
+          return await this.handleGetNode3dGlobalPosition(request.params.arguments);
+        case 'get_node_3d_global_rotation':
+          return await this.handleGetNode3dGlobalRotation(request.params.arguments);
+        case 'reset_node_3d_transform':
+          return await this.handleResetNode3dTransform(request.params.arguments);
+        case 'get_distance_to_3d':
+          return await this.handleGetDistanceTo3d(request.params.arguments);
+        // Batch 56 — Group B: Particles runtime tools
+        case 'set_particle_amount':
+          return await this.handleSetParticleAmount(request.params.arguments);
+        case 'get_particle_info':
+          return await this.handleGetParticleInfo(request.params.arguments);
+        case 'set_particle_speed_scale':
+          return await this.handleSetParticleSpeedScale(request.params.arguments);
+        case 'set_particle_explosiveness':
+          return await this.handleSetParticleExplosiveness(request.params.arguments);
+        case 'set_particle_randomness':
+          return await this.handleSetParticleRandomness(request.params.arguments);
+        case 'set_particle_lifetime':
+          return await this.handleSetParticleLifetime(request.params.arguments);
+        case 'set_particle_one_shot':
+          return await this.handleSetParticleOneShot(request.params.arguments);
+        // Batch 56 — Group C: GDScript template writers
+        case 'write_player_controller_script':
+          return await this.handleWritePlayerControllerScript(request.params.arguments);
+        case 'write_player_3d_controller_script':
+          return await this.handleWritePlayer3dControllerScript(request.params.arguments);
+        case 'write_health_system_script':
+          return await this.handleWriteHealthSystemScript(request.params.arguments);
+        case 'write_enemy_patrol_script':
+          return await this.handleWriteEnemyPatrolScript(request.params.arguments);
+        case 'write_save_load_script':
+          return await this.handleWriteSaveLoadScript(request.params.arguments);
+        case 'write_singleton_autoload_script':
+          return await this.handleWriteSingletonAutoloadScript(request.params.arguments);
+        case 'write_state_machine_script':
+          return await this.handleWriteStateMachineScript(request.params.arguments);
+        // Batch 56 — Group D: More node adders
+        case 'add_anchor_3d_to_scene':
+          return await this.handleAddAnchor3dToScene(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -33822,6 +34005,429 @@ class GodotServer {
     args = normalizeParameters(args || {});
     if (!args.filePath) return createErrorResponse('filePath is required.');
     return this.editorCommand('reimport_file', args, a => ({ file_path: a.filePath }));
+  }
+
+  // ── Batch 56 — Group A: Node3D runtime transform tools ──────────────────────
+
+  private async handleLookAt3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('look_at_3d', args, a => ({ node_path: a.nodePath, tx: a.tx ?? 0, ty: a.ty ?? 0, tz: a.tz ?? 0 }));
+  }
+
+  private async handleRotateNodeX(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('rotate_node_x', args, a => ({ node_path: a.nodePath, degrees: a.degrees ?? 0 }));
+  }
+
+  private async handleRotateNodeY(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('rotate_node_y', args, a => ({ node_path: a.nodePath, degrees: a.degrees ?? 0 }));
+  }
+
+  private async handleRotateNodeZ(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('rotate_node_z', args, a => ({ node_path: a.nodePath, degrees: a.degrees ?? 0 }));
+  }
+
+  private async handleTranslateNodeLocal(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('translate_node_local', args, a => ({ node_path: a.nodePath, dx: a.dx ?? 0, dy: a.dy ?? 0, dz: a.dz ?? 0 }));
+  }
+
+  private async handleTranslateNodeGlobal(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('translate_node_global', args, a => ({ node_path: a.nodePath, dx: a.dx ?? 0, dy: a.dy ?? 0, dz: a.dz ?? 0 }));
+  }
+
+  private async handleGetNode3dGlobalPosition(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_3d_global_position', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetNode3dGlobalRotation(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_3d_global_rotation', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleResetNode3dTransform(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('reset_node_3d_transform', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetDistanceTo3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.targetPath) return createErrorResponse('nodePath and targetPath are required.');
+    return this.gameCommand('get_distance_to_3d', args, a => ({ node_path: a.nodePath, target_path: a.targetPath ?? '' }));
+  }
+
+  // ── Batch 56 — Group B: Particles runtime tools ─────────────────────────────
+
+  private async handleSetParticleAmount(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_particle_amount', args, a => ({ node_path: a.nodePath, amount: a.amount ?? 8 }));
+  }
+
+  private async handleGetParticleInfo(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_particle_info', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetParticleSpeedScale(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_particle_speed_scale', args, a => ({ node_path: a.nodePath, speed_scale: a.speedScale ?? 1.0 }));
+  }
+
+  private async handleSetParticleExplosiveness(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_particle_explosiveness', args, a => ({ node_path: a.nodePath, explosiveness: a.explosiveness ?? 0 }));
+  }
+
+  private async handleSetParticleRandomness(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_particle_randomness', args, a => ({ node_path: a.nodePath, randomness: a.randomness ?? 0 }));
+  }
+
+  private async handleSetParticleLifetime(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_particle_lifetime', args, a => ({ node_path: a.nodePath, lifetime: a.lifetime ?? 1.0 }));
+  }
+
+  private async handleSetParticleOneShot(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_particle_one_shot', args, a => ({ node_path: a.nodePath, one_shot: a.oneShot ?? false }));
+  }
+
+  // ── Batch 56 — Group C: GDScript template writers ───────────────────────────
+
+  private async handleWritePlayerControllerScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const speed = args.speed ?? 300;
+    const jumpVelocity = args.jumpVelocity ?? -400;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends CharacterBody2D
+
+const SPEED = ${speed}.0
+const JUMP_VELOCITY = ${jumpVelocity}.0
+
+func _physics_process(delta: float) -> void:
+\tif not is_on_floor():
+\t\tvelocity += get_gravity() * delta
+
+\tif Input.is_action_just_pressed("ui_accept") and is_on_floor():
+\t\tvelocity.y = JUMP_VELOCITY
+
+\tvar direction := Input.get_axis("ui_left", "ui_right")
+\tif direction:
+\t\tvelocity.x = direction * SPEED
+\telse:
+\t\tvelocity.x = move_toward(velocity.x, 0, SPEED)
+
+\tmove_and_slide()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, message: 'Player controller script written.' }) }] };
+    } catch (e: any) {
+      return createErrorResponse(`Failed to write script: ${e.message}`);
+    }
+  }
+
+  private async handleWritePlayer3dControllerScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const speed = args.speed ?? 5;
+    const jumpVelocity = args.jumpVelocity ?? 4.5;
+    const sensitivity = args.mouseSensitivity ?? 0.003;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends CharacterBody3D
+
+const SPEED = ${speed}.0
+const JUMP_VELOCITY = ${jumpVelocity}
+const MOUSE_SENSITIVITY = ${sensitivity}
+
+@onready var camera := $Camera3D
+
+func _ready() -> void:
+\tInput.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+func _unhandled_input(event: InputEvent) -> void:
+\tif event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+\t\trotate_y(-event.relative.x * MOUSE_SENSITIVITY)
+\t\tcamera.rotate_x(-event.relative.y * MOUSE_SENSITIVITY)
+\t\tcamera.rotation.x = clamp(camera.rotation.x, -PI / 2, PI / 2)
+\tif event.is_action_pressed("ui_cancel"):
+\t\tInput.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+func _physics_process(delta: float) -> void:
+\tif not is_on_floor():
+\t\tvelocity += get_gravity() * delta
+\tif Input.is_action_just_pressed("ui_accept") and is_on_floor():
+\t\tvelocity.y = JUMP_VELOCITY
+\tvar input_dir := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+\tvar direction := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+\tif direction:
+\t\tvelocity.x = direction.x * SPEED
+\t\tvelocity.z = direction.z * SPEED
+\telse:
+\t\tvelocity.x = move_toward(velocity.x, 0, SPEED)
+\t\tvelocity.z = move_toward(velocity.z, 0, SPEED)
+\tmove_and_slide()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, message: '3D FPS controller script written.' }) }] };
+    } catch (e: any) {
+      return createErrorResponse(`Failed to write script: ${e.message}`);
+    }
+  }
+
+  private async handleWriteHealthSystemScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const maxHealth = args.maxHealth ?? 100;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+
+signal health_changed(new_health: int, max_health: int)
+signal died
+
+@export var max_health: int = ${maxHealth}
+var current_health: int = max_health
+
+func _ready() -> void:
+\tcurrent_health = max_health
+
+func take_damage(amount: int) -> void:
+\tcurrent_health = max(0, current_health - amount)
+\thealth_changed.emit(current_health, max_health)
+\tif current_health == 0:
+\t\tdied.emit()
+
+func heal(amount: int) -> void:
+\tcurrent_health = min(max_health, current_health + amount)
+\thealth_changed.emit(current_health, max_health)
+
+func is_dead() -> bool:
+\treturn current_health <= 0
+
+func get_health_percent() -> float:
+\treturn float(current_health) / float(max_health)
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) {
+      return createErrorResponse(`Failed to write script: ${e.message}`);
+    }
+  }
+
+  private async handleWriteEnemyPatrolScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const speed = args.speed ?? 80;
+    const detectionRange = args.detectionRange ?? 200;
+    const chaseRange = args.chaseRange ?? 300;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends CharacterBody2D
+
+enum State { PATROL, CHASE }
+
+@export var speed: float = ${speed}.0
+@export var detection_range: float = ${detectionRange}.0
+@export var chase_range: float = ${chaseRange}.0
+
+var state: State = State.PATROL
+var patrol_direction: Vector2 = Vector2.RIGHT
+var player: Node2D = null
+
+func _ready() -> void:
+\tplayer = get_tree().get_first_node_in_group("player")
+
+func _physics_process(delta: float) -> void:
+\tif player == null:
+\t\treturn
+\tvar dist = global_position.distance_to(player.global_position)
+\tmatch state:
+\t\tState.PATROL:
+\t\t\tvelocity = patrol_direction * speed
+\t\t\tif dist < detection_range:
+\t\t\t\tstate = State.CHASE
+\t\tState.CHASE:
+\t\t\tvar dir = (player.global_position - global_position).normalized()
+\t\t\tvelocity = dir * speed * 1.5
+\t\t\tif dist > chase_range:
+\t\t\t\tstate = State.PATROL
+\tmove_and_slide()
+\tif is_on_wall():
+\t\tpatrol_direction = -patrol_direction
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) {
+      return createErrorResponse(`Failed to write script: ${e.message}`);
+    }
+  }
+
+  private async handleWriteSaveLoadScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const savePath = args.savePath ?? 'user://save.json';
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+
+const SAVE_PATH = "${savePath}"
+
+func save_game(data: Dictionary) -> void:
+\tvar file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+\tif file == null:
+\t\tpush_error("Cannot open save file for writing: " + SAVE_PATH)
+\t\treturn
+\tfile.store_string(JSON.stringify(data))
+\tfile.close()
+
+func load_game() -> Dictionary:
+\tif not FileAccess.file_exists(SAVE_PATH):
+\t\treturn {}
+\tvar file = FileAccess.open(SAVE_PATH, FileAccess.READ)
+\tif file == null:
+\t\tpush_error("Cannot open save file for reading: " + SAVE_PATH)
+\t\treturn {}
+\tvar text = file.get_as_text()
+\tfile.close()
+\tvar parsed = JSON.parse_string(text)
+\tif typeof(parsed) == TYPE_DICTIONARY:
+\t\treturn parsed
+\treturn {}
+
+func delete_save() -> void:
+\tif FileAccess.file_exists(SAVE_PATH):
+\t\tDirAccess.remove_absolute(SAVE_PATH)
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) {
+      return createErrorResponse(`Failed to write script: ${e.message}`);
+    }
+  }
+
+  private async handleWriteSingletonAutoloadScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const className = args.className ?? 'GameManager';
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+
+## Singleton autoload: ${className}
+## Add this to Project > Project Settings > Autoload
+
+signal score_changed(new_score: int)
+
+var score: int = 0:
+\tset(val):
+\t\tscore = val
+\t\tscore_changed.emit(score)
+
+var level: int = 1
+var player_lives: int = 3
+var game_paused: bool = false
+
+func reset() -> void:
+\tscore = 0
+\tlevel = 1
+\tplayer_lives = 3
+\tgame_paused = false
+
+func add_score(points: int) -> void:
+\tscore += points
+
+func next_level() -> void:
+\tlevel += 1
+
+func lose_life() -> bool:
+\tplayer_lives -= 1
+\treturn player_lives <= 0
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, className: className, note: 'Add this script as an Autoload in Project > Project Settings > Autoload' }) }] };
+    } catch (e: any) {
+      return createErrorResponse(`Failed to write script: ${e.message}`);
+    }
+  }
+
+  private async handleWriteStateMachineScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const stateList = (args.states ?? 'idle,walk,run,jump').split(',').map((s: string) => s.trim().toUpperCase());
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const enumLine = `enum State { ${stateList.join(', ')} }`;
+    const matchCases = stateList.map((s: string) => `\t\tState.${s}:\n\t\t\t_state_${s.toLowerCase()}(delta)`).join('\n');
+    const funcs = stateList.map((s: string) => `func _state_${s.toLowerCase()}(delta: float) -> void:\n\tpass`).join('\n\n');
+    const content = `extends Node
+
+${enumLine}
+
+var current_state: State = State.${stateList[0]}
+
+func _process(delta: float) -> void:
+\tmatch current_state:
+${matchCases}
+
+func change_state(new_state: State) -> void:
+\tcurrent_state = new_state
+
+${funcs}
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, states: stateList }) }] };
+    } catch (e: any) {
+      return createErrorResponse(`Failed to write script: ${e.message}`);
+    }
+  }
+
+  // ── Batch 56 — Group D: More node adders ────────────────────────────────────
+
+  private async handleAddAnchor3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'Anchor3D', node_type: 'Marker3D', parent_node_path: a.parentNodePath || '.' }
+    }));
   }
 
   // ── Navigation / Discovery helpers ──────────────────────────────────────────
