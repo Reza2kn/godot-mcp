@@ -418,6 +418,26 @@ func _handle_command(json_str: String) -> void:
 			_cmd_game_quit(params)
 		"set_window_title":
 			_cmd_set_window_title(params)
+		"camera_set_current":
+			_cmd_camera_set_current(params)
+		"camera_get_info":
+			_cmd_camera_get_info(params)
+		"set_node_z_index":
+			_cmd_set_node_z_index(params)
+		"canvas_layer_set":
+			_cmd_canvas_layer_set(params)
+		"particle_set_emitting":
+			_cmd_particle_set_emitting(params)
+		"particle_restart":
+			_cmd_particle_restart(params)
+		"grab_focus":
+			_cmd_grab_focus(params)
+		"get_viewport_info":
+			_cmd_get_viewport_info(params)
+		"skeleton_get_bones":
+			_cmd_skeleton_get_bones(params)
+		"skeleton_set_bone_pose":
+			_cmd_skeleton_set_bone_pose(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -5198,6 +5218,191 @@ func _cmd_set_window_title(params: Dictionary) -> void:
 	var title: String = params.get("title", "")
 	DisplayServer.window_set_title(title)
 	_send_response({"success": true, "title": title})
+
+
+func _cmd_camera_set_current(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is Camera2D:
+		(node as Camera2D).make_current()
+		_send_response({"success": true, "type": "Camera2D", "node_path": node_path})
+	elif node is Camera3D:
+		(node as Camera3D).make_current()
+		_send_response({"success": true, "type": "Camera3D", "node_path": node_path})
+	else:
+		_send_response({"error": "Node is not a Camera: " + node.get_class()})
+
+
+func _cmd_camera_get_info(params: Dictionary) -> void:
+	var root_path: String = params.get("root_path", "/root")
+	var root_node = get_tree().root.get_node_or_null(NodePath(root_path))
+	if root_node == null:
+		_send_response({"error": "Root not found: " + root_path})
+		return
+	var cameras: Array = []
+	_collect_cameras(root_node, cameras)
+	_send_response({"success": true, "cameras": cameras})
+
+func _collect_cameras(node: Node, result: Array) -> void:
+	if node is Camera2D:
+		var cam := node as Camera2D
+		result.append({"type": "Camera2D", "path": str(node.get_path()), "current": cam.is_current(), "zoom": {"x": cam.zoom.x, "y": cam.zoom.y}})
+	elif node is Camera3D:
+		var cam := node as Camera3D
+		result.append({"type": "Camera3D", "path": str(node.get_path()), "current": cam.is_current(), "fov": cam.fov, "near": cam.near, "far": cam.far})
+	for child in node.get_children():
+		_collect_cameras(child, result)
+
+
+func _cmd_set_node_z_index(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var z_index: int = params.get("z_index", 0)
+	var z_as_relative: bool = params.get("z_as_relative", false)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node2D:
+		_send_response({"error": "Node2D not found: " + node_path})
+		return
+	var node2d := node as Node2D
+	node2d.z_index = z_index
+	node2d.z_as_relative = z_as_relative
+	_send_response({"success": true, "z_index": z_index, "z_as_relative": z_as_relative})
+
+
+func _cmd_canvas_layer_set(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var layer: int = params.get("layer", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CanvasLayer:
+		_send_response({"error": "CanvasLayer not found: " + node_path})
+		return
+	(node as CanvasLayer).layer = layer
+	_send_response({"success": true, "layer": layer, "node_path": node_path})
+
+
+func _cmd_particle_set_emitting(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var emitting: bool = params.get("emitting", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is GPUParticles2D:
+		(node as GPUParticles2D).emitting = emitting
+	elif node is GPUParticles3D:
+		(node as GPUParticles3D).emitting = emitting
+	elif node is CPUParticles2D:
+		(node as CPUParticles2D).emitting = emitting
+	elif node is CPUParticles3D:
+		(node as CPUParticles3D).emitting = emitting
+	else:
+		_send_response({"error": "Node is not a Particles node: " + node.get_class()})
+		return
+	_send_response({"success": true, "emitting": emitting, "node_path": node_path})
+
+
+func _cmd_particle_restart(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is GPUParticles2D:
+		(node as GPUParticles2D).restart()
+	elif node is GPUParticles3D:
+		(node as GPUParticles3D).restart()
+	elif node is CPUParticles2D:
+		(node as CPUParticles2D).restart()
+	elif node is CPUParticles3D:
+		(node as CPUParticles3D).restart()
+	else:
+		_send_response({"error": "Node is not a Particles node: " + node.get_class()})
+		return
+	_send_response({"success": true, "restarted": true, "node_path": node_path})
+
+
+func _cmd_grab_focus(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control node not found: " + node_path})
+		return
+	(node as Control).grab_focus()
+	_send_response({"success": true, "node_path": node_path})
+
+
+func _cmd_get_viewport_info(_params: Dictionary) -> void:
+	var viewport: Viewport = get_tree().root
+	_send_response({
+		"success": true,
+		"size": {"x": viewport.size.x, "y": viewport.size.y},
+		"content_scale_mode": viewport.content_scale_mode,
+		"content_scale_aspect": viewport.content_scale_aspect,
+		"msaa_2d": viewport.msaa_2d,
+		"msaa_3d": viewport.msaa_3d,
+		"transparent_bg": viewport.transparent_bg,
+		"handle_input_locally": viewport.handle_input_locally,
+	})
+
+
+func _cmd_skeleton_get_bones(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is Skeleton2D:
+		var sk := node as Skeleton2D
+		var bones: Array = []
+		for i in range(sk.get_bone_count()):
+			var bone := sk.get_bone(i)
+			bones.append({
+				"index": i,
+				"name": bone.name,
+				"rest": {"x": bone.rest.origin.x, "y": bone.rest.origin.y, "rotation": bone.rest.get_rotation()}
+			})
+		_send_response({"success": true, "type": "Skeleton2D", "bones": bones})
+	elif node is Skeleton3D:
+		var sk := node as Skeleton3D
+		var bones: Array = []
+		for i in range(sk.get_bone_count()):
+			bones.append({
+				"index": i,
+				"name": sk.get_bone_name(i),
+				"parent": sk.get_bone_parent(i),
+				"rest": _to_serializable(sk.get_bone_rest(i))
+			})
+		_send_response({"success": true, "type": "Skeleton3D", "bones": bones})
+	else:
+		_send_response({"error": "Node is not a Skeleton: " + node.get_class()})
+
+
+func _cmd_skeleton_set_bone_pose(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var bone_name: String = params.get("bone_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is Skeleton3D:
+		var sk := node as Skeleton3D
+		var bone_idx: int = sk.find_bone(bone_name)
+		if bone_idx < 0:
+			_send_response({"error": "Bone not found: " + bone_name})
+			return
+		var pose: Transform3D = sk.get_bone_pose(bone_idx)
+		if params.has("rotation"):
+			var r: float = params.get("rotation")
+			pose.basis = Basis(Vector3(0, 1, 0), r)
+		if params.has("position"):
+			var pos = params.get("position")
+			pose.origin = Vector3(pos.get("x", 0), pos.get("y", 0), pos.get("z", 0))
+		sk.set_bone_pose(bone_idx, pose)
+		_send_response({"success": true, "bone_name": bone_name, "bone_index": bone_idx})
+	else:
+		_send_response({"error": "Node is not a Skeleton3D: " + node.get_class()})
 
 
 func _exit_tree() -> void:
