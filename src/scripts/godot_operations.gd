@@ -115,6 +115,26 @@ func _init():
             set_anchor_preset(params)
         "get_class_api":
             get_class_api(params)
+        "add_mesh_instance":
+            add_mesh_instance(params)
+        "add_directional_light_3d":
+            add_directional_light_3d(params)
+        "add_camera_3d":
+            add_camera_3d(params)
+        "add_omni_light_3d":
+            add_omni_light_3d(params)
+        "add_spot_light_3d":
+            add_spot_light_3d(params)
+        "add_collision_shape_2d":
+            add_collision_shape_2d(params)
+        "add_collision_shape_3d":
+            add_collision_shape_3d(params)
+        "add_area_2d":
+            add_area_2d(params)
+        "add_navigation_agent_2d":
+            add_navigation_agent_2d(params)
+        "add_audio_stream_player":
+            add_audio_stream_player(params)
         _:
             log_error("Unknown operation: " + operation)
             quit(1)
@@ -2181,3 +2201,331 @@ func get_class_api(params):
     }))
     quit()
     root.queue_free()
+
+
+func add_mesh_instance(params: Dictionary) -> void:
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var mesh_type: String = params.get("mesh_type", "box")
+	var node_name: String = params.get("node_name", "MeshInstance3D")
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
+	if parent == null:
+		parent = root
+	var mi = MeshInstance3D.new()
+	mi.name = node_name
+	match mesh_type:
+		"sphere":
+			mi.mesh = SphereMesh.new()
+		"capsule":
+			mi.mesh = CapsuleMesh.new()
+		"cylinder":
+			mi.mesh = CylinderMesh.new()
+		"plane":
+			mi.mesh = PlaneMesh.new()
+		"torus":
+			mi.mesh = TorusMesh.new()
+		_:
+			mi.mesh = BoxMesh.new()
+	parent.add_child(mi)
+	mi.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name, "mesh_type": mesh_type}))
+	quit()
+
+
+func add_directional_light_3d(params: Dictionary) -> void:
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", "DirectionalLight3D")
+	var energy: float = params.get("energy", 1.0)
+	var cast_shadows: bool = params.get("cast_shadows", true)
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var light = DirectionalLight3D.new()
+	light.name = node_name
+	light.light_energy = energy
+	light.shadow_enabled = cast_shadows
+	root.add_child(light)
+	light.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name, "energy": energy}))
+	quit()
+
+
+func add_camera_3d(params: Dictionary) -> void:
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", "Camera3D")
+	var fov: float = params.get("fov", 75.0)
+	var current: bool = params.get("current", false)
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var cam = Camera3D.new()
+	cam.name = node_name
+	cam.fov = fov
+	cam.current = current
+	root.add_child(cam)
+	cam.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name, "fov": fov}))
+	quit()
+
+
+func add_omni_light_3d(params: Dictionary) -> void:
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", "OmniLight3D")
+	var energy: float = params.get("energy", 1.0)
+	var range_val: float = params.get("range", 5.0)
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var light = OmniLight3D.new()
+	light.name = node_name
+	light.light_energy = energy
+	light.omni_range = range_val
+	root.add_child(light)
+	light.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name, "energy": energy, "range": range_val}))
+	quit()
+
+
+func add_spot_light_3d(params: Dictionary) -> void:
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", "SpotLight3D")
+	var energy: float = params.get("energy", 1.0)
+	var range_val: float = params.get("range", 5.0)
+	var angle: float = params.get("angle", 45.0)
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var light = SpotLight3D.new()
+	light.name = node_name
+	light.light_energy = energy
+	light.spot_range = range_val
+	light.spot_angle = angle
+	root.add_child(light)
+	light.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name, "energy": energy, "angle": angle}))
+	quit()
+
+
+func add_collision_shape_2d(params: Dictionary) -> void:
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var shape_type: String = params.get("shape_type", "rectangle")
+	var width: float = params.get("width", 32.0)
+	var height: float = params.get("height", 32.0)
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path)
+	if parent == null:
+		print(JSON.stringify({"error": "Parent not found: " + parent_node_path}))
+		root.queue_free()
+		quit()
+		return
+	var cs = CollisionShape2D.new()
+	cs.name = "CollisionShape2D"
+	match shape_type:
+		"circle":
+			var shape = CircleShape2D.new()
+			shape.radius = width * 0.5
+			cs.shape = shape
+		"capsule":
+			var shape = CapsuleShape2D.new()
+			shape.radius = width * 0.5
+			shape.height = height
+			cs.shape = shape
+		_:
+			var shape = RectangleShape2D.new()
+			shape.size = Vector2(width, height)
+			cs.shape = shape
+	parent.add_child(cs)
+	cs.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "shape_type": shape_type}))
+	quit()
+
+
+func add_collision_shape_3d(params: Dictionary) -> void:
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var shape_type: String = params.get("shape_type", "box")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path)
+	if parent == null:
+		print(JSON.stringify({"error": "Parent not found: " + parent_node_path}))
+		root.queue_free()
+		quit()
+		return
+	var cs = CollisionShape3D.new()
+	cs.name = "CollisionShape3D"
+	match shape_type:
+		"sphere":
+			cs.shape = SphereShape3D.new()
+		"capsule":
+			cs.shape = CapsuleShape3D.new()
+		"cylinder":
+			cs.shape = CylinderShape3D.new()
+		_:
+			cs.shape = BoxShape3D.new()
+	parent.add_child(cs)
+	cs.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "shape_type": shape_type}))
+	quit()
+
+
+func add_area_2d(params: Dictionary) -> void:
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", "Area2D")
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
+	if parent == null:
+		parent = root
+	var area = Area2D.new()
+	area.name = node_name
+	var cs = CollisionShape2D.new()
+	cs.name = "CollisionShape2D"
+	var shape = RectangleShape2D.new()
+	shape.size = Vector2(32, 32)
+	cs.shape = shape
+	area.add_child(cs)
+	cs.owner = root
+	parent.add_child(area)
+	area.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name}))
+	quit()
+
+
+func add_navigation_agent_2d(params: Dictionary) -> void:
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path)
+	if parent == null:
+		print(JSON.stringify({"error": "Parent not found: " + parent_node_path}))
+		root.queue_free()
+		quit()
+		return
+	var agent = NavigationAgent2D.new()
+	agent.name = "NavigationAgent2D"
+	parent.add_child(agent)
+	agent.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "parent": parent_node_path}))
+	quit()
+
+
+func add_audio_stream_player(params: Dictionary) -> void:
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", "AudioStreamPlayer")
+	var bus: String = params.get("bus", "Master")
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
+	if parent == null:
+		parent = root
+	var asp = AudioStreamPlayer.new()
+	asp.name = node_name
+	asp.bus = bus
+	parent.add_child(asp)
+	asp.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name, "bus": bus}))
+	quit()
