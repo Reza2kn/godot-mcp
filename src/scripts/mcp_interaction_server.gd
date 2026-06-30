@@ -1037,6 +1037,30 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_vehicle_body_speed(params)
 		"set_vehicle_engine_force":
 			_cmd_set_vehicle_engine_force(params)
+		"add_scene_tree_timer_via_code":
+			_cmd_add_scene_tree_timer_via_code(params)
+		"get_time_since_start":
+			_cmd_get_time_since_start(params)
+		"get_engine_version":
+			_cmd_get_engine_version(params)
+		"get_time_scale":
+			_cmd_get_time_scale(params)
+		"get_physics_fps":
+			_cmd_get_physics_fps(params)
+		"list_signals_on_node":
+			_cmd_list_signals_on_node(params)
+		"has_node_metadata":
+			_cmd_has_node_metadata(params)
+		"get_node_custom_minimum_size":
+			_cmd_get_node_custom_minimum_size(params)
+		"set_node_custom_minimum_size":
+			_cmd_set_node_custom_minimum_size(params)
+		"get_label_text":
+			_cmd_get_label_text(params)
+		"set_label_text":
+			_cmd_set_label_text(params)
+		"get_progress_bar_value":
+			_cmd_get_progress_bar_value(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -9739,6 +9763,97 @@ func _cmd_set_vehicle_engine_force(params: Dictionary) -> void:
 		return
 	(node as VehicleBody3D).engine_force = engine_force
 	_send_response({"success": true, "engine_force": engine_force})
+
+func _cmd_add_scene_tree_timer_via_code(params: Dictionary) -> void:
+	var duration: float = params.get("duration", 1.0)
+	var timer = get_tree().create_timer(duration)
+	_send_response({"success": true, "duration": duration, "note": "Timer created via SceneTree.create_timer"})
+
+func _cmd_get_time_since_start(params: Dictionary) -> void:
+	_send_response({"success": true, "time_since_start": Time.get_ticks_msec() / 1000.0, "ticks_msec": Time.get_ticks_msec(), "ticks_usec": Time.get_ticks_usec()})
+
+func _cmd_get_engine_version(params: Dictionary) -> void:
+	var v = Engine.get_version_info()
+	_send_response({"success": true, "major": v.get("major", 0), "minor": v.get("minor", 0), "patch": v.get("patch", 0), "string": v.get("string", ""), "status": v.get("status", "")})
+
+func _cmd_get_time_scale(params: Dictionary) -> void:
+	_send_response({"success": true, "time_scale": Engine.time_scale})
+
+func _cmd_get_physics_fps(params: Dictionary) -> void:
+	_send_response({"success": true, "physics_ticks_per_second": Engine.physics_ticks_per_second, "max_fps": Engine.max_fps, "time_scale": Engine.time_scale})
+
+func _cmd_list_signals_on_node(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var signal_list = node.get_signal_list()
+	var signals: Array = []
+	for sig in signal_list:
+		signals.append({"name": sig["name"], "args": sig.get("args", []).size()})
+	_send_response({"success": true, "count": signals.size(), "signals": signals})
+
+func _cmd_has_node_metadata(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var key: String = params.get("key", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	_send_response({"success": true, "has_meta": node.has_meta(key), "all_meta": node.get_meta_list()})
+
+func _cmd_get_node_custom_minimum_size(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control not found: " + node_path})
+		return
+	var size = (node as Control).custom_minimum_size
+	_send_response({"success": true, "width": size.x, "height": size.y})
+
+func _cmd_set_node_custom_minimum_size(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var width: float = params.get("width", 0.0)
+	var height: float = params.get("height", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control not found: " + node_path})
+		return
+	(node as Control).custom_minimum_size = Vector2(width, height)
+	_send_response({"success": true, "width": width, "height": height})
+
+func _cmd_get_label_text(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node is Label:
+		_send_response({"success": true, "text": (node as Label).text, "class": "Label"})
+	elif node is RichTextLabel:
+		_send_response({"success": true, "text": (node as RichTextLabel).text, "class": "RichTextLabel"})
+	else:
+		_send_response({"error": "Not a Label/RichTextLabel: " + (node.get_class() if node != null else "null")})
+
+func _cmd_set_label_text(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var text: String = params.get("text", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node is Label:
+		(node as Label).text = text
+		_send_response({"success": true, "text": text})
+	elif node is RichTextLabel:
+		(node as RichTextLabel).text = text
+		_send_response({"success": true, "text": text})
+	else:
+		_send_response({"error": "Not a Label/RichTextLabel: " + (node.get_class() if node != null else "null")})
+
+func _cmd_get_progress_bar_value(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is ProgressBar:
+		_send_response({"error": "ProgressBar not found: " + node_path})
+		return
+	var pb := node as ProgressBar
+	_send_response({"success": true, "value": pb.value, "min_value": pb.min_value, "max_value": pb.max_value, "ratio": pb.ratio})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()

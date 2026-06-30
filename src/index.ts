@@ -12687,6 +12687,177 @@ class GodotServer {
           required: ['nodePath'],
         },
       },
+      {
+        name: 'add_http_request_to_scene',
+        description: 'Add an HTTPRequest node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: HTTPRequest).' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .).' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_multiplayer_spawner_to_scene',
+        description: 'Add a MultiplayerSpawner node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: MultiplayerSpawner).' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .).' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_multiplayer_synchronizer_to_scene',
+        description: 'Add a MultiplayerSynchronizer to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: MultiplayerSynchronizer).' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .).' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_scene_tree_timer_via_code',
+        description: 'Create a SceneTree one-shot timer in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            duration: { type: 'number', description: 'Timer duration in seconds (default: 1.0).' },
+            autoStart: { type: 'boolean', description: 'Auto-start the timer (default: true).' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'get_time_since_start',
+        description: 'Get elapsed time since game start in seconds.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'get_engine_version',
+        description: 'Get the Godot engine version from the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'get_time_scale',
+        description: 'Get the current time scale from the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'get_physics_fps',
+        description: 'Get physics ticks per second from the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'list_signals_on_node',
+        description: 'List all signals defined on a node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'has_node_metadata',
+        description: 'Check if a node has a metadata key in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the node.' },
+            key: { type: 'string', description: 'Metadata key to check.' },
+          },
+          required: ['nodePath', 'key'],
+        },
+      },
+      {
+        name: 'get_node_custom_minimum_size',
+        description: 'Get the custom_minimum_size of a Control in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Control node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_node_custom_minimum_size',
+        description: 'Set the custom_minimum_size of a Control in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Control node.' },
+            width: { type: 'number', description: 'Minimum width (default: 0).' },
+            height: { type: 'number', description: 'Minimum height (default: 0).' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_label_text',
+        description: 'Get the text of a Label or RichTextLabel in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Label node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_label_text',
+        description: 'Set the text on a Label or RichTextLabel in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Label node.' },
+            text: { type: 'string', description: 'Text to set on the label.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_progress_bar_value',
+        description: 'Get the value of a ProgressBar in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the ProgressBar node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
       ],
     }));
 
@@ -14542,6 +14713,36 @@ class GodotServer {
           return await this.handleGetVehicleBodySpeed(request.params.arguments);
         case 'set_vehicle_engine_force':
           return await this.handleSetVehicleEngineForce(request.params.arguments);
+        case 'add_http_request_to_scene':
+          return await this.handleAddHttpRequestToScene(request.params.arguments);
+        case 'add_multiplayer_spawner_to_scene':
+          return await this.handleAddMultiplayerSpawnerToScene(request.params.arguments);
+        case 'add_multiplayer_synchronizer_to_scene':
+          return await this.handleAddMultiplayerSynchronizerToScene(request.params.arguments);
+        case 'add_scene_tree_timer_via_code':
+          return await this.handleAddSceneTreeTimerViaCode(request.params.arguments);
+        case 'get_time_since_start':
+          return await this.handleGetTimeSinceStart(request.params.arguments);
+        case 'get_engine_version':
+          return await this.handleGetEngineVersion(request.params.arguments);
+        case 'get_time_scale':
+          return await this.handleGetTimeScale(request.params.arguments);
+        case 'get_physics_fps':
+          return await this.handleGetPhysicsFps(request.params.arguments);
+        case 'list_signals_on_node':
+          return await this.handleListSignalsOnNode(request.params.arguments);
+        case 'has_node_metadata':
+          return await this.handleHasNodeMetadata(request.params.arguments);
+        case 'get_node_custom_minimum_size':
+          return await this.handleGetNodeCustomMinimumSize(request.params.arguments);
+        case 'set_node_custom_minimum_size':
+          return await this.handleSetNodeCustomMinimumSize(request.params.arguments);
+        case 'get_label_text':
+          return await this.handleGetLabelText(request.params.arguments);
+        case 'set_label_text':
+          return await this.handleSetLabelText(request.params.arguments);
+        case 'get_progress_bar_value':
+          return await this.handleGetProgressBarValue(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -26223,6 +26424,140 @@ class GodotServer {
     return this.gameCommand('set_vehicle_engine_force', args, a => ({
       node_path: a.nodePath,
       engine_force: a.engineForce ?? 0,
+    }));
+  }
+
+  private async handleAddHttpRequestToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'HTTPRequest',
+        node_type: 'HTTPRequest',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddMultiplayerSpawnerToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'MultiplayerSpawner',
+        node_type: 'MultiplayerSpawner',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddMultiplayerSynchronizerToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'MultiplayerSynchronizer',
+        node_type: 'MultiplayerSynchronizer',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddSceneTreeTimerViaCode(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('add_scene_tree_timer_via_code', args, a => ({
+      duration: a.duration ?? 1.0,
+      auto_start: a.autoStart ?? true,
+    }));
+  }
+
+  private async handleGetTimeSinceStart(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_time_since_start', args, _a => ({}));
+  }
+
+  private async handleGetEngineVersion(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_engine_version', args, _a => ({}));
+  }
+
+  private async handleGetTimeScale(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_time_scale', args, _a => ({}));
+  }
+
+  private async handleGetPhysicsFps(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_physics_fps', args, _a => ({}));
+  }
+
+  private async handleListSignalsOnNode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('list_signals_on_node', args, a => ({
+      node_path: a.nodePath,
+    }));
+  }
+
+  private async handleHasNodeMetadata(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.key) return createErrorResponse('key is required.');
+    return this.gameCommand('has_node_metadata', args, a => ({
+      node_path: a.nodePath,
+      key: a.key,
+    }));
+  }
+
+  private async handleGetNodeCustomMinimumSize(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_custom_minimum_size', args, a => ({
+      node_path: a.nodePath,
+    }));
+  }
+
+  private async handleSetNodeCustomMinimumSize(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_node_custom_minimum_size', args, a => ({
+      node_path: a.nodePath,
+      width: a.width ?? 0,
+      height: a.height ?? 0,
+    }));
+  }
+
+  private async handleGetLabelText(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_label_text', args, a => ({
+      node_path: a.nodePath,
+    }));
+  }
+
+  private async handleSetLabelText(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_label_text', args, a => ({
+      node_path: a.nodePath,
+      text: a.text ?? '',
+    }));
+  }
+
+  private async handleGetProgressBarValue(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_progress_bar_value', args, a => ({
+      node_path: a.nodePath,
     }));
   }
 
