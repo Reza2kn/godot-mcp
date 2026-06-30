@@ -1613,6 +1613,54 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_memory_usage(params)
 		"get_project_name":
 			_cmd_get_project_name(params)
+		"enable_ray_cast_2d":
+			_cmd_enable_ray_cast_2d(params)
+		"set_ray_cast_2d_target":
+			_cmd_set_ray_cast_2d_target(params)
+		"get_ray_cast_2d_collision":
+			_cmd_get_ray_cast_2d_collision(params)
+		"enable_ray_cast_3d":
+			_cmd_enable_ray_cast_3d(params)
+		"set_ray_cast_3d_target":
+			_cmd_set_ray_cast_3d_target(params)
+		"get_ray_cast_3d_collision":
+			_cmd_get_ray_cast_3d_collision(params)
+		"force_ray_cast_update":
+			_cmd_force_ray_cast_update(params)
+		"cast_ray_from_camera":
+			_cmd_cast_ray_from_camera(params)
+		"get_overlapping_bodies_2d":
+			_cmd_get_overlapping_bodies_2d(params)
+		"get_overlapping_areas_2d":
+			_cmd_get_overlapping_areas_2d(params)
+		"get_overlapping_bodies_3d":
+			_cmd_get_overlapping_bodies_3d(params)
+		"get_overlapping_areas_3d":
+			_cmd_get_overlapping_areas_3d(params)
+		"check_area_2d_monitoring":
+			_cmd_check_area_2d_monitoring(params)
+		"get_audio_bus_info":
+			_cmd_get_audio_bus_info(params)
+		"set_audio_bus_effect_enabled":
+			_cmd_set_audio_bus_effect_enabled(params)
+		"get_audio_stream_player_position":
+			_cmd_get_audio_stream_player_position(params)
+		"set_audio_stream_player_position":
+			_cmd_set_audio_stream_player_position(params)
+		"get_audio_stream_length":
+			_cmd_get_audio_stream_length(params)
+		"set_audio_pitch_scale":
+			_cmd_set_audio_pitch_scale(params)
+		"get_sub_viewport_texture_rid":
+			_cmd_get_sub_viewport_texture_rid(params)
+		"set_sub_viewport_size":
+			_cmd_set_sub_viewport_size(params)
+		"set_sub_viewport_update_mode":
+			_cmd_set_sub_viewport_update_mode(params)
+		"get_viewport_textures":
+			_cmd_get_viewport_textures(params)
+		"set_viewport_msaa":
+			_cmd_set_viewport_msaa(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -13485,6 +13533,344 @@ func _cmd_get_memory_usage(params: Dictionary) -> void:
 
 func _cmd_get_project_name(params: Dictionary) -> void:
 	_send_response({"success": true, "project_name": ProjectSettings.get_setting("application/config/name", "Unknown"), "version": ProjectSettings.get_setting("application/config/version", "1.0")})
+
+
+func _cmd_enable_ray_cast_2d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var enabled: bool = params.get("enabled", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RayCast2D:
+		_send_response({"error": "RayCast2D not found: " + node_path})
+		return
+	(node as RayCast2D).enabled = enabled
+	_send_response({"success": true, "enabled": enabled})
+
+
+func _cmd_set_ray_cast_2d_target(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RayCast2D:
+		_send_response({"error": "RayCast2D not found: " + node_path})
+		return
+	(node as RayCast2D).target_position = Vector2(x, y)
+	_send_response({"success": true, "target_position": {"x": x, "y": y}})
+
+
+func _cmd_get_ray_cast_2d_collision(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RayCast2D:
+		_send_response({"error": "RayCast2D not found: " + node_path})
+		return
+	var rc := node as RayCast2D
+	if not rc.is_colliding():
+		_send_response({"success": true, "colliding": false})
+		return
+	var pt = rc.get_collision_point()
+	var normal = rc.get_collision_normal()
+	var collider = rc.get_collider()
+	_send_response({"success": true, "colliding": true, "collision_point": {"x": pt.x, "y": pt.y}, "collision_normal": {"x": normal.x, "y": normal.y}, "collider": str(collider.get_path()) if collider != null else "null"})
+
+
+func _cmd_enable_ray_cast_3d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var enabled: bool = params.get("enabled", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RayCast3D:
+		_send_response({"error": "RayCast3D not found: " + node_path})
+		return
+	(node as RayCast3D).enabled = enabled
+	_send_response({"success": true, "enabled": enabled})
+
+
+func _cmd_set_ray_cast_3d_target(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", -1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RayCast3D:
+		_send_response({"error": "RayCast3D not found: " + node_path})
+		return
+	(node as RayCast3D).target_position = Vector3(x, y, z)
+	_send_response({"success": true, "target_position": {"x": x, "y": y, "z": z}})
+
+
+func _cmd_get_ray_cast_3d_collision(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RayCast3D:
+		_send_response({"error": "RayCast3D not found: " + node_path})
+		return
+	var rc := node as RayCast3D
+	if not rc.is_colliding():
+		_send_response({"success": true, "colliding": false})
+		return
+	var pt = rc.get_collision_point()
+	var normal = rc.get_collision_normal()
+	var collider = rc.get_collider()
+	_send_response({"success": true, "colliding": true, "collision_point": {"x": pt.x, "y": pt.y, "z": pt.z}, "collision_normal": {"x": normal.x, "y": normal.y, "z": normal.z}, "collider": str(collider.get_path()) if collider != null else "null"})
+
+
+func _cmd_force_ray_cast_update(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is RayCast2D:
+		(node as RayCast2D).force_raycast_update()
+		_send_response({"success": true, "type": "RayCast2D"})
+	elif node is RayCast3D:
+		(node as RayCast3D).force_raycast_update()
+		_send_response({"success": true, "type": "RayCast3D"})
+	else:
+		_send_response({"error": "Not a RayCast node: " + node_path})
+
+
+func _cmd_cast_ray_from_camera(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var screen_x: float = params.get("screen_x", 0.5)
+	var screen_y: float = params.get("screen_y", 0.5)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Camera3D:
+		_send_response({"error": "Camera3D not found: " + node_path})
+		return
+	var vp_size = get_viewport().get_visible_rect().size
+	var screen_pos = Vector2(screen_x * vp_size.x, screen_y * vp_size.y)
+	var from = (node as Camera3D).project_ray_origin(screen_pos)
+	var to = from + (node as Camera3D).project_ray_normal(screen_pos) * 1000.0
+	var space = get_world_3d().direct_space_state
+	var query = PhysicsRayQueryParameters3D.create(from, to)
+	var result = space.intersect_ray(query)
+	if result.is_empty():
+		_send_response({"success": true, "hit": false})
+	else:
+		var pos = result.get("position", Vector3.ZERO)
+		_send_response({"success": true, "hit": true, "position": {"x": pos.x, "y": pos.y, "z": pos.z}, "collider": str(result.get("collider", "").get_path()) if result.get("collider") != null else "null"})
+
+
+func _cmd_get_overlapping_bodies_2d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Area2D:
+		_send_response({"error": "Area2D not found: " + node_path})
+		return
+	var bodies = (node as Area2D).get_overlapping_bodies()
+	var result = []
+	for b in bodies:
+		result.append({"path": str(b.get_path()), "class": b.get_class()})
+	_send_response({"success": true, "bodies": result, "count": result.size()})
+
+
+func _cmd_get_overlapping_areas_2d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Area2D:
+		_send_response({"error": "Area2D not found: " + node_path})
+		return
+	var areas = (node as Area2D).get_overlapping_areas()
+	var result = []
+	for a in areas:
+		result.append({"path": str(a.get_path()), "class": a.get_class()})
+	_send_response({"success": true, "areas": result, "count": result.size()})
+
+
+func _cmd_get_overlapping_bodies_3d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Area3D:
+		_send_response({"error": "Area3D not found: " + node_path})
+		return
+	var bodies = (node as Area3D).get_overlapping_bodies()
+	var result = []
+	for b in bodies:
+		result.append({"path": str(b.get_path()), "class": b.get_class()})
+	_send_response({"success": true, "bodies": result, "count": result.size()})
+
+
+func _cmd_get_overlapping_areas_3d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Area3D:
+		_send_response({"error": "Area3D not found: " + node_path})
+		return
+	var areas = (node as Area3D).get_overlapping_areas()
+	var result = []
+	for a in areas:
+		result.append({"path": str(a.get_path()), "class": a.get_class()})
+	_send_response({"success": true, "areas": result, "count": result.size()})
+
+
+func _cmd_check_area_2d_monitoring(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Area2D:
+		_send_response({"error": "Area2D not found: " + node_path})
+		return
+	var a := node as Area2D
+	_send_response({"success": true, "monitoring": a.monitoring, "monitorable": a.monitorable, "collision_layer": a.collision_layer, "collision_mask": a.collision_mask})
+
+
+func _cmd_get_audio_bus_info(params: Dictionary) -> void:
+	var bus_index: int = params.get("bus_index", 0)
+	var bus_name: String = params.get("bus_name", "")
+	if bus_name != "":
+		bus_index = AudioServer.get_bus_index(bus_name)
+		if bus_index < 0:
+			_send_response({"error": "Bus not found: " + bus_name})
+			return
+	if bus_index >= AudioServer.bus_count:
+		_send_response({"error": "Bus index out of range: " + str(bus_index)})
+		return
+	_send_response({"success": true, "name": AudioServer.get_bus_name(bus_index), "volume_db": AudioServer.get_bus_volume_db(bus_index), "mute": AudioServer.is_bus_mute(bus_index), "solo": AudioServer.is_bus_solo(bus_index), "effect_count": AudioServer.get_bus_effect_count(bus_index), "send": AudioServer.get_bus_send(bus_index)})
+
+
+func _cmd_set_audio_bus_effect_enabled(params: Dictionary) -> void:
+	var bus_index: int = params.get("bus_index", 0)
+	var effect_index: int = params.get("effect_index", 0)
+	var enabled: bool = params.get("enabled", true)
+	if bus_index >= AudioServer.bus_count:
+		_send_response({"error": "Bus index out of range"})
+		return
+	AudioServer.set_bus_effect_enabled(bus_index, effect_index, enabled)
+	_send_response({"success": true, "bus_index": bus_index, "effect_index": effect_index, "enabled": enabled})
+
+
+func _cmd_get_audio_stream_player_position(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is AudioStreamPlayer:
+		_send_response({"success": true, "position": (node as AudioStreamPlayer).get_playback_position(), "is_playing": (node as AudioStreamPlayer).playing})
+	elif node is AudioStreamPlayer2D:
+		_send_response({"success": true, "position": (node as AudioStreamPlayer2D).get_playback_position(), "is_playing": (node as AudioStreamPlayer2D).playing})
+	elif node is AudioStreamPlayer3D:
+		_send_response({"success": true, "position": (node as AudioStreamPlayer3D).get_playback_position(), "is_playing": (node as AudioStreamPlayer3D).playing})
+	else:
+		_send_response({"error": "Not an AudioStreamPlayer: " + node_path})
+
+
+func _cmd_set_audio_stream_player_position(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var to_position: float = params.get("to_position", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is AudioStreamPlayer:
+		(node as AudioStreamPlayer).seek(to_position)
+	elif node is AudioStreamPlayer2D:
+		(node as AudioStreamPlayer2D).seek(to_position)
+	elif node is AudioStreamPlayer3D:
+		(node as AudioStreamPlayer3D).seek(to_position)
+	else:
+		_send_response({"error": "Not an AudioStreamPlayer: " + node_path})
+		return
+	_send_response({"success": true, "seeked_to": to_position})
+
+
+func _cmd_get_audio_stream_length(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var stream = null
+	if node is AudioStreamPlayer: stream = (node as AudioStreamPlayer).stream
+	elif node is AudioStreamPlayer2D: stream = (node as AudioStreamPlayer2D).stream
+	elif node is AudioStreamPlayer3D: stream = (node as AudioStreamPlayer3D).stream
+	if stream == null:
+		_send_response({"error": "No stream assigned"})
+		return
+	_send_response({"success": true, "length": stream.get_length()})
+
+
+func _cmd_set_audio_pitch_scale(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var pitch_scale: float = params.get("pitch_scale", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is AudioStreamPlayer: (node as AudioStreamPlayer).pitch_scale = pitch_scale
+	elif node is AudioStreamPlayer2D: (node as AudioStreamPlayer2D).pitch_scale = pitch_scale
+	elif node is AudioStreamPlayer3D: (node as AudioStreamPlayer3D).pitch_scale = pitch_scale
+	else:
+		_send_response({"error": "Not an AudioStreamPlayer: " + node_path})
+		return
+	_send_response({"success": true, "pitch_scale": pitch_scale})
+
+
+func _cmd_get_sub_viewport_texture_rid(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is SubViewport:
+		_send_response({"error": "SubViewport not found: " + node_path})
+		return
+	var tex = (node as SubViewport).get_texture()
+	_send_response({"success": true, "has_texture": tex != null, "size": {"w": (node as SubViewport).size.x, "h": (node as SubViewport).size.y}})
+
+
+func _cmd_set_sub_viewport_size(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var w: int = params.get("w", 256)
+	var h: int = params.get("h", 256)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is SubViewport:
+		_send_response({"error": "SubViewport not found: " + node_path})
+		return
+	(node as SubViewport).size = Vector2i(w, h)
+	_send_response({"success": true, "size": {"w": w, "h": h}})
+
+
+func _cmd_set_sub_viewport_update_mode(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var mode_str: String = params.get("mode", "always")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is SubViewport:
+		_send_response({"error": "SubViewport not found: " + node_path})
+		return
+	var mode: SubViewport.UpdateMode
+	match mode_str:
+		"disabled": mode = SubViewport.UPDATE_DISABLED
+		"once": mode = SubViewport.UPDATE_ONCE
+		"always": mode = SubViewport.UPDATE_ALWAYS
+		"when_visible": mode = SubViewport.UPDATE_WHEN_VISIBLE
+		_: mode = SubViewport.UPDATE_ALWAYS
+	(node as SubViewport).render_target_update_mode = mode
+	_send_response({"success": true, "mode": mode_str})
+
+
+func _cmd_get_viewport_textures(params: Dictionary) -> void:
+	var result = []
+	var nodes = get_tree().root.find_children("*", "SubViewport", true, false)
+	for node in nodes:
+		var sv := node as SubViewport
+		result.append({"path": str(sv.get_path()), "size": {"w": sv.size.x, "h": sv.size.y}})
+	_send_response({"success": true, "sub_viewports": result, "count": result.size()})
+
+
+func _cmd_set_viewport_msaa(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var msaa_level: int = params.get("msaa", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Viewport:
+		_send_response({"error": "Viewport not found: " + node_path})
+		return
+	var msaa: Viewport.MSAA
+	match msaa_level:
+		0: msaa = Viewport.MSAA_DISABLED
+		2: msaa = Viewport.MSAA_2X
+		4: msaa = Viewport.MSAA_4X
+		8: msaa = Viewport.MSAA_8X
+		_: msaa = Viewport.MSAA_DISABLED
+	(node as Viewport).msaa_3d = msaa
+	_send_response({"success": true, "msaa": msaa_level})
 
 
 func _exit_tree() -> void:

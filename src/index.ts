@@ -17333,6 +17333,187 @@ class GodotServer {
         description: 'Get current static memory usage and peak memory usage from OS.',
         inputSchema: { type: 'object', properties: {} },
       },
+      // Batch 59 — Group A: RayCast runtime tools
+      {
+        name: 'enable_ray_cast_2d',
+        description: 'Enable or disable a RayCast2D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, enabled: { type: 'boolean' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_ray_cast_2d_target',
+        description: 'Set the target position of a RayCast2D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, x: { type: 'number' }, y: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_ray_cast_2d_collision',
+        description: 'Get collision result of a RayCast2D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'enable_ray_cast_3d',
+        description: 'Enable or disable a RayCast3D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, enabled: { type: 'boolean' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_ray_cast_3d_target',
+        description: 'Set the target position of a RayCast3D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, x: { type: 'number' }, y: { type: 'number' }, z: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_ray_cast_3d_collision',
+        description: 'Get collision result of a RayCast3D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'force_ray_cast_update',
+        description: 'Force a RayCast2D or RayCast3D to update immediately.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      // Batch 59 — Group B: Physics direct space query
+      {
+        name: 'cast_ray_from_camera',
+        description: 'Cast a ray from Camera3D through screen coords.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, screenX: { type: 'number' }, screenY: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_overlapping_bodies_2d',
+        description: 'Get bodies overlapping an Area2D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_overlapping_areas_2d',
+        description: 'Get areas overlapping an Area2D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_overlapping_bodies_3d',
+        description: 'Get bodies overlapping an Area3D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_overlapping_areas_3d',
+        description: 'Get areas overlapping an Area3D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'check_area_2d_monitoring',
+        description: 'Check if Area2D monitoring is enabled.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      // Batch 59 — Group C: AudioStream / bus advanced
+      {
+        name: 'get_audio_bus_info',
+        description: 'Get info about an audio bus by index or name.',
+        inputSchema: { type: 'object', properties: { busIndex: { type: 'number' }, busName: { type: 'string' } } },
+      },
+      {
+        name: 'set_audio_bus_effect_enabled',
+        description: 'Enable/disable an effect on an audio bus.',
+        inputSchema: { type: 'object', properties: { busIndex: { type: 'number' }, effectIndex: { type: 'number' }, enabled: { type: 'boolean' } } },
+      },
+      {
+        name: 'get_audio_stream_player_position',
+        description: 'Get playback position of AudioStreamPlayer.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_audio_stream_player_position',
+        description: 'Seek AudioStreamPlayer to a position.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, toPosition: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_audio_stream_length',
+        description: "Get duration of AudioStreamPlayer's stream.",
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_audio_pitch_scale',
+        description: 'Set pitch scale of an AudioStreamPlayer node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, pitchScale: { type: 'number' } }, required: ['nodePath'] },
+      },
+      // Batch 59 — Group D: Viewport / SubViewport runtime
+      {
+        name: 'get_sub_viewport_texture_rid',
+        description: 'Get texture RID of a SubViewport node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_sub_viewport_size',
+        description: 'Set size of a SubViewport node at runtime.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, w: { type: 'number' }, h: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_sub_viewport_update_mode',
+        description: 'Set update mode of SubViewport (once/always/disabled).',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, mode: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_viewport_textures',
+        description: 'Get list of SubViewports and their textures in scene.',
+        inputSchema: { type: 'object', properties: {} },
+      },
+      {
+        name: 'set_viewport_msaa',
+        description: 'Set MSAA setting on a Viewport node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, msaa: { type: 'number' } }, required: ['nodePath'] },
+      },
+      // Batch 59 — Group E: Project metadata / settings
+      {
+        name: 'get_project_godot_version',
+        description: 'Get Godot version from project.godot file.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' } }, required: ['projectPath'] },
+      },
+      {
+        name: 'count_gdscript_lines',
+        description: 'Count total lines of GDScript in a project.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' } }, required: ['projectPath'] },
+      },
+      {
+        name: 'get_project_structure',
+        description: 'Get a tree of directories in a Godot project.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' } }, required: ['projectPath'] },
+      },
+      {
+        name: 'find_gdscript_function',
+        description: 'Search for a function definition in project scripts.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, functionName: { type: 'string' } }, required: ['projectPath', 'functionName'] },
+      },
+      {
+        name: 'find_gdscript_signal_usage',
+        description: 'Find signal connection calls in project scripts.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, signalName: { type: 'string' } }, required: ['projectPath', 'signalName'] },
+      },
+      {
+        name: 'get_project_autoloads',
+        description: 'Read autoload entries from project.godot file.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' } }, required: ['projectPath'] },
+      },
+      // Batch 59 — Group F: GDScript template writers
+      {
+        name: 'write_area_2d_detector_script',
+        description: 'Write an Area2D enter/exit detector script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, groupToDetect: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_projectile_script',
+        description: 'Write a projectile (bullet/arrow) GDScript.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, speed: { type: 'number' }, lifetime: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_hitbox_script',
+        description: 'Write a hitbox/hurtbox script for combat.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_interactable_script',
+        description: 'Write an interactable object script (press E to use).',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, interactKey: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_door_script',
+        description: 'Write a door/gate open/close GDScript.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, openDuration: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
+      },
       ],
     }));
 
@@ -19837,6 +20018,82 @@ class GodotServer {
           return await this.handleGetPhysicsInterpolationMode(request.params.arguments);
         case 'get_memory_usage':
           return await this.handleGetMemoryUsage(request.params.arguments);
+        // Batch 59 switch cases — Group A: RayCast runtime tools
+        case 'enable_ray_cast_2d':
+          return await this.handleEnableRayCast2d(request.params.arguments);
+        case 'set_ray_cast_2d_target':
+          return await this.handleSetRayCast2dTarget(request.params.arguments);
+        case 'get_ray_cast_2d_collision':
+          return await this.handleGetRayCast2dCollision(request.params.arguments);
+        case 'enable_ray_cast_3d':
+          return await this.handleEnableRayCast3d(request.params.arguments);
+        case 'set_ray_cast_3d_target':
+          return await this.handleSetRayCast3dTarget(request.params.arguments);
+        case 'get_ray_cast_3d_collision':
+          return await this.handleGetRayCast3dCollision(request.params.arguments);
+        case 'force_ray_cast_update':
+          return await this.handleForceRayCastUpdate(request.params.arguments);
+        // Batch 59 switch cases — Group B: Physics direct space query
+        case 'cast_ray_from_camera':
+          return await this.handleCastRayFromCamera(request.params.arguments);
+        case 'get_overlapping_bodies_2d':
+          return await this.handleGetOverlappingBodies2d(request.params.arguments);
+        case 'get_overlapping_areas_2d':
+          return await this.handleGetOverlappingAreas2d(request.params.arguments);
+        case 'get_overlapping_bodies_3d':
+          return await this.handleGetOverlappingBodies3d(request.params.arguments);
+        case 'get_overlapping_areas_3d':
+          return await this.handleGetOverlappingAreas3d(request.params.arguments);
+        case 'check_area_2d_monitoring':
+          return await this.handleCheckArea2dMonitoring(request.params.arguments);
+        // Batch 59 switch cases — Group C: AudioStream / bus advanced
+        case 'get_audio_bus_info':
+          return await this.handleGetAudioBusInfo(request.params.arguments);
+        case 'set_audio_bus_effect_enabled':
+          return await this.handleSetAudioBusEffectEnabled(request.params.arguments);
+        case 'get_audio_stream_player_position':
+          return await this.handleGetAudioStreamPlayerPosition(request.params.arguments);
+        case 'set_audio_stream_player_position':
+          return await this.handleSetAudioStreamPlayerPosition(request.params.arguments);
+        case 'get_audio_stream_length':
+          return await this.handleGetAudioStreamLength(request.params.arguments);
+        case 'set_audio_pitch_scale':
+          return await this.handleSetAudioPitchScale(request.params.arguments);
+        // Batch 59 switch cases — Group D: Viewport / SubViewport runtime
+        case 'get_sub_viewport_texture_rid':
+          return await this.handleGetSubViewportTextureRid(request.params.arguments);
+        case 'set_sub_viewport_size':
+          return await this.handleSetSubViewportSize(request.params.arguments);
+        case 'set_sub_viewport_update_mode':
+          return await this.handleSetSubViewportUpdateMode(request.params.arguments);
+        case 'get_viewport_textures':
+          return await this.handleGetViewportTextures(request.params.arguments);
+        case 'set_viewport_msaa':
+          return await this.handleSetViewportMsaa(request.params.arguments);
+        // Batch 59 switch cases — Group E: Project metadata / settings
+        case 'get_project_godot_version':
+          return await this.handleGetProjectGodotVersion(request.params.arguments);
+        case 'count_gdscript_lines':
+          return await this.handleCountGdscriptLines(request.params.arguments);
+        case 'get_project_structure':
+          return await this.handleGetProjectStructure(request.params.arguments);
+        case 'find_gdscript_function':
+          return await this.handleFindGdscriptFunction(request.params.arguments);
+        case 'find_gdscript_signal_usage':
+          return await this.handleFindGdscriptSignalUsage(request.params.arguments);
+        case 'get_project_autoloads':
+          return await this.handleGetProjectAutoloads(request.params.arguments);
+        // Batch 59 switch cases — Group F: GDScript template writers
+        case 'write_area_2d_detector_script':
+          return await this.handleWriteArea2dDetectorScript(request.params.arguments);
+        case 'write_projectile_script':
+          return await this.handleWriteProjectileScript(request.params.arguments);
+        case 'write_hitbox_script':
+          return await this.handleWriteHitboxScript(request.params.arguments);
+        case 'write_interactable_script':
+          return await this.handleWriteInteractableScript(request.params.arguments);
+        case 'write_door_script':
+          return await this.handleWriteDoorScript(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -35647,6 +35904,452 @@ func _spawn() -> void:
   private async handleGetMemoryUsage(args: any) {
     args = normalizeParameters(args || {});
     return this.gameCommand('get_memory_usage', args, _a => ({}));
+  }
+
+  // ── Batch 59 handlers ───────────────────────────────────────────────────────
+
+  // Group A: RayCast runtime tools
+  private async handleEnableRayCast2d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('enable_ray_cast_2d', args, a => ({ node_path: a.nodePath, enabled: a.enabled ?? true }));
+  }
+
+  private async handleSetRayCast2dTarget(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_ray_cast_2d_target', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0 }));
+  }
+
+  private async handleGetRayCast2dCollision(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_ray_cast_2d_collision', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleEnableRayCast3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('enable_ray_cast_3d', args, a => ({ node_path: a.nodePath, enabled: a.enabled ?? true }));
+  }
+
+  private async handleSetRayCast3dTarget(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_ray_cast_3d_target', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0, z: a.z ?? -1 }));
+  }
+
+  private async handleGetRayCast3dCollision(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_ray_cast_3d_collision', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleForceRayCastUpdate(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('force_ray_cast_update', args, a => ({ node_path: a.nodePath }));
+  }
+
+  // Group B: Physics direct space query
+  private async handleCastRayFromCamera(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('cast_ray_from_camera', args, a => ({ node_path: a.nodePath, screen_x: a.screenX ?? 0.5, screen_y: a.screenY ?? 0.5 }));
+  }
+
+  private async handleGetOverlappingBodies2d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_overlapping_bodies_2d', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetOverlappingAreas2d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_overlapping_areas_2d', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetOverlappingBodies3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_overlapping_bodies_3d', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetOverlappingAreas3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_overlapping_areas_3d', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleCheckArea2dMonitoring(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('check_area_2d_monitoring', args, a => ({ node_path: a.nodePath }));
+  }
+
+  // Group C: AudioStream / bus advanced
+  private async handleGetAudioBusInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_audio_bus_info', args, a => ({ bus_index: a.busIndex ?? 0, bus_name: a.busName ?? '' }));
+  }
+
+  private async handleSetAudioBusEffectEnabled(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_audio_bus_effect_enabled', args, a => ({ bus_index: a.busIndex ?? 0, effect_index: a.effectIndex ?? 0, enabled: a.enabled ?? true }));
+  }
+
+  private async handleGetAudioStreamPlayerPosition(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_audio_stream_player_position', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetAudioStreamPlayerPosition(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_audio_stream_player_position', args, a => ({ node_path: a.nodePath, to_position: a.toPosition ?? 0.0 }));
+  }
+
+  private async handleGetAudioStreamLength(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_audio_stream_length', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetAudioPitchScale(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_audio_pitch_scale', args, a => ({ node_path: a.nodePath, pitch_scale: a.pitchScale ?? 1.0 }));
+  }
+
+  // Group D: Viewport / SubViewport runtime
+  private async handleGetSubViewportTextureRid(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_sub_viewport_texture_rid', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetSubViewportSize(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_sub_viewport_size', args, a => ({ node_path: a.nodePath, w: a.w ?? 256, h: a.h ?? 256 }));
+  }
+
+  private async handleSetSubViewportUpdateMode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_sub_viewport_update_mode', args, a => ({ node_path: a.nodePath, mode: a.mode ?? 'always' }));
+  }
+
+  private async handleGetViewportTextures(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_viewport_textures', args, _a => ({}));
+  }
+
+  private async handleSetViewportMsaa(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_viewport_msaa', args, a => ({ node_path: a.nodePath, msaa: a.msaa ?? 0 }));
+  }
+
+  // Group E: Project metadata / settings
+  private async handleGetProjectGodotVersion(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    const projectFile = join(args.projectPath, 'project.godot');
+    if (!existsSync(projectFile)) return createErrorResponse('project.godot not found.');
+    const content = readFileSync(projectFile, 'utf8');
+    const match = content.match(/config_version\s*=\s*(\d+)/);
+    const nameMatch = content.match(/name\s*=\s*"([^"]+)"/);
+    const versionMatch = content.match(/version\s*=\s*"([^"]+)"/);
+    return { content: [{ type: 'text', text: JSON.stringify({ config_version: match ? match[1] : 'unknown', project_name: nameMatch ? nameMatch[1] : 'unknown', version: versionMatch ? versionMatch[1] : 'unknown' }) }] };
+  }
+
+  private async handleCountGdscriptLines(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!existsSync(args.projectPath)) return createErrorResponse('Project path not found.');
+    const scripts = this.collectFiles(args.projectPath, ['.gd']);
+    let totalLines = 0;
+    for (const s of scripts) {
+      try { totalLines += readFileSync(s, 'utf8').split('\n').length; } catch {}
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ script_count: scripts.length, total_lines: totalLines }) }] };
+  }
+
+  private async handleGetProjectStructure(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!existsSync(args.projectPath)) return createErrorResponse('Project path not found.');
+    const walk = (dir: string, depth: number = 0): any[] => {
+      if (depth > 3) return [];
+      try {
+        return readdirSync(dir).filter(f => !f.startsWith('.')).map(f => {
+          const full = join(dir, f);
+          const stat = statSync(full);
+          return stat.isDirectory() ? { name: f, type: 'dir', children: walk(full, depth + 1) } : { name: f, type: 'file' };
+        });
+      } catch { return []; }
+    };
+    return { content: [{ type: 'text', text: JSON.stringify({ structure: walk(args.projectPath) }) }] };
+  }
+
+  private async handleFindGdscriptFunction(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.functionName) return createErrorResponse('projectPath and functionName are required.');
+    const scripts = this.collectFiles(args.projectPath, ['.gd']);
+    const results: any[] = [];
+    const pattern = new RegExp(`func\\s+${args.functionName}\\s*\\(`, 'g');
+    for (const s of scripts) {
+      try {
+        const content = readFileSync(s, 'utf8');
+        const lines = content.split('\n');
+        lines.forEach((line, idx) => {
+          if (pattern.test(line)) results.push({ file: s, line: idx + 1, snippet: line.trim() });
+          pattern.lastIndex = 0;
+        });
+      } catch {}
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ function_name: args.functionName, found: results.length > 0, results }) }] };
+  }
+
+  private async handleFindGdscriptSignalUsage(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.signalName) return createErrorResponse('projectPath and signalName are required.');
+    const scripts = this.collectFiles(args.projectPath, ['.gd']);
+    const results: any[] = [];
+    for (const s of scripts) {
+      try {
+        const content = readFileSync(s, 'utf8');
+        const lines = content.split('\n');
+        lines.forEach((line, idx) => {
+          if (line.includes(args.signalName)) results.push({ file: s, line: idx + 1, snippet: line.trim() });
+        });
+      } catch {}
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ signal_name: args.signalName, found: results.length > 0, results }) }] };
+  }
+
+  private async handleGetProjectAutoloads(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    const projectFile = join(args.projectPath, 'project.godot');
+    if (!existsSync(projectFile)) return createErrorResponse('project.godot not found.');
+    const content = readFileSync(projectFile, 'utf8');
+    const autoloads: any[] = [];
+    let inAutoload = false;
+    for (const line of content.split('\n')) {
+      if (line.trim() === '[autoload]') { inAutoload = true; continue; }
+      if (line.startsWith('[') && inAutoload) { inAutoload = false; }
+      if (inAutoload) {
+        const m = line.match(/^(\w+)\s*=\s*"([^"]+)"/);
+        if (m) autoloads.push({ name: m[1], path: m[2] });
+      }
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ autoloads, count: autoloads.length }) }] };
+  }
+
+  // Group F: GDScript template writers
+  private async handleWriteArea2dDetectorScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const group = args.groupToDetect ?? 'player';
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Area2D
+## Area2D detector — emits signals when objects enter/exit.
+## Attach to Area2D with CollisionShape2D child.
+
+signal target_entered(body: Node2D)
+signal target_exited(body: Node2D)
+
+@export var detect_group: String = "${group}"
+
+func _ready() -> void:
+\tbody_entered.connect(_on_body_entered)
+\tbody_exited.connect(_on_body_exited)
+
+func _on_body_entered(body: Node2D) -> void:
+\tif detect_group.is_empty() or body.is_in_group(detect_group):
+\t\ttarget_entered.emit(body)
+
+func _on_body_exited(body: Node2D) -> void:
+\tif detect_group.is_empty() or body.is_in_group(detect_group):
+\t\ttarget_exited.emit(body)
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, groupToDetect: group }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteProjectileScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const speed = args.speed ?? 500;
+    const lifetime = args.lifetime ?? 3.0;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Area2D
+## Projectile script — attach to Area2D with CollisionShape2D.
+## Moves forward and deals damage on hit.
+
+signal hit(target: Node2D)
+
+@export var speed: float = ${speed}.0
+@export var lifetime: float = ${lifetime}
+@export var damage: int = 10
+
+var direction: Vector2 = Vector2.RIGHT
+
+func _ready() -> void:
+\tget_tree().create_timer(lifetime).timeout.connect(queue_free)
+\tbody_entered.connect(_on_body_entered)
+
+func _physics_process(delta: float) -> void:
+\tposition += direction * speed * delta
+
+func _on_body_entered(body: Node2D) -> void:
+\tif body.has_method("take_damage"):
+\t\tbody.take_damage(damage)
+\thit.emit(body)
+\tqueue_free()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, speed, lifetime }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteHitboxScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Area2D
+## Hitbox/Hurtbox — attach to Area2D with CollisionShape2D.
+## Owner must implement take_damage(amount: int).
+
+signal damaged(amount: int, from: Node)
+
+@export var active: bool = true
+
+func _ready() -> void:
+\tbody_entered.connect(_on_body_entered)
+
+func _on_body_entered(body: Node) -> void:
+\tif not active:
+\t\treturn
+\tif body.has_method("get_damage"):
+\t\tvar dmg = body.get_damage()
+\t\tif get_parent().has_method("take_damage"):
+\t\t\tget_parent().take_damage(dmg)
+\t\tdamaged.emit(dmg, body)
+
+func set_active(value: bool) -> void:
+\tactive = value
+\tmonitoring = value
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteInteractableScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const key = args.interactKey ?? 'interact';
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Area2D
+## Interactable object — shows prompt when player is near, emits interacted when activated.
+
+signal interacted(by: Node)
+
+@export var interact_action: String = "${key}"
+@export var prompt_text: String = "Press E to interact"
+
+var _nearby_body: Node = null
+
+func _ready() -> void:
+\tbody_entered.connect(_on_body_entered)
+\tbody_exited.connect(_on_body_exited)
+
+func _unhandled_input(event: InputEvent) -> void:
+\tif _nearby_body and event.is_action_pressed(interact_action):
+\t\tinteracted.emit(_nearby_body)
+
+func _on_body_entered(body: Node) -> void:
+\tif body.is_in_group("player"):
+\t\t_nearby_body = body
+\t\tif body.has_method("show_prompt"):
+\t\t\tbody.show_prompt(prompt_text)
+
+func _on_body_exited(body: Node) -> void:
+\tif body == _nearby_body:
+\t\t_nearby_body = null
+\t\tif body.has_method("hide_prompt"):
+\t\t\tbody.hide_prompt()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, interactKey: key }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteDoorScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const duration = args.openDuration ?? 1.0;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends AnimatableBody2D
+## Door script — attach to AnimatableBody2D.
+## Call open() / close() to toggle. Plays animation if AnimationPlayer present.
+
+signal opened
+signal closed
+
+@export var open_position: Vector2 = Vector2(0, -64)
+@export var open_duration: float = ${duration}
+
+var _is_open: bool = false
+var _closed_position: Vector2
+
+func _ready() -> void:
+\t_closed_position = position
+
+func open() -> void:
+\tif _is_open: return
+\t_is_open = true
+\tvar tween = create_tween()
+\ttween.tween_property(self, "position", _closed_position + open_position, open_duration)
+\tawait tween.finished
+\topened.emit()
+
+func close() -> void:
+\tif not _is_open: return
+\t_is_open = false
+\tvar tween = create_tween()
+\ttween.tween_property(self, "position", _closed_position, open_duration)
+\tawait tween.finished
+\tclosed.emit()
+
+func toggle() -> void:
+\tif _is_open: close()
+\telse: open()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, openDuration: duration }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
   }
 
   // ── Navigation / Discovery helpers ──────────────────────────────────────────
