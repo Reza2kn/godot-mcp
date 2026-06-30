@@ -707,6 +707,16 @@ func _handle_command(json_str: String) -> void:
 			_cmd_set_collision_mask(params)
 		"set_collision_layer":
 			_cmd_set_collision_layer(params)
+		"get_runtime_input_actions":
+			_cmd_get_runtime_input_actions(params)
+		"is_action_pressed":
+			_cmd_is_action_pressed(params)
+		"get_global_transform_3d":
+			_cmd_get_global_transform_3d(params)
+		"set_global_position_3d":
+			_cmd_set_global_position_3d(params)
+		"look_at_target":
+			_cmd_look_at_target(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -7434,6 +7444,61 @@ func _cmd_set_collision_layer(params: Dictionary) -> void:
 		_send_response({"success": true, "collision_layer": layer})
 	else:
 		_send_response({"error": "Node does not support collision_layer: " + node.get_class()})
+
+func _cmd_get_runtime_input_actions(params: Dictionary) -> void:
+	var actions: Array = []
+	for action in InputMap.get_actions():
+		var events: Array = []
+		for event in InputMap.action_get_events(action):
+			events.append(event.as_text())
+		actions.append({"action": action, "deadzone": InputMap.action_get_deadzone(action), "events": events})
+	_send_response({"success": true, "count": actions.size(), "actions": actions})
+
+func _cmd_is_action_pressed(params: Dictionary) -> void:
+	var action_name: String = params.get("action_name", "")
+	if action_name.is_empty():
+		_send_response({"error": "action_name is required"})
+		return
+	if not InputMap.has_action(action_name):
+		_send_response({"error": "Action not found: " + action_name})
+		return
+	_send_response({"success": true, "action_name": action_name, "pressed": Input.is_action_pressed(action_name), "strength": Input.get_action_strength(action_name)})
+
+func _cmd_get_global_transform_3d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node3D:
+		_send_response({"error": "Node3D not found: " + node_path})
+		return
+	var xform = (node as Node3D).global_transform
+	_send_response({"success": true, "position": {"x": xform.origin.x, "y": xform.origin.y, "z": xform.origin.z}, "basis_x": {"x": xform.basis.x.x, "y": xform.basis.x.y, "z": xform.basis.x.z}, "basis_y": {"x": xform.basis.y.x, "y": xform.basis.y.y, "z": xform.basis.y.z}, "basis_z": {"x": xform.basis.z.x, "y": xform.basis.z.y, "z": xform.basis.z.z}})
+
+func _cmd_set_global_position_3d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node3D:
+		_send_response({"error": "Node3D not found: " + node_path})
+		return
+	(node as Node3D).global_position = Vector3(x, y, z)
+	_send_response({"success": true, "position": {"x": x, "y": y, "z": z}})
+
+func _cmd_look_at_target(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var target_x: float = params.get("target_x", 0.0)
+	var target_y: float = params.get("target_y", 0.0)
+	var target_z: float = params.get("target_z", 0.0)
+	var up_x: float = params.get("up_x", 0.0)
+	var up_y: float = params.get("up_y", 1.0)
+	var up_z: float = params.get("up_z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node3D:
+		_send_response({"error": "Node3D not found: " + node_path})
+		return
+	(node as Node3D).look_at(Vector3(target_x, target_y, target_z), Vector3(up_x, up_y, up_z))
+	_send_response({"success": true, "target": {"x": target_x, "y": target_y, "z": target_z}})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()
