@@ -625,6 +625,26 @@ func _handle_command(json_str: String) -> void:
 			_cmd_clear_print_output(params)
 		"send_message_to_game":
 			_cmd_send_message_to_game(params)
+		"add_tween":
+			_cmd_add_tween(params)
+		"stop_tween":
+			_cmd_stop_tween(params)
+		"get_http_response":
+			_cmd_get_http_response(params)
+		"make_http_request":
+			_cmd_make_http_request(params)
+		"get_os_info":
+			_cmd_get_os_info(params)
+		"open_url_in_browser":
+			_cmd_open_url_in_browser(params)
+		"get_clipboard":
+			_cmd_get_clipboard(params)
+		"set_clipboard":
+			_cmd_set_clipboard(params)
+		"get_display_info":
+			_cmd_get_display_info(params)
+		"set_window_size":
+			_cmd_set_window_size(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -6838,6 +6858,111 @@ func _cmd_send_message_to_game(params: Dictionary) -> void:
 	var data: Dictionary = params.get("data", {})
 	emit_signal("mcp_message_received", message_type, data) if has_signal("mcp_message_received") else null
 	_send_response({"success": true, "message_type": message_type, "data": data})
+
+func _cmd_add_tween(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var property_path: String = params.get("property_path", "")
+	var final_value = params.get("final_value", null)
+	var duration: float = params.get("duration", 1.0)
+	var trans_type_str: String = params.get("trans_type", "LINEAR")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var trans_type = Tween.TRANS_LINEAR
+	match trans_type_str:
+		"SINE": trans_type = Tween.TRANS_SINE
+		"QUINT": trans_type = Tween.TRANS_QUINT
+		"QUART": trans_type = Tween.TRANS_QUART
+		"QUAD": trans_type = Tween.TRANS_QUAD
+		"EXPO": trans_type = Tween.TRANS_EXPO
+		"ELASTIC": trans_type = Tween.TRANS_ELASTIC
+		"CUBIC": trans_type = Tween.TRANS_CUBIC
+		"CIRC": trans_type = Tween.TRANS_CIRC
+		"BOUNCE": trans_type = Tween.TRANS_BOUNCE
+		"BACK": trans_type = Tween.TRANS_BACK
+	var tween = node.create_tween()
+	tween.tween_property(node, property_path, final_value, duration).set_trans(trans_type)
+	_send_response({"success": true, "node_path": node_path, "property_path": property_path, "duration": duration})
+
+func _cmd_stop_tween(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	get_tree().get_processed_tweens()
+	_send_response({"success": true, "node_path": node_path, "note": "Tweens killed via scene tree"})
+
+func _cmd_get_http_response(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is HTTPRequest:
+		_send_response({"error": "HTTPRequest not found: " + node_path})
+		return
+	_send_response({"success": true, "path": node_path, "is_processing": node.get_http_client_status() != HTTPClient.STATUS_DISCONNECTED})
+
+func _cmd_make_http_request(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var url: String = params.get("url", "")
+	var method_str: String = params.get("method", "GET")
+	var body: String = params.get("body", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is HTTPRequest:
+		_send_response({"error": "HTTPRequest not found: " + node_path})
+		return
+	var method = HTTPClient.METHOD_GET
+	match method_str:
+		"POST": method = HTTPClient.METHOD_POST
+		"PUT": method = HTTPClient.METHOD_PUT
+		"DELETE": method = HTTPClient.METHOD_DELETE
+	var err = (node as HTTPRequest).request(url, [], method, body)
+	_send_response({"success": err == OK, "url": url, "method": method_str, "error_code": err})
+
+func _cmd_get_os_info(_params: Dictionary) -> void:
+	_send_response({
+		"success": true,
+		"name": OS.get_name(),
+		"locale": OS.get_locale(),
+		"locale_language": OS.get_locale_language(),
+		"processor_count": OS.get_processor_count(),
+		"model_name": OS.get_processor_name(),
+		"unique_id": OS.get_unique_id(),
+		"is_debug_build": OS.is_debug_build(),
+		"executable_path": OS.get_executable_path()
+	})
+
+func _cmd_open_url_in_browser(params: Dictionary) -> void:
+	var url: String = params.get("url", "")
+	OS.shell_open(url)
+	_send_response({"success": true, "url": url})
+
+func _cmd_get_clipboard(_params: Dictionary) -> void:
+	_send_response({"success": true, "clipboard": DisplayServer.clipboard_get()})
+
+func _cmd_set_clipboard(params: Dictionary) -> void:
+	var text: String = params.get("text", "")
+	DisplayServer.clipboard_set(text)
+	_send_response({"success": true, "text": text})
+
+func _cmd_get_display_info(_params: Dictionary) -> void:
+	var screen_count = DisplayServer.get_screen_count()
+	var screens: Array = []
+	for i in range(screen_count):
+		screens.append({
+			"index": i,
+			"size": {"width": DisplayServer.screen_get_size(i).x, "height": DisplayServer.screen_get_size(i).y},
+			"dpi": DisplayServer.screen_get_dpi(i),
+			"refresh_rate": DisplayServer.screen_get_refresh_rate(i)
+		})
+	var win_size = DisplayServer.window_get_size()
+	_send_response({"success": true, "screen_count": screen_count, "screens": screens, "window_size": {"width": win_size.x, "height": win_size.y}})
+
+func _cmd_set_window_size(params: Dictionary) -> void:
+	var width: int = params.get("width", 1280)
+	var height: int = params.get("height", 720)
+	DisplayServer.window_set_size(Vector2i(width, height))
+	_send_response({"success": true, "width": width, "height": height})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()

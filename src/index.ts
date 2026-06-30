@@ -8196,6 +8196,255 @@ class GodotServer {
           required: ['messageType'],
         },
       },
+      {
+        name: 'add_tween',
+        description: 'Create a Tween on a node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path of the node to tween' },
+            propertyPath: { type: 'string', description: "Property to animate e.g. 'position:x'" },
+            finalValue: { description: 'Target value for the property' },
+            duration: { type: 'number', description: 'Duration in seconds (default 1.0)' },
+            transType: { type: 'string', description: 'Transition type e.g. LINEAR, SINE, BOUNCE' },
+          },
+          required: ['nodePath', 'propertyPath', 'finalValue'],
+        },
+      },
+      {
+        name: 'stop_tween',
+        description: 'Stop all active Tweens on a node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path of the node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_http_response',
+        description: 'Get the response body from an HTTPRequest node.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path of the HTTPRequest node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'make_http_request',
+        description: 'Send an HTTP request from an HTTPRequest node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path of the HTTPRequest node' },
+            url: { type: 'string', description: 'URL to request' },
+            method: { type: 'string', description: 'HTTP method: GET, POST, PUT, DELETE' },
+            body: { type: 'string', description: 'Optional request body' },
+          },
+          required: ['nodePath', 'url'],
+        },
+      },
+      {
+        name: 'get_os_info',
+        description: 'Get OS name, locale, and system info from game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'open_url_in_browser',
+        description: 'Open a URL in the system browser from the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            url: { type: 'string', description: 'URL to open in the system browser' },
+          },
+          required: ['url'],
+        },
+      },
+      {
+        name: 'get_clipboard',
+        description: 'Get the system clipboard text from the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'set_clipboard',
+        description: 'Set the system clipboard text from the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            text: { type: 'string', description: 'Text to set as clipboard contents' },
+          },
+          required: ['text'],
+        },
+      },
+      {
+        name: 'get_display_info',
+        description: 'Get screen size, DPI, and window info from game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'set_window_size',
+        description: 'Set the game window size from the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            width: { type: 'integer', description: 'Window width in pixels' },
+            height: { type: 'integer', description: 'Window height in pixels' },
+          },
+          required: ['width', 'height'],
+        },
+      },
+      {
+        name: 'add_voxel_gi',
+        description: 'Add a VoxelGI node to a 3D scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Relative path to the .tscn scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default VoxelGI)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_hinge_joint_3d',
+        description: 'Add a HingeJoint3D node to a 3D scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Relative path to the .tscn scene file' },
+            nodeName: { type: 'string', description: 'Name for the node (default HingeJoint3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_slider_joint_3d',
+        description: 'Add a SliderJoint3D node to a 3D scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Relative path to the .tscn scene file' },
+            nodeName: { type: 'string', description: 'Name for the node (default SliderJoint3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_cone_twist_joint_3d',
+        description: 'Add a ConeTwistJoint3D node to a 3D scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Relative path to the .tscn scene file' },
+            nodeName: { type: 'string', description: 'Name for the node (default ConeTwistJoint3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_generic_6dof_joint_3d',
+        description: 'Add a Generic6DOFJoint3D node to a 3D scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Relative path to the .tscn scene file' },
+            nodeName: { type: 'string', description: 'Name for node (default Generic6DOFJoint3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_http_request',
+        description: 'Add an HTTPRequest node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Relative path to the .tscn scene file' },
+            nodeName: { type: 'string', description: 'Name for the node (default HTTPRequest)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_audio_stream_player_2d',
+        description: 'Add an AudioStreamPlayer2D node to a scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Relative path to the .tscn scene file' },
+            nodeName: { type: 'string', description: 'Name for node (default AudioStreamPlayer2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_audio_stream_player_3d',
+        description: 'Add an AudioStreamPlayer3D node to a scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Relative path to the .tscn scene file' },
+            nodeName: { type: 'string', description: 'Name for node (default AudioStreamPlayer3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_video_stream_player',
+        description: 'Add a VideoStreamPlayer node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Relative path to the .tscn scene file' },
+            nodeName: { type: 'string', description: 'Name for node (default VideoStreamPlayer)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'list_project_videos',
+        description: 'List all video files in the project directory.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
       ],
     }));
 
@@ -9339,6 +9588,46 @@ class GodotServer {
           return await this.handleClearPrintOutput(request.params.arguments);
         case 'send_message_to_game':
           return await this.handleSendMessageToGame(request.params.arguments);
+        case 'add_tween':
+          return await this.handleAddTween(request.params.arguments);
+        case 'stop_tween':
+          return await this.handleStopTween(request.params.arguments);
+        case 'get_http_response':
+          return await this.handleGetHttpResponse(request.params.arguments);
+        case 'make_http_request':
+          return await this.handleMakeHttpRequest(request.params.arguments);
+        case 'get_os_info':
+          return await this.handleGetOsInfo(request.params.arguments);
+        case 'open_url_in_browser':
+          return await this.handleOpenUrlInBrowser(request.params.arguments);
+        case 'get_clipboard':
+          return await this.handleGetClipboard(request.params.arguments);
+        case 'set_clipboard':
+          return await this.handleSetClipboard(request.params.arguments);
+        case 'get_display_info':
+          return await this.handleGetDisplayInfo(request.params.arguments);
+        case 'set_window_size':
+          return await this.handleSetWindowSize(request.params.arguments);
+        case 'add_voxel_gi':
+          return await this.handleAddVoxelGi(request.params.arguments);
+        case 'add_hinge_joint_3d':
+          return await this.handleAddHingeJoint3D(request.params.arguments);
+        case 'add_slider_joint_3d':
+          return await this.handleAddSliderJoint3D(request.params.arguments);
+        case 'add_cone_twist_joint_3d':
+          return await this.handleAddConeTwistJoint3D(request.params.arguments);
+        case 'add_generic_6dof_joint_3d':
+          return await this.handleAddGeneric6DOFJoint3D(request.params.arguments);
+        case 'add_http_request':
+          return await this.handleAddHttpRequest(request.params.arguments);
+        case 'add_audio_stream_player_2d':
+          return await this.handleAddAudioStreamPlayer2D(request.params.arguments);
+        case 'add_audio_stream_player_3d':
+          return await this.handleAddAudioStreamPlayer3D(request.params.arguments);
+        case 'add_video_stream_player':
+          return await this.handleAddVideoStreamPlayer(request.params.arguments);
+        case 'list_project_videos':
+          return await this.handleListProjectVideos(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -17791,6 +18080,138 @@ class GodotServer {
     args = normalizeParameters(args || {});
     if (!args.messageType) return createErrorResponse('messageType is required.');
     return this.gameCommand('send_message_to_game', args, a => ({ message_type: a.messageType, data: a.data || {} }));
+  }
+
+  private async handleAddTween(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.propertyPath) return createErrorResponse('propertyPath is required.');
+    if (args.finalValue === undefined) return createErrorResponse('finalValue is required.');
+    return this.gameCommand('add_tween', args, a => ({ node_path: a.nodePath, property_path: a.propertyPath, final_value: a.finalValue, duration: a.duration ?? 1.0, trans_type: a.transType || 'LINEAR' }));
+  }
+
+  private async handleStopTween(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('stop_tween', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetHttpResponse(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_http_response', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleMakeHttpRequest(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.url) return createErrorResponse('url is required.');
+    return this.gameCommand('make_http_request', args, a => ({ node_path: a.nodePath, url: a.url, method: a.method || 'GET', body: a.body || '' }));
+  }
+
+  private async handleGetOsInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_os_info', args, _a => ({}));
+  }
+
+  private async handleOpenUrlInBrowser(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.url) return createErrorResponse('url is required.');
+    return this.gameCommand('open_url_in_browser', args, a => ({ url: a.url }));
+  }
+
+  private async handleGetClipboard(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_clipboard', args, _a => ({}));
+  }
+
+  private async handleSetClipboard(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_clipboard', args, a => ({ text: a.text ?? '' }));
+  }
+
+  private async handleGetDisplayInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_display_info', args, _a => ({}));
+  }
+
+  private async handleSetWindowSize(args: any) {
+    args = normalizeParameters(args || {});
+    if (args.width === undefined) return createErrorResponse('width is required.');
+    if (args.height === undefined) return createErrorResponse('height is required.');
+    return this.gameCommand('set_window_size', args, a => ({ width: a.width, height: a.height }));
+  }
+
+  private async handleAddVoxelGi(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'VoxelGI', nodeType: 'VoxelGI', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddHingeJoint3D(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'HingeJoint3D', nodeType: 'HingeJoint3D', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddSliderJoint3D(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'SliderJoint3D', nodeType: 'SliderJoint3D', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddConeTwistJoint3D(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'ConeTwistJoint3D', nodeType: 'ConeTwistJoint3D', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddGeneric6DOFJoint3D(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'Generic6DOFJoint3D', nodeType: 'Generic6DOFJoint3D', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddHttpRequest(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'HTTPRequest', nodeType: 'HTTPRequest', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddAudioStreamPlayer2D(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'AudioStreamPlayer2D', nodeType: 'AudioStreamPlayer2D', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddAudioStreamPlayer3D(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'AudioStreamPlayer3D', nodeType: 'AudioStreamPlayer3D', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddVideoStreamPlayer(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'VideoStreamPlayer', nodeType: 'VideoStreamPlayer', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleListProjectVideos(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const videos = this.collectFiles(args.projectPath, ['.ogv', '.mp4', '.webm', '.avi', '.mov']);
+    const list = videos.map(f => f.replace(args.projectPath + '/', '')).sort();
+    return { content: [{ type: 'text', text: JSON.stringify({ count: list.length, videos: list }, null, 2) }] };
   }
 
 }
