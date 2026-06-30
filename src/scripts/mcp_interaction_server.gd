@@ -697,6 +697,16 @@ func _handle_command(json_str: String) -> void:
 			_cmd_reload_script_at_runtime(params)
 		"get_loaded_gdextensions":
 			_cmd_get_loaded_gdextensions(params)
+		"get_physics_body_state":
+			_cmd_get_physics_body_state(params)
+		"apply_impulse_to_rigid_body":
+			_cmd_apply_impulse_to_rigid_body(params)
+		"set_rigid_body_freeze":
+			_cmd_set_rigid_body_freeze(params)
+		"set_collision_mask":
+			_cmd_set_collision_mask(params)
+		"set_collision_layer":
+			_cmd_set_collision_layer(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -7339,6 +7349,91 @@ func _cmd_get_loaded_gdextensions(params: Dictionary) -> void:
 	for ext in GDExtensionManager.get_loaded_extensions():
 		extensions.append({"path": ext})
 	_send_response({"success": true, "count": extensions.size(), "extensions": extensions})
+
+func _cmd_get_physics_body_state(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var result = {"node_path": node_path, "class": node.get_class()}
+	if node is RigidBody3D:
+		var rb := node as RigidBody3D
+		result["linear_velocity"] = {"x": rb.linear_velocity.x, "y": rb.linear_velocity.y, "z": rb.linear_velocity.z}
+		result["angular_velocity"] = {"x": rb.angular_velocity.x, "y": rb.angular_velocity.y, "z": rb.angular_velocity.z}
+		result["mass"] = rb.mass
+		result["freeze"] = rb.freeze
+		result["sleeping"] = rb.sleeping
+	elif node is RigidBody2D:
+		var rb := node as RigidBody2D
+		result["linear_velocity"] = {"x": rb.linear_velocity.x, "y": rb.linear_velocity.y}
+		result["angular_velocity"] = rb.angular_velocity
+		result["mass"] = rb.mass
+		result["freeze"] = rb.freeze
+		result["sleeping"] = rb.sleeping
+	else:
+		result["error"] = "Not a RigidBody node"
+	_send_response(result)
+
+func _cmd_apply_impulse_to_rigid_body(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is RigidBody3D:
+		(node as RigidBody3D).apply_central_impulse(Vector3(x, y, z))
+		_send_response({"success": true, "impulse": {"x": x, "y": y, "z": z}})
+	elif node is RigidBody2D:
+		(node as RigidBody2D).apply_central_impulse(Vector2(x, y))
+		_send_response({"success": true, "impulse": {"x": x, "y": y}})
+	else:
+		_send_response({"error": "Not a RigidBody node: " + node.get_class()})
+
+func _cmd_set_rigid_body_freeze(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var freeze: bool = params.get("freeze", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is RigidBody3D:
+		(node as RigidBody3D).freeze = freeze
+		_send_response({"success": true, "freeze": freeze})
+	elif node is RigidBody2D:
+		(node as RigidBody2D).freeze = freeze
+		_send_response({"success": true, "freeze": freeze})
+	else:
+		_send_response({"error": "Not a RigidBody node: " + node.get_class()})
+
+func _cmd_set_collision_mask(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var mask: int = params.get("mask", 1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node.has_method("set_collision_mask"):
+		node.set_collision_mask(mask)
+		_send_response({"success": true, "collision_mask": mask})
+	else:
+		_send_response({"error": "Node does not support collision_mask: " + node.get_class()})
+
+func _cmd_set_collision_layer(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var layer: int = params.get("layer", 1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node.has_method("set_collision_layer"):
+		node.set_collision_layer(layer)
+		_send_response({"success": true, "collision_layer": layer})
+	else:
+		_send_response({"error": "Node does not support collision_layer: " + node.get_class()})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()

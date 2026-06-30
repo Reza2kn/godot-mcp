@@ -8952,6 +8952,226 @@ class GodotServer {
           required: [],
         },
       },
+      // ── Export / Plugin / Project Config ─────────────────────────────────
+      {
+        name: 'list_export_presets',
+        description: 'List all export presets in export_presets.cfg.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_project_plugins',
+        description: 'List enabled editor plugins in project.godot.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_autoloads',
+        description: 'List all autoloads/singletons from project.godot.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_project_layers',
+        description: 'Get layer names (physics, render, nav) from project.godot.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      // ── Physics / Collision (runtime) ─────────────────────────────────────
+      {
+        name: 'get_physics_body_state',
+        description: 'Get velocity and state of a RigidBody in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path to the RigidBody' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'apply_impulse_to_rigid_body',
+        description: 'Apply a linear impulse to a RigidBody in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path to the RigidBody' },
+            x: { type: 'number', description: 'Impulse X component' },
+            y: { type: 'number', description: 'Impulse Y component' },
+            z: { type: 'number', description: 'Impulse Z component (default 0)' },
+          },
+          required: ['nodePath', 'x', 'y'],
+        },
+      },
+      {
+        name: 'set_rigid_body_freeze',
+        description: 'Freeze or unfreeze a RigidBody node in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path to the RigidBody' },
+            freeze: { type: 'boolean', description: 'True to freeze, false to unfreeze' },
+          },
+          required: ['nodePath', 'freeze'],
+        },
+      },
+      {
+        name: 'set_collision_mask',
+        description: 'Set collision_mask on a physics node in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path to the physics body or area' },
+            mask: { type: 'integer', description: 'Bitmask value for collision_mask' },
+          },
+          required: ['nodePath', 'mask'],
+        },
+      },
+      {
+        name: 'set_collision_layer',
+        description: 'Set collision_layer on a physics node in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path to the physics body or area' },
+            layer: { type: 'integer', description: 'Bitmask value for collision_layer' },
+          },
+          required: ['nodePath', 'layer'],
+        },
+      },
+      // ── Physics / Collision (scene file) ─────────────────────────────────
+      {
+        name: 'add_area_3d_to_scene',
+        description: 'Add an Area3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: Area3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_static_body_2d_to_scene',
+        description: 'Add a StaticBody2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: StaticBody2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_rigid_body_2d_to_scene',
+        description: 'Add a RigidBody2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: RigidBody2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_character_body_2d_to_scene',
+        description: 'Add a CharacterBody2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: CharacterBody2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_collision_shape_2d_to_scene',
+        description: 'Add a CollisionShape2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: CollisionShape2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_collision_shape_3d_to_scene',
+        description: 'Add a CollisionShape3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: CollisionShape3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_navigation_region_2d_to_scene',
+        description: 'Add a NavigationRegion2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: NavigationRegion2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_navigation_region_3d_to_scene',
+        description: 'Add a NavigationRegion3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: NavigationRegion3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
       ],
     }));
 
@@ -10215,6 +10435,40 @@ class GodotServer {
           return await this.handleReloadScriptAtRuntime(request.params.arguments);
         case 'get_loaded_gdextensions':
           return await this.handleGetLoadedGdextensions(request.params.arguments);
+        case 'list_export_presets':
+          return await this.handleListExportPresets(request.params.arguments);
+        case 'get_project_plugins':
+          return await this.handleGetProjectPlugins(request.params.arguments);
+        case 'get_autoloads':
+          return await this.handleGetAutoloads(request.params.arguments);
+        case 'get_project_layers':
+          return await this.handleGetProjectLayers(request.params.arguments);
+        case 'get_physics_body_state':
+          return await this.handleGetPhysicsBodyState(request.params.arguments);
+        case 'apply_impulse_to_rigid_body':
+          return await this.handleApplyImpulseToRigidBody(request.params.arguments);
+        case 'set_rigid_body_freeze':
+          return await this.handleSetRigidBodyFreeze(request.params.arguments);
+        case 'set_collision_mask':
+          return await this.handleSetCollisionMask(request.params.arguments);
+        case 'set_collision_layer':
+          return await this.handleSetCollisionLayer(request.params.arguments);
+        case 'add_area_3d_to_scene':
+          return await this.handleAddArea3dToScene(request.params.arguments);
+        case 'add_static_body_2d_to_scene':
+          return await this.handleAddStaticBody2dToScene(request.params.arguments);
+        case 'add_rigid_body_2d_to_scene':
+          return await this.handleAddRigidBody2dToScene(request.params.arguments);
+        case 'add_character_body_2d_to_scene':
+          return await this.handleAddCharacterBody2dToScene(request.params.arguments);
+        case 'add_collision_shape_2d_to_scene':
+          return await this.handleAddCollisionShape2dToScene(request.params.arguments);
+        case 'add_collision_shape_3d_to_scene':
+          return await this.handleAddCollisionShape3dToScene(request.params.arguments);
+        case 'add_navigation_region_2d_to_scene':
+          return await this.handleAddNavigationRegion2dToScene(request.params.arguments);
+        case 'add_navigation_region_3d_to_scene':
+          return await this.handleAddNavigationRegion3dToScene(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -19250,6 +19504,251 @@ class GodotServer {
   private async handleGetLoadedGdextensions(args: any) {
     args = normalizeParameters(args || {});
     return this.gameCommand('get_loaded_gdextensions', args, _a => ({}));
+  }
+
+  private async handleListExportPresets(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const cfgPath = join(args.projectPath, 'export_presets.cfg');
+    if (!existsSync(cfgPath)) return { content: [{ type: 'text', text: JSON.stringify({ presets: [], note: 'No export_presets.cfg found' }) }] };
+    const content = readFileSync(cfgPath, 'utf8');
+    const presets: Array<{ name: string; platform: string; runnable: boolean }> = [];
+    const nameMatches = content.matchAll(/\[preset\.\d+\]\n[\s\S]*?name="([^"]+)"/g);
+    const platMatches = content.matchAll(/platform="([^"]+)"/g);
+    const runnableMatches = content.matchAll(/runnable=(\w+)/g);
+    const names = [...nameMatches].map(m => m[1]);
+    const plats = [...platMatches].map(m => m[1]);
+    const runnables = [...runnableMatches].map(m => m[1] === 'true');
+    for (let i = 0; i < names.length; i++) {
+      presets.push({ name: names[i], platform: plats[i] || 'unknown', runnable: runnables[i] ?? false });
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ count: presets.length, presets }, null, 2) }] };
+  }
+
+  private async handleGetProjectPlugins(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const cfgPath = join(args.projectPath, 'project.godot');
+    if (!existsSync(cfgPath)) return createErrorResponse('project.godot not found.');
+    const content = readFileSync(cfgPath, 'utf8');
+    const pluginSection = content.match(/\[editor_plugins\]([\s\S]*?)(?=\[|$)/);
+    const plugins: string[] = [];
+    if (pluginSection) {
+      const matches = pluginSection[1].matchAll(/"([^"]+)"/g);
+      for (const m of matches) plugins.push(m[1]);
+    }
+    const addonDirs: string[] = [];
+    const addonsPath = join(args.projectPath, 'addons');
+    if (existsSync(addonsPath)) {
+      for (const dir of readdirSync(addonsPath)) {
+        addonDirs.push(dir);
+      }
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ enabledPlugins: plugins, addonDirectories: addonDirs }, null, 2) }] };
+  }
+
+  private async handleGetAutoloads(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const cfgPath = join(args.projectPath, 'project.godot');
+    if (!existsSync(cfgPath)) return createErrorResponse('project.godot not found.');
+    const content = readFileSync(cfgPath, 'utf8');
+    const autoloadSection = content.match(/\[autoload\]([\s\S]*?)(?=\[|$)/);
+    const autoloads: Array<{ name: string; path: string }> = [];
+    if (autoloadSection) {
+      const matches = autoloadSection[1].matchAll(/^(\w+)="([^"]+)"/gm);
+      for (const m of matches) autoloads.push({ name: m[1], path: m[2] });
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ count: autoloads.length, autoloads }, null, 2) }] };
+  }
+
+  private async handleGetProjectLayers(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const cfgPath = join(args.projectPath, 'project.godot');
+    if (!existsSync(cfgPath)) return createErrorResponse('project.godot not found.');
+    const content = readFileSync(cfgPath, 'utf8');
+    const layerTypes = ['2d_physics', '3d_physics', '2d_render', '3d_render', '2d_navigation', '3d_navigation', 'avoidance'];
+    const result: Record<string, Array<{ index: number; name: string }>> = {};
+    for (const lt of layerTypes) {
+      const layers: Array<{ index: number; name: string }> = [];
+      const regex = new RegExp(`layer_names/${lt}/layer_(\\d+)="([^"]*)"`, 'g');
+      for (const m of content.matchAll(regex)) {
+        layers.push({ index: parseInt(m[1]), name: m[2] });
+      }
+      if (layers.length) result[lt] = layers;
+    }
+    return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+  }
+
+  private async handleGetPhysicsBodyState(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_physics_body_state', args, a => ({
+      node_path: a.nodePath,
+    }));
+  }
+
+  private async handleApplyImpulseToRigidBody(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('apply_impulse_to_rigid_body', args, a => ({
+      node_path: a.nodePath,
+      x: a.x ?? 0,
+      y: a.y ?? 0,
+      z: a.z ?? 0,
+    }));
+  }
+
+  private async handleSetRigidBodyFreeze(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_rigid_body_freeze', args, a => ({
+      node_path: a.nodePath,
+      freeze: a.freeze ?? true,
+    }));
+  }
+
+  private async handleSetCollisionMask(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_collision_mask', args, a => ({
+      node_path: a.nodePath,
+      mask: a.mask ?? 1,
+    }));
+  }
+
+  private async handleSetCollisionLayer(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_collision_layer', args, a => ({
+      node_path: a.nodePath,
+      layer: a.layer ?? 1,
+    }));
+  }
+
+  private async handleAddArea3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'Area3D',
+        node_type: 'Area3D',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddStaticBody2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'StaticBody2D',
+        node_type: 'StaticBody2D',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddRigidBody2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'RigidBody2D',
+        node_type: 'RigidBody2D',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddCharacterBody2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'CharacterBody2D',
+        node_type: 'CharacterBody2D',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddCollisionShape2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'CollisionShape2D',
+        node_type: 'CollisionShape2D',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddCollisionShape3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'CollisionShape3D',
+        node_type: 'CollisionShape3D',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddNavigationRegion2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'NavigationRegion2D',
+        node_type: 'NavigationRegion2D',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddNavigationRegion3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'NavigationRegion3D',
+        node_type: 'NavigationRegion3D',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
   }
 
 }
