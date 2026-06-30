@@ -18414,6 +18414,39 @@ class GodotServer {
       { name: 'write_climbing_system_script', description: 'Write a ledge climbing/wall-grab script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_grappling_hook_script', description: 'Write a grappling hook mechanic script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, maxLength: { type: 'number' }, speed: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_swimming_controller_script', description: 'Write an underwater swimming controller.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, swimSpeed: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      // Batch 71 — Group A: AnimationTree/StateMachine
+      { name: 'start_animation_state', description: 'Start a state in AnimationStateMachinePlayback.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, stateName: { type: 'string' }, paramPath: { type: 'string' } }, required: ['nodePath', 'stateName'] } },
+      { name: 'stop_animation_state_machine', description: 'Stop the AnimationStateMachine playback.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, paramPath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_current_animation_state', description: 'Get the current state from AnimationStateMachinePlayback.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, paramPath: { type: 'string' } }, required: ['nodePath'] } },
+      // Batch 71 — Group B: Path3D / Curve3D
+      { name: 'get_path_3d_baked_length', description: 'Get baked length of a Path3D\'s Curve3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_path_3d_point_count', description: 'Get the number of points in a Path3D curve.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'add_path_3d_point', description: 'Add a point to a Path3D\'s Curve3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, x: { type: 'number' }, y: { type: 'number' }, z: { type: 'number' }, idx: { type: 'integer' } }, required: ['nodePath', 'x', 'y', 'z'] } },
+      { name: 'remove_path_3d_point', description: 'Remove a point from a Path3D\'s Curve3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, idx: { type: 'integer' } }, required: ['nodePath', 'idx'] } },
+      { name: 'get_path_3d_point_position', description: 'Get position of a point in a Path3D curve.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, idx: { type: 'integer' } }, required: ['nodePath', 'idx'] } },
+      { name: 'sample_path_3d_at_offset', description: 'Sample Path3D Curve3D at a baked offset.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, offset: { type: 'number' } }, required: ['nodePath', 'offset'] } },
+      // Batch 71 — Group C: Physics joints 2D
+      { name: 'get_pin_joint_2d_info', description: 'Get PinJoint2D node softness and node paths.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_pin_joint_2d_softness', description: 'Set PinJoint2D softness value.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, softness: { type: 'number' } }, required: ['nodePath', 'softness'] } },
+      { name: 'get_groove_joint_2d_info', description: 'Get GrooveJoint2D length and initial offset.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_damped_spring_joint_2d_info', description: 'Get DampedSpringJoint2D stiffness, rest length.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_damped_spring_joint_2d_stiffness', description: 'Set DampedSpringJoint2D stiffness.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, stiffness: { type: 'number' } }, required: ['nodePath', 'stiffness'] } },
+      // Batch 71 — Group D: Physics joints 3D
+      { name: 'get_hinge_joint_3d_info', description: 'Get HingeJoint3D parameter values.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_slider_joint_3d_info', description: 'Get SliderJoint3D parameter values.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_cone_twist_joint_3d_info', description: 'Get ConeTwistJoint3D swing/twist span values.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_generic_6dof_joint_info', description: 'Get Generic6DOFJoint3D linear/angular limits.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_joint_3d_node_paths', description: 'Set NodeA/NodeB paths on a Joint3D node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, nodeA: { type: 'string' }, nodeB: { type: 'string' } }, required: ['nodePath', 'nodeA', 'nodeB'] } },
+      // Batch 71 — Group E: VehicleBody3D / SpringArm3D
+      { name: 'get_vehicle_body_3d_info', description: 'Get VehicleBody3D speed, engine force, brake.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_vehicle_body_3d_engine_force', description: 'Set VehicleBody3D engine force value.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, engineForce: { type: 'number' } }, required: ['nodePath', 'engineForce'] } },
+      { name: 'get_spring_arm_3d_info', description: 'Get SpringArm3D spring length and collision mask.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_spring_arm_3d_length', description: 'Set the spring length on a SpringArm3D node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, springLength: { type: 'number' } }, required: ['nodePath', 'springLength'] } },
+      // Batch 71 — Group F: GDScript templates
+      { name: 'write_vehicle_controller_script', description: 'Write a VehicleBody3D car controller script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, engineForce: { type: 'number' }, steerAngle: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_quest_manager_script', description: 'Write a quest manager singleton script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_loot_table_script', description: 'Write a weighted loot table drop system.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_grid_based_movement_script', description: 'Write a grid-based movement controller.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, gridSize: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
       ],
     }));
 
@@ -21693,6 +21726,66 @@ class GodotServer {
           return await this.handleWriteGrapplingHookScript(request.params.arguments);
         case 'write_swimming_controller_script':
           return await this.handleWriteSwimmingControllerScript(request.params.arguments);
+        // Batch 71 — Group A: AnimationTree/StateMachine
+        case 'start_animation_state':
+          return await this.handleStartAnimationState(request.params.arguments);
+        case 'stop_animation_state_machine':
+          return await this.handleStopAnimationStateMachine(request.params.arguments);
+        case 'get_current_animation_state':
+          return await this.handleGetCurrentAnimationState(request.params.arguments);
+        // Batch 71 — Group B: Path3D / Curve3D
+        case 'get_path_3d_baked_length':
+          return await this.handleGetPath3DBakedLength(request.params.arguments);
+        case 'get_path_3d_point_count':
+          return await this.handleGetPath3DPointCount(request.params.arguments);
+        case 'add_path_3d_point':
+          return await this.handleAddPath3DPoint(request.params.arguments);
+        case 'remove_path_3d_point':
+          return await this.handleRemovePath3DPoint(request.params.arguments);
+        case 'get_path_3d_point_position':
+          return await this.handleGetPath3DPointPosition(request.params.arguments);
+        case 'sample_path_3d_at_offset':
+          return await this.handleSamplePath3DAtOffset(request.params.arguments);
+        // Batch 71 — Group C: Physics joints 2D
+        case 'get_pin_joint_2d_info':
+          return await this.handleGetPinJoint2DInfo(request.params.arguments);
+        case 'set_pin_joint_2d_softness':
+          return await this.handleSetPinJoint2DSoftness(request.params.arguments);
+        case 'get_groove_joint_2d_info':
+          return await this.handleGetGrooveJoint2DInfo(request.params.arguments);
+        case 'get_damped_spring_joint_2d_info':
+          return await this.handleGetDampedSpringJoint2DInfo(request.params.arguments);
+        case 'set_damped_spring_joint_2d_stiffness':
+          return await this.handleSetDampedSpringJoint2DStiffness(request.params.arguments);
+        // Batch 71 — Group D: Physics joints 3D
+        case 'get_hinge_joint_3d_info':
+          return await this.handleGetHingeJoint3DInfo(request.params.arguments);
+        case 'get_slider_joint_3d_info':
+          return await this.handleGetSliderJoint3DInfo(request.params.arguments);
+        case 'get_cone_twist_joint_3d_info':
+          return await this.handleGetConeTwistJoint3DInfo(request.params.arguments);
+        case 'get_generic_6dof_joint_info':
+          return await this.handleGetGeneric6DOFJointInfo(request.params.arguments);
+        case 'set_joint_3d_node_paths':
+          return await this.handleSetJoint3DNodePaths(request.params.arguments);
+        // Batch 71 — Group E: VehicleBody3D / SpringArm3D
+        case 'get_vehicle_body_3d_info':
+          return await this.handleGetVehicleBody3DInfo(request.params.arguments);
+        case 'set_vehicle_body_3d_engine_force':
+          return await this.handleSetVehicleBody3DEngineForce(request.params.arguments);
+        case 'get_spring_arm_3d_info':
+          return await this.handleGetSpringArm3DInfo(request.params.arguments);
+        case 'set_spring_arm_3d_length':
+          return await this.handleSetSpringArm3DLength(request.params.arguments);
+        // Batch 71 — Group F: GDScript templates
+        case 'write_vehicle_controller_script':
+          return await this.handleWriteVehicleControllerScript(request.params.arguments);
+        case 'write_quest_manager_script':
+          return await this.handleWriteQuestManagerScript(request.params.arguments);
+        case 'write_loot_table_script':
+          return await this.handleWriteLootTableScript(request.params.arguments);
+        case 'write_grid_based_movement_script':
+          return await this.handleWriteGridBasedMovementScript(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -43572,6 +43665,322 @@ func exit_water() -> void:
 `;
       const projectPath: string = args.projectPath ?? '';
       const scriptPath: string = args.scriptPath ?? '';
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  // ── Batch 71 handlers ───────────────────────────────────────────────────────
+
+  // Group A: AnimationTree/StateMachine
+  private async handleStartAnimationState(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('start_animation_state', args, a => ({ node_path: a.nodePath ?? '', state_name: a.stateName ?? '', param_path: a.paramPath ?? 'parameters/playback' }));
+  }
+
+  private async handleStopAnimationStateMachine(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('stop_animation_state_machine', args, a => ({ node_path: a.nodePath ?? '', param_path: a.paramPath ?? 'parameters/playback' }));
+  }
+
+  private async handleGetCurrentAnimationState(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_current_animation_state', args, a => ({ node_path: a.nodePath ?? '', param_path: a.paramPath ?? 'parameters/playback' }));
+  }
+
+  // Group B: Path3D / Curve3D
+  private async handleGetPath3DBakedLength(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_path_3d_baked_length', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleGetPath3DPointCount(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_path_3d_point_count', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleAddPath3DPoint(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('add_path_3d_point', args, a => ({ node_path: a.nodePath ?? '', x: a.x ?? 0, y: a.y ?? 0, z: a.z ?? 0, idx: a.idx ?? -1 }));
+  }
+
+  private async handleRemovePath3DPoint(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('remove_path_3d_point', args, a => ({ node_path: a.nodePath ?? '', idx: a.idx ?? 0 }));
+  }
+
+  private async handleGetPath3DPointPosition(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_path_3d_point_position', args, a => ({ node_path: a.nodePath ?? '', idx: a.idx ?? 0 }));
+  }
+
+  private async handleSamplePath3DAtOffset(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('sample_path_3d_at_offset', args, a => ({ node_path: a.nodePath ?? '', offset: a.offset ?? 0 }));
+  }
+
+  // Group C: Physics joints 2D
+  private async handleGetPinJoint2DInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_pin_joint_2d_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetPinJoint2DSoftness(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_pin_joint_2d_softness', args, a => ({ node_path: a.nodePath ?? '', softness: a.softness ?? 0.0 }));
+  }
+
+  private async handleGetGrooveJoint2DInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_groove_joint_2d_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleGetDampedSpringJoint2DInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_damped_spring_joint_2d_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetDampedSpringJoint2DStiffness(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_damped_spring_joint_2d_stiffness', args, a => ({ node_path: a.nodePath ?? '', stiffness: a.stiffness ?? 20.0 }));
+  }
+
+  // Group D: Physics joints 3D
+  private async handleGetHingeJoint3DInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_hinge_joint_3d_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleGetSliderJoint3DInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_slider_joint_3d_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleGetConeTwistJoint3DInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_cone_twist_joint_3d_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleGetGeneric6DOFJointInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_generic_6dof_joint_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetJoint3DNodePaths(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_joint_3d_node_paths', args, a => ({ node_path: a.nodePath ?? '', node_a: a.nodeA ?? '', node_b: a.nodeB ?? '' }));
+  }
+
+  // Group E: VehicleBody3D / SpringArm3D
+  private async handleGetVehicleBody3DInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_vehicle_body_3d_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetVehicleBody3DEngineForce(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_vehicle_body_3d_engine_force', args, a => ({ node_path: a.nodePath ?? '', engine_force: a.engineForce ?? 0 }));
+  }
+
+  private async handleGetSpringArm3DInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_spring_arm_3d_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetSpringArm3DLength(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_spring_arm_3d_length', args, a => ({ node_path: a.nodePath ?? '', spring_length: a.springLength ?? 1.0 }));
+  }
+
+  // Group F: GDScript templates
+  private async handleWriteVehicleControllerScript(args: any) {
+    args = normalizeParameters(args || {});
+    const { projectPath, scriptPath, engineForce = 800, steerAngle = 0.4 } = args;
+    try {
+      const content = `extends VehicleBody3D
+
+@export var engine_force_max: float = ${engineForce}
+@export var brake_force: float = 100.0
+@export var steer_angle: float = ${steerAngle}
+
+func _physics_process(delta: float) -> void:
+    engine_force = 0.0
+    braking = 0.0
+    if Input.is_action_pressed("ui_up"):
+        engine_force = engine_force_max
+    if Input.is_action_pressed("ui_down"):
+        braking = brake_force
+    var steer_input := Input.get_action_strength("ui_left") - Input.get_action_strength("ui_right")
+    steering = lerp(steering, steer_input * steer_angle, 0.1)
+`;
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteQuestManagerScript(args: any) {
+    args = normalizeParameters(args || {});
+    const { projectPath, scriptPath } = args;
+    try {
+      const content = `extends Node
+
+signal quest_started(quest_id: String)
+signal quest_completed(quest_id: String)
+signal quest_failed(quest_id: String)
+
+var active_quests: Dictionary = {}
+var completed_quests: Array[String] = []
+
+func start_quest(quest_id: String, quest_data: Dictionary) -> void:
+    if quest_id in active_quests: return
+    active_quests[quest_id] = quest_data.duplicate()
+    active_quests[quest_id]["progress"] = 0
+    quest_started.emit(quest_id)
+
+func advance_quest(quest_id: String, amount: int = 1) -> void:
+    if not quest_id in active_quests: return
+    active_quests[quest_id]["progress"] += amount
+    var goal = active_quests[quest_id].get("goal", 1)
+    if active_quests[quest_id]["progress"] >= goal:
+        complete_quest(quest_id)
+
+func complete_quest(quest_id: String) -> void:
+    if not quest_id in active_quests: return
+    completed_quests.append(quest_id)
+    active_quests.erase(quest_id)
+    quest_completed.emit(quest_id)
+
+func fail_quest(quest_id: String) -> void:
+    if not quest_id in active_quests: return
+    active_quests.erase(quest_id)
+    quest_failed.emit(quest_id)
+
+func is_quest_complete(quest_id: String) -> bool:
+    return quest_id in completed_quests
+
+func get_quest_progress(quest_id: String) -> int:
+    return active_quests.get(quest_id, {}).get("progress", 0)
+`;
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteLootTableScript(args: any) {
+    args = normalizeParameters(args || {});
+    const { projectPath, scriptPath } = args;
+    try {
+      const content = `extends Node
+
+signal item_dropped(item_id: String, quantity: int)
+
+# loot_tables format: { "table_id": [ { "item": "id", "weight": 10, "min_qty": 1, "max_qty": 1 } ] }
+@export var loot_tables: Dictionary = {}
+
+var _rng := RandomNumberGenerator.new()
+
+func _ready() -> void:
+    _rng.randomize()
+
+func roll_loot(table_id: String, rolls: int = 1) -> Array[Dictionary]:
+    var result: Array[Dictionary] = []
+    if not table_id in loot_tables:
+        return result
+    var table: Array = loot_tables[table_id]
+    var total_weight: float = 0.0
+    for entry in table:
+        total_weight += float(entry.get("weight", 1))
+    for _i in range(rolls):
+        var roll = _rng.randf() * total_weight
+        var cumulative: float = 0.0
+        for entry in table:
+            cumulative += float(entry.get("weight", 1))
+            if roll < cumulative:
+                var qty = _rng.randi_range(entry.get("min_qty", 1), entry.get("max_qty", 1))
+                var drop = { "item": entry.get("item", ""), "quantity": qty }
+                result.append(drop)
+                item_dropped.emit(drop["item"], drop["quantity"])
+                break
+    return result
+
+func add_entry(table_id: String, item_id: String, weight: float, min_qty: int = 1, max_qty: int = 1) -> void:
+    if not table_id in loot_tables:
+        loot_tables[table_id] = []
+    loot_tables[table_id].append({ "item": item_id, "weight": weight, "min_qty": min_qty, "max_qty": max_qty })
+`;
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteGridBasedMovementScript(args: any) {
+    args = normalizeParameters(args || {});
+    const { projectPath, scriptPath, gridSize = 32 } = args;
+    try {
+      const content = `extends CharacterBody2D
+
+signal moved(from_cell: Vector2i, to_cell: Vector2i)
+signal move_blocked(direction: Vector2i)
+
+@export var grid_size: int = ${gridSize}
+@export var move_duration: float = 0.15
+
+var _moving: bool = false
+var _cell: Vector2i = Vector2i.ZERO
+
+func _ready() -> void:
+    _snap_to_grid()
+
+func _snap_to_grid() -> void:
+    _cell = Vector2i(int(position.x / grid_size), int(position.y / grid_size))
+    position = Vector2(_cell.x * grid_size, _cell.y * grid_size)
+
+func _unhandled_input(event: InputEvent) -> void:
+    if _moving: return
+    var dir := Vector2i.ZERO
+    if event.is_action_pressed("ui_right"): dir = Vector2i(1, 0)
+    elif event.is_action_pressed("ui_left"): dir = Vector2i(-1, 0)
+    elif event.is_action_pressed("ui_down"): dir = Vector2i(0, 1)
+    elif event.is_action_pressed("ui_up"): dir = Vector2i(0, -1)
+    if dir != Vector2i.ZERO:
+        _try_move(dir)
+
+func _try_move(dir: Vector2i) -> void:
+    var target_cell = _cell + dir
+    var target_pos = Vector2(target_cell.x * grid_size, target_cell.y * grid_size)
+    # Collision check via move_and_collide test
+    var motion = target_pos - position
+    var col = move_and_collide(motion, true)
+    if col:
+        move_blocked.emit(dir)
+        return
+    var from = _cell
+    _cell = target_cell
+    _moving = true
+    var tween = create_tween()
+    tween.tween_property(self, "position", target_pos, move_duration)
+    tween.finished.connect(func(): _moving = false)
+    moved.emit(from, _cell)
+
+func get_cell() -> Vector2i:
+    return _cell
+
+func teleport_to_cell(cell: Vector2i) -> void:
+    _cell = cell
+    position = Vector2(cell.x * grid_size, cell.y * grid_size)
+`;
       const absPath = require('path').join(projectPath, scriptPath);
       const dir = require('path').dirname(absPath);
       if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });

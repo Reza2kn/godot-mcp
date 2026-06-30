@@ -2071,6 +2071,52 @@ func _handle_command(json_str: String) -> void:
 			_cmd_evaluate_gdscript_expression(params)
 		"get_string_length":
 			_cmd_get_string_length(params)
+		"start_animation_state":
+			_cmd_start_animation_state(params)
+		"stop_animation_state_machine":
+			_cmd_stop_animation_state_machine(params)
+		"get_current_animation_state":
+			_cmd_get_current_animation_state(params)
+		"get_path_3d_baked_length":
+			_cmd_get_path_3d_baked_length(params)
+		"get_path_3d_point_count":
+			_cmd_get_path_3d_point_count(params)
+		"add_path_3d_point":
+			_cmd_add_path_3d_point(params)
+		"remove_path_3d_point":
+			_cmd_remove_path_3d_point(params)
+		"get_path_3d_point_position":
+			_cmd_get_path_3d_point_position(params)
+		"sample_path_3d_at_offset":
+			_cmd_sample_path_3d_at_offset(params)
+		"get_pin_joint_2d_info":
+			_cmd_get_pin_joint_2d_info(params)
+		"set_pin_joint_2d_softness":
+			_cmd_set_pin_joint_2d_softness(params)
+		"get_groove_joint_2d_info":
+			_cmd_get_groove_joint_2d_info(params)
+		"get_damped_spring_joint_2d_info":
+			_cmd_get_damped_spring_joint_2d_info(params)
+		"set_damped_spring_joint_2d_stiffness":
+			_cmd_set_damped_spring_joint_2d_stiffness(params)
+		"get_hinge_joint_3d_info":
+			_cmd_get_hinge_joint_3d_info(params)
+		"get_slider_joint_3d_info":
+			_cmd_get_slider_joint_3d_info(params)
+		"get_cone_twist_joint_3d_info":
+			_cmd_get_cone_twist_joint_3d_info(params)
+		"get_generic_6dof_joint_info":
+			_cmd_get_generic_6dof_joint_info(params)
+		"set_joint_3d_node_paths":
+			_cmd_set_joint_3d_node_paths(params)
+		"get_vehicle_body_3d_info":
+			_cmd_get_vehicle_body_3d_info(params)
+		"set_vehicle_body_3d_engine_force":
+			_cmd_set_vehicle_body_3d_engine_force(params)
+		"get_spring_arm_3d_info":
+			_cmd_get_spring_arm_3d_info(params)
+		"set_spring_arm_3d_length":
+			_cmd_set_spring_arm_3d_length(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -16807,6 +16853,288 @@ func _cmd_evaluate_gdscript_expression(params: Dictionary) -> void:
 func _cmd_get_string_length(params: Dictionary) -> void:
 	var text: String = params.get("text", "")
 	_send_response({"success": true, "length": text.length(), "byte_count": text.to_utf8_buffer().size()})
+
+
+func _cmd_start_animation_state(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var state_name: String = params.get("state_name", "")
+	var param_path: String = params.get("param_path", "parameters/playback")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationTree:
+		_send_response({"error": "AnimationTree not found: " + node_path})
+		return
+	var playback = (node as AnimationTree).get(param_path)
+	if playback == null or not playback is AnimationNodeStateMachinePlayback:
+		_send_response({"error": "No StateMachinePlayback at: " + param_path})
+		return
+	(playback as AnimationNodeStateMachinePlayback).start(state_name)
+	_send_response({"success": true, "started_state": state_name})
+
+
+func _cmd_stop_animation_state_machine(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var param_path: String = params.get("param_path", "parameters/playback")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationTree:
+		_send_response({"error": "AnimationTree not found: " + node_path})
+		return
+	var playback = (node as AnimationTree).get(param_path)
+	if playback == null or not playback is AnimationNodeStateMachinePlayback:
+		_send_response({"error": "No StateMachinePlayback at: " + param_path})
+		return
+	(playback as AnimationNodeStateMachinePlayback).stop()
+	_send_response({"success": true, "stopped": true})
+
+
+func _cmd_get_current_animation_state(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var param_path: String = params.get("param_path", "parameters/playback")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationTree:
+		_send_response({"error": "AnimationTree not found: " + node_path})
+		return
+	var playback = (node as AnimationTree).get(param_path)
+	if playback == null or not playback is AnimationNodeStateMachinePlayback:
+		_send_response({"error": "No StateMachinePlayback at: " + param_path})
+		return
+	var pb = playback as AnimationNodeStateMachinePlayback
+	_send_response({"success": true, "current_node": pb.get_current_node(), "travel_path": Array(pb.get_travel_path()), "is_playing": pb.is_playing()})
+
+
+func _cmd_get_path_3d_baked_length(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Path3D:
+		_send_response({"error": "Path3D not found: " + node_path})
+		return
+	var curve = (node as Path3D).curve
+	if curve == null:
+		_send_response({"error": "Path3D has no curve"})
+		return
+	_send_response({"success": true, "baked_length": curve.get_baked_length(), "point_count": curve.point_count})
+
+
+func _cmd_get_path_3d_point_count(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Path3D:
+		_send_response({"error": "Path3D not found: " + node_path})
+		return
+	var curve = (node as Path3D).curve
+	var count = 0 if curve == null else curve.point_count
+	_send_response({"success": true, "point_count": count})
+
+
+func _cmd_add_path_3d_point(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var idx: int = params.get("idx", -1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Path3D:
+		_send_response({"error": "Path3D not found: " + node_path})
+		return
+	var curve = (node as Path3D).curve
+	if curve == null:
+		curve = Curve3D.new()
+		(node as Path3D).curve = curve
+	curve.add_point(Vector3(x, y, z), Vector3.ZERO, Vector3.ZERO, idx)
+	_send_response({"success": true, "point_count": curve.point_count})
+
+
+func _cmd_remove_path_3d_point(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var idx: int = params.get("idx", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Path3D:
+		_send_response({"error": "Path3D not found: " + node_path})
+		return
+	var curve = (node as Path3D).curve
+	if curve == null or idx >= curve.point_count:
+		_send_response({"error": "Invalid index"})
+		return
+	curve.remove_point(idx)
+	_send_response({"success": true, "point_count": curve.point_count})
+
+
+func _cmd_get_path_3d_point_position(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var idx: int = params.get("idx", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Path3D:
+		_send_response({"error": "Path3D not found: " + node_path})
+		return
+	var curve = (node as Path3D).curve
+	if curve == null or idx >= curve.point_count:
+		_send_response({"error": "Invalid index or no curve"})
+		return
+	var pos = curve.get_point_position(idx)
+	_send_response({"success": true, "x": pos.x, "y": pos.y, "z": pos.z})
+
+
+func _cmd_sample_path_3d_at_offset(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var offset: float = params.get("offset", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Path3D:
+		_send_response({"error": "Path3D not found: " + node_path})
+		return
+	var curve = (node as Path3D).curve
+	if curve == null:
+		_send_response({"error": "Path3D has no curve"})
+		return
+	var pos = curve.sample_baked(offset)
+	var tangent = curve.sample_baked(offset + 0.01) - pos
+	_send_response({"success": true, "x": pos.x, "y": pos.y, "z": pos.z, "tangent": {"x": tangent.x, "y": tangent.y, "z": tangent.z}})
+
+
+func _cmd_get_pin_joint_2d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is PinJoint2D:
+		_send_response({"error": "PinJoint2D not found: " + node_path})
+		return
+	var pj = node as PinJoint2D
+	_send_response({"success": true, "softness": pj.softness, "node_a": str(pj.node_a), "node_b": str(pj.node_b)})
+
+
+func _cmd_set_pin_joint_2d_softness(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var softness: float = params.get("softness", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is PinJoint2D:
+		_send_response({"error": "PinJoint2D not found: " + node_path})
+		return
+	(node as PinJoint2D).softness = softness
+	_send_response({"success": true, "softness": softness})
+
+
+func _cmd_get_groove_joint_2d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is GrooveJoint2D:
+		_send_response({"error": "GrooveJoint2D not found: " + node_path})
+		return
+	var gj = node as GrooveJoint2D
+	_send_response({"success": true, "length": gj.length, "initial_offset": gj.initial_offset, "node_a": str(gj.node_a), "node_b": str(gj.node_b)})
+
+
+func _cmd_get_damped_spring_joint_2d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is DampedSpringJoint2D:
+		_send_response({"error": "DampedSpringJoint2D not found: " + node_path})
+		return
+	var dj = node as DampedSpringJoint2D
+	_send_response({"success": true, "stiffness": dj.stiffness, "damping": dj.damping, "rest_length": dj.rest_length, "length": dj.length})
+
+
+func _cmd_set_damped_spring_joint_2d_stiffness(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var stiffness: float = params.get("stiffness", 20.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is DampedSpringJoint2D:
+		_send_response({"error": "DampedSpringJoint2D not found: " + node_path})
+		return
+	(node as DampedSpringJoint2D).stiffness = stiffness
+	_send_response({"success": true, "stiffness": stiffness})
+
+
+func _cmd_get_hinge_joint_3d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is HingeJoint3D:
+		_send_response({"error": "HingeJoint3D not found: " + node_path})
+		return
+	var hj = node as HingeJoint3D
+	_send_response({"success": true, "limit_lower": hj.get_param(HingeJoint3D.PARAM_LIMIT_LOWER), "limit_upper": hj.get_param(HingeJoint3D.PARAM_LIMIT_UPPER), "motor_target_velocity": hj.get_param(HingeJoint3D.PARAM_MOTOR_TARGET_VELOCITY), "node_a": str(hj.node_a), "node_b": str(hj.node_b)})
+
+
+func _cmd_get_slider_joint_3d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is SliderJoint3D:
+		_send_response({"error": "SliderJoint3D not found: " + node_path})
+		return
+	var sj = node as SliderJoint3D
+	_send_response({"success": true, "linear_limit_lower": sj.get_param(SliderJoint3D.PARAM_LINEAR_LIMIT_LOWER), "linear_limit_upper": sj.get_param(SliderJoint3D.PARAM_LINEAR_LIMIT_UPPER), "node_a": str(sj.node_a), "node_b": str(sj.node_b)})
+
+
+func _cmd_get_cone_twist_joint_3d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is ConeTwistJoint3D:
+		_send_response({"error": "ConeTwistJoint3D not found: " + node_path})
+		return
+	var cj = node as ConeTwistJoint3D
+	_send_response({"success": true, "swing_span": cj.get_param(ConeTwistJoint3D.PARAM_SWING_SPAN), "twist_span": cj.get_param(ConeTwistJoint3D.PARAM_TWIST_SPAN), "node_a": str(cj.node_a), "node_b": str(cj.node_b)})
+
+
+func _cmd_get_generic_6dof_joint_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Generic6DOFJoint3D:
+		_send_response({"error": "Generic6DOFJoint3D not found: " + node_path})
+		return
+	var gj = node as Generic6DOFJoint3D
+	_send_response({"success": true, "linear_limit_x_lower": gj.get_param_x(Generic6DOFJoint3D.PARAM_LINEAR_LOWER_LIMIT), "linear_limit_x_upper": gj.get_param_x(Generic6DOFJoint3D.PARAM_LINEAR_UPPER_LIMIT), "node_a": str(gj.node_a), "node_b": str(gj.node_b)})
+
+
+func _cmd_set_joint_3d_node_paths(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node_a: String = params.get("node_a", "")
+	var node_b: String = params.get("node_b", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Joint3D:
+		_send_response({"error": "Joint3D not found: " + node_path})
+		return
+	var joint = node as Joint3D
+	joint.node_a = NodePath(node_a)
+	joint.node_b = NodePath(node_b)
+	_send_response({"success": true, "node_a": node_a, "node_b": node_b})
+
+
+func _cmd_get_vehicle_body_3d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is VehicleBody3D:
+		_send_response({"error": "VehicleBody3D not found: " + node_path})
+		return
+	var vb = node as VehicleBody3D
+	_send_response({"success": true, "engine_force": vb.engine_force, "brake": vb.brake, "steering": vb.steering, "linear_velocity": {"x": vb.linear_velocity.x, "y": vb.linear_velocity.y, "z": vb.linear_velocity.z}})
+
+
+func _cmd_set_vehicle_body_3d_engine_force(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var engine_force: float = params.get("engine_force", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is VehicleBody3D:
+		_send_response({"error": "VehicleBody3D not found: " + node_path})
+		return
+	(node as VehicleBody3D).engine_force = engine_force
+	_send_response({"success": true, "engine_force": engine_force})
+
+
+func _cmd_get_spring_arm_3d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is SpringArm3D:
+		_send_response({"error": "SpringArm3D not found: " + node_path})
+		return
+	var sa = node as SpringArm3D
+	_send_response({"success": true, "spring_length": sa.spring_length, "collision_mask": sa.collision_mask, "margin": sa.margin})
+
+
+func _cmd_set_spring_arm_3d_length(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var spring_length: float = params.get("spring_length", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is SpringArm3D:
+		_send_response({"error": "SpringArm3D not found: " + node_path})
+		return
+	(node as SpringArm3D).spring_length = spring_length
+	_send_response({"success": true, "spring_length": spring_length})
 
 
 func _exit_tree() -> void:
