@@ -2299,6 +2299,82 @@ func _handle_command(json_str: String) -> void:
 			_cmd_pin_soft_body_3d_point(params)
 		"unpin_soft_body_3d_point":
 			_cmd_unpin_soft_body_3d_point(params)
+		"get_container_children_info":
+			_cmd_get_container_children_info(params)
+		"set_h_box_container_separation":
+			_cmd_set_h_box_container_separation(params)
+		"get_grid_container_columns":
+			_cmd_get_grid_container_columns(params)
+		"set_grid_container_columns":
+			_cmd_set_grid_container_columns(params)
+		"get_split_container_offset":
+			_cmd_get_split_container_offset(params)
+		"set_split_container_offset":
+			_cmd_set_split_container_offset(params)
+		"get_tab_container_current_tab":
+			_cmd_get_tab_container_current_tab(params)
+		"set_tab_container_current_tab":
+			_cmd_set_tab_container_current_tab(params)
+		"get_rich_text_label_info":
+			_cmd_get_rich_text_label_info(params)
+		"append_rich_text_label_bbcode":
+			_cmd_append_rich_text_label_bbcode(params)
+		"clear_rich_text_label":
+			_cmd_clear_rich_text_label(params)
+		"get_rich_text_label_line_count":
+			_cmd_get_rich_text_label_line_count(params)
+		"scroll_rich_text_label_to_line":
+			_cmd_scroll_rich_text_label_to_line(params)
+		"get_item_list_info":
+			_cmd_get_item_list_info(params)
+		"remove_item_list_item":
+			_cmd_remove_item_list_item(params)
+		"sort_item_list":
+			_cmd_sort_item_list(params)
+		"get_range_node_info":
+			_cmd_get_range_node_info(params)
+		"set_range_node_value":
+			_cmd_set_range_node_value(params)
+		"set_range_node_min_max":
+			_cmd_set_range_node_min_max(params)
+		"get_slider_step":
+			_cmd_get_slider_step(params)
+		"set_slider_step":
+			_cmd_set_slider_step(params)
+		"hide_popup":
+			_cmd_hide_popup(params)
+		"get_popup_menu_item_count":
+			_cmd_get_popup_menu_item_count(params)
+		"get_canvas_item_material":
+			_cmd_get_canvas_item_material(params)
+		"set_canvas_item_use_parent_material":
+			_cmd_set_canvas_item_use_parent_material(params)
+		"get_node_2d_global_transform":
+			_cmd_get_node_2d_global_transform(params)
+		"apply_node_2d_local_transform":
+			_cmd_apply_node_2d_local_transform(params)
+		"get_node_3d_global_transform":
+			_cmd_get_node_3d_global_transform(params)
+		"look_at_from_node":
+			_cmd_look_at_from_node(params)
+		"get_animation_player_blend_time":
+			_cmd_get_animation_player_blend_time(params)
+		"set_animation_player_blend_time":
+			_cmd_set_animation_player_blend_time(params)
+		"get_animation_player_current_position":
+			_cmd_get_animation_player_current_position(params)
+		"seek_animation_player":
+			_cmd_seek_animation_player(params)
+		"get_animation_player_queue":
+			_cmd_get_animation_player_queue(params)
+		"sphere_cast_3d":
+			_cmd_sphere_cast_3d(params)
+		"get_colliding_bodies_3d":
+			_cmd_get_colliding_bodies_3d(params)
+		"get_physics_direct_body_state_3d":
+			_cmd_get_physics_direct_body_state_3d(params)
+		"apply_torque_impulse_3d":
+			_cmd_apply_torque_impulse_3d(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -18243,6 +18319,440 @@ func _cmd_unpin_soft_body_3d_point(params: Dictionary) -> void:
 		return
 	(node as SoftBody3D).set_point_pinned(point_index, false)
 	_send_response({"success": true, "unpinned_point": point_index})
+
+
+func _cmd_get_container_children_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Container:
+		_send_response({"error": "Container not found: " + node_path})
+		return
+	var children = []
+	for child in node.get_children():
+		if child is Control:
+			var c = child as Control
+			children.append({"name": c.name, "class": c.get_class(), "size": {"x": c.size.x, "y": c.size.y}, "position": {"x": c.position.x, "y": c.position.y}})
+	_send_response({"success": true, "children": children, "count": children.size()})
+
+
+func _cmd_set_h_box_container_separation(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var separation: int = params.get("separation", 4)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or (not node is HBoxContainer and not node is VBoxContainer):
+		_send_response({"error": "HBoxContainer/VBoxContainer not found: " + node_path})
+		return
+	node.add_theme_constant_override("separation", separation)
+	_send_response({"success": true, "separation": separation})
+
+
+func _cmd_get_grid_container_columns(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is GridContainer:
+		_send_response({"error": "GridContainer not found: " + node_path})
+		return
+	_send_response({"success": true, "columns": (node as GridContainer).columns})
+
+
+func _cmd_set_grid_container_columns(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var columns: int = params.get("columns", 2)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is GridContainer:
+		_send_response({"error": "GridContainer not found: " + node_path})
+		return
+	(node as GridContainer).columns = columns
+	_send_response({"success": true, "columns": columns})
+
+
+func _cmd_get_split_container_offset(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is SplitContainer:
+		_send_response({"error": "SplitContainer not found: " + node_path})
+		return
+	_send_response({"success": true, "split_offset": (node as SplitContainer).split_offset})
+
+
+func _cmd_set_split_container_offset(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var offset: int = params.get("offset", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is SplitContainer:
+		_send_response({"error": "SplitContainer not found: " + node_path})
+		return
+	(node as SplitContainer).split_offset = offset
+	_send_response({"success": true, "split_offset": offset})
+
+
+func _cmd_get_tab_container_current_tab(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TabContainer:
+		_send_response({"error": "TabContainer not found: " + node_path})
+		return
+	var tc = node as TabContainer
+	_send_response({"success": true, "current_tab": tc.current_tab, "tab_count": tc.get_tab_count()})
+
+
+func _cmd_set_tab_container_current_tab(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var tab_index: int = params.get("tab_index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TabContainer:
+		_send_response({"error": "TabContainer not found: " + node_path})
+		return
+	(node as TabContainer).current_tab = tab_index
+	_send_response({"success": true, "current_tab": tab_index})
+
+
+func _cmd_get_rich_text_label_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RichTextLabel:
+		_send_response({"error": "RichTextLabel not found: " + node_path})
+		return
+	var rtl = node as RichTextLabel
+	_send_response({"success": true, "text": rtl.text, "bbcode_enabled": rtl.bbcode_enabled, "scroll_active": rtl.scroll_active, "total_character_count": rtl.get_total_character_count()})
+
+
+func _cmd_append_rich_text_label_bbcode(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var bbcode: String = params.get("bbcode", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RichTextLabel:
+		_send_response({"error": "RichTextLabel not found: " + node_path})
+		return
+	(node as RichTextLabel).append_text(bbcode)
+	_send_response({"success": true, "appended": bbcode})
+
+
+func _cmd_clear_rich_text_label(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RichTextLabel:
+		_send_response({"error": "RichTextLabel not found: " + node_path})
+		return
+	(node as RichTextLabel).clear()
+	_send_response({"success": true, "cleared": true})
+
+
+func _cmd_get_rich_text_label_line_count(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RichTextLabel:
+		_send_response({"error": "RichTextLabel not found: " + node_path})
+		return
+	_send_response({"success": true, "line_count": (node as RichTextLabel).get_line_count()})
+
+
+func _cmd_scroll_rich_text_label_to_line(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var line: int = params.get("line", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RichTextLabel:
+		_send_response({"error": "RichTextLabel not found: " + node_path})
+		return
+	(node as RichTextLabel).scroll_to_line(line)
+	_send_response({"success": true, "scrolled_to_line": line})
+
+
+func _cmd_get_item_list_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is ItemList:
+		_send_response({"error": "ItemList not found: " + node_path})
+		return
+	var il = node as ItemList
+	_send_response({"success": true, "item_count": il.item_count, "select_mode": il.select_mode, "max_columns": il.max_columns})
+
+
+func _cmd_remove_item_list_item(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var idx: int = params.get("idx", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is ItemList:
+		_send_response({"error": "ItemList not found: " + node_path})
+		return
+	var il = node as ItemList
+	if idx >= il.item_count:
+		_send_response({"error": "Index out of range"})
+		return
+	il.remove_item(idx)
+	_send_response({"success": true, "item_count": il.item_count})
+
+
+func _cmd_sort_item_list(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is ItemList:
+		_send_response({"error": "ItemList not found: " + node_path})
+		return
+	(node as ItemList).sort_items_by_text()
+	_send_response({"success": true, "sorted": true})
+
+
+func _cmd_get_range_node_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Range:
+		_send_response({"error": "Range node not found: " + node_path})
+		return
+	var r = node as Range
+	_send_response({"success": true, "value": r.value, "min_value": r.min_value, "max_value": r.max_value, "step": r.step, "ratio": r.ratio})
+
+
+func _cmd_set_range_node_value(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var value: float = params.get("value", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Range:
+		_send_response({"error": "Range node not found: " + node_path})
+		return
+	(node as Range).value = value
+	_send_response({"success": true, "value": value})
+
+
+func _cmd_set_range_node_min_max(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var min_val: float = params.get("min", 0.0)
+	var max_val: float = params.get("max", 100.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Range:
+		_send_response({"error": "Range node not found: " + node_path})
+		return
+	var r = node as Range
+	r.min_value = min_val
+	r.max_value = max_val
+	_send_response({"success": true, "min_value": min_val, "max_value": max_val})
+
+
+func _cmd_get_slider_step(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Slider:
+		_send_response({"error": "Slider not found: " + node_path})
+		return
+	var s = node as Slider
+	_send_response({"success": true, "step": s.step, "page": s.page, "ticks_count": s.tick_count})
+
+
+func _cmd_set_slider_step(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var step: float = params.get("step", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Slider:
+		_send_response({"error": "Slider not found: " + node_path})
+		return
+	(node as Slider).step = step
+	_send_response({"success": true, "step": step})
+
+
+func _cmd_hide_popup(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Popup:
+		_send_response({"error": "Popup not found: " + node_path})
+		return
+	(node as Popup).hide()
+	_send_response({"success": true, "hidden": true})
+
+
+func _cmd_get_popup_menu_item_count(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is PopupMenu:
+		_send_response({"error": "PopupMenu not found: " + node_path})
+		return
+	_send_response({"success": true, "item_count": (node as PopupMenu).item_count})
+
+
+func _cmd_get_canvas_item_material(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CanvasItem:
+		_send_response({"error": "CanvasItem not found: " + node_path})
+		return
+	var ci = node as CanvasItem
+	_send_response({"success": true, "has_material": ci.material != null, "material_class": ci.material.get_class() if ci.material != null else "", "use_parent_material": ci.use_parent_material})
+
+
+func _cmd_set_canvas_item_use_parent_material(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var use_parent_material: bool = params.get("use_parent_material", false)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CanvasItem:
+		_send_response({"error": "CanvasItem not found: " + node_path})
+		return
+	(node as CanvasItem).use_parent_material = use_parent_material
+	_send_response({"success": true, "use_parent_material": use_parent_material})
+
+
+func _cmd_get_node_2d_global_transform(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node2D:
+		_send_response({"error": "Node2D not found: " + node_path})
+		return
+	var n2d = node as Node2D
+	var t = n2d.global_transform
+	_send_response({"success": true, "origin": {"x": t.origin.x, "y": t.origin.y}, "rotation": n2d.global_rotation, "scale": {"x": n2d.global_scale.x, "y": n2d.global_scale.y}})
+
+
+func _cmd_apply_node_2d_local_transform(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var tx: float = params.get("tx", 0.0)
+	var ty: float = params.get("ty", 0.0)
+	var rotation: float = params.get("rotation", 0.0)
+	var scale_x: float = params.get("scale_x", 1.0)
+	var scale_y: float = params.get("scale_y", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node2D:
+		_send_response({"error": "Node2D not found: " + node_path})
+		return
+	var n2d = node as Node2D
+	n2d.position = Vector2(tx, ty)
+	n2d.rotation = rotation
+	n2d.scale = Vector2(scale_x, scale_y)
+	_send_response({"success": true, "position": {"x": tx, "y": ty}, "rotation": rotation})
+
+
+func _cmd_get_node_3d_global_transform(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node3D:
+		_send_response({"error": "Node3D not found: " + node_path})
+		return
+	var n3d = node as Node3D
+	var pos = n3d.global_position
+	var rot = n3d.global_rotation
+	_send_response({"success": true, "position": {"x": pos.x, "y": pos.y, "z": pos.z}, "rotation": {"x": rot.x, "y": rot.y, "z": rot.z}, "scale": {"x": n3d.scale.x, "y": n3d.scale.y, "z": n3d.scale.z}})
+
+
+func _cmd_look_at_from_node(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var tx: float = params.get("target_x", 0.0)
+	var ty: float = params.get("target_y", 0.0)
+	var tz: float = params.get("target_z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node3D:
+		_send_response({"error": "Node3D not found: " + node_path})
+		return
+	(node as Node3D).look_at(Vector3(tx, ty, tz))
+	_send_response({"success": true, "looking_at": {"x": tx, "y": ty, "z": tz}})
+
+
+func _cmd_get_animation_player_blend_time(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var anim_from: String = params.get("anim_from", "")
+	var anim_to: String = params.get("anim_to", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	var blend = (node as AnimationPlayer).get_blend_time(anim_from, anim_to)
+	_send_response({"success": true, "blend_time": blend, "from": anim_from, "to": anim_to})
+
+
+func _cmd_set_animation_player_blend_time(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var anim_from: String = params.get("anim_from", "")
+	var anim_to: String = params.get("anim_to", "")
+	var blend_time: float = params.get("blend_time", 0.5)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	(node as AnimationPlayer).set_blend_time(anim_from, anim_to, blend_time)
+	_send_response({"success": true, "blend_time": blend_time})
+
+
+func _cmd_get_animation_player_current_position(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	var ap = node as AnimationPlayer
+	_send_response({"success": true, "current_position": ap.current_animation_position, "current_length": ap.current_animation_length, "current_animation": ap.current_animation})
+
+
+func _cmd_seek_animation_player(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var position: float = params.get("position", 0.0)
+	var update: bool = params.get("update", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	(node as AnimationPlayer).seek(position, update)
+	_send_response({"success": true, "seeked_to": position})
+
+
+func _cmd_get_animation_player_queue(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	_send_response({"success": true, "queue": Array((node as AnimationPlayer).get_queue())})
+
+
+func _cmd_sphere_cast_3d(params: Dictionary) -> void:
+	var from = Vector3(params.get("from_x", 0.0), params.get("from_y", 0.0), params.get("from_z", 0.0))
+	var to = Vector3(params.get("to_x", 0.0), params.get("to_y", 10.0), params.get("to_z", 0.0))
+	var radius: float = params.get("radius", 0.5)
+	var space = get_tree().root.get_world_3d().direct_space_state
+	var shape = SphereShape3D.new()
+	shape.radius = radius
+	var query = PhysicsShapeQueryParameters3D.new()
+	query.shape = shape
+	query.transform = Transform3D(Basis.IDENTITY, from)
+	query.motion = to - from
+	var result = space.cast_motion(query)
+	_send_response({"success": true, "safe": result[0], "unsafe": result[1], "hit": result[0] < 1.0})
+
+
+func _cmd_get_colliding_bodies_3d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node.has_method("get_colliding_bodies"):
+		var bodies = node.get_colliding_bodies()
+		var result = []
+		for b in bodies:
+			result.append({"name": b.name, "class": b.get_class(), "path": str(b.get_path())})
+		_send_response({"success": true, "colliding_bodies": result, "count": result.size()})
+	else:
+		_send_response({"error": "Node does not support get_colliding_bodies"})
+
+
+func _cmd_get_physics_direct_body_state_3d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is PhysicsBody3D:
+		_send_response({"error": "PhysicsBody3D not found: " + node_path})
+		return
+	var pb = node as PhysicsBody3D
+	var lv = pb.get("linear_velocity") if "linear_velocity" in pb else Vector3.ZERO
+	var av = pb.get("angular_velocity") if "angular_velocity" in pb else Vector3.ZERO
+	_send_response({"success": true, "linear_velocity": {"x": lv.x, "y": lv.y, "z": lv.z}, "angular_velocity": {"x": av.x, "y": av.y, "z": av.z}})
+
+
+func _cmd_apply_torque_impulse_3d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RigidBody3D:
+		_send_response({"error": "RigidBody3D not found: " + node_path})
+		return
+	(node as RigidBody3D).apply_torque_impulse(Vector3(x, y, z))
+	_send_response({"success": true, "torque": {"x": x, "y": y, "z": z}})
 
 
 func _exit_tree() -> void:

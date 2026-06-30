@@ -18620,6 +18620,109 @@ class GodotServer {
       { name: 'write_global_events_script', description: 'Write typed global events with data payloads.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_procedural_dungeon_script', description: 'Write a simple procedural dungeon generator.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, width: { type: 'integer' }, height: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_chunk_loading_script', description: 'Write a chunk-based world loading system.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, chunkSize: { type: 'integer' }, viewDistance: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      // Batch 77 — Group A: Control / UI advanced
+      { name: 'get_container_children_info', description: 'Get child sizes in a Container node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_h_box_container_separation', description: 'Set HBoxContainer/VBoxContainer separation.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, separation: { type: 'integer' } }, required: ['nodePath', 'separation'] } },
+      { name: 'get_grid_container_columns', description: 'Get column count of a GridContainer.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_grid_container_columns', description: 'Set column count of a GridContainer.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, columns: { type: 'integer' } }, required: ['nodePath', 'columns'] } },
+      { name: 'get_split_container_offset', description: 'Get split offset of a HSplitContainer.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_split_container_offset', description: 'Set split offset of a split container.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, offset: { type: 'integer' } }, required: ['nodePath', 'offset'] } },
+      { name: 'get_tab_container_current_tab', description: 'Get current tab index of a TabContainer.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_tab_container_current_tab', description: 'Set current tab of a TabContainer by index.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, tabIndex: { type: 'integer' } }, required: ['nodePath', 'tabIndex'] } },
+      // Batch 77 — Group B: RichTextLabel tools
+      { name: 'get_rich_text_label_info', description: 'Get RichTextLabel text, bbcode, and scroll.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'append_rich_text_label_bbcode', description: 'Append BBCode text to a RichTextLabel.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, bbcode: { type: 'string' } }, required: ['nodePath', 'bbcode'] } },
+      { name: 'clear_rich_text_label', description: 'Clear all text from a RichTextLabel.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_rich_text_label_line_count', description: 'Get total line count of a RichTextLabel.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'scroll_rich_text_label_to_line', description: 'Scroll a RichTextLabel to a specific line.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, line: { type: 'integer' } }, required: ['nodePath', 'line'] } },
+      // Batch 77 — Group C: ItemList / Tree widget tools
+      { name: 'get_item_list_info', description: 'Get ItemList item count and selection mode.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'remove_item_list_item', description: 'Remove an item from an ItemList by index.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, idx: { type: 'integer' } }, required: ['nodePath', 'idx'] } },
+      { name: 'sort_item_list', description: 'Sort items in an ItemList alphabetically.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      // Batch 77 — Group D: ProgressBar / Range tools
+      { name: 'get_range_node_info', description: 'Get value, min, max of a Range-derived node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_range_node_value', description: 'Set current value of a Range node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, value: { type: 'number' } }, required: ['nodePath', 'value'] } },
+      { name: 'set_range_node_min_max', description: 'Set min/max bounds of a Range node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, min: { type: 'number' }, max: { type: 'number' } }, required: ['nodePath', 'min', 'max'] } },
+      { name: 'get_slider_step', description: 'Get step and page values from a Slider.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_slider_step', description: 'Set step size of a HSlider or VSlider.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, step: { type: 'number' } }, required: ['nodePath', 'step'] } },
+      // Batch 77 — Group E: Popup / Dialog tools
+      { name: 'hide_popup', description: 'Hide a Popup node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_popup_menu_item_count', description: 'Get the item count of a PopupMenu.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      // Batch 77 — Group F: Node2D / CanvasItem transform
+      { name: 'get_canvas_item_material', description: 'Get the material type on a CanvasItem.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_canvas_item_use_parent_material', description: 'Set CanvasItem use_parent_material flag.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, useParentMaterial: { type: 'boolean' } }, required: ['nodePath', 'useParentMaterial'] } },
+      { name: 'get_node_2d_global_transform', description: 'Get global transform of a Node2D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'apply_node_2d_local_transform', description: 'Apply a local transform to a Node2D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, tx: { type: 'number' }, ty: { type: 'number' }, rotation: { type: 'number' }, scaleX: { type: 'number' }, scaleY: { type: 'number' } }, required: ['nodePath', 'tx', 'ty'] } },
+      { name: 'get_node_3d_global_transform', description: 'Get global Transform3D of a Node3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'look_at_from_node', description: 'Make a Node3D look at a target position.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, targetX: { type: 'number' }, targetY: { type: 'number' }, targetZ: { type: 'number' } }, required: ['nodePath', 'targetX', 'targetY', 'targetZ'] } },
+      // Batch 77 — Group G: AnimationPlayer advanced
+      { name: 'get_animation_player_blend_time', description: 'Get blend time between two animations.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, animFrom: { type: 'string' }, animTo: { type: 'string' } }, required: ['nodePath', 'animFrom', 'animTo'] } },
+      { name: 'set_animation_player_blend_time', description: 'Set blend time between two animations.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, animFrom: { type: 'string' }, animTo: { type: 'string' }, blendTime: { type: 'number' } }, required: ['nodePath', 'animFrom', 'animTo', 'blendTime'] } },
+      { name: 'get_animation_player_current_position', description: 'Get current playback position in animation.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'seek_animation_player', description: 'Seek animation to a specific time position.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, position: { type: 'number' }, update: { type: 'boolean' } }, required: ['nodePath', 'position'] } },
+      { name: 'get_animation_player_queue', description: 'Get the queued animations in AnimationPlayer.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      // Batch 77 — Group H: Physics3D server queries
+      { name: 'sphere_cast_3d', description: 'Cast a 3D sphere and get the first hit.', inputSchema: { type: 'object', properties: { fromX: { type: 'number' }, fromY: { type: 'number' }, fromZ: { type: 'number' }, toX: { type: 'number' }, toY: { type: 'number' }, toZ: { type: 'number' }, radius: { type: 'number' } }, required: ['fromX', 'fromY', 'fromZ', 'toX', 'toY', 'toZ', 'radius'] } },
+      { name: 'get_colliding_bodies_3d', description: 'Get all bodies colliding with a PhysicsBody3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_physics_direct_body_state_3d', description: 'Get linear/angular velocity of a body.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'apply_torque_impulse_3d', description: 'Apply a torque impulse to a RigidBody3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, x: { type: 'number' }, y: { type: 'number' }, z: { type: 'number' } }, required: ['nodePath', 'x', 'y', 'z'] } },
+      // Batch 77 — Group I: Resource creation headless
+      { name: 'create_audio_stream_wav_resource', description: 'Create an AudioStreamWAV resource file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, outputPath: { type: 'string' } }, required: ['projectPath', 'outputPath'] } },
+      { name: 'create_image_from_color', description: 'Create a solid-color Image and save to file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, outputPath: { type: 'string' }, r: { type: 'number' }, g: { type: 'number' }, b: { type: 'number' }, width: { type: 'integer' }, height: { type: 'integer' } }, required: ['projectPath', 'outputPath', 'r', 'g', 'b'] } },
+      { name: 'create_gradient_texture_resource', description: 'Create a GradientTexture1D resource.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, outputPath: { type: 'string' }, colorA: { type: 'string' }, colorB: { type: 'string' } }, required: ['projectPath', 'outputPath'] } },
+      { name: 'create_animation_library_resource', description: 'Create an empty AnimationLibrary resource.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, outputPath: { type: 'string' } }, required: ['projectPath', 'outputPath'] } },
+      { name: 'create_packed_scene_from_script', description: 'Create a PackedScene from a GDScript class.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, outputPath: { type: 'string' } }, required: ['projectPath', 'scriptPath', 'outputPath'] } },
+      // Batch 77 — Group J: GDScript templates
+      { name: 'write_rpg_stats_system_script', description: 'Write an RPG stats (STR/AGI/INT) system.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_currency_system_script', description: 'Write a currency system with transactions.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_buff_debuff_system_script', description: 'Write a timed buff/debuff effect system.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_area_trigger_script', description: 'Write an Area2D trigger zone script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, triggerOnce: { type: 'boolean' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_freeze_time_script', description: 'Write a time freeze / slow motion script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, slowFactor: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_screen_border_teleport_script', description: 'Write screen-wrap teleport for objects.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_double_buff_pickup_script', description: 'Write a double-damage pickup item script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, duration: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_key_door_system_script', description: 'Write a key-and-door unlock system script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_destructible_terrain_script', description: 'Write a grid-based destructible terrain.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, gridSize: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_rope_physics_script', description: 'Write a simple rope chain physics script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, segments: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_zipline_script', description: 'Write a zipline character mover script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, zipSpeed: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_pressure_plate_script', description: 'Write a pressure plate trigger script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_checkpoint_system_script', description: 'Write a checkpoint/respawn system.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_bouncy_projectile_script', description: 'Write a bouncing ball projectile script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, bounces: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_fan_push_script', description: 'Write an Area2D wind/fan push force script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, pushForce: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_conveyor_belt_script', description: 'Write a conveyor belt velocity adder script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, speed: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_ladder_script', description: 'Write a ladder climb interaction script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, climbSpeed: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_water_buoyancy_script', description: 'Write a buoyancy physics Area2D script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, buoyancyForce: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_tornado_force_script', description: 'Write a spinning tornado force field script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, radius: { type: 'number' }, force: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_speed_boost_pad_script', description: 'Write a speed boost pad trigger script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, boostSpeed: { type: 'number' }, duration: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_spike_trap_script', description: 'Write a spike trap damage trigger script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, damage: { type: 'integer' }, interval: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_fog_of_war_script', description: 'Write a simple fog of war masking script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, viewRadius: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_minimap_dot_script', description: 'Write a minimap dot marker component.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, dotColor: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_interaction_prompt_script', description: 'Write a floating interaction prompt UI.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, promptText: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_health_regeneration_script', description: 'Write a health regen over time script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, regenRate: { type: 'number' }, interval: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_stamina_system_script', description: 'Write a sprint stamina system script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, maxStamina: { type: 'number' }, drainRate: { type: 'number' }, rechargeRate: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_throwable_object_script', description: 'Write a throwable RigidBody2D object.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, throwForce: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_parachute_script', description: 'Write a parachute slow-fall script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, fallSpeed: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_sticky_bomb_script', description: 'Write a sticky bomb that attaches to nodes.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, fuseTime: { type: 'number' }, radius: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_shockwave_script', description: 'Write a shockwave radius damage script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, radius: { type: 'number' }, damage: { type: 'integer' }, duration: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_vfx_spawn_script', description: 'Write a VFX spawner on death/hit script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, vfxScene: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_screen_flash_script', description: 'Write a screen flash ColorRect overlay.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, flashColor: { type: 'string' }, flashDuration: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_trail_script', description: 'Write a Line2D motion trail effect script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, maxPoints: { type: 'integer' }, decayRate: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_shadow_clone_script', description: 'Write a shadow afterimage clone script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, cloneCount: { type: 'integer' }, cloneLifetime: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_status_bar_ui_script', description: 'Write a generic status bar (health/xp) UI.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, barColor: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_hotbar_ui_script', description: 'Write a hotbar item slots UI script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, slotCount: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_minimap_ui_script', description: 'Write a viewport-based minimap UI panel.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_tooltip_system_script', description: 'Write a hover tooltip system script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, showDelay: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_drag_drop_slot_script', description: 'Write a drag-and-drop item slot UI script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      // Batch 77 — Group K: Extra UI gameCommand tools (compensating for skipped)
+      { name: 'get_theme_color', description: 'Get a Color from a Control theme override.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, colorName: { type: 'string' } }, required: ['nodePath', 'colorName'] } },
+      { name: 'get_theme_font_size', description: 'Get a font size from a Control theme override.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, sizeName: { type: 'string' } }, required: ['nodePath', 'sizeName'] } },
+      { name: 'get_control_focus_owner', description: 'Get the currently focused Control in viewport.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_control_focus_owner', description: 'Give keyboard focus to a Control node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_button_group', description: 'Get the ButtonGroup resource of a Button.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_button_group', description: 'Set a ButtonGroup on a Button node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, groupPath: { type: 'string' } }, required: ['nodePath', 'groupPath'] } },
+      { name: 'get_scroll_container_scroll', description: 'Get scroll position of a ScrollContainer.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_scroll_container_scroll', description: 'Set scroll position of a ScrollContainer.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, scrollH: { type: 'integer' }, scrollV: { type: 'integer' } }, required: ['nodePath', 'scrollH', 'scrollV'] } },
+      { name: 'get_nine_patch_rect_info', description: 'Get NinePatchRect patch margins and texture.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_nine_patch_rect_patch_margin', description: 'Set a NinePatchRect margin on one side.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, side: { type: 'integer' }, value: { type: 'integer' } }, required: ['nodePath', 'side', 'value'] } },
       ],
     }));
 
@@ -22276,6 +22379,201 @@ class GodotServer {
           return await this.handleWriteProceduralDungeonScript(request.params.arguments);
         case 'write_chunk_loading_script':
           return await this.handleWriteChunkLoadingScript(request.params.arguments);
+        // Batch 77 switch cases — Group A: Control / UI advanced
+        case 'get_container_children_info':
+          return await this.handleGetContainerChildrenInfo(request.params.arguments);
+        case 'set_h_box_container_separation':
+          return await this.handleSetHBoxContainerSeparation(request.params.arguments);
+        case 'get_grid_container_columns':
+          return await this.handleGetGridContainerColumns(request.params.arguments);
+        case 'set_grid_container_columns':
+          return await this.handleSetGridContainerColumns(request.params.arguments);
+        case 'get_split_container_offset':
+          return await this.handleGetSplitContainerOffset(request.params.arguments);
+        case 'set_split_container_offset':
+          return await this.handleSetSplitContainerOffset(request.params.arguments);
+        case 'get_tab_container_current_tab':
+          return await this.handleGetTabContainerCurrentTab(request.params.arguments);
+        case 'set_tab_container_current_tab':
+          return await this.handleSetTabContainerCurrentTab(request.params.arguments);
+        // Batch 77 — Group B: RichTextLabel tools
+        case 'get_rich_text_label_info':
+          return await this.handleGetRichTextLabelInfo(request.params.arguments);
+        case 'append_rich_text_label_bbcode':
+          return await this.handleAppendRichTextLabelBbcode(request.params.arguments);
+        case 'clear_rich_text_label':
+          return await this.handleClearRichTextLabel(request.params.arguments);
+        case 'get_rich_text_label_line_count':
+          return await this.handleGetRichTextLabelLineCount(request.params.arguments);
+        case 'scroll_rich_text_label_to_line':
+          return await this.handleScrollRichTextLabelToLine(request.params.arguments);
+        // Batch 77 — Group C: ItemList / Tree widget tools
+        case 'get_item_list_info':
+          return await this.handleGetItemListInfo(request.params.arguments);
+        case 'remove_item_list_item':
+          return await this.handleRemoveItemListItem(request.params.arguments);
+        case 'sort_item_list':
+          return await this.handleSortItemList(request.params.arguments);
+        // Batch 77 — Group D: ProgressBar / Range tools
+        case 'get_range_node_info':
+          return await this.handleGetRangeNodeInfo(request.params.arguments);
+        case 'set_range_node_value':
+          return await this.handleSetRangeNodeValue(request.params.arguments);
+        case 'set_range_node_min_max':
+          return await this.handleSetRangeNodeMinMax(request.params.arguments);
+        case 'get_slider_step':
+          return await this.handleGetSliderStep(request.params.arguments);
+        case 'set_slider_step':
+          return await this.handleSetSliderStep(request.params.arguments);
+        // Batch 77 — Group E: Popup / Dialog tools
+        case 'hide_popup':
+          return await this.handleHidePopup(request.params.arguments);
+        case 'get_popup_menu_item_count':
+          return await this.handleGetPopupMenuItemCount(request.params.arguments);
+        // Batch 77 — Group F: Node2D / CanvasItem transform
+        case 'get_canvas_item_material':
+          return await this.handleGetCanvasItemMaterial(request.params.arguments);
+        case 'set_canvas_item_use_parent_material':
+          return await this.handleSetCanvasItemUseParentMaterial(request.params.arguments);
+        case 'get_node_2d_global_transform':
+          return await this.handleGetNode2dGlobalTransform(request.params.arguments);
+        case 'apply_node_2d_local_transform':
+          return await this.handleApplyNode2dLocalTransform(request.params.arguments);
+        case 'get_node_3d_global_transform':
+          return await this.handleGetNode3dGlobalTransform(request.params.arguments);
+        case 'look_at_from_node':
+          return await this.handleLookAtFromNode(request.params.arguments);
+        // Batch 77 — Group G: AnimationPlayer advanced
+        case 'get_animation_player_blend_time':
+          return await this.handleGetAnimationPlayerBlendTime(request.params.arguments);
+        case 'set_animation_player_blend_time':
+          return await this.handleSetAnimationPlayerBlendTime(request.params.arguments);
+        case 'get_animation_player_current_position':
+          return await this.handleGetAnimationPlayerCurrentPosition(request.params.arguments);
+        case 'seek_animation_player':
+          return await this.handleSeekAnimationPlayer(request.params.arguments);
+        case 'get_animation_player_queue':
+          return await this.handleGetAnimationPlayerQueue(request.params.arguments);
+        // Batch 77 — Group H: Physics3D server queries
+        case 'sphere_cast_3d':
+          return await this.handleSphereCast3d(request.params.arguments);
+        case 'get_colliding_bodies_3d':
+          return await this.handleGetCollidingBodies3d(request.params.arguments);
+        case 'get_physics_direct_body_state_3d':
+          return await this.handleGetPhysicsDirectBodyState3d(request.params.arguments);
+        case 'apply_torque_impulse_3d':
+          return await this.handleApplyTorqueImpulse3d(request.params.arguments);
+        // Batch 77 — Group I: Resource creation headless
+        case 'create_audio_stream_wav_resource':
+          return await this.handleCreateAudioStreamWavResource(request.params.arguments);
+        case 'create_image_from_color':
+          return await this.handleCreateImageFromColor(request.params.arguments);
+        case 'create_gradient_texture_resource':
+          return await this.handleCreateGradientTextureResource(request.params.arguments);
+        case 'create_animation_library_resource':
+          return await this.handleCreateAnimationLibraryResource(request.params.arguments);
+        case 'create_packed_scene_from_script':
+          return await this.handleCreatePackedSceneFromScript(request.params.arguments);
+        // Batch 77 — Group J: GDScript templates
+        case 'write_rpg_stats_system_script':
+          return await this.handleWriteRpgStatsSystemScript(request.params.arguments);
+        case 'write_currency_system_script':
+          return await this.handleWriteCurrencySystemScript(request.params.arguments);
+        case 'write_buff_debuff_system_script':
+          return await this.handleWriteBuffDebuffSystemScript(request.params.arguments);
+        case 'write_area_trigger_script':
+          return await this.handleWriteAreaTriggerScript(request.params.arguments);
+        case 'write_freeze_time_script':
+          return await this.handleWriteFreezeTimeScript(request.params.arguments);
+        case 'write_screen_border_teleport_script':
+          return await this.handleWriteScreenBorderTeleportScript(request.params.arguments);
+        case 'write_double_buff_pickup_script':
+          return await this.handleWriteDoubleBuffPickupScript(request.params.arguments);
+        case 'write_key_door_system_script':
+          return await this.handleWriteKeyDoorSystemScript(request.params.arguments);
+        case 'write_destructible_terrain_script':
+          return await this.handleWriteDestructibleTerrainScript(request.params.arguments);
+        case 'write_rope_physics_script':
+          return await this.handleWriteRopePhysicsScript(request.params.arguments);
+        case 'write_zipline_script':
+          return await this.handleWriteZiplineScript(request.params.arguments);
+        case 'write_pressure_plate_script':
+          return await this.handleWritePressurePlateScript(request.params.arguments);
+        case 'write_checkpoint_system_script':
+          return await this.handleWriteCheckpointSystemScript(request.params.arguments);
+        case 'write_bouncy_projectile_script':
+          return await this.handleWriteBouncyProjectileScript(request.params.arguments);
+        case 'write_fan_push_script':
+          return await this.handleWriteFanPushScript(request.params.arguments);
+        case 'write_conveyor_belt_script':
+          return await this.handleWriteConveyorBeltScript(request.params.arguments);
+        case 'write_ladder_script':
+          return await this.handleWriteLadderScript(request.params.arguments);
+        case 'write_water_buoyancy_script':
+          return await this.handleWriteWaterBuoyancyScript(request.params.arguments);
+        case 'write_tornado_force_script':
+          return await this.handleWriteTornadoForceScript(request.params.arguments);
+        case 'write_speed_boost_pad_script':
+          return await this.handleWriteSpeedBoostPadScript(request.params.arguments);
+        case 'write_spike_trap_script':
+          return await this.handleWriteSpikeTrapScript(request.params.arguments);
+        case 'write_fog_of_war_script':
+          return await this.handleWriteFogOfWarScript(request.params.arguments);
+        case 'write_minimap_dot_script':
+          return await this.handleWriteMinimapDotScript(request.params.arguments);
+        case 'write_interaction_prompt_script':
+          return await this.handleWriteInteractionPromptScript(request.params.arguments);
+        case 'write_health_regeneration_script':
+          return await this.handleWriteHealthRegenerationScript(request.params.arguments);
+        case 'write_stamina_system_script':
+          return await this.handleWriteStaminaSystemScript(request.params.arguments);
+        case 'write_throwable_object_script':
+          return await this.handleWriteThrowableObjectScript(request.params.arguments);
+        case 'write_parachute_script':
+          return await this.handleWriteParachuteScript(request.params.arguments);
+        case 'write_sticky_bomb_script':
+          return await this.handleWriteStickyBombScript(request.params.arguments);
+        case 'write_shockwave_script':
+          return await this.handleWriteShockwaveScript(request.params.arguments);
+        case 'write_vfx_spawn_script':
+          return await this.handleWriteVfxSpawnScript(request.params.arguments);
+        case 'write_screen_flash_script':
+          return await this.handleWriteScreenFlashScript(request.params.arguments);
+        case 'write_trail_script':
+          return await this.handleWriteTrailScript(request.params.arguments);
+        case 'write_shadow_clone_script':
+          return await this.handleWriteShadowCloneScript(request.params.arguments);
+        case 'write_status_bar_ui_script':
+          return await this.handleWriteStatusBarUiScript(request.params.arguments);
+        case 'write_hotbar_ui_script':
+          return await this.handleWriteHotbarUiScript(request.params.arguments);
+        case 'write_minimap_ui_script':
+          return await this.handleWriteMinimapUiScript(request.params.arguments);
+        case 'write_tooltip_system_script':
+          return await this.handleWriteTooltipSystemScript(request.params.arguments);
+        case 'write_drag_drop_slot_script':
+          return await this.handleWriteDragDropSlotScript(request.params.arguments);
+        // Batch 77 — Group K: Extra UI gameCommand tools
+        case 'get_theme_color':
+          return await this.handleGetThemeColor(request.params.arguments);
+        case 'get_theme_font_size':
+          return await this.handleGetThemeFontSize(request.params.arguments);
+        case 'get_control_focus_owner':
+          return await this.handleGetControlFocusOwner(request.params.arguments);
+        case 'set_control_focus_owner':
+          return await this.handleSetControlFocusOwner(request.params.arguments);
+        case 'get_button_group':
+          return await this.handleGetButtonGroup(request.params.arguments);
+        case 'set_button_group':
+          return await this.handleSetButtonGroup(request.params.arguments);
+        case 'get_scroll_container_scroll':
+          return await this.handleGetScrollContainerScroll(request.params.arguments);
+        case 'set_scroll_container_scroll':
+          return await this.handleSetScrollContainerScroll(request.params.arguments);
+        case 'get_nine_patch_rect_info':
+          return await this.handleGetNinePatchRectInfo(request.params.arguments);
+        case 'set_nine_patch_rect_patch_margin':
+          return await this.handleSetNinePatchRectPatchMargin(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -46559,6 +46857,1962 @@ func get_loaded_chunks() -> Array:
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  // ── Batch 77 — Group A: Container / UI ─────────────────────────────────────
+
+  private async handleGetContainerChildrenInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_container_children_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetHBoxContainerSeparation(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_h_box_container_separation', args, a => ({ node_path: a.nodePath ?? '', separation: a.separation ?? 4 }));
+  }
+
+  private async handleGetGridContainerColumns(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_grid_container_columns', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetGridContainerColumns(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_grid_container_columns', args, a => ({ node_path: a.nodePath ?? '', columns: a.columns ?? 2 }));
+  }
+
+  private async handleGetSplitContainerOffset(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_split_container_offset', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetSplitContainerOffset(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_split_container_offset', args, a => ({ node_path: a.nodePath ?? '', offset: a.offset ?? 0 }));
+  }
+
+  private async handleGetTabContainerCurrentTab(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_tab_container_current_tab', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetTabContainerCurrentTab(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_tab_container_current_tab', args, a => ({ node_path: a.nodePath ?? '', tab_index: a.tabIndex ?? 0 }));
+  }
+
+  // ── Batch 77 — Group B: RichTextLabel ──────────────────────────────────────
+
+  private async handleGetRichTextLabelInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_rich_text_label_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleAppendRichTextLabelBbcode(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('append_rich_text_label_bbcode', args, a => ({ node_path: a.nodePath ?? '', bbcode: a.bbcode ?? '' }));
+  }
+
+  private async handleClearRichTextLabel(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('clear_rich_text_label', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleGetRichTextLabelLineCount(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_rich_text_label_line_count', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleScrollRichTextLabelToLine(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('scroll_rich_text_label_to_line', args, a => ({ node_path: a.nodePath ?? '', line: a.line ?? 0 }));
+  }
+
+  // ── Batch 77 — Group C: ItemList ───────────────────────────────────────────
+
+  private async handleGetItemListInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_item_list_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleRemoveItemListItem(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('remove_item_list_item', args, a => ({ node_path: a.nodePath ?? '', idx: a.idx ?? 0 }));
+  }
+
+  private async handleSortItemList(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('sort_item_list', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  // ── Batch 77 — Group D: Range / Slider ─────────────────────────────────────
+
+  private async handleGetRangeNodeInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_range_node_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetRangeNodeValue(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_range_node_value', args, a => ({ node_path: a.nodePath ?? '', value: a.value ?? 0.0 }));
+  }
+
+  private async handleSetRangeNodeMinMax(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_range_node_min_max', args, a => ({ node_path: a.nodePath ?? '', min: a.min ?? 0.0, max: a.max ?? 100.0 }));
+  }
+
+  private async handleGetSliderStep(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_slider_step', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetSliderStep(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_slider_step', args, a => ({ node_path: a.nodePath ?? '', step: a.step ?? 1.0 }));
+  }
+
+  // ── Batch 77 — Group E: Popup / Dialog ─────────────────────────────────────
+
+  private async handleHidePopup(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('hide_popup', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleGetPopupMenuItemCount(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_popup_menu_item_count', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  // ── Batch 77 — Group F: CanvasItem / Node2D / Node3D transforms ────────────
+
+  private async handleGetCanvasItemMaterial(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_canvas_item_material', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetCanvasItemUseParentMaterial(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_canvas_item_use_parent_material', args, a => ({ node_path: a.nodePath ?? '', use_parent_material: a.useParentMaterial ?? false }));
+  }
+
+  private async handleGetNode2dGlobalTransform(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_node_2d_global_transform', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleApplyNode2dLocalTransform(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('apply_node_2d_local_transform', args, a => ({ node_path: a.nodePath ?? '', tx: a.tx ?? 0.0, ty: a.ty ?? 0.0, rotation: a.rotation ?? 0.0, scale_x: a.scaleX ?? 1.0, scale_y: a.scaleY ?? 1.0 }));
+  }
+
+  private async handleGetNode3dGlobalTransform(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_node_3d_global_transform', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleLookAtFromNode(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('look_at_from_node', args, a => ({ node_path: a.nodePath ?? '', target_x: a.targetX ?? 0.0, target_y: a.targetY ?? 0.0, target_z: a.targetZ ?? 0.0 }));
+  }
+
+  // ── Batch 77 — Group G: AnimationPlayer advanced ───────────────────────────
+
+  private async handleGetAnimationPlayerBlendTime(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_animation_player_blend_time', args, a => ({ node_path: a.nodePath ?? '', anim_from: a.animFrom ?? '', anim_to: a.animTo ?? '' }));
+  }
+
+  private async handleSetAnimationPlayerBlendTime(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_animation_player_blend_time', args, a => ({ node_path: a.nodePath ?? '', anim_from: a.animFrom ?? '', anim_to: a.animTo ?? '', blend_time: a.blendTime ?? 0.5 }));
+  }
+
+  private async handleGetAnimationPlayerCurrentPosition(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_animation_player_current_position', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSeekAnimationPlayer(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('seek_animation_player', args, a => ({ node_path: a.nodePath ?? '', position: a.position ?? 0.0, update: a.update ?? true }));
+  }
+
+  private async handleGetAnimationPlayerQueue(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_animation_player_queue', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  // ── Batch 77 — Group H: Physics3D queries ──────────────────────────────────
+
+  private async handleSphereCast3d(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('sphere_cast_3d', args, a => ({ from_x: a.fromX ?? 0.0, from_y: a.fromY ?? 0.0, from_z: a.fromZ ?? 0.0, to_x: a.toX ?? 0.0, to_y: a.toY ?? 10.0, to_z: a.toZ ?? 0.0, radius: a.radius ?? 0.5 }));
+  }
+
+  private async handleGetCollidingBodies3d(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_colliding_bodies_3d', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleGetPhysicsDirectBodyState3d(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_physics_direct_body_state_3d', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleApplyTorqueImpulse3d(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('apply_torque_impulse_3d', args, a => ({ node_path: a.nodePath ?? '', x: a.x ?? 0.0, y: a.y ?? 0.0, z: a.z ?? 0.0 }));
+  }
+
+  // ── Batch 77 — Group I: Resource creation headless ─────────────────────────
+
+  private async handleCreateAudioStreamWavResource(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.outputPath) return createErrorResponse('outputPath is required.');
+    return this.headlessOp('create_audio_stream_wav_resource', args, a => ({ projectPath: a.projectPath, params: { output_path: a.outputPath ?? '' } }));
+  }
+
+  private async handleCreateImageFromColor(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.outputPath) return createErrorResponse('outputPath is required.');
+    return this.headlessOp('create_image_from_color', args, a => ({ projectPath: a.projectPath, params: { output_path: a.outputPath ?? '', r: a.r ?? 0, g: a.g ?? 0, b: a.b ?? 0, width: a.width ?? 64, height: a.height ?? 64 } }));
+  }
+
+  private async handleCreateGradientTextureResource(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.outputPath) return createErrorResponse('outputPath is required.');
+    return this.headlessOp('create_gradient_texture_resource', args, a => ({ projectPath: a.projectPath, params: { output_path: a.outputPath ?? '', color_a: a.colorA ?? '#000000', color_b: a.colorB ?? '#ffffff' } }));
+  }
+
+  private async handleCreateAnimationLibraryResource(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.outputPath) return createErrorResponse('outputPath is required.');
+    return this.headlessOp('create_animation_library_resource', args, a => ({ projectPath: a.projectPath, params: { output_path: a.outputPath ?? '' } }));
+  }
+
+  private async handleCreatePackedSceneFromScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    if (!args.outputPath) return createErrorResponse('outputPath is required.');
+    return this.headlessOp('create_packed_scene_from_script', args, a => ({ projectPath: a.projectPath, params: { script_path: a.scriptPath ?? '', output_path: a.outputPath ?? '' } }));
+  }
+
+  // ── Batch 77 — Group J: GDScript templates ─────────────────────────────────
+
+  private async handleWriteRpgStatsSystemScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const content = `extends Node
+
+## RPG stats system: STR, AGI, INT with modifiers.
+
+signal stat_changed(stat_name: String, new_value: int)
+
+@export var base_str: int = 10
+@export var base_agi: int = 10
+@export var base_int: int = 10
+
+var _modifiers: Dictionary = {}
+
+func get_stat(stat: String) -> int:
+\tvar base: int = 0
+\tif stat == "str": base = base_str
+\telif stat == "agi": base = base_agi
+\telif stat == "int": base = base_int
+\tvar bonus: int = 0
+\tfor mod in _modifiers.values():
+\t\tif mod.has(stat): bonus += mod[stat]
+\treturn base + bonus
+
+func add_modifier(id: String, mods: Dictionary) -> void:
+\t_modifiers[id] = mods
+\tfor s in mods: stat_changed.emit(s, get_stat(s))
+
+func remove_modifier(id: String) -> void:
+\tif _modifiers.has(id):
+\t\tvar mods: Dictionary = _modifiers[id]
+\t\t_modifiers.erase(id)
+\t\tfor s in mods: stat_changed.emit(s, get_stat(s))
+
+func get_all_stats() -> Dictionary:
+\treturn { "str": get_stat("str"), "agi": get_stat("agi"), "int": get_stat("int") }
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteCurrencySystemScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const content = `extends Node
+
+## Currency system with transaction history.
+
+signal currency_changed(new_amount: int)
+signal transaction_failed(reason: String)
+
+@export var starting_gold: int = 0
+
+var _gold: int = 0
+var _history: Array[Dictionary] = []
+
+func _ready() -> void:
+\t_gold = starting_gold
+
+func get_gold() -> int:
+\treturn _gold
+
+func add_gold(amount: int, reason: String = "") -> void:
+\tif amount <= 0: return
+\t_gold += amount
+\t_history.append({ "type": "add", "amount": amount, "reason": reason })
+\tcurrency_changed.emit(_gold)
+
+func spend_gold(amount: int, reason: String = "") -> bool:
+\tif amount > _gold:
+\t\ttransaction_failed.emit("Insufficient funds")
+\t\treturn false
+\t_gold -= amount
+\t_history.append({ "type": "spend", "amount": amount, "reason": reason })
+\tcurrency_changed.emit(_gold)
+\treturn true
+
+func get_history() -> Array[Dictionary]:
+\treturn _history
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteBuffDebuffSystemScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const content = `extends Node
+
+## Timed buff/debuff effect system.
+
+signal buff_applied(buff_id: String)
+signal buff_expired(buff_id: String)
+
+var _buffs: Dictionary = {}
+
+func _process(delta: float) -> void:
+\tvar expired: Array[String] = []
+\tfor id in _buffs:
+\t\t_buffs[id]["remaining"] -= delta
+\t\tif _buffs[id]["remaining"] <= 0.0:
+\t\t\texpired.append(id)
+\tfor id in expired:
+\t\t_buffs.erase(id)
+\t\tbuff_expired.emit(id)
+
+func apply_buff(id: String, duration: float, stat_mods: Dictionary) -> void:
+\t_buffs[id] = { "remaining": duration, "mods": stat_mods }
+\tbuff_applied.emit(id)
+
+func has_buff(id: String) -> bool:
+\treturn _buffs.has(id)
+
+func get_total_mod(stat: String) -> float:
+\tvar total: float = 0.0
+\tfor b in _buffs.values():
+\t\tif b["mods"].has(stat): total += b["mods"][stat]
+\treturn total
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteAreaTriggerScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const triggerOnce = args.triggerOnce ?? false;
+    const content = `extends Area2D
+
+## Area2D trigger zone script.
+
+signal triggered(body: Node)
+
+@export var trigger_once: bool = ${triggerOnce}
+
+var _triggered: bool = false
+
+func _ready() -> void:
+\tbody_entered.connect(_on_body_entered)
+
+func _on_body_entered(body: Node) -> void:
+\tif trigger_once and _triggered: return
+\tif body.is_in_group("player"):
+\t\t_triggered = true
+\t\ttriggered.emit(body)
+\t\t_on_trigger(body)
+
+func _on_trigger(_body: Node) -> void:
+\tpass
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteFreezeTimeScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const slowFactor = args.slowFactor ?? 0.1;
+    const content = `extends Node
+
+## Time freeze / slow motion controller.
+
+signal time_scale_changed(new_scale: float)
+
+@export var slow_factor: float = ${slowFactor}
+
+var _frozen: bool = false
+
+func freeze_time(duration: float = 0.0) -> void:
+\tEngine.time_scale = slow_factor
+\t_frozen = true
+\ttime_scale_changed.emit(slow_factor)
+\tif duration > 0.0:
+\t\tawait get_tree().create_timer(duration * slow_factor).timeout
+\t\trestore_time()
+
+func restore_time() -> void:
+\tEngine.time_scale = 1.0
+\t_frozen = false
+\ttime_scale_changed.emit(1.0)
+
+func is_frozen() -> bool:
+\treturn _frozen
+
+func _notification(what: int) -> void:
+\tif what == NOTIFICATION_WM_CLOSE_REQUEST:
+\t\tEngine.time_scale = 1.0
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteScreenBorderTeleportScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const content = `extends Node2D
+
+## Screen-wrap teleport for objects that leave the viewport.
+
+func _process(_delta: float) -> void:
+\tvar vp: Vector2 = get_viewport_rect().size
+\tvar pos: Vector2 = global_position
+\tif pos.x < 0.0: pos.x += vp.x
+\telif pos.x > vp.x: pos.x -= vp.x
+\tif pos.y < 0.0: pos.y += vp.y
+\telif pos.y > vp.y: pos.y -= vp.y
+\tglobal_position = pos
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteDoubleBuffPickupScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const duration = args.duration ?? 10.0;
+    const content = `extends Area2D
+
+## Double-damage pickup item.
+
+signal picked_up(body: Node)
+
+@export var duration: float = ${duration}
+
+func _ready() -> void:
+\tbody_entered.connect(_on_body_entered)
+
+func _on_body_entered(body: Node) -> void:
+\tif not body.is_in_group("player"): return
+\tpicked_up.emit(body)
+\tif body.has_method("apply_damage_multiplier"):
+\t\tbody.apply_damage_multiplier(2.0, duration)
+\tset_deferred("monitoring", false)
+\tawait get_tree().create_timer(0.1).timeout
+\tqueue_free()
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteKeyDoorSystemScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const content = `extends Node
+
+## Key-and-door unlock system.
+
+signal door_unlocked(door_id: String)
+signal key_collected(key_id: String)
+
+var _keys: Array[String] = []
+
+func collect_key(key_id: String) -> void:
+\tif key_id not in _keys:
+\t\t_keys.append(key_id)
+\t\tkey_collected.emit(key_id)
+
+func has_key(key_id: String) -> bool:
+\treturn key_id in _keys
+
+func try_unlock(door_id: String, required_key: String) -> bool:
+\tif has_key(required_key):
+\t\t_keys.erase(required_key)
+\t\tdoor_unlocked.emit(door_id)
+\t\treturn true
+\treturn false
+
+func get_keys() -> Array[String]:
+\treturn _keys.duplicate()
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteDestructibleTerrainScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const gridSize = args.gridSize ?? 16;
+    const content = `extends TileMap
+
+## Grid-based destructible terrain.
+
+signal tile_destroyed(cell: Vector2i)
+
+@export var grid_size: int = ${gridSize}
+
+var _destroyed: Dictionary = {}
+
+func destroy_tile(world_pos: Vector2) -> void:
+\tvar cell: Vector2i = local_to_map(to_local(world_pos))
+\tif _destroyed.has(cell): return
+\t_destroyed[cell] = true
+\terase_cell(0, cell)
+\ttile_destroyed.emit(cell)
+
+func restore_tile(cell: Vector2i, source_id: int, atlas_coords: Vector2i) -> void:
+\t_destroyed.erase(cell)
+\tset_cell(0, cell, source_id, atlas_coords)
+
+func is_destroyed(cell: Vector2i) -> bool:
+\treturn _destroyed.has(cell)
+
+func get_destroyed_cells() -> Array:
+\treturn _destroyed.keys()
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteRopePhysicsScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const segments = args.segments ?? 8;
+    const content = `extends Node2D
+
+## Simple rope chain physics with Verlet integration.
+
+@export var segments: int = ${segments}
+@export var segment_length: float = 20.0
+@export var gravity: float = 980.0
+
+var _points: Array[Vector2] = []
+var _prev_points: Array[Vector2] = []
+
+func _ready() -> void:
+\tfor i in segments + 1:
+\t\tvar pt: Vector2 = Vector2(0.0, float(i) * segment_length)
+\t\t_points.append(pt)
+\t\t_prev_points.append(pt)
+
+func _physics_process(delta: float) -> void:
+\tfor i in range(1, _points.size()):
+\t\tvar vel: Vector2 = _points[i] - _prev_points[i]
+\t\t_prev_points[i] = _points[i]
+\t\t_points[i] += vel + Vector2(0.0, gravity * delta * delta)
+\tfor _iter in 5:
+\t\t_points[0] = global_position
+\t\tfor i in range(_points.size() - 1):
+\t\t\tvar diff: Vector2 = _points[i + 1] - _points[i]
+\t\t\tvar dist: float = diff.length()
+\t\t\tif dist == 0.0: continue
+\t\t\tvar correction: Vector2 = diff * ((dist - segment_length) / dist) * 0.5
+\t\t\tif i != 0: _points[i] += correction
+\t\t\t_points[i + 1] -= correction
+\tqueue_redraw()
+
+func _draw() -> void:
+\tfor i in range(_points.size() - 1):
+\t\tdraw_line(_points[i], _points[i + 1], Color.BROWN, 2.0)
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteZiplineScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const zipSpeed = args.zipSpeed ?? 200;
+    const content = `extends Area2D
+
+## Zipline character mover.
+
+signal zipline_started(body: Node)
+signal zipline_ended(body: Node)
+
+@export var zip_speed: float = ${zipSpeed}
+@export var end_point: NodePath
+
+var _riding: bool = false
+var _rider: Node = null
+
+func _ready() -> void:
+\tbody_entered.connect(_on_body_entered)
+\tbody_exited.connect(_on_body_exited)
+
+func _physics_process(delta: float) -> void:
+\tif not _riding or _rider == null: return
+\tvar target: Node2D = get_node_or_null(end_point)
+\tif target == null: return
+\tvar dir: Vector2 = (target.global_position - (_rider as Node2D).global_position).normalized()
+\t(_rider as Node2D).global_position += dir * zip_speed * delta
+\tif (_rider as Node2D).global_position.distance_to(target.global_position) < 10.0:
+\t\t_stop_riding()
+
+func _on_body_entered(body: Node) -> void:
+\tif _riding: return
+\t_rider = body
+\t_riding = true
+\tzipline_started.emit(body)
+
+func _on_body_exited(body: Node) -> void:
+\tif body == _rider: _stop_riding()
+
+func _stop_riding() -> void:
+\tzipline_ended.emit(_rider)
+\t_riding = false
+\t_rider = null
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWritePressurePlateScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const content = `extends Area2D
+
+## Pressure plate trigger — active while something is on it.
+
+signal plate_pressed
+signal plate_released
+
+var _bodies_on: int = 0
+var _is_pressed: bool = false
+
+func _ready() -> void:
+\tbody_entered.connect(_on_body_entered)
+\tbody_exited.connect(_on_body_exited)
+
+func _on_body_entered(_body: Node) -> void:
+\t_bodies_on += 1
+\tif not _is_pressed:
+\t\t_is_pressed = true
+\t\tplate_pressed.emit()
+
+func _on_body_exited(_body: Node) -> void:
+\t_bodies_on = max(0, _bodies_on - 1)
+\tif _bodies_on == 0 and _is_pressed:
+\t\t_is_pressed = false
+\t\tplate_released.emit()
+
+func is_pressed() -> bool:
+\treturn _is_pressed
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteCheckpointSystemScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const content = `extends Node
+
+## Checkpoint / respawn system.
+
+signal checkpoint_reached(id: String, position: Vector2)
+signal respawned(position: Vector2)
+
+var _last_checkpoint: Vector2 = Vector2.ZERO
+var _checkpoint_id: String = ""
+
+func register_checkpoint(id: String, pos: Vector2) -> void:
+\t_last_checkpoint = pos
+\t_checkpoint_id = id
+\tcheckpoint_reached.emit(id, pos)
+
+func respawn(entity: Node2D) -> void:
+\tentity.global_position = _last_checkpoint
+\trespawned.emit(_last_checkpoint)
+
+func get_last_checkpoint() -> Vector2:
+\treturn _last_checkpoint
+
+func get_checkpoint_id() -> String:
+\treturn _checkpoint_id
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteBouncyProjectileScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const bounces = args.bounces ?? 3;
+    const content = `extends CharacterBody2D
+
+## Bouncing ball projectile.
+
+signal bounced(pos: Vector2, count: int)
+signal expired
+
+@export var speed: float = 400.0
+@export var max_bounces: int = ${bounces}
+
+var _direction: Vector2 = Vector2.RIGHT
+var _bounce_count: int = 0
+
+func launch(dir: Vector2) -> void:
+\t_direction = dir.normalized()
+
+func _physics_process(delta: float) -> void:
+\tvelocity = _direction * speed
+\tvar collision: KinematicCollision2D = move_and_collide(velocity * delta)
+\tif collision:
+\t\t_direction = _direction.bounce(collision.get_normal())
+\t\t_bounce_count += 1
+\t\tbounced.emit(global_position, _bounce_count)
+\t\tif _bounce_count >= max_bounces:
+\t\t\texpired.emit()
+\t\t\tqueue_free()
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteFanPushScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const pushForce = args.pushForce ?? 300;
+    const content = `extends Area2D
+
+## Area2D wind/fan push force field.
+
+@export var push_force: float = ${pushForce}
+@export var push_direction: Vector2 = Vector2.UP
+
+func _physics_process(delta: float) -> void:
+\tfor body in get_overlapping_bodies():
+\t\tif body is RigidBody2D:
+\t\t\tbody.apply_central_force(push_direction.normalized() * push_force)
+\t\telif body is CharacterBody2D:
+\t\t\tbody.velocity += push_direction.normalized() * push_force * delta
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteConveyorBeltScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const speed = args.speed ?? 100;
+    const content = `extends StaticBody2D
+
+## Conveyor belt velocity adder.
+
+@export var belt_speed: float = ${speed}
+@export var belt_direction: Vector2 = Vector2.RIGHT
+
+func _ready() -> void:
+\tphysics_material_override = PhysicsMaterial.new()
+
+func get_belt_velocity() -> Vector2:
+\treturn belt_direction.normalized() * belt_speed
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteLadderScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const climbSpeed = args.climbSpeed ?? 80;
+    const content = `extends Area2D
+
+## Ladder climb interaction.
+
+signal climbing_started(body: Node)
+signal climbing_stopped(body: Node)
+
+@export var climb_speed: float = ${climbSpeed}
+
+var _climbers: Array[Node] = []
+
+func _ready() -> void:
+\tbody_entered.connect(_on_body_entered)
+\tbody_exited.connect(_on_body_exited)
+
+func _physics_process(_delta: float) -> void:
+\tfor body in _climbers:
+\t\tif body is CharacterBody2D:
+\t\t\tvar up: float = Input.get_axis("ui_down", "ui_up")
+\t\t\t(body as CharacterBody2D).velocity.y = -up * climb_speed
+\t\t\t(body as CharacterBody2D).velocity.x = 0.0
+
+func _on_body_entered(body: Node) -> void:
+\tif body.is_in_group("player"):
+\t\t_climbers.append(body)
+\t\tclimbing_started.emit(body)
+
+func _on_body_exited(body: Node) -> void:
+\t_climbers.erase(body)
+\tclimbing_stopped.emit(body)
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteWaterBuoyancyScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const buoyancyForce = args.buoyancyForce ?? 600;
+    const content = `extends Area2D
+
+## Buoyancy physics Area2D — applies upward force to bodies inside.
+
+@export var buoyancy_force: float = ${buoyancyForce}
+@export var drag: float = 0.05
+
+func _physics_process(_delta: float) -> void:
+\tfor body in get_overlapping_bodies():
+\t\tif body is RigidBody2D:
+\t\t\tvar depth: float = clamp((global_position.y - body.global_position.y) / 100.0, 0.0, 1.0)
+\t\t\tbody.apply_central_force(Vector2(0.0, -buoyancy_force * depth))
+\t\t\tbody.linear_velocity *= (1.0 - drag)
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteTornadoForceScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const radius = args.radius ?? 150;
+    const force = args.force ?? 200;
+    const content = `extends Area2D
+
+## Spinning tornado force field.
+
+@export var tornado_radius: float = ${radius}
+@export var tornado_force: float = ${force}
+
+func _physics_process(_delta: float) -> void:
+\tfor body in get_overlapping_bodies():
+\t\tif body is RigidBody2D:
+\t\t\tvar to_center: Vector2 = global_position - body.global_position
+\t\t\tvar dist: float = to_center.length()
+\t\t\tif dist > 0.0:
+\t\t\t\tvar tangent: Vector2 = Vector2(-to_center.y, to_center.x).normalized()
+\t\t\t\tvar pull: float = tornado_force * (1.0 - dist / tornado_radius)
+\t\t\t\tbody.apply_central_force(tangent * tornado_force + to_center.normalized() * pull)
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteSpeedBoostPadScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const boostSpeed = args.boostSpeed ?? 500;
+    const duration = args.duration ?? 2.0;
+    const content = `extends Area2D
+
+## Speed boost pad trigger.
+
+signal boosted(body: Node)
+
+@export var boost_speed: float = ${boostSpeed}
+@export var boost_duration: float = ${duration}
+
+func _ready() -> void:
+\tbody_entered.connect(_on_body_entered)
+
+func _on_body_entered(body: Node) -> void:
+\tif not body.is_in_group("player"): return
+\tboosted.emit(body)
+\tif body.has_method("apply_speed_boost"):
+\t\tbody.apply_speed_boost(boost_speed, boost_duration)
+\telif body is CharacterBody2D:
+\t\t(body as CharacterBody2D).velocity = (body as CharacterBody2D).velocity.normalized() * boost_speed
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteSpikeTrapScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const damage = args.damage ?? 25;
+    const interval = args.interval ?? 1.0;
+    const content = `extends Area2D
+
+## Spike trap damage trigger.
+
+signal spike_hit(body: Node, damage: int)
+
+@export var spike_damage: int = ${damage}
+@export var hit_interval: float = ${interval}
+
+var _timers: Dictionary = {}
+
+func _ready() -> void:
+\tbody_entered.connect(_on_body_entered)
+\tbody_exited.connect(_on_body_exited)
+
+func _on_body_entered(body: Node) -> void:
+\t_deal_damage(body)
+\tvar t: Timer = Timer.new()
+\tadd_child(t)
+\tt.wait_time = hit_interval
+\tt.timeout.connect(func(): _deal_damage(body))
+\tt.start()
+\t_timers[body] = t
+
+func _on_body_exited(body: Node) -> void:
+\tif _timers.has(body):
+\t\t_timers[body].queue_free()
+\t\t_timers.erase(body)
+
+func _deal_damage(body: Node) -> void:
+\tif body.has_method("take_damage"):
+\t\tbody.take_damage(spike_damage)
+\tspike_hit.emit(body, spike_damage)
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteFogOfWarScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const viewRadius = args.viewRadius ?? 150;
+    const content = `extends Node2D
+
+## Simple fog of war masking.
+
+@export var view_radius: float = ${viewRadius}
+@export var fog_color: Color = Color(0.0, 0.0, 0.0, 0.85)
+@export var reveal_target: NodePath
+
+var _target: Node2D = null
+
+func _ready() -> void:
+\t_target = get_node_or_null(reveal_target)
+
+func _process(_delta: float) -> void:
+\tif _target: queue_redraw()
+
+func _draw() -> void:
+\tvar vp: Vector2 = get_viewport_rect().size
+\tdraw_rect(Rect2(Vector2.ZERO, vp), fog_color)
+\tif _target:
+\t\tvar lpos: Vector2 = to_local(_target.global_position)
+\t\tdraw_circle(lpos, view_radius, Color(0.0, 0.0, 0.0, 0.0))
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteMinimapDotScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const dotColor = args.dotColor ?? 'Color.RED';
+    const content = `extends Node2D
+
+## Minimap dot marker component.
+
+@export var dot_color: Color = ${dotColor}
+@export var dot_radius: float = 4.0
+@export var minimap_scale: float = 0.05
+@export var minimap_offset: Vector2 = Vector2(20.0, 20.0)
+@export var tracked_node: NodePath
+
+var _tracked: Node2D = null
+
+func _ready() -> void:
+\t_tracked = get_node_or_null(tracked_node)
+
+func _process(_delta: float) -> void:
+\tqueue_redraw()
+
+func _draw() -> void:
+\tvar target: Node2D = _tracked if _tracked else get_parent() as Node2D
+\tif target == null: return
+\tvar dot_pos: Vector2 = minimap_offset + target.global_position * minimap_scale
+\tdraw_circle(dot_pos, dot_radius, dot_color)
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteInteractionPromptScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const promptText = args.promptText ?? 'Press E';
+    const content = `extends Area2D
+
+## Floating interaction prompt UI.
+
+@export var prompt_text: String = "${promptText}"
+@export var prompt_offset: Vector2 = Vector2(0.0, -40.0)
+
+var _label: Label = null
+var _player_inside: bool = false
+
+func _ready() -> void:
+\t_label = Label.new()
+\t_label.text = prompt_text
+\t_label.position = prompt_offset
+\t_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+\t_label.visible = false
+\tadd_child(_label)
+\tbody_entered.connect(func(b): if b.is_in_group("player"): _show_prompt())
+\tbody_exited.connect(func(b): if b.is_in_group("player"): _hide_prompt())
+
+func _show_prompt() -> void:
+\t_player_inside = true
+\t_label.visible = true
+
+func _hide_prompt() -> void:
+\t_player_inside = false
+\t_label.visible = false
+
+func is_player_nearby() -> bool:
+\treturn _player_inside
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteHealthRegenerationScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const regenRate = args.regenRate ?? 5.0;
+    const interval = args.interval ?? 1.0;
+    const content = `extends Node
+
+## Health regeneration over time.
+
+signal health_regenerated(amount: float, current: float)
+
+@export var regen_rate: float = ${regenRate}
+@export var regen_interval: float = ${interval}
+@export var max_health: float = 100.0
+
+var _current_health: float = 100.0
+var _timer: float = 0.0
+var _enabled: bool = true
+
+func _process(delta: float) -> void:
+\tif not _enabled: return
+\tif _current_health >= max_health: return
+\t_timer += delta
+\tif _timer >= regen_interval:
+\t\t_timer = 0.0
+\t\tvar amount: float = min(regen_rate, max_health - _current_health)
+\t\t_current_health += amount
+\t\thealth_regenerated.emit(amount, _current_health)
+
+func set_health(value: float) -> void:
+\t_current_health = clamp(value, 0.0, max_health)
+
+func get_health() -> float:
+\treturn _current_health
+
+func set_regen_enabled(enabled: bool) -> void:
+\t_enabled = enabled
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteStaminaSystemScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const maxStamina = args.maxStamina ?? 100;
+    const drainRate = args.drainRate ?? 20;
+    const rechargeRate = args.rechargeRate ?? 15;
+    const content = `extends Node
+
+## Sprint stamina system.
+
+signal stamina_changed(current: float, max_val: float)
+signal stamina_depleted
+
+@export var max_stamina: float = ${maxStamina}
+@export var drain_rate: float = ${drainRate}
+@export var recharge_rate: float = ${rechargeRate}
+
+var _stamina: float
+var _sprinting: bool = false
+
+func _ready() -> void:
+\t_stamina = max_stamina
+
+func _process(delta: float) -> void:
+\tif _sprinting and _stamina > 0.0:
+\t\t_stamina = max(0.0, _stamina - drain_rate * delta)
+\t\tif _stamina == 0.0: stamina_depleted.emit()
+\telif not _sprinting:
+\t\t_stamina = min(max_stamina, _stamina + recharge_rate * delta)
+\tstamina_changed.emit(_stamina, max_stamina)
+
+func set_sprinting(value: bool) -> void:
+\tif value and _stamina <= 0.0: return
+\t_sprinting = value
+
+func can_sprint() -> bool:
+\treturn _stamina > 0.0
+
+func get_stamina() -> float:
+\treturn _stamina
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteThrowableObjectScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const throwForce = args.throwForce ?? 500;
+    const content = `extends RigidBody2D
+
+## Throwable RigidBody2D object.
+
+signal thrown(direction: Vector2)
+signal landed
+
+@export var throw_force: float = ${throwForce}
+
+var _has_landed: bool = false
+
+func throw_in_direction(dir: Vector2) -> void:
+\tfreeze = false
+\tapply_central_impulse(dir.normalized() * throw_force)
+\tthrown.emit(dir)
+
+func _ready() -> void:
+\tbody_entered.connect(_on_body_entered)
+
+func _on_body_entered(_body: Node) -> void:
+\tif not _has_landed:
+\t\t_has_landed = true
+\t\tlanded.emit()
+
+func pick_up() -> void:
+\tfreeze = true
+\tlinear_velocity = Vector2.ZERO
+\tangular_velocity = 0.0
+\t_has_landed = false
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteParachuteScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const fallSpeed = args.fallSpeed ?? 50;
+    const content = `extends Node
+
+## Parachute slow-fall component. Attach to a CharacterBody2D parent.
+
+signal parachute_opened
+signal parachute_closed
+
+@export var slow_fall_speed: float = ${fallSpeed}
+@export var open_key: String = "ui_select"
+
+var _open: bool = false
+var _body: CharacterBody2D = null
+
+func _ready() -> void:
+\t_body = get_parent() as CharacterBody2D
+
+func _process(_delta: float) -> void:
+\tif Input.is_action_just_pressed(open_key):
+\t\t_open = not _open
+\t\tif _open: parachute_opened.emit()
+\t\telse: parachute_closed.emit()
+
+func _physics_process(_delta: float) -> void:
+\tif _body == null or not _open: return
+\tif _body.velocity.y > slow_fall_speed:
+\t\t_body.velocity.y = slow_fall_speed
+
+func is_open() -> bool:
+\treturn _open
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteStickyBombScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const fuseTime = args.fuseTime ?? 3.0;
+    const radius = args.radius ?? 120;
+    const content = `extends RigidBody2D
+
+## Sticky bomb that attaches to surfaces and explodes.
+
+signal exploded(position: Vector2, radius: float)
+
+@export var fuse_time: float = ${fuseTime}
+@export var explosion_radius: float = ${radius}
+
+var _stuck: bool = false
+
+func _ready() -> void:
+\tbody_entered.connect(_on_body_entered)
+
+func _on_body_entered(_body: Node) -> void:
+\tif _stuck: return
+\t_stuck = true
+\tfreeze = true
+\t_start_fuse()
+
+func _start_fuse() -> void:
+\tawait get_tree().create_timer(fuse_time).timeout
+\t_explode()
+
+func _explode() -> void:
+\texploded.emit(global_position, explosion_radius)
+\tfor body in get_tree().get_nodes_in_group("destructible"):
+\t\tif body is Node2D and (body as Node2D).global_position.distance_to(global_position) <= explosion_radius:
+\t\t\tif body.has_method("take_damage"): body.take_damage(50)
+\tqueue_free()
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteShockwaveScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const radius = args.radius ?? 200;
+    const damage = args.damage ?? 30;
+    const duration = args.duration ?? 0.3;
+    const content = `extends Node2D
+
+## Shockwave radius damage effect.
+
+signal shockwave_hit(body: Node, damage: int)
+
+@export var wave_radius: float = ${radius}
+@export var wave_damage: int = ${damage}
+@export var wave_duration: float = ${duration}
+
+var _current_radius: float = 0.0
+var _active: bool = false
+
+func trigger() -> void:
+\t_current_radius = 0.0
+\t_active = true
+\tset_process(true)
+\t_apply_damage()
+
+func _process(delta: float) -> void:
+\tif not _active: return
+\t_current_radius += (wave_radius / wave_duration) * delta
+\tqueue_redraw()
+\tif _current_radius >= wave_radius:
+\t\t_active = false
+\t\tset_process(false)
+
+func _draw() -> void:
+\tif _active:
+\t\tdraw_arc(Vector2.ZERO, _current_radius, 0.0, TAU, 32, Color.ORANGE_RED, 2.0)
+
+func _apply_damage() -> void:
+\tfor body in get_tree().get_nodes_in_group("enemies"):
+\t\tif body is Node2D and (body as Node2D).global_position.distance_to(global_position) <= wave_radius:
+\t\t\tif body.has_method("take_damage"): body.take_damage(wave_damage)
+\t\t\tshockwave_hit.emit(body, wave_damage)
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteVfxSpawnScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const vfxScene = args.vfxScene ?? 'res://vfx/hit.tscn';
+    const content = `extends Node
+
+## VFX spawner on death or hit events.
+
+@export var vfx_scene_path: String = "${vfxScene}"
+
+var _vfx_scene: PackedScene = null
+
+func _ready() -> void:
+\tif ResourceLoader.exists(vfx_scene_path):
+\t\t_vfx_scene = load(vfx_scene_path)
+
+func spawn_vfx(world_position: Vector2, parent: Node = null) -> Node:
+\tif _vfx_scene == null: return null
+\tvar inst: Node = _vfx_scene.instantiate()
+\tvar p: Node = parent if parent else get_tree().current_scene
+\tp.add_child(inst)
+\tif inst is Node2D: (inst as Node2D).global_position = world_position
+\treturn inst
+
+func on_hit(world_position: Vector2) -> void:
+\tspawn_vfx(world_position)
+
+func on_death(world_position: Vector2) -> void:
+\tspawn_vfx(world_position)
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteScreenFlashScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const flashColor = args.flashColor ?? 'Color.WHITE';
+    const flashDuration = args.flashDuration ?? 0.1;
+    const content = `extends ColorRect
+
+## Screen flash ColorRect overlay.
+
+@export var flash_color: Color = ${flashColor}
+@export var flash_duration: float = ${flashDuration}
+
+func _ready() -> void:
+\tanchor_right = 1.0
+\tanchor_bottom = 1.0
+\tcolor = Color(flash_color.r, flash_color.g, flash_color.b, 0.0)
+\tmouse_filter = Control.MOUSE_FILTER_IGNORE
+
+func flash() -> void:
+\tcolor = flash_color
+\tvar tw: Tween = create_tween()
+\ttw.tween_property(self, "color:a", 0.0, flash_duration)
+
+func flash_custom(c: Color, duration: float) -> void:
+\tcolor = c
+\tvar tw: Tween = create_tween()
+\ttw.tween_property(self, "color:a", 0.0, duration)
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteTrailScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const maxPoints = args.maxPoints ?? 20;
+    const content = `extends Line2D
+
+## Line2D motion trail effect.
+
+@export var max_trail_points: int = ${maxPoints}
+@export var tracked_node: NodePath
+
+var _tracked: Node2D = null
+
+func _ready() -> void:
+\t_tracked = get_node_or_null(tracked_node)
+\tif _tracked == null: _tracked = get_parent() as Node2D
+
+func _process(_delta: float) -> void:
+\tif _tracked == null: return
+\tadd_point(to_local(_tracked.global_position))
+\twhile get_point_count() > max_trail_points:
+\t\tremove_point(0)
+
+func clear_trail() -> void:
+\tclear_points()
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteShadowCloneScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const cloneCount = args.cloneCount ?? 5;
+    const cloneLifetime = args.cloneLifetime ?? 0.3;
+    const content = `extends Node2D
+
+## Shadow afterimage clone effect.
+
+@export var clone_count: int = ${cloneCount}
+@export var clone_lifetime: float = ${cloneLifetime}
+@export var clone_modulate: Color = Color(0.5, 0.5, 1.0, 0.4)
+
+var _timer: float = 0.0
+var _interval: float
+
+func _ready() -> void:
+\t_interval = clone_lifetime / float(max(clone_count, 1))
+
+func _process(delta: float) -> void:
+\t_timer += delta
+\tif _timer >= _interval:
+\t\t_timer = 0.0
+\t\t_spawn_clone()
+
+func _spawn_clone() -> void:
+\tvar parent: Node2D = get_parent() as Node2D
+\tif parent == null: return
+\tvar sprite: Sprite2D = null
+\tfor child in parent.get_children():
+\t\tif child is Sprite2D: sprite = child as Sprite2D; break
+\tif sprite == null: return
+\tvar ghost: Sprite2D = Sprite2D.new()
+\tghost.texture = sprite.texture
+\tghost.global_position = parent.global_position
+\tghost.modulate = clone_modulate
+\tget_tree().current_scene.add_child(ghost)
+\tvar tw: Tween = ghost.create_tween()
+\ttw.tween_property(ghost, "modulate:a", 0.0, clone_lifetime)
+\ttw.tween_callback(ghost.queue_free)
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteStatusBarUiScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const barColor = args.barColor ?? 'Color.GREEN';
+    const content = `extends ProgressBar
+
+## Generic status bar (health/XP) UI component.
+
+@export var bar_color: Color = ${barColor}
+@export var smooth_speed: float = 5.0
+
+var _target_value: float = 0.0
+
+func _ready() -> void:
+\tvar style: StyleBoxFlat = StyleBoxFlat.new()
+\tstyle.bg_color = bar_color
+\tadd_theme_stylebox_override("fill", style)
+\t_target_value = value
+
+func set_value_smooth(new_value: float) -> void:
+\t_target_value = clamp(new_value, min_value, max_value)
+
+func set_value_immediate(new_value: float) -> void:
+\tvalue = clamp(new_value, min_value, max_value)
+\t_target_value = value
+
+func _process(delta: float) -> void:
+\tif abs(value - _target_value) > 0.01:
+\t\tvalue = lerp(value, _target_value, smooth_speed * delta)
+
+func get_ratio() -> float:
+\treturn (value - min_value) / (max_value - min_value)
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteHotbarUiScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const slotCount = args.slotCount ?? 8;
+    const content = `extends HBoxContainer
+
+## Hotbar item slots UI.
+
+signal slot_selected(index: int)
+
+@export var slot_count: int = ${slotCount}
+
+var _slots: Array[Panel] = []
+var _items: Array[Dictionary] = []
+var _selected: int = 0
+
+func _ready() -> void:
+\t_items.resize(slot_count)
+\t_items.fill({})
+\tfor i in slot_count:
+\t\tvar slot: Panel = Panel.new()
+\t\tslot.custom_minimum_size = Vector2(48.0, 48.0)
+\t\tadd_child(slot)
+\t\t_slots.append(slot)
+\t_highlight_slot(_selected)
+
+func select_slot(index: int) -> void:
+\t_highlight_slot(index)
+\t_selected = index
+\tslot_selected.emit(index)
+
+func _highlight_slot(index: int) -> void:
+\tfor i in _slots.size():
+\t\t_slots[i].modulate = Color.WHITE if i != index else Color.YELLOW
+
+func set_item(index: int, item: Dictionary) -> void:
+\tif index < 0 or index >= slot_count: return
+\t_items[index] = item
+
+func get_selected_item() -> Dictionary:
+\treturn _items[_selected]
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteMinimapUiScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const content = `extends SubViewportContainer
+
+## Viewport-based minimap UI panel.
+
+@export var minimap_size: Vector2 = Vector2(150.0, 150.0)
+@export var minimap_zoom: float = 0.1
+@export var tracked_node: NodePath
+
+var _camera: Camera2D = null
+var _viewport: SubViewport = null
+
+func _ready() -> void:
+\tcustom_minimum_size = minimap_size
+\tstretch = true
+\t_viewport = SubViewport.new()
+\t_viewport.size = Vector2i(minimap_size)
+\t_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+\tadd_child(_viewport)
+\t_camera = Camera2D.new()
+\t_camera.zoom = Vector2(minimap_zoom, minimap_zoom)
+\t_viewport.add_child(_camera)
+
+func _process(_delta: float) -> void:
+\tvar target: Node2D = get_node_or_null(tracked_node)
+\tif target and _camera:
+\t\t_camera.global_position = target.global_position
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteTooltipSystemScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const showDelay = args.showDelay ?? 0.5;
+    const content = `extends Control
+
+## Hover tooltip system.
+
+@export var show_delay: float = ${showDelay}
+@export var tooltip_offset: Vector2 = Vector2(12.0, 12.0)
+
+var _label: Label = null
+var _panel: Panel = null
+var _timer: float = 0.0
+var _pending_text: String = ""
+var _hovering: bool = false
+
+func _ready() -> void:
+\t_panel = Panel.new()
+\t_panel.visible = false
+\tadd_child(_panel)
+\t_label = Label.new()
+\t_panel.add_child(_label)
+\tset_process(true)
+
+func show_tooltip(text: String) -> void:
+\t_pending_text = text
+\t_hovering = true
+\t_timer = 0.0
+
+func hide_tooltip() -> void:
+\t_hovering = false
+\t_panel.visible = false
+\t_timer = 0.0
+
+func _process(delta: float) -> void:
+\tif _hovering:
+\t\t_timer += delta
+\t\tif _timer >= show_delay and not _panel.visible:
+\t\t\t_label.text = _pending_text
+\t\t\t_panel.size = _label.size + Vector2(16.0, 8.0)
+\t\t\t_panel.visible = true
+\t\t_panel.global_position = get_global_mouse_position() + tooltip_offset
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteDragDropSlotScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    const content = `extends Panel
+
+## Drag-and-drop item slot UI script.
+
+signal item_dropped_in(slot: Node, item: Dictionary)
+signal item_removed(slot: Node, item: Dictionary)
+
+var _item: Dictionary = {}
+var _icon: TextureRect = null
+
+func _ready() -> void:
+\t_icon = TextureRect.new()
+\t_icon.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+\t_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+\t_icon.set_anchors_preset(Control.PRESET_FULL_RECT)
+\tadd_child(_icon)
+\tmouse_filter = Control.MOUSE_FILTER_STOP
+
+func set_item(item: Dictionary) -> void:
+\t_item = item
+\tif item.has("texture") and item["texture"] is Texture2D:
+\t\t_icon.texture = item["texture"]
+\telse:
+\t\t_icon.texture = null
+
+func get_item() -> Dictionary:
+\treturn _item.duplicate()
+
+func clear_slot() -> void:
+\tvar old: Dictionary = _item.duplicate()
+\t_item = {}
+\t_icon.texture = null
+\tif not old.is_empty(): item_removed.emit(self, old)
+
+func _can_drop_data(_pos: Vector2, data: Variant) -> bool:
+\treturn data is Dictionary
+
+func _drop_data(_pos: Vector2, data: Variant) -> void:
+\tset_item(data)
+\titem_dropped_in.emit(self, _item)
+
+func _get_drag_data(_pos: Vector2) -> Variant:
+\tif _item.is_empty(): return null
+\tvar preview: TextureRect = TextureRect.new()
+\tpreview.texture = _icon.texture
+\tpreview.size = size
+\tset_drag_preview(preview)
+\tvar drag_data: Dictionary = _item.duplicate()
+\tclear_slot()
+\treturn drag_data
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  // ── Batch 77 — Group K: Extra UI gameCommand handlers ──────────────────────
+
+  private async handleGetThemeColor(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_theme_color', args, a => ({ node_path: a.nodePath ?? '', color_name: a.colorName ?? '' }));
+  }
+
+  private async handleGetThemeFontSize(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_theme_font_size', args, a => ({ node_path: a.nodePath ?? '', size_name: a.sizeName ?? '' }));
+  }
+
+  private async handleGetControlFocusOwner(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_control_focus_owner', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetControlFocusOwner(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_control_focus_owner', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleGetButtonGroup(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_button_group', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetButtonGroup(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_button_group', args, a => ({ node_path: a.nodePath ?? '', group_path: a.groupPath ?? '' }));
+  }
+
+  private async handleGetScrollContainerScroll(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_scroll_container_scroll', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetScrollContainerScroll(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_scroll_container_scroll', args, a => ({ node_path: a.nodePath ?? '', scroll_h: a.scrollH ?? 0, scroll_v: a.scrollV ?? 0 }));
+  }
+
+  private async handleGetNinePatchRectInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_nine_patch_rect_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetNinePatchRectPatchMargin(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_nine_patch_rect_patch_margin', args, a => ({ node_path: a.nodePath ?? '', side: a.side ?? 0, value: a.value ?? 0 }));
   }
 
   // ── Navigation / Discovery helpers ──────────────────────────────────────────
