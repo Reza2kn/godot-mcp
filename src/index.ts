@@ -18340,6 +18340,41 @@ class GodotServer {
       { name: 'write_leaderboard_script', description: 'Write a local leaderboard save/load script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, maxEntries: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_vfx_manager_script', description: 'Write a VFX/particle effect manager Autoload.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_ui_animation_script', description: 'Write UI show/hide tween animation helpers.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      // Batch 69 tool definitions
+      { name: 'find_gdscript_classes', description: "Find all 'class_name' declarations in GDScript files.", inputSchema: { type: 'object', properties: { projectPath: { type: 'string' } }, required: ['projectPath'] } },
+      { name: 'find_gdscript_exports', description: 'Find all @export variables across GDScript files.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' } }, required: ['projectPath'] } },
+      { name: 'find_gdscript_signals_defined', description: 'Find all signal definitions across GDScript files.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' } }, required: ['projectPath'] } },
+      { name: 'count_scene_nodes', description: 'Count the number of nodes in a .tscn scene file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' } }, required: ['projectPath', 'scenePath'] } },
+      { name: 'find_orphaned_gdscript_files', description: 'Find .gd files not referenced by any .tscn scene.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' } }, required: ['projectPath'] } },
+      { name: 'get_project_scene_list', description: 'List all .tscn and .scn scene files in project.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' } }, required: ['projectPath'] } },
+      { name: 'get_scene_script_assignments', description: 'Find which scripts are assigned to scenes.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' } }, required: ['projectPath'] } },
+      { name: 'search_in_gdscript_files', description: 'Search for a pattern string in all GDScript files.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, searchText: { type: 'string' } }, required: ['projectPath', 'searchText'] } },
+      { name: 'read_scene_file_raw', description: 'Read raw text content of a .tscn scene file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' } }, required: ['projectPath', 'scenePath'] } },
+      { name: 'get_scene_node_list', description: 'Parse and list all nodes from a .tscn scene file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' } }, required: ['projectPath', 'scenePath'] } },
+      { name: 'get_resource_file_info', description: 'Read metadata from a .tres resource file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, resourcePath: { type: 'string' } }, required: ['projectPath', 'resourcePath'] } },
+      { name: 'duplicate_scene_file', description: 'Copy a .tscn file to a new path in the project.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, sourcePath: { type: 'string' }, destPath: { type: 'string' } }, required: ['projectPath', 'sourcePath', 'destPath'] } },
+      { name: 'append_to_gdscript_file', description: 'Append code to the end of a .gd script file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, code: { type: 'string' } }, required: ['projectPath', 'scriptPath', 'code'] } },
+      { name: 'read_gdscript_file', description: 'Read the full content of a GDScript file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'get_skeleton_3d_info', description: 'Get bone count and names from a Skeleton3D node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_skeleton_3d_bone_pose_position', description: 'Set a bone pose position on Skeleton3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, boneIndex: { type: 'integer' }, x: { type: 'number' }, y: { type: 'number' }, z: { type: 'number' } }, required: ['nodePath', 'boneIndex'] } },
+      { name: 'get_skeleton_3d_bone_global_pose', description: 'Get global pose of a Skeleton3D bone.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, boneIndex: { type: 'integer' } }, required: ['nodePath', 'boneIndex'] } },
+      { name: 'reset_skeleton_3d_pose', description: 'Reset all bone poses on a Skeleton3D to rest.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_skeleton_3d_bone_name', description: 'Get the name of a bone by index in Skeleton3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, boneIndex: { type: 'integer' } }, required: ['nodePath', 'boneIndex'] } },
+      { name: 'find_skeleton_3d_bone_by_name', description: 'Find a bone index by name in Skeleton3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, boneName: { type: 'string' } }, required: ['nodePath', 'boneName'] } },
+      { name: 'set_skeleton_3d_bone_enabled', description: 'Enable or disable a Skeleton3D bone.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, boneIndex: { type: 'integer' }, enabled: { type: 'boolean' } }, required: ['nodePath', 'boneIndex'] } },
+      { name: 'write_save_screenshot_script', description: 'Write a screenshot capture and save script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_cutscene_player_script', description: 'Write a cutscene/cinematic player script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_random_map_generator_script', description: 'Write a procedural tile map generator.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, width: { type: 'integer' }, height: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_fov_cone_script', description: 'Write a field-of-view cone detection script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, fovAngle: { type: 'number' }, viewDistance: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_enemy_spawner_wave_script', description: 'Write a wave-based enemy spawner script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, waveCount: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_homing_missile_script', description: 'Write a homing missile projectile script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, speed: { type: 'number' }, turnSpeed: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_boomerang_script', description: 'Write a boomerang/returning projectile script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, speed: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_stealth_detection_script', description: 'Write a stealth/alert detection script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_pushback_script', description: 'Write a knockback/pushback force script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, pushForce: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_magnet_attract_script', description: 'Write a magnetic coin/item attractor script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, radius: { type: 'number' }, pullForce: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_slide_puzzle_script', description: 'Write a slide puzzle game logic script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, gridSize: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_match_3_board_script', description: 'Write a match-3 game board logic script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, cols: { type: 'integer' }, rows: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_tower_defense_base_script', description: 'Write a tower defense tower base script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, range: { type: 'number' }, fireRate: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
       ],
     }));
 
@@ -21477,6 +21512,75 @@ class GodotServer {
           return await this.handleWriteVfxManagerScript(request.params.arguments);
         case 'write_ui_animation_script':
           return await this.handleWriteUiAnimationScript(request.params.arguments);
+        // Batch 69 switch cases
+        case 'find_gdscript_classes':
+          return await this.handleFindGdscriptClasses(request.params.arguments);
+        case 'find_gdscript_exports':
+          return await this.handleFindGdscriptExports(request.params.arguments);
+        case 'find_gdscript_signals_defined':
+          return await this.handleFindGdscriptSignalsDefined(request.params.arguments);
+        case 'count_scene_nodes':
+          return await this.handleCountSceneNodes(request.params.arguments);
+        case 'find_orphaned_gdscript_files':
+          return await this.handleFindOrphanedGdscriptFiles(request.params.arguments);
+        case 'get_project_scene_list':
+          return await this.handleGetProjectSceneList(request.params.arguments);
+        case 'get_scene_script_assignments':
+          return await this.handleGetSceneScriptAssignments(request.params.arguments);
+        case 'search_in_gdscript_files':
+          return await this.handleSearchInGdscriptFiles(request.params.arguments);
+        case 'read_scene_file_raw':
+          return await this.handleReadSceneFileRaw(request.params.arguments);
+        case 'get_scene_node_list':
+          return await this.handleGetSceneNodeList(request.params.arguments);
+        case 'get_resource_file_info':
+          return await this.handleGetResourceFileInfo(request.params.arguments);
+        case 'duplicate_scene_file':
+          return await this.handleDuplicateSceneFile(request.params.arguments);
+        case 'append_to_gdscript_file':
+          return await this.handleAppendToGdscriptFile(request.params.arguments);
+        case 'read_gdscript_file':
+          return await this.handleReadGdscriptFile(request.params.arguments);
+        case 'get_skeleton_3d_info':
+          return await this.handleGetSkeleton3dInfo(request.params.arguments);
+        case 'set_skeleton_3d_bone_pose_position':
+          return await this.handleSetSkeleton3dBonePosePosition(request.params.arguments);
+        case 'get_skeleton_3d_bone_global_pose':
+          return await this.handleGetSkeleton3dBoneGlobalPose(request.params.arguments);
+        case 'reset_skeleton_3d_pose':
+          return await this.handleResetSkeleton3dPose(request.params.arguments);
+        case 'get_skeleton_3d_bone_name':
+          return await this.handleGetSkeleton3dBoneName(request.params.arguments);
+        case 'find_skeleton_3d_bone_by_name':
+          return await this.handleFindSkeleton3dBoneByName(request.params.arguments);
+        case 'set_skeleton_3d_bone_enabled':
+          return await this.handleSetSkeleton3dBoneEnabled(request.params.arguments);
+        case 'write_save_screenshot_script':
+          return await this.handleWriteSaveScreenshotScript(request.params.arguments);
+        case 'write_cutscene_player_script':
+          return await this.handleWriteCutscenePlayerScript(request.params.arguments);
+        case 'write_random_map_generator_script':
+          return await this.handleWriteRandomMapGeneratorScript(request.params.arguments);
+        case 'write_fov_cone_script':
+          return await this.handleWriteFovConeScript(request.params.arguments);
+        case 'write_enemy_spawner_wave_script':
+          return await this.handleWriteEnemySpawnerWaveScript(request.params.arguments);
+        case 'write_homing_missile_script':
+          return await this.handleWriteHomingMissileScript(request.params.arguments);
+        case 'write_boomerang_script':
+          return await this.handleWriteBoomerangScript(request.params.arguments);
+        case 'write_stealth_detection_script':
+          return await this.handleWriteStealthDetectionScript(request.params.arguments);
+        case 'write_pushback_script':
+          return await this.handleWritePushbackScript(request.params.arguments);
+        case 'write_magnet_attract_script':
+          return await this.handleWriteMagnetAttractScript(request.params.arguments);
+        case 'write_slide_puzzle_script':
+          return await this.handleWriteSlidePuzzleScript(request.params.arguments);
+        case 'write_match_3_board_script':
+          return await this.handleWriteMatch3BoardScript(request.params.arguments);
+        case 'write_tower_defense_base_script':
+          return await this.handleWriteTowerDefenseBaseScript(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -41739,6 +41843,891 @@ func shake(duration: float = 0.3, strength: float = 5.0) -> void:
     try {
       const dir = require('path').dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  // ── Batch 69 Handlers ────────────────────────────────────────────────────────
+
+  private async handleFindGdscriptClasses(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    const classes: any[] = [];
+    const walk = (dir: string) => {
+      if (!existsSync(dir)) return;
+      const entries = require('fs').readdirSync(dir, { withFileTypes: true });
+      for (const e of entries) {
+        const full = join(dir, e.name);
+        if (e.isDirectory() && !e.name.startsWith('.')) walk(full);
+        else if (e.isFile() && e.name.endsWith('.gd')) {
+          const content = readFileSync(full, 'utf8');
+          const m = content.match(/^class_name\s+(\w+)/m);
+          if (m) classes.push({ className: m[1], file: full.replace(args.projectPath + '/', 'res://') });
+        }
+      }
+    };
+    walk(args.projectPath);
+    return { content: [{ type: 'text', text: JSON.stringify({ classes, count: classes.length }) }] };
+  }
+
+  private async handleFindGdscriptExports(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    const exports: any[] = [];
+    const walk = (dir: string) => {
+      if (!existsSync(dir)) return;
+      const entries = require('fs').readdirSync(dir, { withFileTypes: true });
+      for (const e of entries) {
+        const full = join(dir, e.name);
+        if (e.isDirectory() && !e.name.startsWith('.')) walk(full);
+        else if (e.isFile() && e.name.endsWith('.gd')) {
+          const content = readFileSync(full, 'utf8');
+          const lines = content.split('\n');
+          for (let i = 0; i < lines.length; i++) {
+            const m = lines[i].match(/@export\s+var\s+(\w+)/);
+            if (m) exports.push({ variable: m[1], file: full.replace(args.projectPath + '/', 'res://'), line: i + 1 });
+          }
+        }
+      }
+    };
+    walk(args.projectPath);
+    return { content: [{ type: 'text', text: JSON.stringify({ exports, count: exports.length }) }] };
+  }
+
+  private async handleFindGdscriptSignalsDefined(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    const signals: any[] = [];
+    const walk = (dir: string) => {
+      if (!existsSync(dir)) return;
+      const entries = require('fs').readdirSync(dir, { withFileTypes: true });
+      for (const e of entries) {
+        const full = join(dir, e.name);
+        if (e.isDirectory() && !e.name.startsWith('.')) walk(full);
+        else if (e.isFile() && e.name.endsWith('.gd')) {
+          const content = readFileSync(full, 'utf8');
+          const lines = content.split('\n');
+          for (let i = 0; i < lines.length; i++) {
+            const m = lines[i].match(/^signal\s+(\w+)/m);
+            if (m) signals.push({ signal: m[1], file: full.replace(args.projectPath + '/', 'res://'), line: i + 1 });
+          }
+        }
+      }
+    };
+    walk(args.projectPath);
+    return { content: [{ type: 'text', text: JSON.stringify({ signals, count: signals.length }) }] };
+  }
+
+  private async handleCountSceneNodes(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    const absPath = args.scenePath.replace('res://', args.projectPath + '/');
+    if (!existsSync(absPath)) return createErrorResponse('Scene file not found.');
+    const content = readFileSync(absPath, 'utf8');
+    const nodeMatches = content.match(/\[node/g) ?? [];
+    const count = nodeMatches.length;
+    return { content: [{ type: 'text', text: JSON.stringify({ nodeCount: count, scenePath: args.scenePath }) }] };
+  }
+
+  private async handleFindOrphanedGdscriptFiles(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    const gdFiles: string[] = [];
+    const tscnContent: string[] = [];
+    const walk = (dir: string) => {
+      if (!existsSync(dir)) return;
+      const entries = require('fs').readdirSync(dir, { withFileTypes: true });
+      for (const e of entries) {
+        const full = join(dir, e.name);
+        if (e.isDirectory() && !e.name.startsWith('.')) walk(full);
+        else if (e.isFile() && e.name.endsWith('.gd')) gdFiles.push(full);
+        else if (e.isFile() && e.name.endsWith('.tscn')) tscnContent.push(readFileSync(full, 'utf8'));
+      }
+    };
+    walk(args.projectPath);
+    const allTscn = tscnContent.join('\n');
+    const orphaned = gdFiles.filter(f => !allTscn.includes(f.replace(args.projectPath + '/', 'res://'))).map(f => f.replace(args.projectPath + '/', 'res://'));
+    return { content: [{ type: 'text', text: JSON.stringify({ orphaned, count: orphaned.length, total: gdFiles.length }) }] };
+  }
+
+  private async handleGetProjectSceneList(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    const scenes: string[] = [];
+    const walk = (dir: string) => {
+      if (!existsSync(dir)) return;
+      const entries = require('fs').readdirSync(dir, { withFileTypes: true });
+      for (const e of entries) {
+        const full = join(dir, e.name);
+        if (e.isDirectory() && !e.name.startsWith('.')) walk(full);
+        else if (e.isFile() && (e.name.endsWith('.tscn') || e.name.endsWith('.scn'))) scenes.push(full.replace(args.projectPath + '/', 'res://'));
+      }
+    };
+    walk(args.projectPath);
+    return { content: [{ type: 'text', text: JSON.stringify({ scenes, count: scenes.length }) }] };
+  }
+
+  private async handleGetSceneScriptAssignments(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    const assignments: any[] = [];
+    const walk = (dir: string) => {
+      if (!existsSync(dir)) return;
+      const entries = require('fs').readdirSync(dir, { withFileTypes: true });
+      for (const e of entries) {
+        const full = join(dir, e.name);
+        if (e.isDirectory() && !e.name.startsWith('.')) walk(full);
+        else if (e.isFile() && e.name.endsWith('.tscn')) {
+          const content = readFileSync(full, 'utf8');
+          const scriptMatches = content.match(/script\s*=\s*ExtResource\("[^"]+"\)/g) ?? [];
+          if (scriptMatches.length > 0) {
+            assignments.push({ scene: full.replace(args.projectPath + '/', 'res://'), scriptRefs: scriptMatches.length });
+          }
+        }
+      }
+    };
+    walk(args.projectPath);
+    return { content: [{ type: 'text', text: JSON.stringify({ assignments, count: assignments.length }) }] };
+  }
+
+  private async handleSearchInGdscriptFiles(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.searchText) return createErrorResponse('projectPath and searchText are required.');
+    const results: any[] = [];
+    const walk = (dir: string) => {
+      if (!existsSync(dir)) return;
+      const entries = require('fs').readdirSync(dir, { withFileTypes: true });
+      for (const e of entries) {
+        const full = join(dir, e.name);
+        if (e.isDirectory() && !e.name.startsWith('.')) walk(full);
+        else if (e.isFile() && e.name.endsWith('.gd')) {
+          const lines = readFileSync(full, 'utf8').split('\n');
+          for (let i = 0; i < lines.length; i++) {
+            if (lines[i].includes(args.searchText)) {
+              results.push({ file: full.replace(args.projectPath + '/', 'res://'), line: i + 1, text: lines[i].trim() });
+            }
+          }
+        }
+      }
+    };
+    walk(args.projectPath);
+    return { content: [{ type: 'text', text: JSON.stringify({ results, count: results.length, searchText: args.searchText }) }] };
+  }
+
+  private async handleReadSceneFileRaw(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    const absPath = args.scenePath.replace('res://', args.projectPath + '/');
+    if (!existsSync(absPath)) return createErrorResponse('Scene file not found.');
+    const content = readFileSync(absPath, 'utf8');
+    const lines = content.split('\n').length;
+    return { content: [{ type: 'text', text: JSON.stringify({ content, lineCount: lines, scenePath: args.scenePath }) }] };
+  }
+
+  private async handleGetSceneNodeList(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    const absPath = args.scenePath.replace('res://', args.projectPath + '/');
+    if (!existsSync(absPath)) return createErrorResponse('Scene file not found.');
+    const content = readFileSync(absPath, 'utf8');
+    const nodes: any[] = [];
+    const regex = /\[node name="([^"]+)" type="([^"]+)"([^\]]*)\]/g;
+    let m;
+    while ((m = regex.exec(content)) !== null) {
+      const parentMatch = m[3].match(/parent="([^"]+)"/);
+      nodes.push({ name: m[1], type: m[2], parent: parentMatch ? parentMatch[1] : null });
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ nodes, count: nodes.length }) }] };
+  }
+
+  private async handleGetResourceFileInfo(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.resourcePath) return createErrorResponse('projectPath and resourcePath are required.');
+    const absPath = args.resourcePath.replace('res://', args.projectPath + '/');
+    if (!existsSync(absPath)) return createErrorResponse('Resource file not found.');
+    const content = readFileSync(absPath, 'utf8');
+    const typeMatch = content.match(/\[gd_resource type="([^"]+)"/);
+    const lines = content.split('\n').length;
+    return { content: [{ type: 'text', text: JSON.stringify({ type: typeMatch ? typeMatch[1] : 'unknown', lineCount: lines, resourcePath: args.resourcePath }) }] };
+  }
+
+  private async handleDuplicateSceneFile(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.sourcePath || !args.destPath) return createErrorResponse('projectPath, sourcePath and destPath are required.');
+    const absSrc = args.sourcePath.replace('res://', args.projectPath + '/');
+    const absDest = args.destPath.replace('res://', args.projectPath + '/');
+    if (!existsSync(absSrc)) return createErrorResponse('Source scene not found.');
+    try {
+      const dir = require('path').dirname(absDest);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      require('fs').copyFileSync(absSrc, absDest);
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, source: args.sourcePath, dest: args.destPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleAppendToGdscriptFile(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath || !args.code) return createErrorResponse('projectPath, scriptPath and code are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    if (!existsSync(absPath)) return createErrorResponse('Script file not found.');
+    try {
+      require('fs').appendFileSync(absPath, '\n' + args.code, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, appendedBytes: args.code.length }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleReadGdscriptFile(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    if (!existsSync(absPath)) return createErrorResponse('Script file not found.');
+    const content = readFileSync(absPath, 'utf8');
+    return { content: [{ type: 'text', text: JSON.stringify({ content, lineCount: content.split('\n').length, scriptPath: args.scriptPath }) }] };
+  }
+
+  private async handleGetSkeleton3dInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_skeleton_3d_info', args, (a: any) => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetSkeleton3dBonePosePosition(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_skeleton_3d_bone_pose_position', args, (a: any) => ({ node_path: a.nodePath, bone_index: a.boneIndex ?? 0, x: a.x ?? 0, y: a.y ?? 0, z: a.z ?? 0 }));
+  }
+
+  private async handleGetSkeleton3dBoneGlobalPose(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_skeleton_3d_bone_global_pose', args, (a: any) => ({ node_path: a.nodePath, bone_index: a.boneIndex ?? 0 }));
+  }
+
+  private async handleResetSkeleton3dPose(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('reset_skeleton_3d_pose', args, (a: any) => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetSkeleton3dBoneName(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_skeleton_3d_bone_name', args, (a: any) => ({ node_path: a.nodePath, bone_index: a.boneIndex ?? 0 }));
+  }
+
+  private async handleFindSkeleton3dBoneByName(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('find_skeleton_3d_bone_by_name', args, (a: any) => ({ node_path: a.nodePath, bone_name: a.boneName ?? '' }));
+  }
+
+  private async handleSetSkeleton3dBoneEnabled(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_skeleton_3d_bone_enabled', args, (a: any) => ({ node_path: a.nodePath, bone_index: a.boneIndex ?? 0, enabled: a.enabled !== false }));
+  }
+
+  private async handleWriteSaveScreenshotScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+
+signal screenshot_saved(path)
+
+@export var save_dir: String = "user://screenshots"
+
+func _ready() -> void:
+    if not DirAccess.dir_exists_absolute(save_dir):
+        DirAccess.make_dir_recursive_absolute(save_dir)
+
+func take_screenshot(filename: String = "") -> String:
+    if filename.is_empty():
+        filename = "screenshot_%s.png" % Time.get_datetime_string_from_system().replace(":", "-")
+    var image := get_viewport().get_texture().get_image()
+    var path := save_dir.path_join(filename)
+    image.save_png(path)
+    screenshot_saved.emit(path)
+    return path
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteCutscenePlayerScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+
+signal cutscene_started
+signal cutscene_finished
+
+@export var skip_allowed: bool = true
+
+var _playing: bool = false
+var _steps: Array[Callable] = []
+var _current: int = 0
+
+func add_step(fn: Callable) -> void:
+    _steps.append(fn)
+
+func play() -> void:
+    if _playing:
+        return
+    _playing = true
+    _current = 0
+    cutscene_started.emit()
+    _run_next()
+
+func _run_next() -> void:
+    if _current >= _steps.size():
+        _playing = false
+        cutscene_finished.emit()
+        return
+    _steps[_current].call()
+    _current += 1
+
+func next_step() -> void:
+    _run_next()
+
+func skip() -> void:
+    if skip_allowed and _playing:
+        _playing = false
+        cutscene_finished.emit()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteRandomMapGeneratorScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const width = args.width ?? 20;
+    const height = args.height ?? 20;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends TileMap
+
+@export var map_width: int = ${width}
+@export var map_height: int = ${height}
+@export var wall_tile: Vector2i = Vector2i(0, 0)
+@export var floor_tile: Vector2i = Vector2i(1, 0)
+@export var fill_chance: float = 0.45
+
+const LAYER := 0
+
+func _ready() -> void:
+    generate()
+
+func generate() -> void:
+    randomize()
+    clear()
+    for x in map_width:
+        for y in map_height:
+            var is_border := x == 0 or y == 0 or x == map_width - 1 or y == map_height - 1
+            if is_border or randf() < fill_chance:
+                set_cell(LAYER, Vector2i(x, y), 0, wall_tile)
+            else:
+                set_cell(LAYER, Vector2i(x, y), 0, floor_tile)
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteFovConeScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const fovAngle = args.fovAngle ?? 90;
+    const viewDistance = args.viewDistance ?? 200;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node2D
+
+signal target_spotted(target)
+signal target_lost
+
+@export var fov_angle: float = ${fovAngle}
+@export var view_distance: float = ${viewDistance}
+@export var target_layer: int = 2
+
+var _target: Node2D = null
+
+func _process(_delta: float) -> void:
+    _scan()
+
+func _scan() -> void:
+    var space := get_world_2d().direct_space_state
+    var bodies := get_tree().get_nodes_in_group("enemies") + get_tree().get_nodes_in_group("players")
+    for body in bodies:
+        if body == get_parent():
+            continue
+        var diff: Vector2 = body.global_position - global_position
+        if diff.length() > view_distance:
+            continue
+        var angle := rad_to_deg(global_transform.x.angle_to(diff.normalized()))
+        if abs(angle) <= fov_angle * 0.5:
+            if _target != body:
+                _target = body
+                target_spotted.emit(body)
+            return
+    if _target:
+        _target = null
+        target_lost.emit()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteEnemySpawnerWaveScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const waveCount = args.waveCount ?? 5;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+
+signal wave_started(wave_number)
+signal wave_cleared
+signal all_waves_done
+
+@export var enemy_scene: PackedScene
+@export var max_waves: int = ${waveCount}
+@export var enemies_per_wave: int = 5
+@export var spawn_point: NodePath
+
+var current_wave: int = 0
+var _alive: int = 0
+
+func start_next_wave() -> void:
+    if current_wave >= max_waves:
+        all_waves_done.emit()
+        return
+    current_wave += 1
+    _alive = enemies_per_wave + (current_wave - 1) * 2
+    wave_started.emit(current_wave)
+    for i in _alive:
+        _spawn_enemy()
+
+func _spawn_enemy() -> void:
+    if not enemy_scene:
+        return
+    var e := enemy_scene.instantiate()
+    var sp := get_node_or_null(spawn_point)
+    var pos: Vector2 = sp.global_position if sp else global_position
+    e.position = pos + Vector2(randf_range(-50, 50), randf_range(-50, 50))
+    get_parent().add_child(e)
+    if e.has_signal("died"):
+        e.died.connect(_on_enemy_died)
+
+func _on_enemy_died() -> void:
+    _alive -= 1
+    if _alive <= 0:
+        wave_cleared.emit()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteHomingMissileScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const speed = args.speed ?? 150;
+    const turnSpeed = args.turnSpeed ?? 3.0;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Area2D
+
+signal hit_target
+
+@export var speed: float = ${speed}
+@export var turn_speed: float = ${turnSpeed}
+@export var damage: int = 10
+@export var lifetime: float = 5.0
+
+var target: Node2D = null
+var _velocity: Vector2 = Vector2.RIGHT
+
+func _ready() -> void:
+    body_entered.connect(_on_body_entered)
+    get_tree().create_timer(lifetime).timeout.connect(queue_free)
+
+func _physics_process(delta: float) -> void:
+    if is_instance_valid(target):
+        var desired := (target.global_position - global_position).normalized()
+        _velocity = _velocity.lerp(desired, turn_speed * delta).normalized()
+    global_position += _velocity * speed * delta
+    rotation = _velocity.angle()
+
+func _on_body_entered(body: Node) -> void:
+    if body == target or target == null:
+        hit_target.emit()
+        queue_free()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteBoomerangScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const speed = args.speed ?? 200;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Area2D
+
+signal returned_to_owner
+
+@export var speed: float = ${speed}
+@export var max_distance: float = 300.0
+@export var spin_speed: float = 10.0
+
+var _owner_node: Node2D
+var _direction: Vector2
+var _traveled: float = 0.0
+var _returning: bool = false
+
+func launch(from: Node2D, dir: Vector2) -> void:
+    _owner_node = from
+    _direction = dir.normalized()
+    global_position = from.global_position
+
+func _physics_process(delta: float) -> void:
+    rotation += spin_speed * delta
+    if _returning:
+        if is_instance_valid(_owner_node):
+            var diff := _owner_node.global_position - global_position
+            if diff.length() < 20.0:
+                returned_to_owner.emit()
+                queue_free()
+                return
+            global_position += diff.normalized() * speed * delta
+    else:
+        global_position += _direction * speed * delta
+        _traveled += speed * delta
+        if _traveled >= max_distance:
+            _returning = true
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteStealthDetectionScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+
+signal alert_raised(target)
+signal alert_cleared
+
+@export var detection_range: float = 150.0
+@export var alert_time: float = 2.0
+
+var alert_level: float = 0.0
+var _target: Node2D = null
+
+func _process(delta: float) -> void:
+    if is_instance_valid(_target):
+        var dist := get_parent().global_position.distance_to(_target.global_position)
+        if dist < detection_range:
+            alert_level = minf(alert_level + delta / alert_time, 1.0)
+            if alert_level >= 1.0:
+                alert_raised.emit(_target)
+        else:
+            alert_level = maxf(alert_level - delta, 0.0)
+            if alert_level <= 0.0:
+                alert_cleared.emit()
+
+func set_target(t: Node2D) -> void:
+    _target = t
+
+func is_alerted() -> bool:
+    return alert_level >= 1.0
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWritePushbackScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const pushForce = args.pushForce ?? 300;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+
+@export var push_force: float = ${pushForce}
+@export var friction: float = 10.0
+
+var _pushback: Vector2 = Vector2.ZERO
+
+func apply_pushback(direction: Vector2, multiplier: float = 1.0) -> void:
+    _pushback = direction.normalized() * push_force * multiplier
+
+func _physics_process(delta: float) -> void:
+    if _pushback.length() > 1.0:
+        var parent := get_parent()
+        if parent.has_method("move_and_collide"):
+            parent.move_and_collide(_pushback * delta)
+        _pushback = _pushback.lerp(Vector2.ZERO, friction * delta)
+    else:
+        _pushback = Vector2.ZERO
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteMagnetAttractScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const radius = args.radius ?? 100;
+    const pullForce = args.pullForce ?? 200;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+
+@export var attract_radius: float = ${radius}
+@export var pull_force: float = ${pullForce}
+@export var attract_group: String = "collectibles"
+
+func _physics_process(delta: float) -> void:
+    var parent := get_parent() as Node2D
+    if not parent:
+        return
+    for item in get_tree().get_nodes_in_group(attract_group):
+        if item is Node2D:
+            var diff: Vector2 = parent.global_position - item.global_position
+            if diff.length() < attract_radius:
+                var move := diff.normalized() * pull_force * delta
+                if item.has_method("move_and_collide"):
+                    item.move_and_collide(move)
+                else:
+                    item.global_position += move
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteSlidePuzzleScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const gridSize = args.gridSize ?? 3;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+
+signal puzzle_solved
+
+@export var grid_size: int = ${gridSize}
+
+var _tiles: Array = []
+var _blank: Vector2i = Vector2i(grid_size - 1, grid_size - 1)
+
+func _ready() -> void:
+    _init_tiles()
+    shuffle()
+
+func _init_tiles() -> void:
+    _tiles.clear()
+    var n := grid_size * grid_size
+    for i in n:
+        _tiles.append(i)
+
+func shuffle() -> void:
+    for _i in range(100):
+        var moves := [Vector2i(0,1), Vector2i(0,-1), Vector2i(1,0), Vector2i(-1,0)]
+        var mv: Vector2i = moves[randi() % moves.size()]
+        _try_move(_blank + mv)
+
+func _try_move(pos: Vector2i) -> bool:
+    if pos.x < 0 or pos.y < 0 or pos.x >= grid_size or pos.y >= grid_size:
+        return false
+    var idx_blank := _blank.y * grid_size + _blank.x
+    var idx_target := pos.y * grid_size + pos.x
+    var tmp := _tiles[idx_blank]
+    _tiles[idx_blank] = _tiles[idx_target]
+    _tiles[idx_target] = tmp
+    _blank = pos
+    return true
+
+func move_tile(pos: Vector2i) -> bool:
+    var diff := pos - _blank
+    if abs(diff.x) + abs(diff.y) != 1:
+        return false
+    if _try_move(pos):
+        if _is_solved():
+            puzzle_solved.emit()
+        return true
+    return false
+
+func _is_solved() -> bool:
+    for i in _tiles.size():
+        if _tiles[i] != i:
+            return false
+    return true
+
+func get_tile(pos: Vector2i) -> int:
+    return _tiles[pos.y * grid_size + pos.x]
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteMatch3BoardScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const cols = args.cols ?? 8;
+    const rows = args.rows ?? 8;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+
+signal match_found(cells)
+signal board_stable
+
+@export var cols: int = ${cols}
+@export var rows: int = ${rows}
+@export var gem_types: int = 5
+
+var _board: Array = []
+
+func _ready() -> void:
+    fill_board()
+
+func fill_board() -> void:
+    _board.resize(cols)
+    for x in cols:
+        _board[x] = []
+        _board[x].resize(rows)
+        for y in rows:
+            _board[x][y] = randi() % gem_types
+
+func swap(a: Vector2i, b: Vector2i) -> bool:
+    if abs(a.x - b.x) + abs(a.y - b.y) != 1:
+        return false
+    var tmp := _board[a.x][a.y]
+    _board[a.x][a.y] = _board[b.x][b.y]
+    _board[b.x][b.y] = tmp
+    var matches := find_matches()
+    if matches.is_empty():
+        # Revert
+        tmp = _board[a.x][a.y]
+        _board[a.x][a.y] = _board[b.x][b.y]
+        _board[b.x][b.y] = tmp
+        return false
+    _clear_matches(matches)
+    return true
+
+func find_matches() -> Array:
+    var matched: Array = []
+    for x in cols:
+        for y in rows - 2:
+            if _board[x][y] == _board[x][y+1] and _board[x][y] == _board[x][y+2]:
+                matched.append_array([Vector2i(x,y), Vector2i(x,y+1), Vector2i(x,y+2)])
+    for y in rows:
+        for x in cols - 2:
+            if _board[x][y] == _board[x+1][y] and _board[x][y] == _board[x+2][y]:
+                matched.append_array([Vector2i(x,y), Vector2i(x+1,y), Vector2i(x+2,y)])
+    return matched
+
+func _clear_matches(cells: Array) -> void:
+    for c in cells:
+        _board[c.x][c.y] = -1
+    match_found.emit(cells)
+    board_stable.emit()
+
+func get_cell(x: int, y: int) -> int:
+    return _board[x][y]
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteTowerDefenseBaseScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const range = args.range ?? 150;
+    const fireRate = args.fireRate ?? 1.0;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node2D
+
+signal enemy_targeted(enemy)
+signal projectile_fired(at_position)
+
+@export var attack_range: float = ${range}
+@export var fire_rate: float = ${fireRate}
+@export var damage: int = 10
+@export var projectile_scene: PackedScene
+@export var enemy_group: String = "enemies"
+
+var _target: Node2D = null
+var _fire_timer: float = 0.0
+
+func _process(delta: float) -> void:
+    _fire_timer -= delta
+    _find_target()
+    if is_instance_valid(_target) and _fire_timer <= 0.0:
+        _fire()
+        _fire_timer = 1.0 / fire_rate
+
+func _find_target() -> void:
+    _target = null
+    var best_dist := attack_range
+    for e in get_tree().get_nodes_in_group(enemy_group):
+        if e is Node2D:
+            var d := global_position.distance_to(e.global_position)
+            if d < best_dist:
+                best_dist = d
+                _target = e
+    if _target:
+        enemy_targeted.emit(_target)
+
+func _fire() -> void:
+    projectile_fired.emit(_target.global_position)
+    if projectile_scene:
+        var p := projectile_scene.instantiate()
+        get_parent().add_child(p)
+        p.global_position = global_position
+        if p.has_method("launch"):
+            p.launch(_target)
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }

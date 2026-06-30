@@ -1999,6 +1999,32 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_nodes_with_script(params)
 		"set_group_process":
 			_cmd_set_group_process(params)
+		"get_skeleton_3d_info":
+			_cmd_get_skeleton_3d_info(params)
+		"set_skeleton_3d_bone_pose_position":
+			_cmd_set_skeleton_3d_bone_pose_position(params)
+		"get_skeleton_3d_bone_global_pose":
+			_cmd_get_skeleton_3d_bone_global_pose(params)
+		"reset_skeleton_3d_pose":
+			_cmd_reset_skeleton_3d_pose(params)
+		"get_skeleton_3d_bone_name":
+			_cmd_get_skeleton_3d_bone_name(params)
+		"find_skeleton_3d_bone_by_name":
+			_cmd_find_skeleton_3d_bone_by_name(params)
+		"set_skeleton_3d_bone_enabled":
+			_cmd_set_skeleton_3d_bone_enabled(params)
+		"create_http_request_node":
+			_cmd_create_http_request_node(params)
+		"get_last_http_response":
+			_cmd_get_last_http_response(params)
+		"download_file_via_http":
+			_cmd_download_file_via_http(params)
+		"get_node_children_recursive":
+			_cmd_get_node_children_recursive(params)
+		"get_scene_instanced_count":
+			_cmd_get_scene_instanced_count(params)
+		"get_animation_player_animations":
+			_cmd_get_animation_player_animations(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -16379,6 +16405,181 @@ func _cmd_set_group_process(params: Dictionary) -> void:
 		node.set_physics_process(enabled)
 		count += 1
 	_send_response({"success": true, "group": group_name, "process_enabled": enabled, "affected": count})
+
+
+func _cmd_get_skeleton_3d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Skeleton3D:
+		_send_response({"error": "Skeleton3D not found: " + node_path})
+		return
+	var skel := node as Skeleton3D
+	var bone_names = []
+	for i in range(skel.get_bone_count()):
+		bone_names.append(skel.get_bone_name(i))
+	_send_response({"success": true, "bone_count": skel.get_bone_count(), "bone_names": bone_names})
+
+
+func _cmd_set_skeleton_3d_bone_pose_position(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var bone_index: int = params.get("bone_index", 0)
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Skeleton3D:
+		_send_response({"error": "Skeleton3D not found: " + node_path})
+		return
+	var skel := node as Skeleton3D
+	var pose = skel.get_bone_pose(bone_index)
+	pose.origin = Vector3(x, y, z)
+	skel.set_bone_pose(bone_index, pose)
+	_send_response({"success": true, "bone_index": bone_index, "position": {"x": x, "y": y, "z": z}})
+
+
+func _cmd_get_skeleton_3d_bone_global_pose(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var bone_index: int = params.get("bone_index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Skeleton3D:
+		_send_response({"error": "Skeleton3D not found: " + node_path})
+		return
+	var pose = (node as Skeleton3D).get_bone_global_pose(bone_index)
+	var origin = pose.origin
+	_send_response({"success": true, "bone_index": bone_index, "position": {"x": origin.x, "y": origin.y, "z": origin.z}})
+
+
+func _cmd_reset_skeleton_3d_pose(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Skeleton3D:
+		_send_response({"error": "Skeleton3D not found: " + node_path})
+		return
+	var skel := node as Skeleton3D
+	for i in range(skel.get_bone_count()):
+		skel.set_bone_pose(i, skel.get_bone_rest(i))
+	_send_response({"success": true, "reset_bones": skel.get_bone_count()})
+
+
+func _cmd_get_skeleton_3d_bone_name(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var bone_index: int = params.get("bone_index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Skeleton3D:
+		_send_response({"error": "Skeleton3D not found: " + node_path})
+		return
+	_send_response({"success": true, "bone_name": (node as Skeleton3D).get_bone_name(bone_index), "bone_index": bone_index})
+
+
+func _cmd_find_skeleton_3d_bone_by_name(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var bone_name: String = params.get("bone_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Skeleton3D:
+		_send_response({"error": "Skeleton3D not found: " + node_path})
+		return
+	var idx = (node as Skeleton3D).find_bone(bone_name)
+	_send_response({"success": true, "bone_name": bone_name, "bone_index": idx, "found": idx >= 0})
+
+
+func _cmd_set_skeleton_3d_bone_enabled(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var bone_index: int = params.get("bone_index", 0)
+	var enabled: bool = params.get("enabled", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Skeleton3D:
+		_send_response({"error": "Skeleton3D not found: " + node_path})
+		return
+	(node as Skeleton3D).set_bone_enabled(bone_index, enabled)
+	_send_response({"success": true, "bone_index": bone_index, "enabled": enabled})
+
+
+func _cmd_create_http_request_node(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var request_name: String = params.get("request_name", "HTTPRequest")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Parent node not found: " + node_path})
+		return
+	var existing = node.get_node_or_null(request_name)
+	if existing != null:
+		_send_response({"success": true, "note": "HTTPRequest already exists", "name": request_name})
+		return
+	var http_req = HTTPRequest.new()
+	http_req.name = request_name
+	node.add_child(http_req)
+	_send_response({"success": true, "created": request_name, "parent": node_path})
+
+
+func _cmd_get_last_http_response(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is HTTPRequest:
+		_send_response({"error": "HTTPRequest not found: " + node_path})
+		return
+	_send_response({"success": true, "is_requesting": (node as HTTPRequest).is_requesting(), "body_size_limit": (node as HTTPRequest).body_size_limit})
+
+
+func _cmd_download_file_via_http(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var url: String = params.get("url", "")
+	var save_path: String = params.get("save_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is HTTPRequest:
+		_send_response({"error": "HTTPRequest not found: " + node_path})
+		return
+	if url.is_empty():
+		_send_response({"error": "url is required"})
+		return
+	(node as HTTPRequest).download_file = save_path
+	(node as HTTPRequest).request(url)
+	_send_response({"success": true, "url": url, "save_path": save_path, "note": "Download started asynchronously"})
+
+
+func _cmd_get_node_children_recursive(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var max_depth: int = params.get("max_depth", 5)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var result = []
+	var stack = [[node, 0]]
+	while stack.size() > 0:
+		var entry = stack.pop_back()
+		var current = entry[0]
+		var depth = entry[1]
+		if depth > 0:
+			result.append({"name": current.name, "class": current.get_class(), "path": str(current.get_path()), "depth": depth})
+		if depth < max_depth:
+			for child in current.get_children():
+				stack.push_back([child, depth + 1])
+	_send_response({"success": true, "children": result, "count": result.size()})
+
+
+func _cmd_get_scene_instanced_count(params: Dictionary) -> void:
+	var scene_path: String = params.get("scene_path", "")
+	var count = 0
+	var queue = [get_tree().current_scene]
+	while queue.size() > 0:
+		var node = queue.pop_front()
+		if node == null:
+			continue
+		if node.scene_file_path == scene_path:
+			count += 1
+		for child in node.get_children():
+			queue.append(child)
+	_send_response({"success": true, "scene_path": scene_path, "instance_count": count})
+
+
+func _cmd_get_animation_player_animations(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	var anim_list = (node as AnimationPlayer).get_animation_list()
+	_send_response({"success": true, "animations": Array(anim_list), "count": anim_list.size()})
 
 
 func _exit_tree() -> void:
