@@ -14017,6 +14017,428 @@ class GodotServer {
       ],
     }));
 
+    // ── Batch 46 tool definitions ──────────────────────────────────────────────
+    this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
+      tools: [
+        // Group A: Node type adders
+        {
+          name: 'add_animatable_body_2d_to_scene',
+          description: 'Add AnimatableBody2D node to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_animatable_body_3d_to_scene',
+          description: 'Add AnimatableBody3D node to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_audio_listener_2d_to_scene',
+          description: 'Add AudioListener2D node to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_canvas_group_to_scene',
+          description: 'Add CanvasGroup node to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_light_occluder_2d_to_scene',
+          description: 'Add LightOccluder2D node to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_navigation_link_2d_to_scene',
+          description: 'Add NavigationLink2D to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_navigation_link_3d_to_scene',
+          description: 'Add NavigationLink3D to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_navigation_obstacle_2d_to_scene',
+          description: 'Add NavigationObstacle2D to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_navigation_obstacle_3d_to_scene',
+          description: 'Add NavigationObstacle3D to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_skeleton_2d_to_scene',
+          description: 'Add Skeleton2D node to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_bone_2d_to_scene',
+          description: 'Add Bone2D node to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_physical_bone_2d_to_scene',
+          description: 'Add PhysicalBone2D node to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_physical_bone_3d_to_scene',
+          description: 'Add PhysicalBone3D node to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_skeleton_ik_3d_to_scene',
+          description: 'Add SkeletonIK3D node to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_parallax_2d_to_scene',
+          description: 'Add Parallax2D node to a scene file (Godot 4.3+).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_mesh_instance_3d_to_scene',
+          description: 'Add MeshInstance3D node to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_check_box_to_scene',
+          description: 'Add CheckBox toggle node to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_h_slider_to_scene',
+          description: 'Add HSlider node to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_v_slider_to_scene',
+          description: 'Add VSlider node to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_h_scroll_bar_to_scene',
+          description: 'Add HScrollBar node to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_v_scroll_bar_to_scene',
+          description: 'Add VScrollBar node to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_h_separator_to_scene',
+          description: 'Add HSeparator line node to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_color_picker_to_scene',
+          description: 'Add ColorPicker widget node to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_window_to_scene',
+          description: 'Add Window node (separate OS window) to scene.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        // Group B: Runtime control tools (gameCommand)
+        {
+          name: 'get_game_fps',
+          description: 'Get the current frames per second of the running game.',
+          inputSchema: { type: 'object', properties: {} },
+        },
+        {
+          name: 'get_game_time_elapsed',
+          description: 'Get total time in seconds since the game started.',
+          inputSchema: { type: 'object', properties: {} },
+        },
+        {
+          name: 'pause_game',
+          description: "Pause the game's SceneTree (stops _process on all nodes).",
+          inputSchema: { type: 'object', properties: {} },
+        },
+        {
+          name: 'unpause_game',
+          description: "Unpause the game's SceneTree (resumes processing).",
+          inputSchema: { type: 'object', properties: {} },
+        },
+        {
+          name: 'is_game_paused',
+          description: "Check if the game's SceneTree is currently paused.",
+          inputSchema: { type: 'object', properties: {} },
+        },
+        {
+          name: 'change_scene_to_file',
+          description: 'Change the running game to a different scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              scenePath: { type: 'string' },
+            },
+            required: ['scenePath'],
+          },
+        },
+        {
+          name: 'get_current_scene_name',
+          description: 'Get the name of the currently active scene.',
+          inputSchema: { type: 'object', properties: {} },
+        },
+        {
+          name: 'get_node_class_name',
+          description: 'Get the class name of a node in the running game.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_engine_time_scale',
+          description: 'Set Engine time scale (1.0=normal, 0.5=half speed).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              timeScale: { type: 'number' },
+            },
+            required: ['timeScale'],
+          },
+        },
+        {
+          name: 'get_engine_time_scale',
+          description: 'Get the current Engine time scale.',
+          inputSchema: { type: 'object', properties: {} },
+        },
+        {
+          name: 'get_game_screen_size',
+          description: 'Get the game window screen size in pixels.',
+          inputSchema: { type: 'object', properties: {} },
+        },
+        {
+          name: 'get_game_mouse_position',
+          description: 'Get current mouse position in the game viewport.',
+          inputSchema: { type: 'object', properties: {} },
+        },
+      ],
+    }));
+
     // Handle tool calls
     this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
       this.logDebug(`Handling tool request: ${request.params.name}`);
@@ -16093,6 +16515,79 @@ class GodotServer {
           return await this.handleGetWorkflow(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
+        // Batch 46 switch cases
+        case 'add_animatable_body_2d_to_scene':
+          return await this.handleAddAnimatableBody2dToScene(request.params.arguments);
+        case 'add_animatable_body_3d_to_scene':
+          return await this.handleAddAnimatableBody3dToScene(request.params.arguments);
+        case 'add_audio_listener_2d_to_scene':
+          return await this.handleAddAudioListener2dToScene(request.params.arguments);
+        case 'add_canvas_group_to_scene':
+          return await this.handleAddCanvasGroupToScene(request.params.arguments);
+        case 'add_light_occluder_2d_to_scene':
+          return await this.handleAddLightOccluder2dToScene(request.params.arguments);
+        case 'add_navigation_link_2d_to_scene':
+          return await this.handleAddNavigationLink2dToScene(request.params.arguments);
+        case 'add_navigation_link_3d_to_scene':
+          return await this.handleAddNavigationLink3dToScene(request.params.arguments);
+        case 'add_navigation_obstacle_2d_to_scene':
+          return await this.handleAddNavigationObstacle2dToScene(request.params.arguments);
+        case 'add_navigation_obstacle_3d_to_scene':
+          return await this.handleAddNavigationObstacle3dToScene(request.params.arguments);
+        case 'add_skeleton_2d_to_scene':
+          return await this.handleAddSkeleton2dToScene(request.params.arguments);
+        case 'add_bone_2d_to_scene':
+          return await this.handleAddBone2dToScene(request.params.arguments);
+        case 'add_physical_bone_2d_to_scene':
+          return await this.handleAddPhysicalBone2dToScene(request.params.arguments);
+        case 'add_physical_bone_3d_to_scene':
+          return await this.handleAddPhysicalBone3dToScene(request.params.arguments);
+        case 'add_skeleton_ik_3d_to_scene':
+          return await this.handleAddSkeletonIk3dToScene(request.params.arguments);
+        case 'add_parallax_2d_to_scene':
+          return await this.handleAddParallax2dToScene(request.params.arguments);
+        case 'add_mesh_instance_3d_to_scene':
+          return await this.handleAddMeshInstance3dToScene(request.params.arguments);
+        case 'add_check_box_to_scene':
+          return await this.handleAddCheckBoxToScene(request.params.arguments);
+        case 'add_h_slider_to_scene':
+          return await this.handleAddHSliderToScene(request.params.arguments);
+        case 'add_v_slider_to_scene':
+          return await this.handleAddVSliderToScene(request.params.arguments);
+        case 'add_h_scroll_bar_to_scene':
+          return await this.handleAddHScrollBarToScene(request.params.arguments);
+        case 'add_v_scroll_bar_to_scene':
+          return await this.handleAddVScrollBarToScene(request.params.arguments);
+        case 'add_h_separator_to_scene':
+          return await this.handleAddHSeparatorToScene(request.params.arguments);
+        case 'add_color_picker_to_scene':
+          return await this.handleAddColorPickerToScene(request.params.arguments);
+        case 'add_window_to_scene':
+          return await this.handleAddWindowToScene(request.params.arguments);
+        case 'get_game_fps':
+          return await this.handleGetGameFps(request.params.arguments);
+        case 'get_game_time_elapsed':
+          return await this.handleGetGameTimeElapsed(request.params.arguments);
+        case 'pause_game':
+          return await this.handlePauseGame(request.params.arguments);
+        case 'unpause_game':
+          return await this.handleUnpauseGame(request.params.arguments);
+        case 'is_game_paused':
+          return await this.handleIsGamePaused(request.params.arguments);
+        case 'change_scene_to_file':
+          return await this.handleChangeSceneToFile(request.params.arguments);
+        case 'get_current_scene_name':
+          return await this.handleGetCurrentSceneName(request.params.arguments);
+        case 'get_node_class_name':
+          return await this.handleGetNodeClassName(request.params.arguments);
+        case 'set_engine_time_scale':
+          return await this.handleSetEngineTimeScale(request.params.arguments);
+        case 'get_engine_time_scale':
+          return await this.handleGetEngineTimeScale(request.params.arguments);
+        case 'get_game_screen_size':
+          return await this.handleGetGameScreenSize(request.params.arguments);
+        case 'get_game_mouse_position':
+          return await this.handleGetGameMousePosition(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -28660,6 +29155,280 @@ class GodotServer {
     args = normalizeParameters(args || {});
     if (!args.nodePath) return createErrorResponse('nodePath is required.');
     return this.gameCommand('set_button_text', args, a => ({ node_path: a.nodePath, text: a.text ?? '' }));
+  }
+
+  // ── Batch 46 handlers ────────────────────────────────────────────────────────
+
+  // Group A: Node type adders
+  private async handleAddAnimatableBody2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'AnimatableBody2D', node_type: 'AnimatableBody2D', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddAnimatableBody3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'AnimatableBody3D', node_type: 'AnimatableBody3D', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddAudioListener2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'AudioListener2D', node_type: 'AudioListener2D', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddCanvasGroupToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'CanvasGroup', node_type: 'CanvasGroup', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddLightOccluder2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'LightOccluder2D', node_type: 'LightOccluder2D', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddNavigationLink2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'NavigationLink2D', node_type: 'NavigationLink2D', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddNavigationLink3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'NavigationLink3D', node_type: 'NavigationLink3D', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddNavigationObstacle2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'NavigationObstacle2D', node_type: 'NavigationObstacle2D', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddNavigationObstacle3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'NavigationObstacle3D', node_type: 'NavigationObstacle3D', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddSkeleton2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'Skeleton2D', node_type: 'Skeleton2D', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddBone2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'Bone2D', node_type: 'Bone2D', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddPhysicalBone2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'PhysicalBone2D', node_type: 'PhysicalBone2D', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddPhysicalBone3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'PhysicalBone3D', node_type: 'PhysicalBone3D', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddSkeletonIk3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'SkeletonIK3D', node_type: 'SkeletonIK3D', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddParallax2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'Parallax2D', node_type: 'Parallax2D', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddMeshInstance3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'MeshInstance3D', node_type: 'MeshInstance3D', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddCheckBoxToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'CheckBox', node_type: 'CheckBox', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddHSliderToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'HSlider', node_type: 'HSlider', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddVSliderToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'VSlider', node_type: 'VSlider', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddHScrollBarToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'HScrollBar', node_type: 'HScrollBar', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddVScrollBarToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'VScrollBar', node_type: 'VScrollBar', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddHSeparatorToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'HSeparator', node_type: 'HSeparator', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddColorPickerToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'ColorPicker', node_type: 'ColorPicker', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  private async handleAddWindowToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'Window', node_type: 'Window', parent_node_path: a.parentNodePath || '.' }
+    }));
+  }
+
+  // Group B: Runtime control tools (gameCommand)
+  private async handleGetGameFps(_args: any) {
+    return this.gameCommand('get_game_fps', {}, _a => ({}));
+  }
+
+  private async handleGetGameTimeElapsed(_args: any) {
+    return this.gameCommand('get_game_time_elapsed', {}, _a => ({}));
+  }
+
+  private async handlePauseGame(_args: any) {
+    return this.gameCommand('pause_game', {}, _a => ({}));
+  }
+
+  private async handleUnpauseGame(_args: any) {
+    return this.gameCommand('unpause_game', {}, _a => ({}));
+  }
+
+  private async handleIsGamePaused(_args: any) {
+    return this.gameCommand('is_game_paused', {}, _a => ({}));
+  }
+
+  private async handleChangeSceneToFile(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    return this.gameCommand('change_scene_to_file', args, a => ({ scene_path: a.scenePath }));
+  }
+
+  private async handleGetCurrentSceneName(_args: any) {
+    return this.gameCommand('get_current_scene_name', {}, _a => ({}));
+  }
+
+  private async handleGetNodeClassName(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_class_name', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetEngineTimeScale(args: any) {
+    args = normalizeParameters(args || {});
+    if (args.timeScale === undefined) return createErrorResponse('timeScale is required.');
+    return this.gameCommand('set_engine_time_scale', args, a => ({ time_scale: a.timeScale ?? 1.0 }));
+  }
+
+  private async handleGetEngineTimeScale(_args: any) {
+    return this.gameCommand('get_engine_time_scale', {}, _a => ({}));
+  }
+
+  private async handleGetGameScreenSize(_args: any) {
+    return this.gameCommand('get_game_screen_size', {}, _a => ({}));
+  }
+
+  private async handleGetGameMousePosition(_args: any) {
+    return this.gameCommand('get_game_mouse_position', {}, _a => ({}));
   }
 
   // ── Navigation / Discovery helpers ──────────────────────────────────────────

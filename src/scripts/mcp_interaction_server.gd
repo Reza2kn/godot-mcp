@@ -1161,6 +1161,70 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_material_property(params)
 		"create_material_override":
 			_cmd_create_material_override(params)
+		"get_shader_global_parameter":
+			_cmd_get_shader_global_parameter(params)
+		"set_shader_global_parameter":
+			_cmd_set_shader_global_parameter(params)
+		"get_tilemap_used_rect":
+			_cmd_get_tilemap_used_rect(params)
+		"get_tilemap_cell_at":
+			_cmd_get_tilemap_cell_at(params)
+		"set_tilemap_cell":
+			_cmd_set_tilemap_cell(params)
+		"clear_tilemap_layer":
+			_cmd_clear_tilemap_layer(params)
+		"get_tilemap_layer_count":
+			_cmd_get_tilemap_layer_count(params)
+		"set_tilemap_layer_enabled":
+			_cmd_set_tilemap_layer_enabled(params)
+		"world_to_map":
+			_cmd_world_to_map(params)
+		"map_to_world":
+			_cmd_map_to_world(params)
+		"get_sprite_frame":
+			_cmd_get_sprite_frame(params)
+		"set_sprite_frame":
+			_cmd_set_sprite_frame(params)
+		"get_sprite_texture":
+			_cmd_get_sprite_texture(params)
+		"set_sprite_texture":
+			_cmd_set_sprite_texture(params)
+		"flip_sprite":
+			_cmd_flip_sprite(params)
+		"get_label_font_size":
+			_cmd_get_label_font_size(params)
+		"set_label_font_size":
+			_cmd_set_label_font_size(params)
+		"set_label_color":
+			_cmd_set_label_color(params)
+		"get_button_text":
+			_cmd_get_button_text(params)
+		"set_button_text":
+			_cmd_set_button_text(params)
+		"get_game_fps":
+			_cmd_get_game_fps(params)
+		"get_game_time_elapsed":
+			_cmd_get_game_time_elapsed(params)
+		"pause_game":
+			_cmd_pause_game(params)
+		"unpause_game":
+			_cmd_unpause_game(params)
+		"is_game_paused":
+			_cmd_is_game_paused(params)
+		"change_scene_to_file":
+			_cmd_change_scene_to_file(params)
+		"get_current_scene_name":
+			_cmd_get_current_scene_name(params)
+		"get_node_class_name":
+			_cmd_get_node_class_name(params)
+		"set_engine_time_scale":
+			_cmd_set_engine_time_scale(params)
+		"get_engine_time_scale":
+			_cmd_get_engine_time_scale(params)
+		"get_game_screen_size":
+			_cmd_get_game_screen_size(params)
+		"get_game_mouse_position":
+			_cmd_get_game_mouse_position(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -10497,6 +10561,274 @@ func _cmd_create_material_override(params: Dictionary) -> void:
 	var mat = StandardMaterial3D.new()
 	mi.set_surface_override_material(surface_index, mat)
 	_send_response({"success": true, "material_class": "StandardMaterial3D", "surface_index": surface_index})
+
+func _cmd_get_shader_global_parameter(params: Dictionary) -> void:
+	var parameter_name: String = params.get("parameter_name", "")
+	var value = RenderingServer.global_shader_parameter_get(parameter_name)
+	_send_response({"success": true, "parameter_name": parameter_name, "value": value})
+
+func _cmd_set_shader_global_parameter(params: Dictionary) -> void:
+	var parameter_name: String = params.get("parameter_name", "")
+	var value = params.get("value", null)
+	RenderingServer.global_shader_parameter_set(parameter_name, value)
+	_send_response({"success": true, "parameter_name": parameter_name, "value": value})
+
+func _cmd_get_tilemap_used_rect(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TileMap:
+		_send_response({"error": "TileMap not found: " + node_path})
+		return
+	var rect = (node as TileMap).get_used_rect()
+	_send_response({"success": true, "x": rect.position.x, "y": rect.position.y, "width": rect.size.x, "height": rect.size.y})
+
+func _cmd_get_tilemap_cell_at(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: int = params.get("x", 0)
+	var y: int = params.get("y", 0)
+	var layer: int = params.get("layer", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TileMap:
+		_send_response({"error": "TileMap not found: " + node_path})
+		return
+	var tm := node as TileMap
+	var source_id = tm.get_cell_source_id(layer, Vector2i(x, y))
+	var atlas_coords = tm.get_cell_atlas_coords(layer, Vector2i(x, y))
+	_send_response({"success": true, "source_id": source_id, "atlas_coords": {"x": atlas_coords.x, "y": atlas_coords.y}, "is_empty": source_id == -1})
+
+func _cmd_set_tilemap_cell(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: int = params.get("x", 0)
+	var y: int = params.get("y", 0)
+	var source_id: int = params.get("source_id", 0)
+	var atlas_x: int = params.get("atlas_x", 0)
+	var atlas_y: int = params.get("atlas_y", 0)
+	var layer: int = params.get("layer", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TileMap:
+		_send_response({"error": "TileMap not found: " + node_path})
+		return
+	(node as TileMap).set_cell(layer, Vector2i(x, y), source_id, Vector2i(atlas_x, atlas_y))
+	_send_response({"success": true, "cell": {"x": x, "y": y}, "source_id": source_id, "atlas_coords": {"x": atlas_x, "y": atlas_y}})
+
+func _cmd_clear_tilemap_layer(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var layer: int = params.get("layer", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TileMap:
+		_send_response({"error": "TileMap not found: " + node_path})
+		return
+	(node as TileMap).clear_layer(layer)
+	_send_response({"success": true, "layer": layer})
+
+func _cmd_get_tilemap_layer_count(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TileMap:
+		_send_response({"error": "TileMap not found: " + node_path})
+		return
+	_send_response({"success": true, "layer_count": (node as TileMap).get_layers_count()})
+
+func _cmd_set_tilemap_layer_enabled(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var layer: int = params.get("layer", 0)
+	var enabled: bool = params.get("enabled", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TileMap:
+		_send_response({"error": "TileMap not found: " + node_path})
+		return
+	(node as TileMap).set_layer_enabled(layer, enabled)
+	_send_response({"success": true, "layer": layer, "enabled": enabled})
+
+func _cmd_world_to_map(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TileMap:
+		_send_response({"error": "TileMap not found: " + node_path})
+		return
+	var cell = (node as TileMap).local_to_map(Vector2(x, y))
+	_send_response({"success": true, "cell_x": cell.x, "cell_y": cell.y})
+
+func _cmd_map_to_world(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var cell_x: int = params.get("cell_x", 0)
+	var cell_y: int = params.get("cell_y", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TileMap:
+		_send_response({"error": "TileMap not found: " + node_path})
+		return
+	var world_pos = (node as TileMap).map_to_local(Vector2i(cell_x, cell_y))
+	_send_response({"success": true, "x": world_pos.x, "y": world_pos.y})
+
+func _cmd_get_sprite_frame(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Sprite2D:
+		_send_response({"error": "Sprite2D not found: " + node_path})
+		return
+	var s := node as Sprite2D
+	_send_response({"success": true, "frame": s.frame, "hframes": s.hframes, "vframes": s.vframes, "frame_coords": {"x": s.frame_coords.x, "y": s.frame_coords.y}})
+
+func _cmd_set_sprite_frame(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var frame: int = params.get("frame", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Sprite2D:
+		_send_response({"error": "Sprite2D not found: " + node_path})
+		return
+	(node as Sprite2D).frame = frame
+	_send_response({"success": true, "frame": frame})
+
+func _cmd_get_sprite_texture(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Sprite2D:
+		_send_response({"error": "Sprite2D not found: " + node_path})
+		return
+	var s := node as Sprite2D
+	var tex_path = s.texture.resource_path if s.texture != null else null
+	_send_response({"success": true, "texture_path": tex_path, "has_texture": s.texture != null})
+
+func _cmd_set_sprite_texture(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var texture_path: String = params.get("texture_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Sprite2D:
+		_send_response({"error": "Sprite2D not found: " + node_path})
+		return
+	var tex = load(texture_path) as Texture2D
+	if tex == null:
+		_send_response({"error": "Cannot load Texture2D: " + texture_path})
+		return
+	(node as Sprite2D).texture = tex
+	_send_response({"success": true, "texture_path": texture_path})
+
+func _cmd_flip_sprite(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var flip_h: bool = params.get("flip_h", false)
+	var flip_v: bool = params.get("flip_v", false)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Sprite2D:
+		_send_response({"error": "Sprite2D not found: " + node_path})
+		return
+	var s := node as Sprite2D
+	s.flip_h = flip_h
+	s.flip_v = flip_v
+	_send_response({"success": true, "flip_h": flip_h, "flip_v": flip_v})
+
+func _cmd_get_label_font_size(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Label:
+		_send_response({"error": "Label not found: " + node_path})
+		return
+	var lbl := node as Label
+	_send_response({"success": true, "font_size": lbl.get_theme_font_size("font_size") if lbl.has_theme_font_size_override("font_size") else lbl.get_theme_default_font_size()})
+
+func _cmd_set_label_font_size(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var font_size: int = params.get("font_size", 16)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Label:
+		_send_response({"error": "Label not found: " + node_path})
+		return
+	(node as Label).add_theme_font_size_override("font_size", font_size)
+	_send_response({"success": true, "font_size": font_size})
+
+func _cmd_set_label_color(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var r: float = params.get("r", 1.0)
+	var g: float = params.get("g", 1.0)
+	var b: float = params.get("b", 1.0)
+	var a: float = params.get("a", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Label:
+		_send_response({"error": "Label not found: " + node_path})
+		return
+	(node as Label).add_theme_color_override("font_color", Color(r, g, b, a))
+	_send_response({"success": true, "r": r, "g": g, "b": b, "a": a})
+
+func _cmd_get_button_text(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Button:
+		_send_response({"error": "Button not found: " + node_path})
+		return
+	_send_response({"success": true, "text": (node as Button).text})
+
+func _cmd_set_button_text(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var text: String = params.get("text", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Button:
+		_send_response({"error": "Button not found: " + node_path})
+		return
+	(node as Button).text = text
+	_send_response({"success": true, "text": text})
+
+func _cmd_get_game_fps(params: Dictionary) -> void:
+	var fps = Engine.get_frames_per_second()
+	_send_response({"success": true, "fps": fps})
+
+func _cmd_get_game_time_elapsed(params: Dictionary) -> void:
+	var elapsed = Time.get_ticks_msec() / 1000.0
+	_send_response({"success": true, "elapsed_seconds": elapsed})
+
+func _cmd_pause_game(params: Dictionary) -> void:
+	get_tree().paused = true
+	_send_response({"success": true, "paused": true})
+
+func _cmd_unpause_game(params: Dictionary) -> void:
+	get_tree().paused = false
+	_send_response({"success": true, "paused": false})
+
+func _cmd_is_game_paused(params: Dictionary) -> void:
+	_send_response({"success": true, "paused": get_tree().paused})
+
+func _cmd_change_scene_to_file(params: Dictionary) -> void:
+	var scene_path: String = params.get("scene_path", "")
+	if scene_path.is_empty():
+		_send_response({"error": "scene_path is required"})
+		return
+	var err = get_tree().change_scene_to_file(scene_path)
+	if err != OK:
+		_send_response({"error": "Failed to change scene: " + str(err)})
+	else:
+		_send_response({"success": true, "scene_path": scene_path})
+
+func _cmd_get_current_scene_name(params: Dictionary) -> void:
+	var scene = get_tree().current_scene
+	if scene == null:
+		_send_response({"error": "No current scene"})
+		return
+	_send_response({"success": true, "name": scene.name, "scene_file": scene.scene_file_path})
+
+func _cmd_get_node_class_name(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	_send_response({"success": true, "class_name": node.get_class(), "script": str(node.get_script())})
+
+func _cmd_set_engine_time_scale(params: Dictionary) -> void:
+	var time_scale: float = params.get("time_scale", 1.0)
+	Engine.time_scale = time_scale
+	_send_response({"success": true, "time_scale": Engine.time_scale})
+
+func _cmd_get_engine_time_scale(params: Dictionary) -> void:
+	_send_response({"success": true, "time_scale": Engine.time_scale})
+
+func _cmd_get_game_screen_size(params: Dictionary) -> void:
+	var size = DisplayServer.screen_get_size()
+	var window_size = DisplayServer.window_get_size()
+	_send_response({"success": true, "screen_width": size.x, "screen_height": size.y, "window_width": window_size.x, "window_height": window_size.y})
+
+func _cmd_get_game_mouse_position(params: Dictionary) -> void:
+	var pos = get_viewport().get_mouse_position()
+	_send_response({"success": true, "x": pos.x, "y": pos.y})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()
