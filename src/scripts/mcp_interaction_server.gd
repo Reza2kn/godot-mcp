@@ -1439,6 +1439,42 @@ func _handle_command(json_str: String) -> void:
 			_cmd_make_camera_current(params)
 		"get_visible_rect":
 			_cmd_get_visible_rect(params)
+		"get_animation_current":
+			_cmd_get_animation_current(params)
+		"get_animation_length":
+			_cmd_get_animation_length(params)
+		"set_animation_loop":
+			_cmd_set_animation_loop(params)
+		"get_animation_tree_state":
+			_cmd_get_animation_tree_state(params)
+		"set_blend_parameter":
+			_cmd_set_blend_parameter(params)
+		"get_blend_parameter":
+			_cmd_get_blend_parameter(params)
+		"travel_animation_state":
+			_cmd_travel_animation_state(params)
+		"set_shader_parameter":
+			_cmd_set_shader_parameter(params)
+		"get_shader_parameter":
+			_cmd_get_shader_parameter(params)
+		"set_material_albedo_color":
+			_cmd_set_material_albedo_color(params)
+		"set_material_emission_color":
+			_cmd_set_material_emission_color(params)
+		"set_material_transparency":
+			_cmd_set_material_transparency(params)
+		"get_node_material":
+			_cmd_get_node_material(params)
+		"set_material_roughness_metallic":
+			_cmd_set_material_roughness_metallic(params)
+		"get_input_action_list":
+			_cmd_get_input_action_list(params)
+		"is_input_action_pressed":
+			_cmd_is_input_action_pressed(params)
+		"get_input_action_strength":
+			_cmd_get_input_action_strength(params)
+		"get_connected_joypads":
+			_cmd_get_connected_joypads(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -12189,6 +12225,256 @@ func _cmd_make_camera_current(params: Dictionary) -> void:
 func _cmd_get_visible_rect(_params: Dictionary) -> void:
 	var rect: Rect2 = get_viewport().get_visible_rect()
 	_send_response({"success": true, "x": rect.position.x, "y": rect.position.y, "width": rect.size.x, "height": rect.size.y})
+
+
+func _cmd_get_animation_current(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	var ap := node as AnimationPlayer
+	_send_response({"success": true, "current_animation": ap.current_animation, "is_playing": ap.is_playing(), "position": ap.current_animation_position})
+
+
+func _cmd_get_animation_length(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var animation_name: String = params.get("animation_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	var ap := node as AnimationPlayer
+	if not ap.has_animation(animation_name):
+		_send_response({"error": "Animation not found: " + animation_name})
+		return
+	_send_response({"success": true, "length": ap.get_animation(animation_name).length, "animation_name": animation_name})
+
+
+func _cmd_set_animation_loop(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var animation_name: String = params.get("animation_name", "")
+	var loop: bool = params.get("loop", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	var ap := node as AnimationPlayer
+	if not ap.has_animation(animation_name):
+		_send_response({"error": "Animation not found: " + animation_name})
+		return
+	var anim: Animation = ap.get_animation(animation_name)
+	anim.loop_mode = Animation.LOOP_LINEAR if loop else Animation.LOOP_NONE
+	_send_response({"success": true, "animation_name": animation_name, "loop": loop})
+
+
+func _cmd_get_animation_tree_state(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationTree:
+		_send_response({"error": "AnimationTree not found: " + node_path})
+		return
+	var at := node as AnimationTree
+	_send_response({"success": true, "active": at.active, "anim_player": str(at.anim_player)})
+
+
+func _cmd_set_blend_parameter(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var param_name: String = params.get("param_name", "")
+	var value = params.get("value", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationTree:
+		_send_response({"error": "AnimationTree not found: " + node_path})
+		return
+	(node as AnimationTree).set(param_name, value)
+	_send_response({"success": true, "param_name": param_name, "value": value})
+
+
+func _cmd_get_blend_parameter(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var param_name: String = params.get("param_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationTree:
+		_send_response({"error": "AnimationTree not found: " + node_path})
+		return
+	var value = (node as AnimationTree).get(param_name)
+	_send_response({"success": true, "param_name": param_name, "value": value})
+
+
+func _cmd_travel_animation_state(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var state_name: String = params.get("state_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationTree:
+		_send_response({"error": "AnimationTree not found: " + node_path})
+		return
+	var at := node as AnimationTree
+	var sm = at.get("parameters/playback")
+	if sm == null:
+		_send_response({"error": "No state machine playback found at parameters/playback"})
+		return
+	sm.travel(state_name)
+	_send_response({"success": true, "traveled_to": state_name})
+
+
+func _cmd_set_shader_parameter(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var param_name: String = params.get("param_name", "")
+	var value = params.get("value", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var mat: ShaderMaterial = null
+	if node is MeshInstance3D:
+		mat = (node as MeshInstance3D).get_active_material(0) as ShaderMaterial
+	elif node is Sprite2D:
+		mat = (node as Sprite2D).material as ShaderMaterial
+	elif node is CanvasItem:
+		mat = (node as CanvasItem).material as ShaderMaterial
+	if mat == null:
+		_send_response({"error": "No ShaderMaterial on node"})
+		return
+	mat.set_shader_parameter(param_name, value)
+	_send_response({"success": true, "param_name": param_name, "value": value})
+
+
+func _cmd_get_shader_parameter(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var param_name: String = params.get("param_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var mat: ShaderMaterial = null
+	if node is MeshInstance3D:
+		mat = (node as MeshInstance3D).get_active_material(0) as ShaderMaterial
+	elif node is CanvasItem:
+		mat = (node as CanvasItem).material as ShaderMaterial
+	if mat == null:
+		_send_response({"error": "No ShaderMaterial on node"})
+		return
+	var value = mat.get_shader_parameter(param_name)
+	_send_response({"success": true, "param_name": param_name, "value": value})
+
+
+func _cmd_set_material_albedo_color(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var r: float = params.get("r", 1.0)
+	var g: float = params.get("g", 1.0)
+	var b: float = params.get("b", 1.0)
+	var a: float = params.get("a", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var mat: StandardMaterial3D = (node as MeshInstance3D).get_active_material(0) as StandardMaterial3D
+	if mat == null:
+		mat = StandardMaterial3D.new()
+		(node as MeshInstance3D).set_surface_override_material(0, mat)
+	mat.albedo_color = Color(r, g, b, a)
+	_send_response({"success": true, "color": {"r": r, "g": g, "b": b, "a": a}})
+
+
+func _cmd_set_material_emission_color(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var r: float = params.get("r", 1.0)
+	var g: float = params.get("g", 0.0)
+	var b: float = params.get("b", 0.0)
+	var energy: float = params.get("energy", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var mat: StandardMaterial3D = (node as MeshInstance3D).get_active_material(0) as StandardMaterial3D
+	if mat == null:
+		mat = StandardMaterial3D.new()
+		(node as MeshInstance3D).set_surface_override_material(0, mat)
+	mat.emission_enabled = true
+	mat.emission = Color(r, g, b)
+	mat.emission_energy_multiplier = energy
+	_send_response({"success": true, "emission": {"r": r, "g": g, "b": b}, "energy": energy})
+
+
+func _cmd_set_material_transparency(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var alpha: float = params.get("alpha", 0.5)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var mat: StandardMaterial3D = (node as MeshInstance3D).get_active_material(0) as StandardMaterial3D
+	if mat == null:
+		mat = StandardMaterial3D.new()
+		(node as MeshInstance3D).set_surface_override_material(0, mat)
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.albedo_color.a = alpha
+	_send_response({"success": true, "alpha": alpha})
+
+
+func _cmd_get_node_material(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is MeshInstance3D:
+		var mat = (node as MeshInstance3D).get_active_material(0)
+		_send_response({"success": true, "material_class": mat.get_class() if mat != null else "none", "surface_count": (node as MeshInstance3D).get_surface_override_material_count()})
+	elif node is Sprite2D:
+		var mat = (node as Sprite2D).material
+		_send_response({"success": true, "material_class": mat.get_class() if mat != null else "none"})
+	else:
+		_send_response({"error": "Node has no material interface: " + node_path})
+
+
+func _cmd_set_material_roughness_metallic(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var roughness: float = params.get("roughness", 0.5)
+	var metallic: float = params.get("metallic", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var mat: StandardMaterial3D = (node as MeshInstance3D).get_active_material(0) as StandardMaterial3D
+	if mat == null:
+		mat = StandardMaterial3D.new()
+		(node as MeshInstance3D).set_surface_override_material(0, mat)
+	mat.roughness = roughness
+	mat.metallic = metallic
+	_send_response({"success": true, "roughness": roughness, "metallic": metallic})
+
+
+func _cmd_get_input_action_list(_params: Dictionary) -> void:
+	var actions = InputMap.get_actions()
+	var result = []
+	for action in actions:
+		result.append(str(action))
+	_send_response({"success": true, "actions": result, "count": result.size()})
+
+
+func _cmd_is_input_action_pressed(params: Dictionary) -> void:
+	var action_name: String = params.get("action_name", "")
+	if not InputMap.has_action(action_name):
+		_send_response({"error": "Action not found: " + action_name})
+		return
+	_send_response({"success": true, "action_name": action_name, "pressed": Input.is_action_pressed(action_name)})
+
+
+func _cmd_get_input_action_strength(params: Dictionary) -> void:
+	var action_name: String = params.get("action_name", "")
+	if not InputMap.has_action(action_name):
+		_send_response({"error": "Action not found: " + action_name})
+		return
+	_send_response({"success": true, "action_name": action_name, "strength": Input.get_action_strength(action_name)})
+
+
+func _cmd_get_connected_joypads(_params: Dictionary) -> void:
+	var pads = Input.get_connected_joypads()
+	var result = []
+	for pad in pads:
+		result.append({"id": pad, "name": Input.get_joy_name(pad)})
+	_send_response({"success": true, "joypads": result, "count": result.size()})
 
 
 func _exit_tree() -> void:

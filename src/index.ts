@@ -16132,6 +16132,349 @@ class GodotServer {
             properties: {},
           },
         },
+        // Batch 53 tool defs — Group A: AnimationPlayer runtime tools
+        {
+          name: 'get_animation_current',
+          description: 'Get the current animation playing in AnimationPlayer.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the AnimationPlayer node.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_animation_loop',
+          description: 'Set whether an animation loops in AnimationPlayer.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the AnimationPlayer node.' },
+              animationName: { type: 'string', description: 'Name of the animation.' },
+              loop: { type: 'boolean', description: 'Whether to loop. Default true.' },
+            },
+            required: ['nodePath', 'animationName'],
+          },
+        },
+        // Batch 53 tool defs — Group B: AnimationTree runtime tools
+        {
+          name: 'get_animation_tree_state',
+          description: 'Get active state of an AnimationTree node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the AnimationTree node.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_blend_parameter',
+          description: 'Set a blend parameter value in AnimationTree.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the AnimationTree node.' },
+              paramName: { type: 'string', description: 'Name of the blend parameter.' },
+              value: { type: 'number', description: 'Value to set.' },
+            },
+            required: ['nodePath', 'paramName'],
+          },
+        },
+        {
+          name: 'get_blend_parameter',
+          description: 'Get a blend parameter value from AnimationTree.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the AnimationTree node.' },
+              paramName: { type: 'string', description: 'Name of the blend parameter.' },
+            },
+            required: ['nodePath', 'paramName'],
+          },
+        },
+        {
+          name: 'travel_animation_state',
+          description: 'Travel to a state in AnimationStateMachine.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the AnimationTree node.' },
+              stateName: { type: 'string', description: 'Name of the target state.' },
+            },
+            required: ['nodePath', 'stateName'],
+          },
+        },
+        // Batch 53 tool defs — Group C: Material / Shader runtime tools
+        {
+          name: 'set_shader_parameter',
+          description: "Set a uniform parameter on a node's ShaderMaterial.",
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node.' },
+              paramName: { type: 'string', description: 'Shader uniform name.' },
+              value: { description: 'Value to set.' },
+            },
+            required: ['nodePath', 'paramName'],
+          },
+        },
+        {
+          name: 'get_shader_parameter',
+          description: "Get a uniform parameter from a node's ShaderMaterial.",
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node.' },
+              paramName: { type: 'string', description: 'Shader uniform name.' },
+            },
+            required: ['nodePath', 'paramName'],
+          },
+        },
+        {
+          name: 'set_material_albedo_color',
+          description: 'Set albedo color of a StandardMaterial3D on a node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node.' },
+              r: { type: 'number', description: 'Red channel 0-1. Default 1.' },
+              g: { type: 'number', description: 'Green channel 0-1. Default 1.' },
+              b: { type: 'number', description: 'Blue channel 0-1. Default 1.' },
+              a: { type: 'number', description: 'Alpha channel 0-1. Default 1.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_material_emission_color',
+          description: 'Set emission color of a StandardMaterial3D on node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node.' },
+              r: { type: 'number', description: 'Red channel 0-1. Default 1.' },
+              g: { type: 'number', description: 'Green channel 0-1. Default 0.' },
+              b: { type: 'number', description: 'Blue channel 0-1. Default 0.' },
+              energy: { type: 'number', description: 'Emission energy. Default 1.0.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_material_transparency',
+          description: 'Set transparency/alpha of a StandardMaterial3D.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node.' },
+              alpha: { type: 'number', description: 'Alpha value 0-1. Default 0.5.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_node_material',
+          description: 'Get material info from a MeshInstance3D or Sprite2D node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_material_roughness_metallic',
+          description: 'Set roughness and metallic on StandardMaterial3D.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node.' },
+              roughness: { type: 'number', description: 'Roughness 0-1. Default 0.5.' },
+              metallic: { type: 'number', description: 'Metallic 0-1. Default 0.0.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        // Batch 53 tool defs — Group D: Input system runtime tools
+        {
+          name: 'is_input_action_pressed',
+          description: 'Check if an input action is currently pressed.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              actionName: { type: 'string', description: 'Name of the input action.' },
+            },
+            required: ['actionName'],
+          },
+        },
+        {
+          name: 'get_input_action_strength',
+          description: 'Get analog strength (0-1) of an input action.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              actionName: { type: 'string', description: 'Name of the input action.' },
+            },
+            required: ['actionName'],
+          },
+        },
+        {
+          name: 'get_connected_joypads',
+          description: 'Get list of connected joypad/gamepad devices.',
+          inputSchema: {
+            type: 'object',
+            properties: {},
+          },
+        },
+        // Batch 53 tool defs — Group E: Scene node editing headlessOp tools
+        {
+          name: 'rename_node_in_scene',
+          description: 'Rename a node inside a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string', description: 'Path to the Godot project.' },
+              scenePath: { type: 'string', description: 'Path to the scene file.' },
+              nodeName: { type: 'string', description: 'Current name of the node.' },
+              newName: { type: 'string', description: 'New name for the node.' },
+            },
+            required: ['projectPath', 'scenePath', 'nodeName', 'newName'],
+          },
+        },
+        {
+          name: 'delete_node_from_scene',
+          description: 'Delete a node from a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string', description: 'Path to the Godot project.' },
+              scenePath: { type: 'string', description: 'Path to the scene file.' },
+              nodeName: { type: 'string', description: 'Name of the node to delete.' },
+            },
+            required: ['projectPath', 'scenePath', 'nodeName'],
+          },
+        },
+        {
+          name: 'reparent_node_in_scene',
+          description: 'Move a node to a new parent in a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string', description: 'Path to the Godot project.' },
+              scenePath: { type: 'string', description: 'Path to the scene file.' },
+              nodeName: { type: 'string', description: 'Name of the node to move.' },
+              newParentPath: { type: 'string', description: 'Path to the new parent node.' },
+            },
+            required: ['projectPath', 'scenePath', 'nodeName', 'newParentPath'],
+          },
+        },
+        {
+          name: 'set_node_property_in_scene',
+          description: 'Set a property on a node in a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string', description: 'Path to the Godot project.' },
+              scenePath: { type: 'string', description: 'Path to the scene file.' },
+              nodeName: { type: 'string', description: 'Name of the node.' },
+              propertyName: { type: 'string', description: 'Name of the property.' },
+              propertyValue: { description: 'Value to set on the property.' },
+            },
+            required: ['projectPath', 'scenePath', 'nodeName', 'propertyName', 'propertyValue'],
+          },
+        },
+        {
+          name: 'get_node_property_in_scene',
+          description: 'Get a property value from a node in a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string', description: 'Path to the Godot project.' },
+              scenePath: { type: 'string', description: 'Path to the scene file.' },
+              nodeName: { type: 'string', description: 'Name of the node.' },
+              propertyName: { type: 'string', description: 'Name of the property.' },
+            },
+            required: ['projectPath', 'scenePath', 'nodeName', 'propertyName'],
+          },
+        },
+        {
+          name: 'duplicate_node_in_scene',
+          description: 'Duplicate a node and add it to the same scene.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string', description: 'Path to the Godot project.' },
+              scenePath: { type: 'string', description: 'Path to the scene file.' },
+              nodeName: { type: 'string', description: 'Name of the node to duplicate.' },
+              newName: { type: 'string', description: 'Name for the duplicate node.' },
+            },
+            required: ['projectPath', 'scenePath', 'nodeName'],
+          },
+        },
+        {
+          name: 'set_node_position_in_scene',
+          description: 'Set position of a 2D/3D node in a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string', description: 'Path to the Godot project.' },
+              scenePath: { type: 'string', description: 'Path to the scene file.' },
+              nodeName: { type: 'string', description: 'Name of the node.' },
+              x: { type: 'number', description: 'X position. Default 0.' },
+              y: { type: 'number', description: 'Y position. Default 0.' },
+              z: { type: 'number', description: 'Z position (3D). Default 0.' },
+            },
+            required: ['projectPath', 'scenePath', 'nodeName'],
+          },
+        },
+        {
+          name: 'set_node_scale_in_scene',
+          description: 'Set scale of a node in a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string', description: 'Path to the Godot project.' },
+              scenePath: { type: 'string', description: 'Path to the scene file.' },
+              nodeName: { type: 'string', description: 'Name of the node.' },
+              sx: { type: 'number', description: 'X scale. Default 1.' },
+              sy: { type: 'number', description: 'Y scale. Default 1.' },
+              sz: { type: 'number', description: 'Z scale (3D). Default 1.' },
+            },
+            required: ['projectPath', 'scenePath', 'nodeName'],
+          },
+        },
+        {
+          name: 'set_node_rotation_in_scene',
+          description: 'Set rotation of a node in a scene file (degrees).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string', description: 'Path to the Godot project.' },
+              scenePath: { type: 'string', description: 'Path to the scene file.' },
+              nodeName: { type: 'string', description: 'Name of the node.' },
+              rx: { type: 'number', description: 'X rotation degrees. Default 0.' },
+              ry: { type: 'number', description: 'Y rotation degrees. Default 0.' },
+              rz: { type: 'number', description: 'Z rotation degrees. Default 0.' },
+            },
+            required: ['projectPath', 'scenePath', 'nodeName'],
+          },
+        },
+        {
+          name: 'list_node_properties_in_scene',
+          description: 'List all properties of a node in a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string', description: 'Path to the Godot project.' },
+              scenePath: { type: 'string', description: 'Path to the scene file.' },
+              nodeName: { type: 'string', description: 'Name of the node.' },
+            },
+            required: ['projectPath', 'scenePath', 'nodeName'],
+          },
+        },
       ],
     }));
 
@@ -18303,6 +18646,63 @@ class GodotServer {
           return await this.handleGetUiSceneSetupGuide(request.params.arguments);
         case 'get_audio_setup_guide':
           return await this.handleGetAudioSetupGuide(request.params.arguments);
+        // Batch 53 switch cases — Group A: AnimationPlayer runtime tools
+        case 'get_animation_current':
+          return await this.handleGetAnimationCurrent(request.params.arguments);
+        case 'set_animation_loop':
+          return await this.handleSetAnimationLoop(request.params.arguments);
+        // Batch 53 switch cases — Group B: AnimationTree runtime tools
+        case 'get_animation_tree_state':
+          return await this.handleGetAnimationTreeState(request.params.arguments);
+        case 'set_blend_parameter':
+          return await this.handleSetBlendParameter(request.params.arguments);
+        case 'get_blend_parameter':
+          return await this.handleGetBlendParameter(request.params.arguments);
+        case 'travel_animation_state':
+          return await this.handleTravelAnimationState(request.params.arguments);
+        // Batch 53 switch cases — Group C: Material / Shader runtime tools
+        case 'set_shader_parameter':
+          return await this.handleSetShaderParameter(request.params.arguments);
+        case 'get_shader_parameter':
+          return await this.handleGetShaderParameter(request.params.arguments);
+        case 'set_material_albedo_color':
+          return await this.handleSetMaterialAlbedoColor(request.params.arguments);
+        case 'set_material_emission_color':
+          return await this.handleSetMaterialEmissionColor(request.params.arguments);
+        case 'set_material_transparency':
+          return await this.handleSetMaterialTransparency(request.params.arguments);
+        case 'get_node_material':
+          return await this.handleGetNodeMaterial(request.params.arguments);
+        case 'set_material_roughness_metallic':
+          return await this.handleSetMaterialRoughnessMetallic(request.params.arguments);
+        // Batch 53 switch cases — Group D: Input system runtime tools
+        case 'is_input_action_pressed':
+          return await this.handleIsInputActionPressed(request.params.arguments);
+        case 'get_input_action_strength':
+          return await this.handleGetInputActionStrength(request.params.arguments);
+        case 'get_connected_joypads':
+          return await this.handleGetConnectedJoypads(request.params.arguments);
+        // Batch 53 switch cases — Group E: Scene node editing headlessOp tools
+        case 'rename_node_in_scene':
+          return await this.handleRenameNodeInScene(request.params.arguments);
+        case 'delete_node_from_scene':
+          return await this.handleDeleteNodeFromScene(request.params.arguments);
+        case 'reparent_node_in_scene':
+          return await this.handleReparentNodeInScene(request.params.arguments);
+        case 'set_node_property_in_scene':
+          return await this.handleSetNodePropertyInScene(request.params.arguments);
+        case 'get_node_property_in_scene':
+          return await this.handleGetNodePropertyInScene(request.params.arguments);
+        case 'duplicate_node_in_scene':
+          return await this.handleDuplicateNodeInScene(request.params.arguments);
+        case 'set_node_position_in_scene':
+          return await this.handleSetNodePositionInScene(request.params.arguments);
+        case 'set_node_scale_in_scene':
+          return await this.handleSetNodeScaleInScene(request.params.arguments);
+        case 'set_node_rotation_in_scene':
+          return await this.handleSetNodeRotationInScene(request.params.arguments);
+        case 'list_node_properties_in_scene':
+          return await this.handleListNodePropertiesInScene(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -32375,6 +32775,202 @@ class GodotServer {
       ]
     };
     return { content: [{ type: 'text', text: JSON.stringify(guide, null, 2) }] };
+  }
+
+  // ── Batch 53 handlers — Group A: AnimationPlayer runtime tools ───────────────
+
+  private async handleGetAnimationCurrent(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_animation_current', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetAnimationLoop(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.animationName) return createErrorResponse('animationName is required.');
+    return this.gameCommand('set_animation_loop', args, a => ({ node_path: a.nodePath, animation_name: a.animationName ?? '', loop: a.loop ?? true }));
+  }
+
+  // ── Batch 53 handlers — Group B: AnimationTree runtime tools ─────────────────
+
+  private async handleGetAnimationTreeState(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_animation_tree_state', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetBlendParameter(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.paramName) return createErrorResponse('paramName is required.');
+    return this.gameCommand('set_blend_parameter', args, a => ({ node_path: a.nodePath, param_name: a.paramName ?? '', value: a.value ?? 0.0 }));
+  }
+
+  private async handleGetBlendParameter(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.paramName) return createErrorResponse('paramName is required.');
+    return this.gameCommand('get_blend_parameter', args, a => ({ node_path: a.nodePath, param_name: a.paramName ?? '' }));
+  }
+
+  private async handleTravelAnimationState(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.stateName) return createErrorResponse('stateName is required.');
+    return this.gameCommand('travel_animation_state', args, a => ({ node_path: a.nodePath, state_name: a.stateName ?? '' }));
+  }
+
+  // ── Batch 53 handlers — Group C: Material / Shader runtime tools ──────────────
+
+  private async handleSetShaderParameter(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.paramName) return createErrorResponse('paramName is required.');
+    return this.gameCommand('set_shader_parameter', args, a => ({ node_path: a.nodePath, param_name: a.paramName ?? '', value: a.value ?? 0 }));
+  }
+
+  private async handleGetShaderParameter(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.paramName) return createErrorResponse('paramName is required.');
+    return this.gameCommand('get_shader_parameter', args, a => ({ node_path: a.nodePath, param_name: a.paramName ?? '' }));
+  }
+
+  private async handleSetMaterialAlbedoColor(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_material_albedo_color', args, a => ({ node_path: a.nodePath, r: a.r ?? 1, g: a.g ?? 1, b: a.b ?? 1, a: a.a ?? 1 }));
+  }
+
+  private async handleSetMaterialEmissionColor(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_material_emission_color', args, a => ({ node_path: a.nodePath, r: a.r ?? 1, g: a.g ?? 0, b: a.b ?? 0, energy: a.energy ?? 1.0 }));
+  }
+
+  private async handleSetMaterialTransparency(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_material_transparency', args, a => ({ node_path: a.nodePath, alpha: a.alpha ?? 0.5 }));
+  }
+
+  private async handleGetNodeMaterial(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_material', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetMaterialRoughnessMetallic(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_material_roughness_metallic', args, a => ({ node_path: a.nodePath, roughness: a.roughness ?? 0.5, metallic: a.metallic ?? 0.0 }));
+  }
+
+  // ── Batch 53 handlers — Group D: Input system runtime tools ──────────────────
+
+  private async handleIsInputActionPressed(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.actionName) return createErrorResponse('actionName is required.');
+    return this.gameCommand('is_input_action_pressed', args, a => ({ action_name: a.actionName ?? '' }));
+  }
+
+  private async handleGetInputActionStrength(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.actionName) return createErrorResponse('actionName is required.');
+    return this.gameCommand('get_input_action_strength', args, a => ({ action_name: a.actionName ?? '' }));
+  }
+
+  private async handleGetConnectedJoypads(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_connected_joypads', args, _a => ({}));
+  }
+
+  // ── Batch 53 handlers — Group E: Scene node editing headlessOp tools ─────────
+
+  private async handleRenameNodeInScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    if (!args.nodeName) return createErrorResponse('nodeName is required.');
+    if (!args.newName) return createErrorResponse('newName is required.');
+    return this.headlessOp('rename_node_in_scene', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName ?? '', new_name: a.newName ?? '' } }));
+  }
+
+  private async handleDeleteNodeFromScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    if (!args.nodeName) return createErrorResponse('nodeName is required.');
+    return this.headlessOp('delete_node_from_scene', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName ?? '' } }));
+  }
+
+  private async handleReparentNodeInScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    if (!args.nodeName) return createErrorResponse('nodeName is required.');
+    if (!args.newParentPath) return createErrorResponse('newParentPath is required.');
+    return this.headlessOp('reparent_node_in_scene', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName ?? '', new_parent_path: a.newParentPath ?? '.' } }));
+  }
+
+  private async handleSetNodePropertyInScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    if (!args.nodeName) return createErrorResponse('nodeName is required.');
+    if (!args.propertyName) return createErrorResponse('propertyName is required.');
+    if (args.propertyValue === undefined) return createErrorResponse('propertyValue is required.');
+    return this.headlessOp('set_node_property_in_scene', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName ?? '', property_name: a.propertyName ?? '', property_value: a.propertyValue ?? '' } }));
+  }
+
+  private async handleGetNodePropertyInScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    if (!args.nodeName) return createErrorResponse('nodeName is required.');
+    if (!args.propertyName) return createErrorResponse('propertyName is required.');
+    return this.headlessOp('get_node_property_in_scene', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName ?? '', property_name: a.propertyName ?? '' } }));
+  }
+
+  private async handleDuplicateNodeInScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    if (!args.nodeName) return createErrorResponse('nodeName is required.');
+    return this.headlessOp('duplicate_node_in_scene', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName ?? '', new_name: a.newName ?? '' } }));
+  }
+
+  private async handleSetNodePositionInScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    if (!args.nodeName) return createErrorResponse('nodeName is required.');
+    return this.headlessOp('set_node_position_in_scene', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName ?? '', x: a.x ?? 0, y: a.y ?? 0, z: a.z ?? 0 } }));
+  }
+
+  private async handleSetNodeScaleInScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    if (!args.nodeName) return createErrorResponse('nodeName is required.');
+    return this.headlessOp('set_node_scale_in_scene', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName ?? '', sx: a.sx ?? 1, sy: a.sy ?? 1, sz: a.sz ?? 1 } }));
+  }
+
+  private async handleSetNodeRotationInScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    if (!args.nodeName) return createErrorResponse('nodeName is required.');
+    return this.headlessOp('set_node_rotation_in_scene', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName ?? '', rx: a.rx ?? 0, ry: a.ry ?? 0, rz: a.rz ?? 0 } }));
+  }
+
+  private async handleListNodePropertiesInScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    if (!args.nodeName) return createErrorResponse('nodeName is required.');
+    return this.headlessOp('list_node_properties_in_scene', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName ?? '' } }));
   }
 
   // ── Navigation / Discovery helpers ──────────────────────────────────────────
