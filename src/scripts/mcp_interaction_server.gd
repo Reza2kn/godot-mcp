@@ -13,6 +13,9 @@ const PORT: int = 9090
 const BUSY_TIMEOUT: float = 30.0
 var _key_map: Dictionary
 var _held_keys: Dictionary = {}
+var _recording: bool = false
+var _recorded_events: Array = []
+var _recording_start_ms: float = 0.0
 
 func _ready() -> void:
 	# Ensure MCP server keeps processing even when game is paused
@@ -79,6 +82,27 @@ func _process(_delta: float) -> void:
 				_buffer = _buffer.substr(newline_pos + 1)
 				if line.length() > 0:
 					_handle_command(line)
+
+
+func _input(event: InputEvent) -> void:
+	if not _recording:
+		return
+	var elapsed: float = Time.get_ticks_msec() - _recording_start_ms
+	var entry: Dictionary = {"time_ms": elapsed, "type": event.get_class()}
+	if event is InputEventKey:
+		var ke: InputEventKey = event as InputEventKey
+		entry["keycode"] = ke.keycode
+		entry["pressed"] = ke.pressed
+		entry["unicode"] = ke.unicode
+	elif event is InputEventMouseButton:
+		var mb: InputEventMouseButton = event as InputEventMouseButton
+		entry["button_index"] = mb.button_index
+		entry["pressed"] = mb.pressed
+		entry["position"] = {"x": mb.position.x, "y": mb.position.y}
+	elif event is InputEventMouseMotion:
+		var mm: InputEventMouseMotion = event as InputEventMouseMotion
+		entry["position"] = {"x": mm.position.x, "y": mm.position.y}
+	_recorded_events.append(entry)
 
 
 func _handle_command(json_str: String) -> void:
@@ -326,6 +350,36 @@ func _handle_command(json_str: String) -> void:
 			_cmd_find_text(params)
 		"stress_test":
 			await _cmd_stress_test(params)
+		"find_nodes_by_script":
+			_cmd_find_nodes_by_script(params)
+		"batch_get_properties":
+			_cmd_batch_get_properties(params)
+		"click_button_by_text":
+			_cmd_click_button_by_text(params)
+		"wait_for_node":
+			await _cmd_wait_for_node(params)
+		"find_nearby_nodes":
+			_cmd_find_nearby_nodes(params)
+		"capture_frames":
+			await _cmd_capture_frames(params)
+		"monitor_properties":
+			await _cmd_monitor_properties(params)
+		"start_recording":
+			_cmd_start_recording(params)
+		"stop_recording":
+			_cmd_stop_recording(params)
+		"replay_recording":
+			await _cmd_replay_recording(params)
+		"animtree_add_state":
+			_cmd_animtree_add_state(params)
+		"animtree_remove_state":
+			_cmd_animtree_remove_state(params)
+		"animtree_add_transition":
+			_cmd_animtree_add_transition(params)
+		"animtree_remove_transition":
+			_cmd_animtree_remove_transition(params)
+		"animtree_get_structure":
+			_cmd_animtree_get_structure(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -4458,6 +4512,296 @@ func _cmd_stress_test(params: Dictionary) -> void:
 		"node_count_end": node_count_end,
 		"node_leak_suspected": (node_count_end - node_count_start) > 10
 	})
+
+
+func _cmd_find_nodes_by_script(params: Dictionary) -> void:
+	var script_path: String = params.get("script_path", "")
+	var partial: bool = params.get("partial", true)
+	var results: Array = []
+	_collect_nodes_by_script(get_tree().root, script_path, partial, results)
+	_send_response({"success": true, "nodes": results})
+
+func _collect_nodes_by_script(node: Node, script_path: String, partial: bool, results: Array) -> void:
+	var s = node.get_script()
+	if s != null:
+		var path: String = s.resource_path
+		if (partial and path.contains(script_path)) or (not partial and path == script_path):
+			results.append({"path": str(node.get_path()), "type": node.get_class(), "script": path})
+	for child in node.get_children():
+		_collect_nodes_by_script(child, script_path, partial, results)
+
+
+func _cmd_batch_get_properties(params: Dictionary) -> void:
+	var queries: Array = params.get("queries", [])
+	var results: Array = []
+	for q in queries:
+		var node_path: String = q.get("nodePath", q.get("node_path", ""))
+		var properties: Array = q.get("properties", [])
+		var node: Node = get_tree().root.get_node_or_null(node_path)
+		if node == null:
+			results.append({"nodePath": node_path, "error": "Node not found"})
+			continue
+		var props: Dictionary = {}
+		for prop in properties:
+			var val = node.get(prop)
+			props[prop] = _to_serializable(val)
+		results.append({"nodePath": node_path, "properties": props})
+	_send_response({"success": true, "results": results})
+
+
+func _cmd_click_button_by_text(params: Dictionary) -> void:
+	var text: String = params.get("text", "")
+	var exact: bool = params.get("exact", false)
+	var found: Array = []
+	_find_buttons(get_tree().root, text, exact, found)
+	if found.is_empty():
+		_send_response({"error": "No button found with text: %s" % text})
+		return
+	var btn: Button = found[0]
+	btn.emit_signal("pressed")
+	_send_response({"success": true, "button": str(btn.get_path()), "text": btn.text})
+
+func _find_buttons(node: Node, text: String, exact: bool, found: Array) -> void:
+	if node is Button:
+		var btn: Button = node as Button
+		if (exact and btn.text == text) or (not exact and btn.text.to_lower().contains(text.to_lower())):
+			found.append(btn)
+	for child in node.get_children():
+		_find_buttons(child, text, exact, found)
+
+
+func _cmd_wait_for_node(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var timeout_ms: float = float(params.get("timeout_ms", 5000))
+	var start: float = Time.get_ticks_msec()
+	while true:
+		var node = get_tree().root.get_node_or_null(node_path)
+		if node != null:
+			_send_response({"success": true, "found": true, "nodePath": node_path, "elapsed_ms": Time.get_ticks_msec() - start})
+			return
+		if Time.get_ticks_msec() - start > timeout_ms:
+			_send_response({"success": false, "found": false, "nodePath": node_path, "timeout": true})
+			return
+		await get_tree().process_frame
+
+
+func _cmd_find_nearby_nodes(params: Dictionary) -> void:
+	var pos_dict: Dictionary = params.get("position", {})
+	var radius: float = float(params.get("radius", 100.0))
+	var node_type: String = params.get("node_type", "")
+	var is_3d: bool = pos_dict.has("z")
+	var results: Array = []
+	_collect_nearby(get_tree().root, pos_dict, radius, node_type, is_3d, results)
+	_send_response({"success": true, "nodes": results})
+
+func _collect_nearby(node: Node, pos: Dictionary, radius: float, type_filter: String, is_3d: bool, results: Array) -> void:
+	if not type_filter.is_empty() and node.get_class() != type_filter:
+		pass
+	elif is_3d and node is Node3D:
+		var n3: Node3D = node as Node3D
+		var target: Vector3 = Vector3(pos.get("x", 0.0), pos.get("y", 0.0), pos.get("z", 0.0))
+		var dist: float = n3.global_position.distance_to(target)
+		if dist <= radius:
+			results.append({"path": str(node.get_path()), "type": node.get_class(), "distance": dist})
+	elif not is_3d and node is Node2D:
+		var n2: Node2D = node as Node2D
+		var target2: Vector2 = Vector2(pos.get("x", 0.0), pos.get("y", 0.0))
+		var dist: float = n2.global_position.distance_to(target2)
+		if dist <= radius:
+			results.append({"path": str(node.get_path()), "type": node.get_class(), "distance": dist})
+	for child in node.get_children():
+		_collect_nearby(child, pos, radius, type_filter, is_3d, results)
+
+
+func _cmd_capture_frames(params: Dictionary) -> void:
+	var count: int = int(params.get("count", 5))
+	var interval: int = int(params.get("interval_frames", 10))
+	var frames_data: Array = []
+	for i in range(count):
+		for _j in range(interval):
+			await get_tree().process_frame
+		await get_tree().process_frame
+		var img: Image = get_viewport().get_texture().get_image()
+		if img:
+			var data: PackedByteArray = img.save_png_to_buffer()
+			frames_data.append({"frame": i, "base64": Marshalls.raw_to_base64(data), "width": img.get_width(), "height": img.get_height()})
+	_send_response({"success": true, "frames": frames_data})
+
+
+func _cmd_monitor_properties(params: Dictionary) -> void:
+	var queries: Array = params.get("queries", [])
+	var frames: int = int(params.get("frames", 60))
+	var interval: int = int(params.get("interval_frames", 1))
+	var timeline: Array = []
+	for f in range(frames):
+		if f % interval == 0:
+			var snapshot: Dictionary = {"frame": f, "values": []}
+			for q in queries:
+				var node_path: String = q.get("nodePath", q.get("node_path", ""))
+				var prop: String = q.get("property", "")
+				var node: Node = get_tree().root.get_node_or_null(node_path)
+				if node:
+					snapshot["values"].append({"nodePath": node_path, "property": prop, "value": _to_serializable(node.get(prop))})
+			timeline.append(snapshot)
+		await get_tree().process_frame
+	_send_response({"success": true, "timeline": timeline, "frames_recorded": frames})
+
+
+func _cmd_start_recording(_params: Dictionary) -> void:
+	_recording = true
+	_recorded_events = []
+	_recording_start_ms = Time.get_ticks_msec()
+	_send_response({"success": true, "recording": true})
+
+
+func _cmd_stop_recording(_params: Dictionary) -> void:
+	_recording = false
+	_send_response({"success": true, "recording": false, "event_count": _recorded_events.size(), "events": _recorded_events})
+
+
+func _cmd_replay_recording(params: Dictionary) -> void:
+	var events: Array = params.get("events", [])
+	var speed_scale: float = float(params.get("speed_scale", 1.0))
+	if events.is_empty():
+		_send_response({"error": "No events to replay"})
+		return
+	var prev_time: float = 0.0
+	for entry in events:
+		var t: float = float(entry.get("time_ms", 0)) / speed_scale
+		var delay_ms: float = t - prev_time
+		prev_time = t
+		if delay_ms > 0:
+			await get_tree().create_timer(delay_ms / 1000.0).timeout
+		var etype: String = entry.get("type", "")
+		var event: InputEvent = null
+		if etype == "InputEventKey":
+			var ke: InputEventKey = InputEventKey.new()
+			ke.keycode = int(entry.get("keycode", 0))
+			ke.pressed = bool(entry.get("pressed", false))
+			event = ke
+		elif etype == "InputEventMouseButton":
+			var mb: InputEventMouseButton = InputEventMouseButton.new()
+			mb.button_index = int(entry.get("button_index", 0))
+			mb.pressed = bool(entry.get("pressed", false))
+			var p = entry.get("position", {})
+			mb.position = Vector2(float(p.get("x", 0)), float(p.get("y", 0)))
+			event = mb
+		elif etype == "InputEventMouseMotion":
+			var mm: InputEventMouseMotion = InputEventMouseMotion.new()
+			var p = entry.get("position", {})
+			mm.position = Vector2(float(p.get("x", 0)), float(p.get("y", 0)))
+			event = mm
+		if event:
+			Input.parse_input_event(event)
+	_send_response({"success": true, "events_replayed": events.size()})
+
+
+func _cmd_animtree_add_state(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var state_name: String = params.get("state_name", "")
+	var animation_name: String = params.get("animation_name", "")
+	var node: Node = get_tree().root.get_node_or_null(node_path)
+	if node == null or not node is AnimationTree:
+		_send_response({"error": "AnimationTree not found at: %s" % node_path})
+		return
+	var tree: AnimationTree = node as AnimationTree
+	var sm = tree.get("parameters/playback")
+	if sm == null:
+		_send_response({"error": "No StateMachinePlayback found"})
+		return
+	var root_sm: AnimationNodeStateMachine = tree.tree_root as AnimationNodeStateMachine
+	if root_sm == null:
+		_send_response({"error": "Tree root is not AnimationNodeStateMachine"})
+		return
+	var anim_node: AnimationNodeAnimation = AnimationNodeAnimation.new()
+	anim_node.animation = animation_name
+	root_sm.add_node(state_name, anim_node)
+	_send_response({"success": true, "state": state_name, "animation": animation_name})
+
+
+func _cmd_animtree_remove_state(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var state_name: String = params.get("state_name", "")
+	var node: Node = get_tree().root.get_node_or_null(node_path)
+	if node == null or not node is AnimationTree:
+		_send_response({"error": "AnimationTree not found at: %s" % node_path})
+		return
+	var tree: AnimationTree = node as AnimationTree
+	var root_sm: AnimationNodeStateMachine = tree.tree_root as AnimationNodeStateMachine
+	if root_sm == null:
+		_send_response({"error": "Tree root is not AnimationNodeStateMachine"})
+		return
+	root_sm.remove_node(state_name)
+	_send_response({"success": true, "removed": state_name})
+
+
+func _cmd_animtree_add_transition(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var from_state: String = params.get("from_state", "")
+	var to_state: String = params.get("to_state", "")
+	var switch_mode: String = params.get("switch_mode", "immediate")
+	var node: Node = get_tree().root.get_node_or_null(node_path)
+	if node == null or not node is AnimationTree:
+		_send_response({"error": "AnimationTree not found at: %s" % node_path})
+		return
+	var tree: AnimationTree = node as AnimationTree
+	var root_sm: AnimationNodeStateMachine = tree.tree_root as AnimationNodeStateMachine
+	if root_sm == null:
+		_send_response({"error": "Tree root is not AnimationNodeStateMachine"})
+		return
+	var t: AnimationNodeStateMachineTransition = AnimationNodeStateMachineTransition.new()
+	match switch_mode:
+		"sync": t.switch_mode = AnimationNodeStateMachineTransition.SWITCH_MODE_SYNC
+		"at_end": t.switch_mode = AnimationNodeStateMachineTransition.SWITCH_MODE_AT_END
+		_: t.switch_mode = AnimationNodeStateMachineTransition.SWITCH_MODE_IMMEDIATE
+	root_sm.add_transition(from_state, to_state, t)
+	_send_response({"success": true, "from": from_state, "to": to_state})
+
+
+func _cmd_animtree_remove_transition(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var from_state: String = params.get("from_state", "")
+	var to_state: String = params.get("to_state", "")
+	var node: Node = get_tree().root.get_node_or_null(node_path)
+	if node == null or not node is AnimationTree:
+		_send_response({"error": "AnimationTree not found at: %s" % node_path})
+		return
+	var tree: AnimationTree = node as AnimationTree
+	var root_sm: AnimationNodeStateMachine = tree.tree_root as AnimationNodeStateMachine
+	if root_sm == null:
+		_send_response({"error": "Tree root is not AnimationNodeStateMachine"})
+		return
+	root_sm.remove_transition(from_state, to_state)
+	_send_response({"success": true, "removed_transition": "%s->%s" % [from_state, to_state]})
+
+
+func _cmd_animtree_get_structure(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node: Node = get_tree().root.get_node_or_null(node_path)
+	if node == null or not node is AnimationTree:
+		_send_response({"error": "AnimationTree not found at: %s" % node_path})
+		return
+	var tree: AnimationTree = node as AnimationTree
+	var root_sm: AnimationNodeStateMachine = tree.tree_root as AnimationNodeStateMachine
+	if root_sm == null:
+		_send_response({"error": "Tree root is not AnimationNodeStateMachine"})
+		return
+	var node_names: Array = Array(root_sm.get_node_list())
+	var states: Array = []
+	for name in node_names:
+		var sm_node = root_sm.get_node(name)
+		states.append({"name": name, "type": sm_node.get_class() if sm_node else "unknown"})
+	var transitions: Array = []
+	for from_name in node_names:
+		for to_name in node_names:
+			if root_sm.has_transition(from_name, to_name):
+				var t = root_sm.get_transition(from_name, to_name)
+				transitions.append({"from": from_name, "to": to_name, "switch_mode": t.switch_mode})
+	_send_response({"success": true, "states": states, "transitions": transitions, "active_state": str(tree.get("parameters/playback").get_current_node()) if tree.get("parameters/playback") else ""})
+
+
+func _to_serializable(val: Variant) -> Variant:
+	return _variant_to_json(val)
 
 
 func _exit_tree() -> void:

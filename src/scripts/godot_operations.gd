@@ -103,6 +103,16 @@ func _init():
             validate_script(params)
         "list_animations":
             list_animations(params)
+        "add_scene_instance":
+            add_scene_instance(params)
+        "scene_create_inherited":
+            scene_create_inherited(params)
+        "curve_create":
+            curve_create(params)
+        "gradient_create":
+            gradient_create(params)
+        "set_anchor_preset":
+            set_anchor_preset(params)
         _:
             log_error("Unknown operation: " + operation)
             quit(1)
@@ -1989,4 +1999,147 @@ func list_animations(params):
             var anim = lib.get_animation(anim_name)
             anims.append({"name": anim_name, "length": anim.length, "loop_mode": anim.loop_mode, "track_count": anim.get_track_count()})
     print(JSON.stringify({"animations": anims, "player_path": str(player.get_path())}))
+    root.queue_free()
+
+
+func add_scene_instance(params):
+    var scene_path = params.get("scene_path", "")
+    var packed_scene_path = params.get("packed_scene_path", "")
+    if scene_path.is_empty() or packed_scene_path.is_empty():
+        printerr("scene_path and packed_scene_path are required")
+        quit(1)
+    var scene = ResourceLoader.load(scene_path) as PackedScene
+    if scene == null:
+        printerr("Failed to load scene: " + scene_path)
+        quit(1)
+    var root = scene.instantiate()
+    add_child(root)
+    var parent_path = params.get("parent_node_path", ".")
+    var parent_node = root if parent_path == "." else root.get_node_or_null(parent_path)
+    if parent_node == null:
+        printerr("Parent node not found: " + parent_path)
+        root.queue_free()
+        quit(1)
+    var packed = ResourceLoader.load(packed_scene_path) as PackedScene
+    if packed == null:
+        printerr("Failed to load packed scene: " + packed_scene_path)
+        root.queue_free()
+        quit(1)
+    var instance = packed.instantiate()
+    var instance_name = params.get("instance_name", "")
+    if not instance_name.is_empty():
+        instance.name = instance_name
+    parent_node.add_child(instance)
+    instance.owner = root
+    var packed_scene = PackedScene.new()
+    packed_scene.pack(root)
+    var err = ResourceSaver.save(packed_scene, scene_path)
+    if err != OK:
+        printerr("Failed to save scene after adding instance")
+        root.queue_free()
+        quit(1)
+    print(JSON.stringify({"success": true, "instance": instance.name, "parent": parent_path}))
+    root.queue_free()
+
+
+func scene_create_inherited(params):
+    var base_path = params.get("base_scene_path", "")
+    var new_path = params.get("new_scene_path", "")
+    if base_path.is_empty() or new_path.is_empty():
+        printerr("base_scene_path and new_scene_path are required")
+        quit(1)
+    var base_scene = ResourceLoader.load(base_path) as PackedScene
+    if base_scene == null:
+        printerr("Failed to load base scene: " + base_path)
+        quit(1)
+    var root = base_scene.instantiate()
+    root.set_meta("_editor_description", "")
+    add_child(root)
+    # Save as inherited using PackedScene with the base scene as source
+    # Write a minimal .tscn file that inherits from base
+    var abs_new_path = ProjectSettings.globalize_path(new_path)
+    var content = '[gd_scene load_steps=2 format=3]\n\n'
+    content += '[ext_resource type="PackedScene" path="%s" id="1"]\n\n' % base_path
+    content += '[node name="%s" instance=ExtResource("1")]\n' % root.name
+    var file = FileAccess.open(abs_new_path, FileAccess.WRITE)
+    if file == null:
+        printerr("Failed to open file for writing: " + abs_new_path)
+        root.queue_free()
+        quit(1)
+    file.store_string(content)
+    file.close()
+    print(JSON.stringify({"success": true, "path": new_path, "base": base_path}))
+    root.queue_free()
+
+
+func curve_create(params):
+    var curve_path = params.get("curve_path", "")
+    if curve_path.is_empty():
+        printerr("curve_path is required")
+        quit(1)
+    var curve = Curve.new()
+    var points = params.get("points", [])
+    for pt in points:
+        var x = float(pt.get("x", 0.0))
+        var y = float(pt.get("y", 0.0))
+        var lt = float(pt.get("left_tangent", 0.0))
+        var rt = float(pt.get("right_tangent", 0.0))
+        curve.add_point(Vector2(x, y), lt, rt)
+    var err = ResourceSaver.save(curve, curve_path)
+    if err != OK:
+        printerr("Failed to save Curve: " + curve_path)
+        quit(1)
+    print(JSON.stringify({"success": true, "path": curve_path, "point_count": curve.point_count}))
+
+
+func gradient_create(params):
+    var gradient_path = params.get("gradient_path", "")
+    if gradient_path.is_empty():
+        printerr("gradient_path is required")
+        quit(1)
+    var gradient = Gradient.new()
+    var colors_data = params.get("colors", [])
+    var offsets = params.get("offsets", [])
+    if not colors_data.is_empty():
+        gradient.remove_point(0)
+        for i in range(colors_data.size()):
+            var c = colors_data[i]
+            var color = Color(float(c.get("r", 1.0)), float(c.get("g", 1.0)), float(c.get("b", 1.0)), float(c.get("a", 1.0)))
+            var offset = float(offsets[i]) if i < offsets.size() else float(i) / max(colors_data.size() - 1, 1)
+            gradient.add_point(offset, color)
+    var err = ResourceSaver.save(gradient, gradient_path)
+    if err != OK:
+        printerr("Failed to save Gradient: " + gradient_path)
+        quit(1)
+    print(JSON.stringify({"success": true, "path": gradient_path, "point_count": gradient.get_point_count()}))
+
+
+func set_anchor_preset(params):
+    var scene_path = params.get("scene_path", "")
+    var node_path_str = params.get("node_path", "")
+    var preset = int(params.get("preset", 0))
+    if scene_path.is_empty() or node_path_str.is_empty():
+        printerr("scene_path and node_path are required")
+        quit(1)
+    var scene = ResourceLoader.load(scene_path) as PackedScene
+    if scene == null:
+        printerr("Failed to load scene: " + scene_path)
+        quit(1)
+    var root = scene.instantiate()
+    add_child(root)
+    var target = root.get_node_or_null(node_path_str)
+    if target == null or not target is Control:
+        printerr("Control node not found: " + node_path_str)
+        root.queue_free()
+        quit(1)
+    var ctrl: Control = target as Control
+    ctrl.set_anchors_and_offsets_preset(preset)
+    var packed = PackedScene.new()
+    packed.pack(root)
+    var err = ResourceSaver.save(packed, scene_path)
+    if err != OK:
+        printerr("Failed to save scene after setting anchor")
+        root.queue_free()
+        quit(1)
+    print(JSON.stringify({"success": true, "preset": preset, "node": node_path_str}))
     root.queue_free()
