@@ -717,6 +717,22 @@ func _handle_command(json_str: String) -> void:
 			_cmd_set_global_position_3d(params)
 		"look_at_target":
 			_cmd_look_at_target(params)
+		"list_connected_signals_in_game":
+			_cmd_list_connected_signals_in_game(params)
+		"connect_signal_in_game":
+			_cmd_connect_signal_in_game(params)
+		"disconnect_signal_in_game":
+			_cmd_disconnect_signal_in_game(params)
+		"emit_signal_in_game":
+			_cmd_emit_signal_in_game(params)
+		"get_node_groups":
+			_cmd_get_node_groups(params)
+		"add_node_to_group":
+			_cmd_add_node_to_group(params)
+		"remove_node_from_group":
+			_cmd_remove_node_from_group(params)
+		"call_group_method":
+			_cmd_call_group_method(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -7499,6 +7515,116 @@ func _cmd_look_at_target(params: Dictionary) -> void:
 		return
 	(node as Node3D).look_at(Vector3(target_x, target_y, target_z), Vector3(up_x, up_y, up_z))
 	_send_response({"success": true, "target": {"x": target_x, "y": target_y, "z": target_z}})
+
+func _cmd_list_connected_signals_in_game(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var signals: Array = []
+	for sig in node.get_signal_list():
+		var connections: Array = []
+		for conn in node.get_signal_connection_list(sig["name"]):
+			connections.append({"target": str(conn["callable"].get_object().get_path()) if conn["callable"].get_object() != null else "null", "method": conn["callable"].get_method()})
+		if not connections.is_empty():
+			signals.append({"signal": sig["name"], "connections": connections})
+	_send_response({"success": true, "node_path": node_path, "count": signals.size(), "signals": signals})
+
+func _cmd_connect_signal_in_game(params: Dictionary) -> void:
+	var source_path: String = params.get("source_path", "")
+	var signal_name: String = params.get("signal_name", "")
+	var target_path: String = params.get("target_path", "")
+	var method_name: String = params.get("method_name", "")
+	var source = get_tree().root.get_node_or_null(NodePath(source_path))
+	var target = get_tree().root.get_node_or_null(NodePath(target_path))
+	if source == null:
+		_send_response({"error": "Source node not found: " + source_path})
+		return
+	if target == null:
+		_send_response({"error": "Target node not found: " + target_path})
+		return
+	if not source.has_signal(signal_name):
+		_send_response({"error": "Signal not found: " + signal_name})
+		return
+	if not target.has_method(method_name):
+		_send_response({"error": "Method not found: " + method_name})
+		return
+	var err = source.connect(signal_name, Callable(target, method_name))
+	_send_response({"success": err == OK, "source": source_path, "signal": signal_name, "target": target_path, "method": method_name, "error_code": err})
+
+func _cmd_disconnect_signal_in_game(params: Dictionary) -> void:
+	var source_path: String = params.get("source_path", "")
+	var signal_name: String = params.get("signal_name", "")
+	var target_path: String = params.get("target_path", "")
+	var method_name: String = params.get("method_name", "")
+	var source = get_tree().root.get_node_or_null(NodePath(source_path))
+	var target = get_tree().root.get_node_or_null(NodePath(target_path))
+	if source == null or target == null:
+		_send_response({"error": "Source or target node not found"})
+		return
+	if not source.is_connected(signal_name, Callable(target, method_name)):
+		_send_response({"error": "Signal not connected"})
+		return
+	source.disconnect(signal_name, Callable(target, method_name))
+	_send_response({"success": true, "disconnected": signal_name})
+
+func _cmd_emit_signal_in_game(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var signal_name: String = params.get("signal_name", "")
+	var signal_args: Array = params.get("args", [])
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if not node.has_signal(signal_name):
+		_send_response({"error": "Signal not found: " + signal_name})
+		return
+	node.emit_signal(signal_name, signal_args)
+	_send_response({"success": true, "signal": signal_name, "node_path": node_path})
+
+func _cmd_get_node_groups(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	_send_response({"success": true, "node_path": node_path, "groups": node.get_groups()})
+
+func _cmd_add_node_to_group(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var group_name: String = params.get("group_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	node.add_to_group(group_name, true)
+	_send_response({"success": true, "node_path": node_path, "group": group_name})
+
+func _cmd_remove_node_from_group(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var group_name: String = params.get("group_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if not node.is_in_group(group_name):
+		_send_response({"error": "Node is not in group: " + group_name})
+		return
+	node.remove_from_group(group_name)
+	_send_response({"success": true, "node_path": node_path, "removed_from": group_name})
+
+func _cmd_call_group_method(params: Dictionary) -> void:
+	var group_name: String = params.get("group_name", "")
+	var method_name: String = params.get("method_name", "")
+	var call_args: Array = params.get("args", [])
+	var nodes_in_group = get_tree().get_nodes_in_group(group_name)
+	var called_count = 0
+	for node in nodes_in_group:
+		if node.has_method(method_name):
+			node.callv(method_name, call_args)
+			called_count += 1
+	_send_response({"success": true, "group": group_name, "method": method_name, "called_count": called_count, "total_in_group": nodes_in_group.size()})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()

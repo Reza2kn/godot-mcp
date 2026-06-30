@@ -9427,6 +9427,244 @@ class GodotServer {
           required: ['projectPath', 'scenePath'],
         },
       },
+      {
+        name: 'get_resource_uid',
+        description: 'Get the UID of a resource from its .uid sidecar file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            resourcePath: { type: 'string', description: 'res:// path to the resource file' },
+          },
+          required: ['projectPath', 'resourcePath'],
+        },
+      },
+      {
+        name: 'list_uid_files',
+        description: 'Find all .uid sidecar files in the project directory.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_import_settings',
+        description: 'Get the .import settings for an asset file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            assetPath: { type: 'string', description: 'res:// path to the asset file' },
+          },
+          required: ['projectPath', 'assetPath'],
+        },
+      },
+      {
+        name: 'list_import_files',
+        description: 'Find all .import files in the project directory.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_file_dependencies',
+        description: 'Get dependencies listed in a scene or resource file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            filePath: { type: 'string', description: 'res:// path to the scene or resource file' },
+          },
+          required: ['projectPath', 'filePath'],
+        },
+      },
+      {
+        name: 'find_orphan_resources',
+        description: 'Find resource files not referenced by any scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_project_version',
+        description: 'Get the Godot version requirement from project.godot.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_scene_node_count',
+        description: 'Count nodes in all .tscn files in the project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_signal_connections',
+        description: 'Find signal connections in a .tscn scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the .tscn scene file' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'list_connected_signals_in_game',
+        description: 'List all signal connections on a node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path of the node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'connect_signal_in_game',
+        description: 'Connect a signal from one node to another in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            sourcePath: { type: 'string', description: 'Scene-tree path of the source node' },
+            signalName: { type: 'string', description: 'Name of the signal to connect' },
+            targetPath: { type: 'string', description: 'Scene-tree path of the target node' },
+            methodName: { type: 'string', description: 'Method name on the target node' },
+          },
+          required: ['sourcePath', 'signalName', 'targetPath', 'methodName'],
+        },
+      },
+      {
+        name: 'disconnect_signal_in_game',
+        description: 'Disconnect a signal connection in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            sourcePath: { type: 'string', description: 'Scene-tree path of the source node' },
+            signalName: { type: 'string', description: 'Name of the signal to disconnect' },
+            targetPath: { type: 'string', description: 'Scene-tree path of the target node' },
+            methodName: { type: 'string', description: 'Method name on the target node' },
+          },
+          required: ['sourcePath', 'signalName', 'targetPath', 'methodName'],
+        },
+      },
+      {
+        name: 'emit_signal_in_game',
+        description: 'Emit a signal on a node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path of the node' },
+            signalName: { type: 'string', description: 'Name of the signal to emit' },
+            args: { type: 'array', description: 'Optional arguments to pass with the signal' },
+          },
+          required: ['nodePath', 'signalName'],
+        },
+      },
+      {
+        name: 'get_node_groups_in_game',
+        description: 'Get all groups a node belongs to in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path of the node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'add_node_to_group_in_game',
+        description: 'Add a node to a group in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path of the node' },
+            groupName: { type: 'string', description: 'Name of the group to add the node to' },
+          },
+          required: ['nodePath', 'groupName'],
+        },
+      },
+      {
+        name: 'remove_node_from_group_in_game',
+        description: 'Remove a node from a group in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path of the node' },
+            groupName: { type: 'string', description: 'Name of the group to remove the node from' },
+          },
+          required: ['nodePath', 'groupName'],
+        },
+      },
+      {
+        name: 'get_nodes_in_group',
+        description: 'Get all nodes in a group in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            groupName: { type: 'string', description: 'Name of the group to query' },
+          },
+          required: ['groupName'],
+        },
+      },
+      {
+        name: 'call_group_method',
+        description: 'Call a method on all nodes in a group in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            groupName: { type: 'string', description: 'Name of the group' },
+            methodName: { type: 'string', description: 'Method to call on each node in the group' },
+            args: { type: 'array', description: 'Optional arguments to pass to the method' },
+          },
+          required: ['groupName', 'methodName'],
+        },
+      },
+      {
+        name: 'get_project_file_stats',
+        description: 'Get aggregate file statistics for the project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'search_in_scripts',
+        description: 'Search for a pattern across all GDScript files.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            pattern: { type: 'string', description: 'String or regex pattern to search for' },
+            caseSensitive: { type: 'boolean', description: 'Case-sensitive search (default false)' },
+          },
+          required: ['projectPath', 'pattern'],
+        },
+      },
       ],
     }));
 
@@ -10762,6 +11000,46 @@ class GodotServer {
           return await this.handleAddGpuParticles2dToScene(request.params.arguments);
         case 'add_gpu_particles_3d_to_scene':
           return await this.handleAddGpuParticles3dToScene(request.params.arguments);
+        case 'get_resource_uid':
+          return await this.handleGetResourceUid(request.params.arguments);
+        case 'list_uid_files':
+          return await this.handleListUidFiles(request.params.arguments);
+        case 'get_import_settings':
+          return await this.handleGetImportSettings(request.params.arguments);
+        case 'list_import_files':
+          return await this.handleListImportFiles(request.params.arguments);
+        case 'get_file_dependencies':
+          return await this.handleGetFileDependencies(request.params.arguments);
+        case 'find_orphan_resources':
+          return await this.handleFindOrphanResources(request.params.arguments);
+        case 'get_project_version':
+          return await this.handleGetProjectVersion(request.params.arguments);
+        case 'get_scene_node_count':
+          return await this.handleGetSceneNodeCount(request.params.arguments);
+        case 'get_signal_connections':
+          return await this.handleGetSignalConnections(request.params.arguments);
+        case 'list_connected_signals_in_game':
+          return await this.handleListConnectedSignalsInGame(request.params.arguments);
+        case 'connect_signal_in_game':
+          return await this.handleConnectSignalInGame(request.params.arguments);
+        case 'disconnect_signal_in_game':
+          return await this.handleDisconnectSignalInGame(request.params.arguments);
+        case 'emit_signal_in_game':
+          return await this.handleEmitSignalInGame(request.params.arguments);
+        case 'get_node_groups_in_game':
+          return await this.handleGetNodeGroupsInGame(request.params.arguments);
+        case 'add_node_to_group_in_game':
+          return await this.handleAddNodeToGroupInGame(request.params.arguments);
+        case 'remove_node_from_group_in_game':
+          return await this.handleRemoveNodeFromGroupInGame(request.params.arguments);
+        case 'get_nodes_in_group':
+          return await this.handleGetNodesInGroup(request.params.arguments);
+        case 'call_group_method':
+          return await this.handleCallGroupMethod(request.params.arguments);
+        case 'get_project_file_stats':
+          return await this.handleGetProjectFileStats(request.params.arguments);
+        case 'search_in_scripts':
+          return await this.handleSearchInScripts(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -20297,6 +20575,227 @@ class GodotServer {
         parent_node_path: a.parentNodePath || '.',
       },
     }));
+  }
+
+  private async handleGetResourceUid(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.resourcePath) return createErrorResponse('projectPath and resourcePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.resourcePath);
+    const uidPath = absPath + '.uid';
+    if (!existsSync(uidPath)) return { content: [{ type: 'text', text: JSON.stringify({ resourcePath: args.resourcePath, uid: null, note: 'No .uid sidecar found' }) }] };
+    const uid = readFileSync(uidPath, 'utf8').trim();
+    return { content: [{ type: 'text', text: JSON.stringify({ resourcePath: args.resourcePath, uid }) }] };
+  }
+
+  private async handleListUidFiles(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const uidFiles = this.collectFiles(args.projectPath, ['.uid']);
+    const items = uidFiles.map(f => {
+      let uid = '';
+      try { uid = readFileSync(f, 'utf8').trim(); } catch {}
+      return { file: f.replace(args.projectPath + '/', ''), uid };
+    });
+    return { content: [{ type: 'text', text: JSON.stringify({ count: items.length, files: items }, null, 2) }] };
+  }
+
+  private async handleGetImportSettings(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.assetPath) return createErrorResponse('projectPath and assetPath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absAsset = this.resolveResPath(args.projectPath, args.assetPath);
+    const importPath = absAsset + '.import';
+    if (!existsSync(importPath)) return createErrorResponse(`No .import file found for: ${args.assetPath}`);
+    const content = readFileSync(importPath, 'utf8');
+    return { content: [{ type: 'text', text: content }] };
+  }
+
+  private async handleListImportFiles(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const importFiles = this.collectFiles(args.projectPath, ['.import']);
+    const items = importFiles.map(f => ({ file: f.replace(args.projectPath + '/', '') }));
+    return { content: [{ type: 'text', text: JSON.stringify({ count: items.length, files: items }, null, 2) }] };
+  }
+
+  private async handleGetFileDependencies(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.filePath) return createErrorResponse('projectPath and filePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.filePath);
+    if (!existsSync(absPath)) return createErrorResponse(`File not found: ${absPath}`);
+    let content: string;
+    try { content = readFileSync(absPath, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const deps: string[] = [];
+    for (const m of content.matchAll(/\[ext_resource[^\]]*?path="([^"]+)"/g)) deps.push(m[1]);
+    const depsLine = content.match(/^deps=(.+)$/m);
+    if (depsLine) {
+      const raw = depsLine[1].replace(/^\[|\]$/g, '').split(',').map((s: string) => s.trim().replace(/^"|"$/g, ''));
+      deps.push(...raw.filter(Boolean));
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ filePath: args.filePath, dependencyCount: deps.length, dependencies: [...new Set(deps)] }, null, 2) }] };
+  }
+
+  private async handleFindOrphanResources(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const allResources = this.collectFiles(args.projectPath, ['.tres', '.res']);
+    const allScenes = this.collectFiles(args.projectPath, ['.tscn', '.tres', '.res', '.gd']);
+    const allContent = allScenes.map(f => { try { return readFileSync(f, 'utf8'); } catch { return ''; } }).join('\n');
+    const orphans: string[] = [];
+    for (const res of allResources) {
+      const relPath = 'res://' + res.replace(args.projectPath + '/', '');
+      if (!allContent.includes(relPath)) orphans.push(relPath);
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ orphanCount: orphans.length, orphans }, null, 2) }] };
+  }
+
+  private async handleGetProjectVersion(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const cfgPath = join(args.projectPath, 'project.godot');
+    if (!existsSync(cfgPath)) return createErrorResponse('project.godot not found.');
+    const content = readFileSync(cfgPath, 'utf8');
+    const configVersion = content.match(/config_version=(\d+)/)?.[1] || 'unknown';
+    const engineVersion = content.match(/config\/features=PackedStringArray\(([^)]+)\)/)?.[1] || 'unknown';
+    const projectName = content.match(/config\/name="([^"]+)"/)?.[1] || 'unknown';
+    return { content: [{ type: 'text', text: JSON.stringify({ projectName, configVersion, engineFeatures: engineVersion }) }] };
+  }
+
+  private async handleGetSceneNodeCount(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const scenes = this.collectFiles(args.projectPath, ['.tscn']);
+    const results: Array<{ scene: string; nodeCount: number }> = [];
+    let totalNodes = 0;
+    for (const scene of scenes) {
+      let content: string;
+      try { content = readFileSync(scene, 'utf8'); } catch { continue; }
+      const nodeCount = (content.match(/\[node /g) || []).length;
+      totalNodes += nodeCount;
+      results.push({ scene: scene.replace(args.projectPath + '/', ''), nodeCount });
+    }
+    results.sort((a, b) => b.nodeCount - a.nodeCount);
+    return { content: [{ type: 'text', text: JSON.stringify({ totalScenes: scenes.length, totalNodes, scenes: results }, null, 2) }] };
+  }
+
+  private async handleGetSignalConnections(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absPath)) return createErrorResponse(`Scene not found: ${absPath}`);
+    let content: string;
+    try { content = readFileSync(absPath, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const connections: Array<{ signal: string; from: string; to: string; method: string }> = [];
+    for (const m of content.matchAll(/\[connection signal="([^"]+)" from="([^"]+)" to="([^"]+)" method="([^"]+)"\]/g)) {
+      connections.push({ signal: m[1], from: m[2], to: m[3], method: m[4] });
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ scenePath: args.scenePath, connectionCount: connections.length, connections }, null, 2) }] };
+  }
+
+  private async handleListConnectedSignalsInGame(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('list_connected_signals_in_game', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleConnectSignalInGame(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.sourcePath || !args.signalName || !args.targetPath || !args.methodName) return createErrorResponse('sourcePath, signalName, targetPath, and methodName are required.');
+    return this.gameCommand('connect_signal_in_game', args, a => ({ source_path: a.sourcePath, signal_name: a.signalName, target_path: a.targetPath, method_name: a.methodName }));
+  }
+
+  private async handleDisconnectSignalInGame(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.sourcePath || !args.signalName || !args.targetPath || !args.methodName) return createErrorResponse('sourcePath, signalName, targetPath, and methodName are required.');
+    return this.gameCommand('disconnect_signal_in_game', args, a => ({ source_path: a.sourcePath, signal_name: a.signalName, target_path: a.targetPath, method_name: a.methodName }));
+  }
+
+  private async handleEmitSignalInGame(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.signalName) return createErrorResponse('nodePath and signalName are required.');
+    return this.gameCommand('emit_signal_in_game', args, a => ({ node_path: a.nodePath, signal_name: a.signalName, args: a.args || [] }));
+  }
+
+  private async handleGetNodeGroupsInGame(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_groups', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleAddNodeToGroupInGame(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.groupName) return createErrorResponse('nodePath and groupName are required.');
+    return this.gameCommand('add_node_to_group', args, a => ({ node_path: a.nodePath, group_name: a.groupName }));
+  }
+
+  private async handleRemoveNodeFromGroupInGame(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.groupName) return createErrorResponse('nodePath and groupName are required.');
+    return this.gameCommand('remove_node_from_group', args, a => ({ node_path: a.nodePath, group_name: a.groupName }));
+  }
+
+  private async handleGetNodesInGroup(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.groupName) return createErrorResponse('groupName is required.');
+    return this.gameCommand('get_nodes_in_group', args, a => ({ group_name: a.groupName }));
+  }
+
+  private async handleCallGroupMethod(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.groupName || !args.methodName) return createErrorResponse('groupName and methodName are required.');
+    return this.gameCommand('call_group_method', args, a => ({ group_name: a.groupName, method_name: a.methodName, args: a.args || [] }));
+  }
+
+  private async handleGetProjectFileStats(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const exts: Record<string, string[]> = {
+      scenes: ['.tscn'],
+      scripts: ['.gd', '.cs'],
+      resources: ['.tres', '.res'],
+      textures: ['.png', '.jpg', '.jpeg', '.webp', '.svg'],
+      audio: ['.ogg', '.wav', '.mp3'],
+      shaders: ['.gdshader', '.shader'],
+      fonts: ['.ttf', '.otf', '.woff', '.woff2'],
+    };
+    const stats: Record<string, number> = {};
+    for (const [key, extensions] of Object.entries(exts)) {
+      stats[key] = this.collectFiles(args.projectPath, extensions).length;
+    }
+    const totalFiles = Object.values(stats).reduce((a, b) => a + b, 0);
+    return { content: [{ type: 'text', text: JSON.stringify({ totalTrackedFiles: totalFiles, ...stats }, null, 2) }] };
+  }
+
+  private async handleSearchInScripts(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.pattern) return createErrorResponse('projectPath and pattern are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const scripts = this.collectFiles(args.projectPath, ['.gd']);
+    const flags = args.caseSensitive ? 'g' : 'gi';
+    let regex: RegExp;
+    try { regex = new RegExp(args.pattern, flags); } catch (e: any) { return createErrorResponse(`Invalid regex: ${e.message}`); }
+    const matches: Array<{ file: string; line: number; text: string }> = [];
+    for (const script of scripts) {
+      let content: string;
+      try { content = readFileSync(script, 'utf8'); } catch { continue; }
+      const lines = content.split('\n');
+      for (let i = 0; i < lines.length; i++) {
+        if (regex.test(lines[i])) {
+          matches.push({ file: script.replace(args.projectPath + '/', ''), line: i + 1, text: lines[i].trim() });
+          regex.lastIndex = 0;
+        }
+      }
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ pattern: args.pattern, matchCount: matches.length, matches }, null, 2) }] };
   }
 
 }
