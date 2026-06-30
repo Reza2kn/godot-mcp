@@ -1019,6 +1019,24 @@ func _handle_command(json_str: String) -> void:
 			_cmd_set_camera_current(params)
 		"get_current_camera":
 			_cmd_get_current_camera(params)
+		"set_navigation_agent_target":
+			_cmd_set_navigation_agent_target(params)
+		"is_navigation_finished":
+			_cmd_is_navigation_finished(params)
+		"get_next_path_position":
+			_cmd_get_next_path_position(params)
+		"set_rigid_body_sleeping":
+			_cmd_set_rigid_body_sleeping(params)
+		"apply_force_to_rigid_body":
+			_cmd_apply_force_to_rigid_body(params)
+		"get_rigid_body_linear_velocity":
+			_cmd_get_rigid_body_linear_velocity(params)
+		"set_rigid_body_linear_velocity":
+			_cmd_set_rigid_body_linear_velocity(params)
+		"get_vehicle_body_speed":
+			_cmd_get_vehicle_body_speed(params)
+		"set_vehicle_engine_force":
+			_cmd_set_vehicle_engine_force(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -9610,6 +9628,117 @@ func _cmd_get_current_camera(params: Dictionary) -> void:
 	if cam2d != null:
 		result["camera_2d"] = str(cam2d.get_path())
 	_send_response(result)
+
+func _cmd_set_navigation_agent_target(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node is NavigationAgent3D:
+		(node as NavigationAgent3D).target_position = Vector3(x, y, z)
+		_send_response({"success": true, "target_position": {"x": x, "y": y, "z": z}})
+	elif node is NavigationAgent2D:
+		(node as NavigationAgent2D).target_position = Vector2(x, y)
+		_send_response({"success": true, "target_position": {"x": x, "y": y}})
+	else:
+		_send_response({"error": "Not a NavigationAgent: " + (node.get_class() if node != null else "null")})
+
+func _cmd_is_navigation_finished(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node is NavigationAgent3D:
+		_send_response({"success": true, "finished": (node as NavigationAgent3D).is_navigation_finished()})
+	elif node is NavigationAgent2D:
+		_send_response({"success": true, "finished": (node as NavigationAgent2D).is_navigation_finished()})
+	else:
+		_send_response({"error": "Not a NavigationAgent: " + (node.get_class() if node != null else "null")})
+
+func _cmd_get_next_path_position(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node is NavigationAgent3D:
+		var pos = (node as NavigationAgent3D).get_next_path_position()
+		_send_response({"success": true, "position": {"x": pos.x, "y": pos.y, "z": pos.z}})
+	elif node is NavigationAgent2D:
+		var pos = (node as NavigationAgent2D).get_next_path_position()
+		_send_response({"success": true, "position": {"x": pos.x, "y": pos.y}})
+	else:
+		_send_response({"error": "Not a NavigationAgent: " + (node.get_class() if node != null else "null")})
+
+func _cmd_set_rigid_body_sleeping(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var sleeping: bool = params.get("sleeping", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node is RigidBody3D:
+		(node as RigidBody3D).sleeping = sleeping
+		_send_response({"success": true, "sleeping": sleeping})
+	elif node is RigidBody2D:
+		(node as RigidBody2D).sleeping = sleeping
+		_send_response({"success": true, "sleeping": sleeping})
+	else:
+		_send_response({"error": "Not a RigidBody: " + (node.get_class() if node != null else "null")})
+
+func _cmd_apply_force_to_rigid_body(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node is RigidBody3D:
+		(node as RigidBody3D).apply_force(Vector3(x, y, z))
+		_send_response({"success": true, "force": {"x": x, "y": y, "z": z}})
+	elif node is RigidBody2D:
+		(node as RigidBody2D).apply_force(Vector2(x, y))
+		_send_response({"success": true, "force": {"x": x, "y": y}})
+	else:
+		_send_response({"error": "Not a RigidBody: " + (node.get_class() if node != null else "null")})
+
+func _cmd_get_rigid_body_linear_velocity(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node is RigidBody3D:
+		var v = (node as RigidBody3D).linear_velocity
+		_send_response({"success": true, "linear_velocity": {"x": v.x, "y": v.y, "z": v.z}, "sleeping": (node as RigidBody3D).sleeping})
+	elif node is RigidBody2D:
+		var v = (node as RigidBody2D).linear_velocity
+		_send_response({"success": true, "linear_velocity": {"x": v.x, "y": v.y}, "sleeping": (node as RigidBody2D).sleeping})
+	else:
+		_send_response({"error": "Not a RigidBody: " + (node.get_class() if node != null else "null")})
+
+func _cmd_set_rigid_body_linear_velocity(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node is RigidBody3D:
+		(node as RigidBody3D).linear_velocity = Vector3(x, y, z)
+		_send_response({"success": true, "linear_velocity": {"x": x, "y": y, "z": z}})
+	elif node is RigidBody2D:
+		(node as RigidBody2D).linear_velocity = Vector2(x, y)
+		_send_response({"success": true, "linear_velocity": {"x": x, "y": y}})
+	else:
+		_send_response({"error": "Not a RigidBody: " + (node.get_class() if node != null else "null")})
+
+func _cmd_get_vehicle_body_speed(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is VehicleBody3D:
+		_send_response({"error": "VehicleBody3D not found: " + node_path})
+		return
+	var vb := node as VehicleBody3D
+	_send_response({"success": true, "speed": vb.linear_velocity.length(), "linear_velocity": {"x": vb.linear_velocity.x, "y": vb.linear_velocity.y, "z": vb.linear_velocity.z}, "engine_force": vb.engine_force, "steering": vb.steering, "brake": vb.brake})
+
+func _cmd_set_vehicle_engine_force(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var engine_force: float = params.get("engine_force", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is VehicleBody3D:
+		_send_response({"error": "VehicleBody3D not found: " + node_path})
+		return
+	(node as VehicleBody3D).engine_force = engine_force
+	_send_response({"success": true, "engine_force": engine_force})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()

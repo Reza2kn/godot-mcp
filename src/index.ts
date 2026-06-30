@@ -12493,6 +12493,200 @@ class GodotServer {
           required: [],
         },
       },
+      {
+        name: 'add_navigation_agent_2d_to_scene',
+        description: 'Add a NavigationAgent2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: NavigationAgent2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_navigation_agent_3d_to_scene',
+        description: 'Add a NavigationAgent3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: NavigationAgent3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_joint_3d_to_scene',
+        description: 'Add a Generic6DOFJoint3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: Generic6DOFJoint3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_hinge_joint_3d_to_scene',
+        description: 'Add a HingeJoint3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: HingeJoint3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_groove_joint_2d_to_scene',
+        description: 'Add a GrooveJoint2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: GrooveJoint2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_pin_joint_2d_to_scene',
+        description: 'Add a PinJoint2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: PinJoint2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'set_navigation_agent_target',
+        description: 'Set the target position on a NavigationAgent in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the NavigationAgent node.' },
+            x: { type: 'number', description: 'Target X coordinate' },
+            y: { type: 'number', description: 'Target Y coordinate' },
+            z: { type: 'number', description: 'Target Z coordinate (default 0)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'is_navigation_finished',
+        description: 'Check if a NavigationAgent reached its target in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the NavigationAgent node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_next_path_position',
+        description: 'Get next path position from NavigationAgent in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the NavigationAgent node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_rigid_body_sleeping',
+        description: 'Set a RigidBody sleep state in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the RigidBody node.' },
+            sleeping: { type: 'boolean', description: 'True to sleep, false to wake (default: true).' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'apply_force_to_rigid_body',
+        description: 'Apply a constant force to a RigidBody in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the RigidBody node.' },
+            x: { type: 'number', description: 'Force X component' },
+            y: { type: 'number', description: 'Force Y component' },
+            z: { type: 'number', description: 'Force Z component (default 0)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_rigid_body_linear_velocity',
+        description: 'Get linear velocity of a RigidBody in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the RigidBody node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_rigid_body_linear_velocity',
+        description: 'Set linear velocity of a RigidBody in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the RigidBody node.' },
+            x: { type: 'number', description: 'Velocity X component' },
+            y: { type: 'number', description: 'Velocity Y component' },
+            z: { type: 'number', description: 'Velocity Z component (default 0)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_vehicle_body_speed',
+        description: 'Get the speed of a VehicleBody3D in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the VehicleBody3D node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_vehicle_engine_force',
+        description: 'Set the engine force on a VehicleBody3D in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the VehicleBody3D node.' },
+            engineForce: { type: 'number', description: 'Engine force value (default 0).' },
+          },
+          required: ['nodePath'],
+        },
+      },
       ],
     }));
 
@@ -14318,6 +14512,36 @@ class GodotServer {
           return await this.handleSetCameraCurrent(request.params.arguments);
         case 'get_current_camera':
           return await this.handleGetCurrentCamera(request.params.arguments);
+        case 'add_navigation_agent_2d_to_scene':
+          return await this.handleAddNavigationAgent2dToScene(request.params.arguments);
+        case 'add_navigation_agent_3d_to_scene':
+          return await this.handleAddNavigationAgent3dToScene(request.params.arguments);
+        case 'add_joint_3d_to_scene':
+          return await this.handleAddJoint3dToScene(request.params.arguments);
+        case 'add_hinge_joint_3d_to_scene':
+          return await this.handleAddHingeJoint3dToScene(request.params.arguments);
+        case 'add_groove_joint_2d_to_scene':
+          return await this.handleAddGrooveJoint2dToScene(request.params.arguments);
+        case 'add_pin_joint_2d_to_scene':
+          return await this.handleAddPinJoint2dToScene(request.params.arguments);
+        case 'set_navigation_agent_target':
+          return await this.handleSetNavigationAgentTarget(request.params.arguments);
+        case 'is_navigation_finished':
+          return await this.handleIsNavigationFinished(request.params.arguments);
+        case 'get_next_path_position':
+          return await this.handleGetNextPathPosition(request.params.arguments);
+        case 'set_rigid_body_sleeping':
+          return await this.handleSetRigidBodySleeping(request.params.arguments);
+        case 'apply_force_to_rigid_body':
+          return await this.handleApplyForceToRigidBody(request.params.arguments);
+        case 'get_rigid_body_linear_velocity':
+          return await this.handleGetRigidBodyLinearVelocity(request.params.arguments);
+        case 'set_rigid_body_linear_velocity':
+          return await this.handleSetRigidBodyLinearVelocity(request.params.arguments);
+        case 'get_vehicle_body_speed':
+          return await this.handleGetVehicleBodySpeed(request.params.arguments);
+        case 'set_vehicle_engine_force':
+          return await this.handleSetVehicleEngineForce(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -25827,6 +26051,179 @@ class GodotServer {
   private async handleGetCurrentCamera(args: any) {
     args = normalizeParameters(args || {});
     return this.gameCommand('get_current_camera', args, _a => ({}));
+  }
+
+  private async handleAddNavigationAgent2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'NavigationAgent2D',
+        node_type: 'NavigationAgent2D',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddNavigationAgent3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'NavigationAgent3D',
+        node_type: 'NavigationAgent3D',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddJoint3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'Generic6DOFJoint3D',
+        node_type: 'Generic6DOFJoint3D',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddHingeJoint3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'HingeJoint3D',
+        node_type: 'HingeJoint3D',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddGrooveJoint2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'GrooveJoint2D',
+        node_type: 'GrooveJoint2D',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddPinJoint2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'PinJoint2D',
+        node_type: 'PinJoint2D',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleSetNavigationAgentTarget(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_navigation_agent_target', args, a => ({
+      node_path: a.nodePath,
+      x: a.x ?? 0,
+      y: a.y ?? 0,
+      z: a.z ?? 0,
+    }));
+  }
+
+  private async handleIsNavigationFinished(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('is_navigation_finished', args, a => ({
+      node_path: a.nodePath,
+    }));
+  }
+
+  private async handleGetNextPathPosition(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_next_path_position', args, a => ({
+      node_path: a.nodePath,
+    }));
+  }
+
+  private async handleSetRigidBodySleeping(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_rigid_body_sleeping', args, a => ({
+      node_path: a.nodePath,
+      sleeping: a.sleeping ?? true,
+    }));
+  }
+
+  private async handleApplyForceToRigidBody(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('apply_force_to_rigid_body', args, a => ({
+      node_path: a.nodePath,
+      x: a.x ?? 0,
+      y: a.y ?? 0,
+      z: a.z ?? 0,
+    }));
+  }
+
+  private async handleGetRigidBodyLinearVelocity(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_rigid_body_linear_velocity', args, a => ({
+      node_path: a.nodePath,
+    }));
+  }
+
+  private async handleSetRigidBodyLinearVelocity(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_rigid_body_linear_velocity', args, a => ({
+      node_path: a.nodePath,
+      x: a.x ?? 0,
+      y: a.y ?? 0,
+      z: a.z ?? 0,
+    }));
+  }
+
+  private async handleGetVehicleBodySpeed(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_vehicle_body_speed', args, a => ({
+      node_path: a.nodePath,
+    }));
+  }
+
+  private async handleSetVehicleEngineForce(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_vehicle_engine_force', args, a => ({
+      node_path: a.nodePath,
+      engine_force: a.engineForce ?? 0,
+    }));
   }
 
 }
