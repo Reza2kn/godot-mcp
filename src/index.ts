@@ -7447,6 +7447,257 @@ class GodotServer {
           required: [],
         },
       },
+      {
+        name: 'add_multi_mesh_instance_3d',
+        description: 'Add a MultiMeshInstance3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Scene file path (res:// or relative)' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: MultiMeshInstance3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_occluder_instance_3d',
+        description: 'Add an OccluderInstance3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Scene file path (res:// or relative)' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: OccluderInstance3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_label_3d',
+        description: 'Add a Label3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Scene file path (res:// or relative)' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: Label3D)' },
+            text: { type: 'string', description: 'Label text (optional)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_sprite_3d',
+        description: 'Add a Sprite3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Scene file path (res:// or relative)' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: Sprite3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_visible_on_screen_notifier_3d',
+        description: 'Add VisibleOnScreenNotifier3D to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Scene file path (res:// or relative)' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: VisibleOnScreenNotifier3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_remote_transform_3d',
+        description: 'Add a RemoteTransform3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Scene file path (res:// or relative)' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: RemoteTransform3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_audio_listener_3d',
+        description: 'Add an AudioListener3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Scene file path (res:// or relative)' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: AudioListener3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_xr_origin_3d',
+        description: 'Add an XROrigin3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Scene file path (res:// or relative)' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: XROrigin3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_xr_camera_3d',
+        description: 'Add an XRCamera3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Scene file path (res:// or relative)' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: XRCamera3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_sub_viewport',
+        description: 'Add a SubViewport node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Scene file path (res:// or relative)' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: SubViewport)' },
+            width: { type: 'integer', description: 'Viewport width in pixels (default: 512)' },
+            height: { type: 'integer', description: 'Viewport height in pixels (default: 512)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'get_scene_sub_resources',
+        description: 'List all sub_resource entries in a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Scene file path (res:// or relative)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'get_project_uid_map',
+        description: 'List uid:// mappings from the .godot uid_cache.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'batch_set_node_property_runtime',
+        description: 'Set a property on multiple nodes in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePaths: { type: 'array', items: { type: 'string' }, description: 'Array of node paths to update' },
+            propertyName: { type: 'string', description: 'Property name to set on each node' },
+            value: { description: 'Value to assign to the property' },
+          },
+          required: ['nodePaths', 'propertyName'],
+        },
+      },
+      {
+        name: 'get_input_state',
+        description: 'Get the current input action states in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            actions: { type: 'array', items: { type: 'string' }, description: 'Action names to query (empty = all)' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'simulate_input_action',
+        description: 'Simulate an input action press/release in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            actionName: { type: 'string', description: 'Input action name to simulate' },
+            pressed: { type: 'boolean', description: 'Whether to press (true) or release (false)' },
+            strength: { type: 'number', description: 'Action strength 0.0–1.0 (default: 1.0)' },
+          },
+          required: ['actionName'],
+        },
+      },
+      {
+        name: 'get_network_info',
+        description: 'Get multiplayer/network info from the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'scene_profiler_start',
+        description: 'Start scene processing profiler in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'scene_profiler_stop',
+        description: 'Stop profiler and return processing time results.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'get_mouse_position',
+        description: 'Get the current mouse position in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'warp_mouse',
+        description: 'Warp the mouse cursor to a position in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            x: { type: 'number', description: 'Target X coordinate in viewport pixels' },
+            y: { type: 'number', description: 'Target Y coordinate in viewport pixels' },
+          },
+          required: ['x', 'y'],
+        },
+      },
       ],
     }));
 
@@ -8472,6 +8723,46 @@ class GodotServer {
           return await this.handleNavigationAgentSetTarget(request.params.arguments);
         case 'get_world_environment':
           return await this.handleGetWorldEnvironment(request.params.arguments);
+        case 'add_multi_mesh_instance_3d':
+          return await this.handleAddMultiMeshInstance3d(request.params.arguments);
+        case 'add_occluder_instance_3d':
+          return await this.handleAddOccluderInstance3d(request.params.arguments);
+        case 'add_label_3d':
+          return await this.handleAddLabel3d(request.params.arguments);
+        case 'add_sprite_3d':
+          return await this.handleAddSprite3d(request.params.arguments);
+        case 'add_visible_on_screen_notifier_3d':
+          return await this.handleAddVisibleOnScreenNotifier3d(request.params.arguments);
+        case 'add_remote_transform_3d':
+          return await this.handleAddRemoteTransform3d(request.params.arguments);
+        case 'add_audio_listener_3d':
+          return await this.handleAddAudioListener3d(request.params.arguments);
+        case 'add_xr_origin_3d':
+          return await this.handleAddXrOrigin3d(request.params.arguments);
+        case 'add_xr_camera_3d':
+          return await this.handleAddXrCamera3d(request.params.arguments);
+        case 'add_sub_viewport':
+          return await this.handleAddSubViewport(request.params.arguments);
+        case 'get_scene_sub_resources':
+          return await this.handleGetSceneSubResources(request.params.arguments);
+        case 'get_project_uid_map':
+          return await this.handleGetProjectUidMap(request.params.arguments);
+        case 'batch_set_node_property_runtime':
+          return await this.handleBatchSetNodePropertyRuntime(request.params.arguments);
+        case 'get_input_state':
+          return await this.handleGetInputState(request.params.arguments);
+        case 'simulate_input_action':
+          return await this.handleSimulateInputAction(request.params.arguments);
+        case 'get_network_info':
+          return await this.handleGetNetworkInfo(request.params.arguments);
+        case 'scene_profiler_start':
+          return await this.handleSceneProfilerStart(request.params.arguments);
+        case 'scene_profiler_stop':
+          return await this.handleSceneProfilerStop(request.params.arguments);
+        case 'get_mouse_position':
+          return await this.handleGetMousePosition(request.params.arguments);
+        case 'warp_mouse':
+          return await this.handleWarpMouse(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -16336,6 +16627,154 @@ class GodotServer {
   private async handleGetWorldEnvironment(args: any) {
     args = normalizeParameters(args || {});
     return this.gameCommand('get_world_environment', args, _a => ({}));
+  }
+
+  private async handleAddMultiMeshInstance3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'MultiMeshInstance3D', node_type: 'MultiMeshInstance3D', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddOccluderInstance3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'OccluderInstance3D', node_type: 'OccluderInstance3D', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddLabel3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_label_3d', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'Label3D', text: a.text || 'Label3D', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddSprite3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'Sprite3D', node_type: 'Sprite3D', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddVisibleOnScreenNotifier3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'VisibleOnScreenNotifier3D', node_type: 'VisibleOnScreenNotifier3D', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddRemoteTransform3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'RemoteTransform3D', node_type: 'RemoteTransform3D', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddAudioListener3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'AudioListener3D', node_type: 'AudioListener3D', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddXrOrigin3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'XROrigin3D', node_type: 'XROrigin3D', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddXrCamera3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'XRCamera3D', node_type: 'XRCamera3D', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddSubViewport(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_sub_viewport', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'SubViewport', width: a.width ?? 512, height: a.height ?? 512, parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  private async handleGetSceneSubResources(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absPath)) return createErrorResponse(`Scene not found: ${absPath}`);
+    let content: string;
+    try { content = readFileSync(absPath, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const subResources: Array<{ id: string; type: string; lines: number }> = [];
+    const matches = content.matchAll(/\[sub_resource[^\]]*?type="([^"]+)"[^\]]*?id="([^"]+)"/g);
+    for (const m of matches) {
+      const start = content.indexOf(m[0]);
+      const end = content.indexOf('\n[', start + 1);
+      const lines = end === -1 ? content.slice(start).split('\n').length : content.slice(start, end).split('\n').length;
+      subResources.push({ id: m[2], type: m[1], lines });
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ scenePath: args.scenePath, count: subResources.length, subResources }, null, 2) }] };
+  }
+
+  private async handleGetProjectUidMap(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const allFiles = this.collectFiles(args.projectPath, ['.import']);
+    const uidMap: Record<string, string> = {};
+    for (const file of allFiles) {
+      let content: string;
+      try { content = readFileSync(file, 'utf8'); } catch { continue; }
+      const uidMatch = content.match(/^uid="([^"]+)"/m);
+      const pathMatch = content.match(/^source_file="([^"]+)"/m);
+      if (uidMatch && pathMatch) uidMap[uidMatch[1]] = pathMatch[1];
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ count: Object.keys(uidMap).length, uidMap }, null, 2) }] };
+  }
+
+  private async handleBatchSetNodePropertyRuntime(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePaths || !args.propertyName) return createErrorResponse('nodePaths and propertyName are required.');
+    return this.gameCommand('batch_set_node_property_runtime', args, a => ({ node_paths: a.nodePaths, property_name: a.propertyName, value: a.value }));
+  }
+
+  private async handleGetInputState(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_input_state', args, a => ({ actions: a.actions || [] }));
+  }
+
+  private async handleSimulateInputAction(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.actionName) return createErrorResponse('actionName is required.');
+    return this.gameCommand('simulate_input_action', args, a => ({ action_name: a.actionName, pressed: a.pressed ?? true, strength: a.strength ?? 1.0 }));
+  }
+
+  private async handleGetNetworkInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_network_info', args, _a => ({}));
+  }
+
+  private async handleSceneProfilerStart(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('scene_profiler_start', args, _a => ({}));
+  }
+
+  private async handleSceneProfilerStop(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('scene_profiler_stop', args, _a => ({}));
+  }
+
+  private async handleGetMousePosition(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_mouse_position', args, _a => ({}));
+  }
+
+  private async handleWarpMouse(args: any) {
+    args = normalizeParameters(args || {});
+    if (args.x === undefined || args.y === undefined) return createErrorResponse('x and y are required.');
+    return this.gameCommand('warp_mouse', args, a => ({ x: a.x ?? 0, y: a.y ?? 0 }));
   }
 
 }

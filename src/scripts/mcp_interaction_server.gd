@@ -18,6 +18,8 @@ var _recorded_events: Array = []
 var _recording_start_ms: float = 0.0
 var _fps_history: Array = []
 var _fps_history_max: int = 300
+var _profiler_start_time: int = 0
+var _profiler_running: bool = false
 
 func _ready() -> void:
 	# Ensure MCP server keeps processing even when game is paused
@@ -589,6 +591,22 @@ func _handle_command(json_str: String) -> void:
 			_cmd_navigation_agent_set_target(params)
 		"get_world_environment":
 			_cmd_get_world_environment(params)
+		"batch_set_node_property_runtime":
+			_cmd_batch_set_node_property_runtime(params)
+		"get_input_state":
+			_cmd_get_input_state(params)
+		"simulate_input_action":
+			_cmd_simulate_input_action(params)
+		"get_network_info":
+			_cmd_get_network_info(params)
+		"scene_profiler_start":
+			_cmd_scene_profiler_start(params)
+		"scene_profiler_stop":
+			_cmd_scene_profiler_stop(params)
+		"get_mouse_position":
+			_cmd_get_mouse_position(params)
+		"warp_mouse":
+			_cmd_warp_mouse(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -6650,6 +6668,80 @@ func _cmd_get_world_environment(_params: Dictionary) -> void:
 		for child in node.get_children():
 			queue.append(child)
 	_send_response({"error": "No WorldEnvironment found in scene"})
+
+func _cmd_batch_set_node_property_runtime(params: Dictionary) -> void:
+	var node_paths: Array = params.get("node_paths", [])
+	var property_name: String = params.get("property_name", "")
+	var value = params.get("value", null)
+	var results: Array = []
+	for np in node_paths:
+		var node = get_tree().root.get_node_or_null(NodePath(np))
+		if node == null:
+			results.append({"path": np, "success": false, "error": "not found"})
+			continue
+		if not (property_name in node):
+			results.append({"path": np, "success": false, "error": "property not found"})
+			continue
+		node.set(property_name, value)
+		results.append({"path": np, "success": true})
+	_send_response({"success": true, "results": results})
+
+func _cmd_get_input_state(params: Dictionary) -> void:
+	var requested: Array = params.get("actions", [])
+	var actions_to_check: Array = requested if requested.size() > 0 else InputMap.get_actions()
+	var state: Dictionary = {}
+	for action in actions_to_check:
+		if InputMap.has_action(action):
+			state[action] = Input.is_action_pressed(action)
+	_send_response({"success": true, "input_state": state})
+
+func _cmd_simulate_input_action(params: Dictionary) -> void:
+	var action_name: String = params.get("action_name", "")
+	var pressed: bool = params.get("pressed", true)
+	var strength: float = params.get("strength", 1.0)
+	if not InputMap.has_action(action_name):
+		_send_response({"error": "Action not found: " + action_name})
+		return
+	var event = InputEventAction.new()
+	event.action = action_name
+	event.pressed = pressed
+	event.strength = strength
+	Input.parse_input_event(event)
+	_send_response({"success": true, "action_name": action_name, "pressed": pressed, "strength": strength})
+
+func _cmd_get_network_info(_params: Dictionary) -> void:
+	var mp = get_tree().get_multiplayer()
+	var peer = mp.multiplayer_peer if mp != null else null
+	_send_response({
+		"success": true,
+		"has_multiplayer": mp != null,
+		"unique_id": mp.get_unique_id() if mp != null else 0,
+		"is_server": mp.is_server() if mp != null else false,
+		"peer_type": peer.get_class() if peer != null else "none"
+	})
+
+func _cmd_scene_profiler_start(_params: Dictionary) -> void:
+	_profiler_start_time = Time.get_ticks_msec()
+	_profiler_running = true
+	_send_response({"success": true, "started_at_ms": _profiler_start_time})
+
+func _cmd_scene_profiler_stop(_params: Dictionary) -> void:
+	if not _profiler_running:
+		_send_response({"error": "Profiler was not started"})
+		return
+	var elapsed = Time.get_ticks_msec() - _profiler_start_time
+	_profiler_running = false
+	_send_response({"success": true, "elapsed_ms": elapsed, "fps": Engine.get_frames_per_second()})
+
+func _cmd_get_mouse_position(_params: Dictionary) -> void:
+	var pos = get_viewport().get_mouse_position()
+	_send_response({"success": true, "x": pos.x, "y": pos.y})
+
+func _cmd_warp_mouse(params: Dictionary) -> void:
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	Input.warp_mouse(Vector2(x, y))
+	_send_response({"success": true, "x": x, "y": y})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()
