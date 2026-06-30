@@ -18447,6 +18447,34 @@ class GodotServer {
       { name: 'write_quest_manager_script', description: 'Write a quest manager singleton script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_loot_table_script', description: 'Write a weighted loot table drop system.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_grid_based_movement_script', description: 'Write a grid-based movement controller.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, gridSize: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      // Batch 72 — Group A: BoneAttachment3D / PhysicalBone3D
+      { name: 'get_bone_attachment_3d_info', description: 'Get BoneAttachment3D bone name and index.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_bone_attachment_3d_bone_name', description: 'Set the bone name on a BoneAttachment3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, boneName: { type: 'string' } }, required: ['nodePath', 'boneName'] } },
+      { name: 'get_physical_bone_3d_info', description: 'Get PhysicalBone3D joint type and parameters.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'apply_physical_bone_impulse', description: 'Apply an impulse to a PhysicalBone3D node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, x: { type: 'number' }, y: { type: 'number' }, z: { type: 'number' } }, required: ['nodePath', 'x', 'y', 'z'] } },
+      { name: 'get_skeleton_physical_bones_simulating', description: 'Check if skeleton simulates physical bones.', inputSchema: { type: 'object', properties: { skeletonPath: { type: 'string' } }, required: ['skeletonPath'] } },
+      // Batch 72 — Group B: Decal3D / CSG tools
+      { name: 'get_decal_3d_info', description: 'Get Decal3D size, texture, and albedo mix.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_decal_3d_size', description: 'Set the size of a Decal3D node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, x: { type: 'number' }, y: { type: 'number' }, z: { type: 'number' } }, required: ['nodePath', 'x', 'y', 'z'] } },
+      { name: 'set_decal_3d_albedo_mix', description: 'Set the albedo mix of a Decal3D node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, albedoMix: { type: 'number' } }, required: ['nodePath', 'albedoMix'] } },
+      { name: 'get_csg_shape_info', description: 'Get CSGShape operation and snap value.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_csg_shape_operation', description: 'Set CSGShape3D boolean operation (0=Union,1=Intersect,2=Subtract).', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, operation: { type: 'integer' } }, required: ['nodePath', 'operation'] } },
+      { name: 'get_csg_combined_faces', description: 'Get the face count of a CSGShape3D combined mesh.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      // Batch 72 — Group C: Audio Bus management
+      { name: 'set_audio_bus_name', description: 'Set the name of an audio bus by index.', inputSchema: { type: 'object', properties: { busIndex: { type: 'integer' }, name: { type: 'string' } }, required: ['busIndex', 'name'] } },
+      { name: 'move_audio_bus', description: 'Move an audio bus to a different index position.', inputSchema: { type: 'object', properties: { busIndex: { type: 'integer' }, toIndex: { type: 'integer' } }, required: ['busIndex', 'toIndex'] } },
+      { name: 'get_audio_bus_send', description: 'Get the send target bus name of an audio bus.', inputSchema: { type: 'object', properties: { busIndex: { type: 'integer' } }, required: ['busIndex'] } },
+      // Batch 72 — Group D: ENet / WebSocket networking
+      { name: 'create_enet_peer', description: 'Create and connect an ENetMultiplayerPeer.', inputSchema: { type: 'object', properties: { address: { type: 'string' }, port: { type: 'integer' }, channelCount: { type: 'integer' } }, required: ['address', 'port'] } },
+      { name: 'create_enet_server', description: 'Create an ENetMultiplayerPeer server.', inputSchema: { type: 'object', properties: { port: { type: 'integer' }, maxClients: { type: 'integer' }, channelCount: { type: 'integer' } }, required: ['port'] } },
+      { name: 'get_enet_connection_status', description: 'Get the ENet multiplayer peer connection status.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'create_websocket_peer', description: 'Connect a WebSocketPeer to a URL.', inputSchema: { type: 'object', properties: { url: { type: 'string' }, protocols: { type: 'array', items: { type: 'string' } } }, required: ['url'] } },
+      { name: 'get_websocket_peer_state', description: 'Get WebSocketPeer ready state and close code.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'send_websocket_text', description: 'Send a text message via a WebSocketPeer node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, message: { type: 'string' } }, required: ['nodePath', 'message'] } },
+      // Batch 72 — Group E: GDScript templates
+      { name: 'write_object_pooling_script', description: 'Write an object pool for performance script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, poolSize: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_shield_system_script', description: 'Write a rechargeable shield system script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, maxShield: { type: 'number' }, rechargeDelay: { type: 'number' }, rechargeRate: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_waypoint_patrol_script', description: 'Write an AI waypoint patrol movement script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, speed: { type: 'number' }, waitTime: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
       ],
     }));
 
@@ -21786,6 +21814,57 @@ class GodotServer {
           return await this.handleWriteLootTableScript(request.params.arguments);
         case 'write_grid_based_movement_script':
           return await this.handleWriteGridBasedMovementScript(request.params.arguments);
+        // Batch 72 switch cases — Group A: BoneAttachment3D / PhysicalBone3D
+        case 'get_bone_attachment_3d_info':
+          return await this.handleGetBoneAttachment3dInfo(request.params.arguments);
+        case 'set_bone_attachment_3d_bone_name':
+          return await this.handleSetBoneAttachment3dBoneName(request.params.arguments);
+        case 'get_physical_bone_3d_info':
+          return await this.handleGetPhysicalBone3dInfo(request.params.arguments);
+        case 'apply_physical_bone_impulse':
+          return await this.handleApplyPhysicalBoneImpulse(request.params.arguments);
+        case 'get_skeleton_physical_bones_simulating':
+          return await this.handleGetSkeletonPhysicalBonesSimulating(request.params.arguments);
+        // Batch 72 switch cases — Group B: Decal3D / CSG tools
+        case 'get_decal_3d_info':
+          return await this.handleGetDecal3dInfo(request.params.arguments);
+        case 'set_decal_3d_size':
+          return await this.handleSetDecal3dSize(request.params.arguments);
+        case 'set_decal_3d_albedo_mix':
+          return await this.handleSetDecal3dAlbedoMix(request.params.arguments);
+        case 'get_csg_shape_info':
+          return await this.handleGetCsgShapeInfo(request.params.arguments);
+        case 'set_csg_shape_operation':
+          return await this.handleSetCsgShapeOperation(request.params.arguments);
+        case 'get_csg_combined_faces':
+          return await this.handleGetCsgCombinedFaces(request.params.arguments);
+        // Batch 72 switch cases — Group C: Audio Bus management
+        case 'set_audio_bus_name':
+          return await this.handleSetAudioBusName(request.params.arguments);
+        case 'move_audio_bus':
+          return await this.handleMoveAudioBus(request.params.arguments);
+        case 'get_audio_bus_send':
+          return await this.handleGetAudioBusSend(request.params.arguments);
+        // Batch 72 switch cases — Group D: ENet / WebSocket networking
+        case 'create_enet_peer':
+          return await this.handleCreateEnetPeer(request.params.arguments);
+        case 'create_enet_server':
+          return await this.handleCreateEnetServer(request.params.arguments);
+        case 'get_enet_connection_status':
+          return await this.handleGetEnetConnectionStatus(request.params.arguments);
+        case 'create_websocket_peer':
+          return await this.handleCreateWebsocketPeer(request.params.arguments);
+        case 'get_websocket_peer_state':
+          return await this.handleGetWebsocketPeerState(request.params.arguments);
+        case 'send_websocket_text':
+          return await this.handleSendWebsocketText(request.params.arguments);
+        // Batch 72 switch cases — Group E: GDScript templates
+        case 'write_object_pooling_script':
+          return await this.handleWriteObjectPoolingScript(request.params.arguments);
+        case 'write_shield_system_script':
+          return await this.handleWriteShieldSystemScript(request.params.arguments);
+        case 'write_waypoint_patrol_script':
+          return await this.handleWriteWaypointPatrolScript(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -43980,6 +44059,311 @@ func get_cell() -> Vector2i:
 func teleport_to_cell(cell: Vector2i) -> void:
     _cell = cell
     position = Vector2(cell.x * grid_size, cell.y * grid_size)
+`;
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  // ── Batch 72 handlers — Group A: BoneAttachment3D / PhysicalBone3D ──────────
+
+  private async handleGetBoneAttachment3dInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_bone_attachment_3d_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetBoneAttachment3dBoneName(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_bone_attachment_3d_bone_name', args, a => ({ node_path: a.nodePath ?? '', bone_name: a.boneName ?? '' }));
+  }
+
+  private async handleGetPhysicalBone3dInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_physical_bone_3d_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleApplyPhysicalBoneImpulse(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('apply_physical_bone_impulse', args, a => ({ node_path: a.nodePath ?? '', x: a.x ?? 0, y: a.y ?? 0, z: a.z ?? 0 }));
+  }
+
+  private async handleGetSkeletonPhysicalBonesSimulating(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_skeleton_physical_bones_simulating', args, a => ({ skeleton_path: a.skeletonPath ?? '' }));
+  }
+
+  // ── Batch 72 handlers — Group B: Decal3D / CSG tools ────────────────────────
+
+  private async handleGetDecal3dInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_decal_3d_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetDecal3dSize(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_decal_3d_size', args, a => ({ node_path: a.nodePath ?? '', x: a.x ?? 1, y: a.y ?? 1, z: a.z ?? 1 }));
+  }
+
+  private async handleSetDecal3dAlbedoMix(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_decal_3d_albedo_mix', args, a => ({ node_path: a.nodePath ?? '', albedo_mix: a.albedoMix ?? 1.0 }));
+  }
+
+  private async handleGetCsgShapeInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_csg_shape_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetCsgShapeOperation(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_csg_shape_operation', args, a => ({ node_path: a.nodePath ?? '', operation: a.operation ?? 0 }));
+  }
+
+  private async handleGetCsgCombinedFaces(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_csg_combined_faces', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  // ── Batch 72 handlers — Group C: Audio Bus management ───────────────────────
+
+  private async handleSetAudioBusName(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_audio_bus_name', args, a => ({ bus_index: a.busIndex ?? 0, name: a.name ?? '' }));
+  }
+
+  private async handleMoveAudioBus(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('move_audio_bus', args, a => ({ bus_index: a.busIndex ?? 0, to_index: a.toIndex ?? 0 }));
+  }
+
+  private async handleGetAudioBusSend(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_audio_bus_send', args, a => ({ bus_index: a.busIndex ?? 0 }));
+  }
+
+  // ── Batch 72 handlers — Group D: ENet / WebSocket networking ─────────────────
+
+  private async handleCreateEnetPeer(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('create_enet_peer', args, a => ({ address: a.address ?? 'localhost', port: a.port ?? 7777, channel_count: a.channelCount ?? 0 }));
+  }
+
+  private async handleCreateEnetServer(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('create_enet_server', args, a => ({ port: a.port ?? 7777, max_clients: a.maxClients ?? 32, channel_count: a.channelCount ?? 0 }));
+  }
+
+  private async handleGetEnetConnectionStatus(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_enet_connection_status', args, _a => ({}));
+  }
+
+  private async handleCreateWebsocketPeer(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('create_websocket_peer', args, a => ({ url: a.url ?? '', protocols: a.protocols ?? [] }));
+  }
+
+  private async handleGetWebsocketPeerState(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_websocket_peer_state', args, _a => ({}));
+  }
+
+  private async handleSendWebsocketText(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('send_websocket_text', args, a => ({ node_path: a.nodePath ?? '', message: a.message ?? '' }));
+  }
+
+  // ── Batch 72 handlers — Group E: GDScript templates ─────────────────────────
+
+  private async handleWriteObjectPoolingScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const { projectPath, scriptPath, poolSize = 20 } = args;
+      if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+      const content = `extends Node
+
+signal object_acquired(obj: Node)
+signal object_released(obj: Node)
+
+@export var pool_size: int = ${poolSize}
+@export var scene: PackedScene
+
+var _pool: Array[Node] = []
+var _active: Array[Node] = []
+
+func _ready() -> void:
+    if scene == null: return
+    for i in pool_size:
+        var obj = scene.instantiate()
+        obj.visible = false
+        obj.set_process(false)
+        obj.set_physics_process(false)
+        add_child(obj)
+        _pool.append(obj)
+
+func acquire() -> Node:
+    if _pool.is_empty():
+        if scene:
+            var obj = scene.instantiate()
+            add_child(obj)
+            _active.append(obj)
+            object_acquired.emit(obj)
+            return obj
+        return null
+    var obj = _pool.pop_back()
+    obj.visible = true
+    obj.set_process(true)
+    obj.set_physics_process(true)
+    _active.append(obj)
+    object_acquired.emit(obj)
+    return obj
+
+func release(obj: Node) -> void:
+    if not _active.has(obj): return
+    _active.erase(obj)
+    obj.visible = false
+    obj.set_process(false)
+    obj.set_physics_process(false)
+    _pool.append(obj)
+    object_released.emit(obj)
+
+func get_active_count() -> int:
+    return _active.size()
+
+func get_pool_count() -> int:
+    return _pool.size()
+`;
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteShieldSystemScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const { projectPath, scriptPath, maxShield = 100, rechargeDelay = 3.0, rechargeRate = 20.0 } = args;
+      if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+      const content = `extends Node
+
+signal shield_changed(current: float, maximum: float)
+signal shield_depleted
+signal shield_recharge_started
+signal shield_fully_recharged
+
+@export var max_shield: float = ${maxShield}
+@export var recharge_delay: float = ${rechargeDelay}
+@export var recharge_rate: float = ${rechargeRate}
+
+var current_shield: float = ${maxShield}
+var _recharge_timer: float = 0.0
+var _recharging: bool = false
+
+func _process(delta: float) -> void:
+    if current_shield >= max_shield: return
+    if _recharge_timer > 0.0:
+        _recharge_timer -= delta
+        return
+    if not _recharging:
+        _recharging = true
+        shield_recharge_started.emit()
+    current_shield = minf(current_shield + recharge_rate * delta, max_shield)
+    shield_changed.emit(current_shield, max_shield)
+    if current_shield >= max_shield:
+        _recharging = false
+        shield_fully_recharged.emit()
+
+func take_damage(amount: float) -> float:
+    var absorbed = minf(amount, current_shield)
+    current_shield -= absorbed
+    _recharge_timer = recharge_delay
+    _recharging = false
+    shield_changed.emit(current_shield, max_shield)
+    if current_shield <= 0.0:
+        shield_depleted.emit()
+    return amount - absorbed
+
+func restore(amount: float) -> void:
+    current_shield = minf(current_shield + amount, max_shield)
+    shield_changed.emit(current_shield, max_shield)
+
+func get_shield_percent() -> float:
+    return current_shield / max_shield if max_shield > 0.0 else 0.0
+
+func is_active() -> bool:
+    return current_shield > 0.0
+`;
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteWaypointPatrolScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const { projectPath, scriptPath, speed = 80, waitTime = 1.0 } = args;
+      if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+      const content = `extends CharacterBody2D
+
+signal waypoint_reached(index: int)
+signal patrol_completed
+
+@export var speed: float = ${speed}
+@export var wait_time: float = ${waitTime}
+@export var waypoints: Array[NodePath] = []
+@export var loop_patrol: bool = true
+
+var _current_index: int = 0
+var _waiting: bool = false
+var _wait_timer: float = 0.0
+var _targets: Array[Node2D] = []
+
+func _ready() -> void:
+    for wp in waypoints:
+        var node = get_node_or_null(wp)
+        if node: _targets.append(node)
+
+func _physics_process(delta: float) -> void:
+    if _targets.is_empty(): return
+    if _waiting:
+        _wait_timer -= delta
+        if _wait_timer <= 0.0:
+            _waiting = false
+            _advance_waypoint()
+        return
+    var target_pos = _targets[_current_index].global_position
+    var direction = (target_pos - global_position)
+    if direction.length() < 4.0:
+        waypoint_reached.emit(_current_index)
+        _waiting = true
+        _wait_timer = wait_time
+        return
+    velocity = direction.normalized() * speed
+    move_and_slide()
+
+func _advance_waypoint() -> void:
+    _current_index += 1
+    if _current_index >= _targets.size():
+        patrol_completed.emit()
+        if loop_patrol:
+            _current_index = 0
+        else:
+            _current_index = _targets.size() - 1
+
+func set_waypoint_index(index: int) -> void:
+    _current_index = clamp(index, 0, _targets.size() - 1)
+    _waiting = false
+
+func get_current_waypoint_index() -> int:
+    return _current_index
 `;
       const absPath = require('path').join(projectPath, scriptPath);
       const dir = require('path').dirname(absPath);

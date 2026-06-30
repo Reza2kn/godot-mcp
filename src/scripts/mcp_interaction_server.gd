@@ -2117,6 +2117,46 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_spring_arm_3d_info(params)
 		"set_spring_arm_3d_length":
 			_cmd_set_spring_arm_3d_length(params)
+		"get_bone_attachment_3d_info":
+			_cmd_get_bone_attachment_3d_info(params)
+		"set_bone_attachment_3d_bone_name":
+			_cmd_set_bone_attachment_3d_bone_name(params)
+		"get_physical_bone_3d_info":
+			_cmd_get_physical_bone_3d_info(params)
+		"apply_physical_bone_impulse":
+			_cmd_apply_physical_bone_impulse(params)
+		"get_skeleton_physical_bones_simulating":
+			_cmd_get_skeleton_physical_bones_simulating(params)
+		"get_decal_3d_info":
+			_cmd_get_decal_3d_info(params)
+		"set_decal_3d_size":
+			_cmd_set_decal_3d_size(params)
+		"set_decal_3d_albedo_mix":
+			_cmd_set_decal_3d_albedo_mix(params)
+		"get_csg_shape_info":
+			_cmd_get_csg_shape_info(params)
+		"set_csg_shape_operation":
+			_cmd_set_csg_shape_operation(params)
+		"get_csg_combined_faces":
+			_cmd_get_csg_combined_faces(params)
+		"set_audio_bus_name":
+			_cmd_set_audio_bus_name(params)
+		"move_audio_bus":
+			_cmd_move_audio_bus(params)
+		"get_audio_bus_send":
+			_cmd_get_audio_bus_send(params)
+		"create_enet_peer":
+			_cmd_create_enet_peer(params)
+		"create_enet_server":
+			_cmd_create_enet_server(params)
+		"get_enet_connection_status":
+			_cmd_get_enet_connection_status(params)
+		"create_websocket_peer":
+			_cmd_create_websocket_peer(params)
+		"get_websocket_peer_state":
+			_cmd_get_websocket_peer_state(params)
+		"send_websocket_text":
+			_cmd_send_websocket_text(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -17135,6 +17175,226 @@ func _cmd_set_spring_arm_3d_length(params: Dictionary) -> void:
 		return
 	(node as SpringArm3D).spring_length = spring_length
 	_send_response({"success": true, "spring_length": spring_length})
+
+
+func _cmd_get_bone_attachment_3d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is BoneAttachment3D:
+		_send_response({"error": "BoneAttachment3D not found: " + node_path})
+		return
+	var ba = node as BoneAttachment3D
+	_send_response({"success": true, "bone_name": ba.bone_name, "bone_idx": ba.bone_idx, "override_pose": ba.override_pose})
+
+
+func _cmd_set_bone_attachment_3d_bone_name(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var bone_name: String = params.get("bone_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is BoneAttachment3D:
+		_send_response({"error": "BoneAttachment3D not found: " + node_path})
+		return
+	(node as BoneAttachment3D).bone_name = bone_name
+	_send_response({"success": true, "bone_name": bone_name})
+
+
+func _cmd_get_physical_bone_3d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is PhysicalBone3D:
+		_send_response({"error": "PhysicalBone3D not found: " + node_path})
+		return
+	var pb = node as PhysicalBone3D
+	_send_response({"success": true, "joint_type": pb.joint_type, "mass": pb.mass, "linear_velocity": {"x": pb.linear_velocity.x, "y": pb.linear_velocity.y, "z": pb.linear_velocity.z}})
+
+
+func _cmd_apply_physical_bone_impulse(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is PhysicalBone3D:
+		_send_response({"error": "PhysicalBone3D not found: " + node_path})
+		return
+	(node as PhysicalBone3D).apply_central_impulse(Vector3(x, y, z))
+	_send_response({"success": true, "impulse": {"x": x, "y": y, "z": z}})
+
+
+func _cmd_get_skeleton_physical_bones_simulating(params: Dictionary) -> void:
+	var skeleton_path: String = params.get("skeleton_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(skeleton_path))
+	if node == null or not node is Skeleton3D:
+		_send_response({"error": "Skeleton3D not found: " + skeleton_path})
+		return
+	var sk = node as Skeleton3D
+	var physical_bones = []
+	for child in sk.get_children():
+		if child is PhysicalBone3D:
+			physical_bones.append({"name": child.name, "simulating": child.is_simulating_physics()})
+	_send_response({"success": true, "physical_bones": physical_bones, "count": physical_bones.size()})
+
+
+func _cmd_get_decal_3d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Decal:
+		_send_response({"error": "Decal not found: " + node_path})
+		return
+	var d = node as Decal
+	_send_response({"success": true, "size": {"x": d.size.x, "y": d.size.y, "z": d.size.z}, "albedo_mix": d.albedo_mix, "upper_fade": d.upper_fade, "lower_fade": d.lower_fade})
+
+
+func _cmd_set_decal_3d_size(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 1.0)
+	var y: float = params.get("y", 1.0)
+	var z: float = params.get("z", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Decal:
+		_send_response({"error": "Decal not found: " + node_path})
+		return
+	(node as Decal).size = Vector3(x, y, z)
+	_send_response({"success": true, "size": {"x": x, "y": y, "z": z}})
+
+
+func _cmd_set_decal_3d_albedo_mix(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var albedo_mix: float = params.get("albedo_mix", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Decal:
+		_send_response({"error": "Decal not found: " + node_path})
+		return
+	(node as Decal).albedo_mix = clamp(albedo_mix, 0.0, 1.0)
+	_send_response({"success": true, "albedo_mix": albedo_mix})
+
+
+func _cmd_get_csg_shape_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CSGShape3D:
+		_send_response({"error": "CSGShape3D not found: " + node_path})
+		return
+	var cs = node as CSGShape3D
+	_send_response({"success": true, "operation": cs.operation, "snap": cs.snap, "use_collision": cs.use_collision})
+
+
+func _cmd_set_csg_shape_operation(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var operation: int = params.get("operation", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CSGShape3D:
+		_send_response({"error": "CSGShape3D not found: " + node_path})
+		return
+	(node as CSGShape3D).operation = operation
+	_send_response({"success": true, "operation": operation})
+
+
+func _cmd_get_csg_combined_faces(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CSGShape3D:
+		_send_response({"error": "CSGShape3D not found: " + node_path})
+		return
+	var faces = (node as CSGShape3D).get_meshes()
+	var face_count = 0
+	if faces.size() > 1 and faces[1] is Mesh:
+		var mesh = faces[1] as Mesh
+		for s in range(mesh.get_surface_count()):
+			face_count += mesh.surface_get_array_len(s) / 3
+	_send_response({"success": true, "face_count": face_count, "mesh_count": faces.size()})
+
+
+func _cmd_set_audio_bus_name(params: Dictionary) -> void:
+	var bus_index: int = params.get("bus_index", 0)
+	var name: String = params.get("name", "")
+	if bus_index < 0 or bus_index >= AudioServer.get_bus_count():
+		_send_response({"error": "Invalid bus index: " + str(bus_index)})
+		return
+	AudioServer.set_bus_name(bus_index, name)
+	_send_response({"success": true, "index": bus_index, "name": name})
+
+
+func _cmd_move_audio_bus(params: Dictionary) -> void:
+	var bus_index: int = params.get("bus_index", 0)
+	var to_index: int = params.get("to_index", 0)
+	if bus_index < 0 or bus_index >= AudioServer.get_bus_count():
+		_send_response({"error": "Invalid bus index: " + str(bus_index)})
+		return
+	AudioServer.move_bus(bus_index, to_index)
+	_send_response({"success": true, "moved_from": bus_index, "moved_to": to_index})
+
+
+func _cmd_get_audio_bus_send(params: Dictionary) -> void:
+	var bus_index: int = params.get("bus_index", 0)
+	if bus_index < 0 or bus_index >= AudioServer.get_bus_count():
+		_send_response({"error": "Invalid bus index: " + str(bus_index)})
+		return
+	_send_response({"success": true, "send": AudioServer.get_bus_send(bus_index)})
+
+
+func _cmd_create_enet_peer(params: Dictionary) -> void:
+	var address: String = params.get("address", "localhost")
+	var port: int = params.get("port", 7777)
+	var channel_count: int = params.get("channel_count", 0)
+	var peer = ENetMultiplayerPeer.new()
+	var err = peer.create_client(address, port, channel_count)
+	if err != OK:
+		_send_response({"error": "Failed to create ENet client: " + str(err)})
+		return
+	_send_response({"success": true, "address": address, "port": port, "status": peer.get_connection_status()})
+
+
+func _cmd_create_enet_server(params: Dictionary) -> void:
+	var port: int = params.get("port", 7777)
+	var max_clients: int = params.get("max_clients", 32)
+	var channel_count: int = params.get("channel_count", 0)
+	var peer = ENetMultiplayerPeer.new()
+	var err = peer.create_server(port, max_clients, channel_count)
+	if err != OK:
+		_send_response({"error": "Failed to create ENet server: " + str(err)})
+		return
+	_send_response({"success": true, "port": port, "max_clients": max_clients, "status": peer.get_connection_status()})
+
+
+func _cmd_get_enet_connection_status(params: Dictionary) -> void:
+	var mp = get_tree().get_multiplayer()
+	if mp == null:
+		_send_response({"error": "No multiplayer peer configured"})
+		return
+	_send_response({"success": true, "unique_id": mp.get_unique_id(), "is_server": mp.is_server()})
+
+
+func _cmd_create_websocket_peer(params: Dictionary) -> void:
+	var url: String = params.get("url", "")
+	var protocols: Array = params.get("protocols", [])
+	if url.is_empty():
+		_send_response({"error": "url is required"})
+		return
+	var peer = WebSocketPeer.new()
+	var err = peer.connect_to_url(url, PackedStringArray(protocols))
+	if err != OK:
+		_send_response({"error": "Failed to connect WebSocket: " + str(err)})
+		return
+	_send_response({"success": true, "url": url, "state": peer.get_ready_state()})
+
+
+func _cmd_get_websocket_peer_state(params: Dictionary) -> void:
+	_send_response({"success": true, "note": "WebSocketPeer state must be checked per-instance", "states": {"CONNECTING": 0, "OPEN": 1, "CLOSING": 2, "CLOSED": 3}})
+
+
+func _cmd_send_websocket_text(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var message: String = params.get("message", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if not node.has_method("send_text"):
+		_send_response({"error": "Node does not have send_text method"})
+		return
+	node.send_text(message)
+	_send_response({"success": true, "message": message, "length": message.length()})
 
 
 func _exit_tree() -> void:
