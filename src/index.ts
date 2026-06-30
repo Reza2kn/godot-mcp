@@ -18265,6 +18265,44 @@ class GodotServer {
       { name: 'write_grid_movement_script', description: 'Write a grid-based movement controller script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, cellSize: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_shop_system_script', description: 'Write a basic shop/purchase system script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_input_remapping_script', description: 'Write an input remapping UI helper script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      // Batch 67 — Group A: AudioStreamPlayer3D tools
+      { name: 'get_audio_player_3d_info', description: 'Get playback info from an AudioStreamPlayer3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_audio_player_3d_volume', description: 'Set volume dB on an AudioStreamPlayer3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, volumeDb: { type: 'number' } }, required: ['nodePath'] } },
+      { name: 'set_audio_player_3d_max_distance', description: 'Set max_distance on AudioStreamPlayer3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, maxDistance: { type: 'number' } }, required: ['nodePath'] } },
+      { name: 'set_audio_player_3d_unit_size', description: 'Set unit_size (attenuation) on AudioStreamPlayer3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, unitSize: { type: 'number' } }, required: ['nodePath'] } },
+      { name: 'set_audio_player_3d_doppler', description: 'Set doppler tracking on AudioStreamPlayer3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, mode: { type: 'string', enum: ['disabled', 'idle', 'physics'] } }, required: ['nodePath'] } },
+      { name: 'play_audio_player_3d_at_position', description: 'Play AudioStreamPlayer3D from a world position.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, x: { type: 'number' }, y: { type: 'number' }, z: { type: 'number' } }, required: ['nodePath'] } },
+      // Batch 67 — Group B: ShaderMaterial property setters
+      { name: 'get_shader_param', description: 'Get a uniform parameter from a ShaderMaterial.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, paramName: { type: 'string' }, surfaceIndex: { type: 'integer' } }, required: ['nodePath', 'paramName'] } },
+      { name: 'set_shader_param_color', description: 'Set a color uniform on a ShaderMaterial.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, paramName: { type: 'string' }, r: { type: 'number' }, g: { type: 'number' }, b: { type: 'number' }, a: { type: 'number' }, surfaceIndex: { type: 'integer' } }, required: ['nodePath', 'paramName'] } },
+      { name: 'set_shader_param_vec2', description: 'Set a vec2 uniform on a ShaderMaterial.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, paramName: { type: 'string' }, x: { type: 'number' }, y: { type: 'number' }, surfaceIndex: { type: 'integer' } }, required: ['nodePath', 'paramName'] } },
+      { name: 'set_shader_param_vec3', description: 'Set a vec3 uniform on a ShaderMaterial.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, paramName: { type: 'string' }, x: { type: 'number' }, y: { type: 'number' }, z: { type: 'number' }, surfaceIndex: { type: 'integer' } }, required: ['nodePath', 'paramName'] } },
+      { name: 'list_shader_params', description: 'List all uniform parameters on a ShaderMaterial.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, surfaceIndex: { type: 'integer' } }, required: ['nodePath'] } },
+      { name: 'assign_shader_to_mesh', description: 'Create and assign a shader file to a MeshInstance3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, shaderPath: { type: 'string' }, surfaceIndex: { type: 'integer' } }, required: ['nodePath', 'shaderPath'] } },
+      // Batch 67 — Group C: Curve2D / Path2D tools
+      { name: 'get_path_2d_point_count', description: 'Get number of points in a Path2D/Curve2D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'add_path_2d_point', description: 'Add a point to a Path2D curve.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, x: { type: 'number' }, y: { type: 'number' } }, required: ['nodePath'] } },
+      { name: 'get_path_2d_baked_length', description: 'Get the baked length of a Path2D curve.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'sample_path_2d_baked', description: 'Sample a point on a baked Path2D at offset.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, offset: { type: 'number' } }, required: ['nodePath'] } },
+      { name: 'clear_path_2d', description: 'Remove all points from a Path2D curve.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_path_follower_2d_offset', description: 'Get progress offset of a PathFollow2D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      // Batch 67 — Group D: MultiMeshInstance / performance
+      { name: 'get_multimesh_instance_count', description: 'Get visible instance count of MultiMeshInstance3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_multimesh_instance_count', description: 'Set visible instance count on MultiMeshInstance3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, count: { type: 'integer' } }, required: ['nodePath', 'count'] } },
+      { name: 'set_multimesh_instance_transform_3d', description: 'Set transform of one MultiMesh instance.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, instanceIndex: { type: 'integer' }, x: { type: 'number' }, y: { type: 'number' }, z: { type: 'number' } }, required: ['nodePath', 'instanceIndex'] } },
+      { name: 'set_multimesh_instance_color', description: 'Set color of one MultiMesh instance.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, instanceIndex: { type: 'integer' }, r: { type: 'number' }, g: { type: 'number' }, b: { type: 'number' }, a: { type: 'number' } }, required: ['nodePath', 'instanceIndex'] } },
+      { name: 'get_physics_server_info', description: 'Get physics server active body count info.', inputSchema: { type: 'object', properties: {}, required: [] } },
+      // Batch 67 — Group E: GDScript templates
+      { name: 'write_boss_enemy_script', description: 'Write a boss enemy with phases script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, maxHealth: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_dialogue_npc_script', description: 'Write an NPC dialogue trigger script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_rpg_stats_script', description: 'Write an RPG character stats (ATK/DEF/HP) script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_resource_gathering_script', description: 'Write a resource gathering/mining node script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_crafting_system_script', description: 'Write a crafting system with recipe support.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_minimap_icon_script', description: 'Write a minimap icon tracker for Node2D.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_ability_cooldown_script', description: 'Write an ability cooldown tracker script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, cooldownTime: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_ai_follow_player_script', description: 'Write an AI that follows the player (2D).', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, speed: { type: 'number' }, stopDistance: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_game_manager_script', description: 'Write a main GameManager Autoload script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_debug_overlay_script', description: 'Write a debug HUD overlay for runtime info.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
       ],
     }));
 
@@ -21262,6 +21300,77 @@ class GodotServer {
           return await this.handleWriteShopSystemScript(request.params.arguments);
         case 'write_input_remapping_script':
           return await this.handleWriteInputRemappingScript(request.params.arguments);
+        // Batch 67 — Group A: AudioStreamPlayer3D tools
+        case 'get_audio_player_3d_info':
+          return await this.handleGetAudioPlayer3dInfo(request.params.arguments);
+        case 'set_audio_player_3d_volume':
+          return await this.handleSetAudioPlayer3dVolume(request.params.arguments);
+        case 'set_audio_player_3d_max_distance':
+          return await this.handleSetAudioPlayer3dMaxDistance(request.params.arguments);
+        case 'set_audio_player_3d_unit_size':
+          return await this.handleSetAudioPlayer3dUnitSize(request.params.arguments);
+        case 'set_audio_player_3d_doppler':
+          return await this.handleSetAudioPlayer3dDoppler(request.params.arguments);
+        case 'play_audio_player_3d_at_position':
+          return await this.handlePlayAudioPlayer3dAtPosition(request.params.arguments);
+        // Batch 67 — Group B: ShaderMaterial property setters
+        case 'get_shader_param':
+          return await this.handleGetShaderParam(request.params.arguments);
+        case 'set_shader_param_color':
+          return await this.handleSetShaderParamColor(request.params.arguments);
+        case 'set_shader_param_vec2':
+          return await this.handleSetShaderParamVec2(request.params.arguments);
+        case 'set_shader_param_vec3':
+          return await this.handleSetShaderParamVec3(request.params.arguments);
+        case 'list_shader_params':
+          return await this.handleListShaderParams(request.params.arguments);
+        case 'assign_shader_to_mesh':
+          return await this.handleAssignShaderToMesh(request.params.arguments);
+        // Batch 67 — Group C: Curve2D / Path2D tools
+        case 'get_path_2d_point_count':
+          return await this.handleGetPath2dPointCount(request.params.arguments);
+        case 'add_path_2d_point':
+          return await this.handleAddPath2dPoint(request.params.arguments);
+        case 'get_path_2d_baked_length':
+          return await this.handleGetPath2dBakedLength(request.params.arguments);
+        case 'sample_path_2d_baked':
+          return await this.handleSamplePath2dBaked(request.params.arguments);
+        case 'clear_path_2d':
+          return await this.handleClearPath2d(request.params.arguments);
+        case 'get_path_follower_2d_offset':
+          return await this.handleGetPathFollower2dOffset(request.params.arguments);
+        // Batch 67 — Group D: MultiMeshInstance / performance
+        case 'get_multimesh_instance_count':
+          return await this.handleGetMultimeshInstanceCount(request.params.arguments);
+        case 'set_multimesh_instance_count':
+          return await this.handleSetMultimeshInstanceCount(request.params.arguments);
+        case 'set_multimesh_instance_transform_3d':
+          return await this.handleSetMultimeshInstanceTransform3d(request.params.arguments);
+        case 'set_multimesh_instance_color':
+          return await this.handleSetMultimeshInstanceColor(request.params.arguments);
+        case 'get_physics_server_info':
+          return await this.handleGetPhysicsServerInfo(request.params.arguments);
+        // Batch 67 — Group E: GDScript templates
+        case 'write_boss_enemy_script':
+          return await this.handleWriteBossEnemyScript(request.params.arguments);
+        case 'write_dialogue_npc_script':
+          return await this.handleWriteDialogueNpcScript(request.params.arguments);
+        case 'write_rpg_stats_script':
+          return await this.handleWriteRpgStatsScript(request.params.arguments);
+        case 'write_resource_gathering_script':
+          return await this.handleWriteResourceGatheringScript(request.params.arguments);
+        case 'write_crafting_system_script':
+          return await this.handleWriteCraftingSystemScript(request.params.arguments);
+        case 'write_minimap_icon_script':
+          return await this.handleWriteMinimapIconScript(request.params.arguments);
+        case 'write_ability_cooldown_script':
+          return await this.handleWriteAbilityCooldownScript(request.params.arguments);
+        case 'write_ai_follow_player_script':
+          return await this.handleWriteAiFollowPlayerScript(request.params.arguments);
+        case 'write_game_manager_script':
+          return await this.handleWriteGameManagerScript(request.params.arguments);
+        case 'write_debug_overlay_script':
+          return await this.handleWriteDebugOverlayScript(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -40325,6 +40434,588 @@ func get_action_display(action: String) -> String:
 \t\t\treturn events[0].as_text()
 \treturn "Unbound"
 `;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  // ── Batch 67 handlers ──────────────────────────────────────────────────────
+
+  // Group A: AudioStreamPlayer3D tools
+  private async handleGetAudioPlayer3dInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_audio_player_3d_info', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetAudioPlayer3dVolume(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_audio_player_3d_volume', args, a => ({ node_path: a.nodePath, volume_db: a.volumeDb ?? 0.0 }));
+  }
+
+  private async handleSetAudioPlayer3dMaxDistance(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_audio_player_3d_max_distance', args, a => ({ node_path: a.nodePath, max_distance: a.maxDistance ?? 0.0 }));
+  }
+
+  private async handleSetAudioPlayer3dUnitSize(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_audio_player_3d_unit_size', args, a => ({ node_path: a.nodePath, unit_size: a.unitSize ?? 10.0 }));
+  }
+
+  private async handleSetAudioPlayer3dDoppler(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_audio_player_3d_doppler', args, a => ({ node_path: a.nodePath, mode: a.mode ?? 'disabled' }));
+  }
+
+  private async handlePlayAudioPlayer3dAtPosition(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('play_audio_player_3d_at_position', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0, z: a.z ?? 0 }));
+  }
+
+  // Group B: ShaderMaterial property setters
+  private async handleGetShaderParam(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_shader_param', args, a => ({ node_path: a.nodePath, param_name: a.paramName ?? '', surface_index: a.surfaceIndex ?? 0 }));
+  }
+
+  private async handleSetShaderParamColor(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_shader_param_color', args, a => ({ node_path: a.nodePath, param_name: a.paramName ?? '', r: a.r ?? 1.0, g: a.g ?? 1.0, b: a.b ?? 1.0, a: a.a ?? 1.0, surface_index: a.surfaceIndex ?? 0 }));
+  }
+
+  private async handleSetShaderParamVec2(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_shader_param_vec2', args, a => ({ node_path: a.nodePath, param_name: a.paramName ?? '', x: a.x ?? 0, y: a.y ?? 0, surface_index: a.surfaceIndex ?? 0 }));
+  }
+
+  private async handleSetShaderParamVec3(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_shader_param_vec3', args, a => ({ node_path: a.nodePath, param_name: a.paramName ?? '', x: a.x ?? 0, y: a.y ?? 0, z: a.z ?? 0, surface_index: a.surfaceIndex ?? 0 }));
+  }
+
+  private async handleListShaderParams(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('list_shader_params', args, a => ({ node_path: a.nodePath, surface_index: a.surfaceIndex ?? 0 }));
+  }
+
+  private async handleAssignShaderToMesh(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('assign_shader_to_mesh', args, a => ({ node_path: a.nodePath, shader_path: a.shaderPath ?? '', surface_index: a.surfaceIndex ?? 0 }));
+  }
+
+  // Group C: Curve2D / Path2D tools
+  private async handleGetPath2dPointCount(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_path_2d_point_count', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleAddPath2dPoint(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('add_path_2d_point', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0 }));
+  }
+
+  private async handleGetPath2dBakedLength(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_path_2d_baked_length', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSamplePath2dBaked(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('sample_path_2d_baked', args, a => ({ node_path: a.nodePath, offset: a.offset ?? 0 }));
+  }
+
+  private async handleClearPath2d(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('clear_path_2d', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetPathFollower2dOffset(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_path_follower_2d_offset', args, a => ({ node_path: a.nodePath }));
+  }
+
+  // Group D: MultiMeshInstance / performance
+  private async handleGetMultimeshInstanceCount(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_multimesh_instance_count', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetMultimeshInstanceCount(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_multimesh_instance_count', args, a => ({ node_path: a.nodePath, count: a.count ?? 1 }));
+  }
+
+  private async handleSetMultimeshInstanceTransform3d(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_multimesh_instance_transform_3d', args, a => ({ node_path: a.nodePath, instance_index: a.instanceIndex ?? 0, x: a.x ?? 0, y: a.y ?? 0, z: a.z ?? 0 }));
+  }
+
+  private async handleSetMultimeshInstanceColor(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_multimesh_instance_color', args, a => ({ node_path: a.nodePath, instance_index: a.instanceIndex ?? 0, r: a.r ?? 1.0, g: a.g ?? 1.0, b: a.b ?? 1.0, a: a.a ?? 1.0 }));
+  }
+
+  private async handleGetPhysicsServerInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_physics_server_info', args, _a => ({}));
+  }
+
+  // Group E: GDScript templates
+  private async handleWriteBossEnemyScript(args: any) {
+    args = normalizeParameters(args || {});
+    const maxHealth = args.maxHealth ?? 500;
+    const content = `extends CharacterBody2D
+
+@export var max_health: int = ${maxHealth}
+var health: int = max_health
+var phase: int = 1
+
+signal phase_changed(new_phase)
+signal boss_defeated
+
+func _ready() -> void:
+    health = max_health
+
+func take_damage(amount: int) -> void:
+    health -= amount
+    _check_phase()
+    if health <= 0:
+        _die()
+
+func _check_phase() -> void:
+    var pct = float(health) / float(max_health)
+    var new_phase = 1
+    if pct < 0.33:
+        new_phase = 3
+    elif pct < 0.66:
+        new_phase = 2
+    if new_phase != phase:
+        phase = new_phase
+        emit_signal("phase_changed", phase)
+        _on_phase_change(phase)
+
+func _on_phase_change(p: int) -> void:
+    match p:
+        2:
+            push_warning("Boss entered phase 2!")
+        3:
+            push_warning("Boss entered phase 3!")
+
+func _die() -> void:
+    emit_signal("boss_defeated")
+    queue_free()
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteDialogueNpcScript(args: any) {
+    args = normalizeParameters(args || {});
+    const content = `extends Area2D
+
+@export var dialogue_lines: Array[String] = ["Hello traveller!", "Safe travels!"]
+var current_line: int = 0
+var player_inside: bool = false
+
+signal dialogue_started(line)
+signal dialogue_ended
+
+func _ready() -> void:
+    body_entered.connect(_on_body_entered)
+    body_exited.connect(_on_body_exited)
+
+func _input(event: InputEvent) -> void:
+    if player_inside and event.is_action_pressed("ui_accept"):
+        _next_line()
+
+func _on_body_entered(body: Node2D) -> void:
+    if body.is_in_group("player"):
+        player_inside = true
+        current_line = 0
+        emit_signal("dialogue_started", dialogue_lines[current_line])
+
+func _on_body_exited(body: Node2D) -> void:
+    if body.is_in_group("player"):
+        player_inside = false
+        emit_signal("dialogue_ended")
+
+func _next_line() -> void:
+    current_line += 1
+    if current_line < dialogue_lines.size():
+        emit_signal("dialogue_started", dialogue_lines[current_line])
+    else:
+        player_inside = false
+        emit_signal("dialogue_ended")
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteRpgStatsScript(args: any) {
+    args = normalizeParameters(args || {});
+    const content = `extends Node
+
+@export var max_hp: int = 100
+@export var attack: int = 10
+@export var defense: int = 5
+
+var hp: int = max_hp
+
+signal stat_changed(stat_name, new_value)
+signal character_died
+
+func _ready() -> void:
+    hp = max_hp
+
+func take_damage(raw_damage: int) -> int:
+    var actual = max(1, raw_damage - defense)
+    hp = max(0, hp - actual)
+    emit_signal("stat_changed", "hp", hp)
+    if hp == 0:
+        emit_signal("character_died")
+    return actual
+
+func heal(amount: int) -> void:
+    hp = min(max_hp, hp + amount)
+    emit_signal("stat_changed", "hp", hp)
+
+func get_attack_damage() -> int:
+    return attack
+
+func is_alive() -> bool:
+    return hp > 0
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteResourceGatheringScript(args: any) {
+    args = normalizeParameters(args || {});
+    const content = `extends Area2D
+
+@export var resource_name: String = "Wood"
+@export var resource_amount: int = 5
+@export var gather_time: float = 2.0
+@export var respawn_time: float = 10.0
+
+var is_depleted: bool = false
+var gather_timer: Timer
+var respawn_timer: Timer
+
+signal resource_gathered(name, amount)
+signal resource_depleted
+signal resource_respawned
+
+func _ready() -> void:
+    gather_timer = Timer.new()
+    gather_timer.one_shot = true
+    gather_timer.timeout.connect(_finish_gather)
+    add_child(gather_timer)
+
+    respawn_timer = Timer.new()
+    respawn_timer.one_shot = true
+    respawn_timer.timeout.connect(_respawn)
+    add_child(respawn_timer)
+
+func start_gather() -> void:
+    if is_depleted:
+        return
+    gather_timer.start(gather_time)
+
+func _finish_gather() -> void:
+    emit_signal("resource_gathered", resource_name, resource_amount)
+    is_depleted = true
+    emit_signal("resource_depleted")
+    respawn_timer.start(respawn_time)
+
+func _respawn() -> void:
+    is_depleted = false
+    emit_signal("resource_respawned")
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteCraftingSystemScript(args: any) {
+    args = normalizeParameters(args || {});
+    const content = `extends Node
+
+# recipes: { "item_name": { "ingredient_a": qty, "ingredient_b": qty } }
+var recipes: Dictionary = {
+    "Sword": { "Wood": 2, "Iron": 3 },
+    "Shield": { "Wood": 4, "Iron": 2 },
+}
+
+signal item_crafted(item_name)
+signal crafting_failed(reason)
+
+func can_craft(item_name: String, inventory: Dictionary) -> bool:
+    if not recipes.has(item_name):
+        return false
+    for ingredient in recipes[item_name]:
+        if inventory.get(ingredient, 0) < recipes[item_name][ingredient]:
+            return false
+    return true
+
+func craft(item_name: String, inventory: Dictionary) -> bool:
+    if not can_craft(item_name, inventory):
+        emit_signal("crafting_failed", "Missing ingredients for " + item_name)
+        return false
+    for ingredient in recipes[item_name]:
+        inventory[ingredient] -= recipes[item_name][ingredient]
+    emit_signal("item_crafted", item_name)
+    return true
+
+func add_recipe(item_name: String, ingredients: Dictionary) -> void:
+    recipes[item_name] = ingredients
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteMinimapIconScript(args: any) {
+    args = normalizeParameters(args || {});
+    const content = `extends Node2D
+
+## Attach to any Node2D to show it as an icon on a minimap.
+@export var minimap: Node2D          # Assign your minimap node
+@export var icon_color: Color = Color.RED
+@export var icon_size: float = 4.0
+@export var map_scale: float = 0.1   # World-to-minimap scale
+
+var _icon: ColorRect
+
+func _ready() -> void:
+    if minimap == null:
+        return
+    _icon = ColorRect.new()
+    _icon.size = Vector2(icon_size, icon_size)
+    _icon.color = icon_color
+    minimap.add_child(_icon)
+
+func _process(_delta: float) -> void:
+    if _icon == null or minimap == null:
+        return
+    var world_pos = global_position
+    _icon.position = world_pos * map_scale - _icon.size * 0.5
+
+func _exit_tree() -> void:
+    if _icon:
+        _icon.queue_free()
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteAbilityCooldownScript(args: any) {
+    args = normalizeParameters(args || {});
+    const cooldownTime = args.cooldownTime ?? 5.0;
+    const content = `extends Node
+
+@export var cooldown_time: float = ${cooldownTime}
+
+var _cooldowns: Dictionary = {}  # ability_name -> Timer
+
+signal ability_ready(ability_name)
+
+func register_ability(ability_name: String, time: float = cooldown_time) -> void:
+    if _cooldowns.has(ability_name):
+        return
+    var t := Timer.new()
+    t.one_shot = true
+    t.wait_time = time
+    t.timeout.connect(func(): emit_signal("ability_ready", ability_name))
+    add_child(t)
+    _cooldowns[ability_name] = t
+
+func use_ability(ability_name: String) -> bool:
+    if not _cooldowns.has(ability_name):
+        register_ability(ability_name)
+    var t: Timer = _cooldowns[ability_name]
+    if not t.is_stopped():
+        return false
+    t.start()
+    return true
+
+func is_ready(ability_name: String) -> bool:
+    if not _cooldowns.has(ability_name):
+        return true
+    return _cooldowns[ability_name].is_stopped()
+
+func get_remaining(ability_name: String) -> float:
+    if not _cooldowns.has(ability_name):
+        return 0.0
+    return _cooldowns[ability_name].time_left
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteAiFollowPlayerScript(args: any) {
+    args = normalizeParameters(args || {});
+    const speed = args.speed ?? 80;
+    const stopDistance = args.stopDistance ?? 50;
+    const content = `extends CharacterBody2D
+
+@export var speed: float = ${speed}
+@export var stop_distance: float = ${stopDistance}
+
+var player: Node2D = null
+
+func _ready() -> void:
+    var players = get_tree().get_nodes_in_group("player")
+    if players.size() > 0:
+        player = players[0]
+
+func _physics_process(_delta: float) -> void:
+    if player == null:
+        return
+    var dist = global_position.distance_to(player.global_position)
+    if dist > stop_distance:
+        var dir = (player.global_position - global_position).normalized()
+        velocity = dir * speed
+        move_and_slide()
+    else:
+        velocity = Vector2.ZERO
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteGameManagerScript(args: any) {
+    args = normalizeParameters(args || {});
+    const content = `extends Node
+
+## GameManager — place in AutoLoad as "GameManager"
+
+var score: int = 0
+var lives: int = 3
+var current_level: int = 1
+var game_paused: bool = false
+
+signal score_changed(new_score)
+signal lives_changed(new_lives)
+signal game_over
+signal level_completed(level)
+
+func _ready() -> void:
+    process_mode = Node.PROCESS_MODE_ALWAYS
+
+func add_score(amount: int) -> void:
+    score += amount
+    emit_signal("score_changed", score)
+
+func lose_life() -> void:
+    lives -= 1
+    emit_signal("lives_changed", lives)
+    if lives <= 0:
+        emit_signal("game_over")
+
+func complete_level() -> void:
+    emit_signal("level_completed", current_level)
+    current_level += 1
+
+func toggle_pause() -> void:
+    game_paused = !game_paused
+    get_tree().paused = game_paused
+
+func reset() -> void:
+    score = 0
+    lives = 3
+    current_level = 1
+    game_paused = false
+    get_tree().paused = false
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteDebugOverlayScript(args: any) {
+    args = normalizeParameters(args || {});
+    const content = `extends CanvasLayer
+
+## Debug HUD overlay — shows FPS, memory, and custom info.
+## Add as AutoLoad or child of root. Toggle with F3.
+
+var label: Label
+var extra_lines: Dictionary = {}  # key -> value
+
+func _ready() -> void:
+    layer = 128
+    label = Label.new()
+    label.position = Vector2(8, 8)
+    label.add_theme_color_override("font_color", Color.LIME)
+    add_child(label)
+
+func _process(_delta: float) -> void:
+    if not visible:
+        return
+    var fps = Engine.get_frames_per_second()
+    var mem = "%.1f MB" % (OS.get_static_memory_usage() / 1048576.0)
+    var lines = ["FPS: %d" % fps, "MEM: %s" % mem]
+    for k in extra_lines:
+        lines.append("%s: %s" % [k, str(extra_lines[k])])
+    label.text = "\\n".join(lines)
+
+func _input(event: InputEvent) -> void:
+    if event is InputEventKey and event.pressed and event.keycode == KEY_F3:
+        visible = !visible
+
+func set_info(key: String, value) -> void:
+    extra_lines[key] = value
+
+func clear_info(key: String) -> void:
+    extra_lines.erase(key)
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
     try {
       const dir = require('path').dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });

@@ -1919,6 +1919,46 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_camera_2d_screen_center(params)
 		"shake_camera_2d":
 			_cmd_shake_camera_2d(params)
+		"get_audio_player_3d_info":
+			_cmd_get_audio_player_3d_info(params)
+		"set_audio_player_3d_volume":
+			_cmd_set_audio_player_3d_volume(params)
+		"set_audio_player_3d_max_distance":
+			_cmd_set_audio_player_3d_max_distance(params)
+		"set_audio_player_3d_unit_size":
+			_cmd_set_audio_player_3d_unit_size(params)
+		"set_audio_player_3d_doppler":
+			_cmd_set_audio_player_3d_doppler(params)
+		"play_audio_player_3d_at_position":
+			_cmd_play_audio_player_3d_at_position(params)
+		"get_shader_param":
+			_cmd_get_shader_param(params)
+		"set_shader_param_color":
+			_cmd_set_shader_param_color(params)
+		"set_shader_param_vec2":
+			_cmd_set_shader_param_vec2(params)
+		"set_shader_param_vec3":
+			_cmd_set_shader_param_vec3(params)
+		"list_shader_params":
+			_cmd_list_shader_params(params)
+		"get_path_2d_point_count":
+			_cmd_get_path_2d_point_count(params)
+		"add_path_2d_point":
+			_cmd_add_path_2d_point(params)
+		"get_path_2d_baked_length":
+			_cmd_get_path_2d_baked_length(params)
+		"sample_path_2d_baked":
+			_cmd_sample_path_2d_baked(params)
+		"clear_path_2d":
+			_cmd_clear_path_2d(params)
+		"get_path_follower_2d_offset":
+			_cmd_get_path_follower_2d_offset(params)
+		"get_multimesh_instance_count":
+			_cmd_get_multimesh_instance_count(params)
+		"set_multimesh_instance_count":
+			_cmd_set_multimesh_instance_count(params)
+		"get_physics_server_info":
+			_cmd_get_physics_server_info(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -15782,6 +15822,289 @@ func _cmd_shake_camera_2d(params: Dictionary) -> void:
 		tween.tween_property(cam, "offset", shake_offset, 0.05)
 	tween.tween_property(cam, "offset", original_offset, 0.05)
 	_send_response({"success": true, "intensity": intensity, "duration": duration})
+
+
+func _cmd_get_audio_player_3d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AudioStreamPlayer3D:
+		_send_response({"error": "AudioStreamPlayer3D not found: " + node_path})
+		return
+	var asp := node as AudioStreamPlayer3D
+	_send_response({"success": true, "playing": asp.playing, "volume_db": asp.volume_db, "max_distance": asp.max_distance, "unit_size": asp.unit_size, "bus": asp.bus})
+
+
+func _cmd_set_audio_player_3d_volume(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var volume_db: float = params.get("volume_db", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AudioStreamPlayer3D:
+		_send_response({"error": "AudioStreamPlayer3D not found: " + node_path})
+		return
+	(node as AudioStreamPlayer3D).volume_db = volume_db
+	_send_response({"success": true, "volume_db": volume_db})
+
+
+func _cmd_set_audio_player_3d_max_distance(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var max_distance: float = params.get("max_distance", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AudioStreamPlayer3D:
+		_send_response({"error": "AudioStreamPlayer3D not found: " + node_path})
+		return
+	(node as AudioStreamPlayer3D).max_distance = max_distance
+	_send_response({"success": true, "max_distance": max_distance})
+
+
+func _cmd_set_audio_player_3d_unit_size(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var unit_size: float = params.get("unit_size", 10.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AudioStreamPlayer3D:
+		_send_response({"error": "AudioStreamPlayer3D not found: " + node_path})
+		return
+	(node as AudioStreamPlayer3D).unit_size = unit_size
+	_send_response({"success": true, "unit_size": unit_size})
+
+
+func _cmd_set_audio_player_3d_doppler(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var mode_str: String = params.get("mode", "disabled")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AudioStreamPlayer3D:
+		_send_response({"error": "AudioStreamPlayer3D not found: " + node_path})
+		return
+	var mode: AudioStreamPlayer3D.DopplerTracking
+	match mode_str:
+		"disabled": mode = AudioStreamPlayer3D.DOPPLER_TRACKING_DISABLED
+		"idle": mode = AudioStreamPlayer3D.DOPPLER_TRACKING_IDLE_STEP
+		"physics": mode = AudioStreamPlayer3D.DOPPLER_TRACKING_PHYSICS_STEP
+		_: mode = AudioStreamPlayer3D.DOPPLER_TRACKING_DISABLED
+	(node as AudioStreamPlayer3D).doppler_tracking = mode
+	_send_response({"success": true, "doppler_mode": mode_str})
+
+
+func _cmd_play_audio_player_3d_at_position(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AudioStreamPlayer3D:
+		_send_response({"error": "AudioStreamPlayer3D not found: " + node_path})
+		return
+	var asp := node as AudioStreamPlayer3D
+	asp.global_position = Vector3(x, y, z)
+	asp.play()
+	_send_response({"success": true, "position": {"x": x, "y": y, "z": z}, "playing": true})
+
+
+func _cmd_get_shader_param(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var param_name: String = params.get("param_name", "")
+	var surface_index: int = params.get("surface_index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var mat: Material = null
+	if node is MeshInstance3D:
+		mat = (node as MeshInstance3D).get_surface_override_material(surface_index)
+	elif node is CanvasItem:
+		mat = (node as CanvasItem).material
+	if mat == null or not mat is ShaderMaterial:
+		_send_response({"error": "ShaderMaterial not found on node"})
+		return
+	var value = (mat as ShaderMaterial).get_shader_parameter(param_name)
+	_send_response({"success": true, "param_name": param_name, "value": value})
+
+
+func _cmd_set_shader_param_color(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var param_name: String = params.get("param_name", "")
+	var r: float = params.get("r", 1.0)
+	var g: float = params.get("g", 1.0)
+	var b: float = params.get("b", 1.0)
+	var a: float = params.get("a", 1.0)
+	var surface_index: int = params.get("surface_index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var mat: Material = null
+	if node is MeshInstance3D:
+		mat = (node as MeshInstance3D).get_surface_override_material(surface_index)
+	elif node is CanvasItem:
+		mat = (node as CanvasItem).material
+	if mat == null or not mat is ShaderMaterial:
+		_send_response({"error": "ShaderMaterial not found"})
+		return
+	(mat as ShaderMaterial).set_shader_parameter(param_name, Color(r, g, b, a))
+	_send_response({"success": true, "param_name": param_name, "color": {"r": r, "g": g, "b": b, "a": a}})
+
+
+func _cmd_set_shader_param_vec2(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var param_name: String = params.get("param_name", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var surface_index: int = params.get("surface_index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var mat: Material = null
+	if node is MeshInstance3D:
+		mat = (node as MeshInstance3D).get_surface_override_material(surface_index)
+	elif node is CanvasItem:
+		mat = (node as CanvasItem).material
+	if mat == null or not mat is ShaderMaterial:
+		_send_response({"error": "ShaderMaterial not found"})
+		return
+	(mat as ShaderMaterial).set_shader_parameter(param_name, Vector2(x, y))
+	_send_response({"success": true, "param_name": param_name, "vec2": {"x": x, "y": y}})
+
+
+func _cmd_set_shader_param_vec3(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var param_name: String = params.get("param_name", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var surface_index: int = params.get("surface_index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var mat: Material = null
+	if node is MeshInstance3D:
+		mat = (node as MeshInstance3D).get_surface_override_material(surface_index)
+	elif node is CanvasItem:
+		mat = (node as CanvasItem).material
+	if mat == null or not mat is ShaderMaterial:
+		_send_response({"error": "ShaderMaterial not found"})
+		return
+	(mat as ShaderMaterial).set_shader_parameter(param_name, Vector3(x, y, z))
+	_send_response({"success": true, "param_name": param_name, "vec3": {"x": x, "y": y, "z": z}})
+
+
+func _cmd_list_shader_params(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var surface_index: int = params.get("surface_index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var mat: Material = null
+	if node is MeshInstance3D:
+		mat = (node as MeshInstance3D).get_surface_override_material(surface_index)
+	elif node is CanvasItem:
+		mat = (node as CanvasItem).material
+	if mat == null or not mat is ShaderMaterial:
+		_send_response({"error": "ShaderMaterial not found"})
+		return
+	var shader = (mat as ShaderMaterial).shader
+	if shader == null:
+		_send_response({"success": true, "params": [], "count": 0})
+		return
+	var param_list = shader.get_shader_uniform_list()
+	var result = []
+	for p in param_list:
+		result.append({"name": p.get("name", ""), "type": p.get("type", 0)})
+	_send_response({"success": true, "params": result, "count": result.size()})
+
+
+func _cmd_get_path_2d_point_count(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Path2D:
+		_send_response({"error": "Path2D not found: " + node_path})
+		return
+	_send_response({"success": true, "point_count": (node as Path2D).curve.get_point_count()})
+
+
+func _cmd_add_path_2d_point(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Path2D:
+		_send_response({"error": "Path2D not found: " + node_path})
+		return
+	(node as Path2D).curve.add_point(Vector2(x, y))
+	_send_response({"success": true, "point": {"x": x, "y": y}, "total_points": (node as Path2D).curve.get_point_count()})
+
+
+func _cmd_get_path_2d_baked_length(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Path2D:
+		_send_response({"error": "Path2D not found: " + node_path})
+		return
+	_send_response({"success": true, "baked_length": (node as Path2D).curve.get_baked_length()})
+
+
+func _cmd_sample_path_2d_baked(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var offset: float = params.get("offset", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Path2D:
+		_send_response({"error": "Path2D not found: " + node_path})
+		return
+	var pt = (node as Path2D).curve.sample_baked(offset)
+	_send_response({"success": true, "point": {"x": pt.x, "y": pt.y}, "offset": offset})
+
+
+func _cmd_clear_path_2d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Path2D:
+		_send_response({"error": "Path2D not found: " + node_path})
+		return
+	(node as Path2D).curve.clear_points()
+	_send_response({"success": true, "cleared": node_path})
+
+
+func _cmd_get_path_follower_2d_offset(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is PathFollow2D:
+		_send_response({"error": "PathFollow2D not found: " + node_path})
+		return
+	var pf := node as PathFollow2D
+	_send_response({"success": true, "progress": pf.progress, "progress_ratio": pf.progress_ratio, "rotates": pf.rotates})
+
+
+func _cmd_get_multimesh_instance_count(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MultiMeshInstance3D:
+		_send_response({"error": "MultiMeshInstance3D not found: " + node_path})
+		return
+	var mmi := node as MultiMeshInstance3D
+	var mm = mmi.multimesh
+	_send_response({"success": true, "visible_instance_count": mm.visible_instance_count if mm != null else 0, "instance_count": mm.instance_count if mm != null else 0})
+
+
+func _cmd_set_multimesh_instance_count(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var count: int = params.get("count", 1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MultiMeshInstance3D:
+		_send_response({"error": "MultiMeshInstance3D not found: " + node_path})
+		return
+	var mm = (node as MultiMeshInstance3D).multimesh
+	if mm == null:
+		_send_response({"error": "No MultiMesh assigned"})
+		return
+	mm.visible_instance_count = count
+	_send_response({"success": true, "visible_instance_count": count})
+
+
+func _cmd_get_physics_server_info(params: Dictionary) -> void:
+	var bodies_2d = PhysicsServer2D.get_process_info(PhysicsServer2D.INFO_ACTIVE_OBJECTS)
+	var bodies_3d = PhysicsServer3D.get_process_info(PhysicsServer3D.INFO_ACTIVE_OBJECTS)
+	_send_response({"success": true, "active_2d_bodies": bodies_2d, "active_3d_bodies": bodies_3d})
 
 
 func _exit_tree() -> void:
