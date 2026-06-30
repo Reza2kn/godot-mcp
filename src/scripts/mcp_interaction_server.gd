@@ -913,6 +913,46 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_node_2d_position(params)
 		"set_node_2d_position":
 			_cmd_set_node_2d_position(params)
+		"rotate_node_2d":
+			_cmd_rotate_node_2d(params)
+		"scale_node_2d":
+			_cmd_scale_node_2d(params)
+		"rotate_node_3d":
+			_cmd_rotate_node_3d(params)
+		"scale_node_3d":
+			_cmd_scale_node_3d(params)
+		"get_node_2d_transform":
+			_cmd_get_node_2d_transform(params)
+		"get_node_3d_transform":
+			_cmd_get_node_3d_transform(params)
+		"align_node_to_path":
+			_cmd_align_node_to_path(params)
+		"get_path_2d_length":
+			_cmd_get_path_2d_length(params)
+		"set_animated_sprite_animation":
+			_cmd_set_animated_sprite_animation(params)
+		"get_animated_sprite_frame":
+			_cmd_get_animated_sprite_frame(params)
+		"set_animated_sprite_frame":
+			_cmd_set_animated_sprite_frame(params)
+		"set_audio_stream_player_stream":
+			_cmd_set_audio_stream_player_stream(params)
+		"set_audio_stream_pitch_scale":
+			_cmd_set_audio_stream_pitch_scale(params)
+		"get_audio_stream_position":
+			_cmd_get_audio_stream_position(params)
+		"seek_audio_stream":
+			_cmd_seek_audio_stream(params)
+		"get_character_body_velocity":
+			_cmd_get_character_body_velocity(params)
+		"set_character_body_velocity":
+			_cmd_set_character_body_velocity(params)
+		"move_and_slide_character":
+			_cmd_move_and_slide_character(params)
+		"is_character_on_floor":
+			_cmd_is_character_on_floor(params)
+		"get_navigation_agent_target":
+			_cmd_get_navigation_agent_target(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -8860,6 +8900,291 @@ func _cmd_set_node_2d_position(params: Dictionary) -> void:
 		return
 	(node as Node2D).global_position = Vector2(x, y)
 	_send_response({"success": true, "global_position": {"x": x, "y": y}})
+
+func _cmd_rotate_node_2d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var angle: float = params.get("angle", 0.0)
+	var absolute: bool = params.get("absolute", false)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node2D:
+		_send_response({"error": "Node2D not found: " + node_path})
+		return
+	if absolute:
+		(node as Node2D).rotation = angle
+	else:
+		(node as Node2D).rotation += angle
+	_send_response({"success": true, "rotation": (node as Node2D).rotation})
+
+func _cmd_scale_node_2d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 1.0)
+	var y: float = params.get("y", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node2D:
+		_send_response({"error": "Node2D not found: " + node_path})
+		return
+	(node as Node2D).scale = Vector2(x, y)
+	_send_response({"success": true, "scale": {"x": x, "y": y}})
+
+func _cmd_rotate_node_3d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node3D:
+		_send_response({"error": "Node3D not found: " + node_path})
+		return
+	(node as Node3D).rotation = Vector3(x, y, z)
+	_send_response({"success": true, "rotation": {"x": x, "y": y, "z": z}})
+
+func _cmd_scale_node_3d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 1.0)
+	var y: float = params.get("y", 1.0)
+	var z: float = params.get("z", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node3D:
+		_send_response({"error": "Node3D not found: " + node_path})
+		return
+	(node as Node3D).scale = Vector3(x, y, z)
+	_send_response({"success": true, "scale": {"x": x, "y": y, "z": z}})
+
+func _cmd_get_node_2d_transform(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node2D:
+		_send_response({"error": "Node2D not found: " + node_path})
+		return
+	var n := node as Node2D
+	_send_response({"success": true, "position": {"x": n.position.x, "y": n.position.y}, "global_position": {"x": n.global_position.x, "y": n.global_position.y}, "rotation": n.rotation, "rotation_degrees": n.rotation_degrees, "scale": {"x": n.scale.x, "y": n.scale.y}})
+
+func _cmd_get_node_3d_transform(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node3D:
+		_send_response({"error": "Node3D not found: " + node_path})
+		return
+	var n := node as Node3D
+	_send_response({"success": true, "position": {"x": n.position.x, "y": n.position.y, "z": n.position.z}, "global_position": {"x": n.global_position.x, "y": n.global_position.y, "z": n.global_position.z}, "rotation": {"x": n.rotation.x, "y": n.rotation.y, "z": n.rotation.z}, "scale": {"x": n.scale.x, "y": n.scale.y, "z": n.scale.z}})
+
+func _cmd_align_node_to_path(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var path_node_path: String = params.get("path_node_path", "")
+	var offset: float = params.get("offset", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	var path_node = get_tree().root.get_node_or_null(NodePath(path_node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if path_node == null:
+		_send_response({"error": "Path node not found: " + path_node_path})
+		return
+	if path_node is Path3D:
+		var curve = (path_node as Path3D).curve
+		if curve != null:
+			var pos = curve.sample_baked(offset * curve.get_baked_length())
+			if node is Node3D:
+				(node as Node3D).global_position = path_node.to_global(pos)
+				_send_response({"success": true, "position": {"x": pos.x, "y": pos.y, "z": pos.z}})
+				return
+	elif path_node is Path2D:
+		var curve = (path_node as Path2D).curve
+		if curve != null:
+			var pos = curve.sample_baked(offset * curve.get_baked_length())
+			if node is Node2D:
+				(node as Node2D).global_position = path_node.to_global(pos)
+				_send_response({"success": true, "position": {"x": pos.x, "y": pos.y}})
+				return
+	_send_response({"error": "Path or node type mismatch"})
+
+func _cmd_get_path_2d_length(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Path2D:
+		_send_response({"error": "Path2D not found: " + node_path})
+		return
+	var curve = (node as Path2D).curve
+	var length = curve.get_baked_length() if curve != null else 0.0
+	_send_response({"success": true, "length": length, "point_count": curve.get_point_count() if curve != null else 0})
+
+func _cmd_set_animated_sprite_animation(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var animation_name: String = params.get("animation_name", "")
+	var playing: bool = params.get("playing", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is AnimatedSprite2D:
+		var s := node as AnimatedSprite2D
+		s.animation = StringName(animation_name)
+		if playing: s.play()
+		_send_response({"success": true, "animation": animation_name, "playing": playing})
+	elif node is AnimatedSprite3D:
+		var s := node as AnimatedSprite3D
+		s.animation = StringName(animation_name)
+		if playing: s.play()
+		_send_response({"success": true, "animation": animation_name, "playing": playing})
+	else:
+		_send_response({"error": "Not an AnimatedSprite2D/3D: " + node.get_class()})
+
+func _cmd_get_animated_sprite_frame(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node is AnimatedSprite2D:
+		var s := node as AnimatedSprite2D
+		_send_response({"success": true, "frame": s.frame, "animation": str(s.animation), "playing": s.is_playing()})
+	elif node is AnimatedSprite3D:
+		var s := node as AnimatedSprite3D
+		_send_response({"success": true, "frame": s.frame, "animation": str(s.animation), "playing": s.is_playing()})
+	else:
+		_send_response({"error": "Not an AnimatedSprite2D/3D: " + (node.get_class() if node != null else "null")})
+
+func _cmd_set_animated_sprite_frame(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var frame: int = params.get("frame", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node is AnimatedSprite2D:
+		(node as AnimatedSprite2D).frame = frame
+		_send_response({"success": true, "frame": frame})
+	elif node is AnimatedSprite3D:
+		(node as AnimatedSprite3D).frame = frame
+		_send_response({"success": true, "frame": frame})
+	else:
+		_send_response({"error": "Not an AnimatedSprite2D/3D: " + (node.get_class() if node != null else "null")})
+
+func _cmd_set_audio_stream_player_stream(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var stream_path: String = params.get("stream_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var stream = load(stream_path) as AudioStream
+	if stream == null:
+		_send_response({"error": "Cannot load AudioStream: " + stream_path})
+		return
+	if node is AudioStreamPlayer:
+		(node as AudioStreamPlayer).stream = stream
+	elif node is AudioStreamPlayer2D:
+		(node as AudioStreamPlayer2D).stream = stream
+	elif node is AudioStreamPlayer3D:
+		(node as AudioStreamPlayer3D).stream = stream
+	else:
+		_send_response({"error": "Not an AudioStreamPlayer: " + node.get_class()})
+		return
+	_send_response({"success": true, "stream_path": stream_path})
+
+func _cmd_set_audio_stream_pitch_scale(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var pitch_scale: float = params.get("pitch_scale", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node.get("pitch_scale") != null:
+		node.set("pitch_scale", pitch_scale)
+		_send_response({"success": true, "pitch_scale": pitch_scale})
+	else:
+		_send_response({"error": "Node does not have pitch_scale: " + node.get_class()})
+
+func _cmd_get_audio_stream_position(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is AudioStreamPlayer:
+		var p := node as AudioStreamPlayer
+		_send_response({"success": true, "position": p.get_playback_position(), "playing": p.playing, "stream_class": p.stream.get_class() if p.stream != null else null})
+	elif node is AudioStreamPlayer2D:
+		var p := node as AudioStreamPlayer2D
+		_send_response({"success": true, "position": p.get_playback_position(), "playing": p.playing})
+	elif node is AudioStreamPlayer3D:
+		var p := node as AudioStreamPlayer3D
+		_send_response({"success": true, "position": p.get_playback_position(), "playing": p.playing})
+	else:
+		_send_response({"error": "Not an AudioStreamPlayer: " + node.get_class()})
+
+func _cmd_seek_audio_stream(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var position: float = params.get("position", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node.has_method("seek"):
+		node.seek(position)
+		_send_response({"success": true, "position": position})
+	else:
+		_send_response({"error": "Node does not support seek: " + node.get_class()})
+
+func _cmd_get_character_body_velocity(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node is CharacterBody3D:
+		var v = (node as CharacterBody3D).velocity
+		_send_response({"success": true, "velocity": {"x": v.x, "y": v.y, "z": v.z}, "on_floor": (node as CharacterBody3D).is_on_floor()})
+	elif node is CharacterBody2D:
+		var v = (node as CharacterBody2D).velocity
+		_send_response({"success": true, "velocity": {"x": v.x, "y": v.y}, "on_floor": (node as CharacterBody2D).is_on_floor()})
+	else:
+		_send_response({"error": "Not a CharacterBody: " + (node.get_class() if node != null else "null")})
+
+func _cmd_set_character_body_velocity(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node is CharacterBody3D:
+		(node as CharacterBody3D).velocity = Vector3(x, y, z)
+		_send_response({"success": true, "velocity": {"x": x, "y": y, "z": z}})
+	elif node is CharacterBody2D:
+		(node as CharacterBody2D).velocity = Vector2(x, y)
+		_send_response({"success": true, "velocity": {"x": x, "y": y}})
+	else:
+		_send_response({"error": "Not a CharacterBody: " + (node.get_class() if node != null else "null")})
+
+func _cmd_move_and_slide_character(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is CharacterBody3D:
+		var moved = (node as CharacterBody3D).move_and_slide()
+		_send_response({"success": true, "moved": moved, "on_floor": (node as CharacterBody3D).is_on_floor()})
+	elif node is CharacterBody2D:
+		var moved = (node as CharacterBody2D).move_and_slide()
+		_send_response({"success": true, "moved": moved, "on_floor": (node as CharacterBody2D).is_on_floor()})
+	else:
+		_send_response({"error": "Not a CharacterBody: " + node.get_class()})
+
+func _cmd_is_character_on_floor(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node is CharacterBody3D:
+		_send_response({"success": true, "on_floor": (node as CharacterBody3D).is_on_floor(), "on_wall": (node as CharacterBody3D).is_on_wall(), "on_ceiling": (node as CharacterBody3D).is_on_ceiling()})
+	elif node is CharacterBody2D:
+		_send_response({"success": true, "on_floor": (node as CharacterBody2D).is_on_floor(), "on_wall": (node as CharacterBody2D).is_on_wall(), "on_ceiling": (node as CharacterBody2D).is_on_ceiling()})
+	else:
+		_send_response({"error": "Not a CharacterBody: " + (node.get_class() if node != null else "null")})
+
+func _cmd_get_navigation_agent_target(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node is NavigationAgent3D:
+		var agent := node as NavigationAgent3D
+		var target = agent.target_position
+		_send_response({"success": true, "target_position": {"x": target.x, "y": target.y, "z": target.z}, "is_navigation_finished": agent.is_navigation_finished(), "distance_to_target": agent.distance_to_target()})
+	elif node is NavigationAgent2D:
+		var agent := node as NavigationAgent2D
+		var target = agent.target_position
+		_send_response({"success": true, "target_position": {"x": target.x, "y": target.y}, "is_navigation_finished": agent.is_navigation_finished(), "distance_to_target": agent.distance_to_target()})
+	else:
+		_send_response({"error": "Not a NavigationAgent: " + (node.get_class() if node != null else "null")})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()

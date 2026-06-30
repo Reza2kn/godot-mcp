@@ -11825,6 +11825,247 @@ class GodotServer {
           required: ['nodePath'],
         },
       },
+      {
+        name: 'rotate_node_2d',
+        description: 'Rotate a Node2D by an angle (radians) in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Node2D node.' },
+            angle: { type: 'number', description: 'Angle in radians.' },
+            absolute: { type: 'boolean', description: 'If true, set rotation absolutely.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'scale_node_2d',
+        description: 'Set the scale on a Node2D in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Node2D node.' },
+            x: { type: 'number', description: 'Scale x (default 1.0).' },
+            y: { type: 'number', description: 'Scale y (default 1.0).' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'rotate_node_3d',
+        description: 'Set Euler rotation on a Node3D in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Node3D node.' },
+            x: { type: 'number', description: 'Euler x rotation (radians).' },
+            y: { type: 'number', description: 'Euler y rotation (radians).' },
+            z: { type: 'number', description: 'Euler z rotation (radians).' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'scale_node_3d',
+        description: 'Set the scale on a Node3D in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Node3D node.' },
+            x: { type: 'number', description: 'Scale x (default 1.0).' },
+            y: { type: 'number', description: 'Scale y (default 1.0).' },
+            z: { type: 'number', description: 'Scale z (default 1.0).' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_node_2d_transform',
+        description: 'Get full transform of a Node2D in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Node2D node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_node_3d_transform',
+        description: 'Get full transform of a Node3D in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Node3D node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'align_node_to_path',
+        description: 'Move a node to a position along a Path in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the node to move.' },
+            pathNodePath: { type: 'string', description: 'Path to the Path node.' },
+            offset: { type: 'number', description: 'Normalized offset (0-1).' },
+          },
+          required: ['nodePath', 'pathNodePath'],
+        },
+      },
+      {
+        name: 'get_path_2d_length',
+        description: 'Get the total length of a Path2D curve in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Path2D node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_animated_sprite_animation',
+        description: 'Set the animation on AnimatedSprite2D/3D in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the AnimatedSprite node.' },
+            animationName: { type: 'string', description: 'Name of the animation to set.' },
+            playing: { type: 'boolean', description: 'Whether to start playing (default true).' },
+          },
+          required: ['nodePath', 'animationName'],
+        },
+      },
+      {
+        name: 'get_animated_sprite_frame',
+        description: 'Get the current frame of an AnimatedSprite in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the AnimatedSprite node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_animated_sprite_frame',
+        description: 'Set the frame on an AnimatedSprite in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the AnimatedSprite node.' },
+            frame: { type: 'integer', description: 'Frame index to set.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_audio_stream_player_stream',
+        description: 'Set the stream on an AudioStreamPlayer in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the AudioStreamPlayer node.' },
+            streamPath: { type: 'string', description: 'res:// path to the audio stream.' },
+          },
+          required: ['nodePath', 'streamPath'],
+        },
+      },
+      {
+        name: 'set_audio_stream_pitch_scale',
+        description: 'Set the pitch_scale on an AudioStreamPlayer in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the AudioStreamPlayer node.' },
+            pitchScale: { type: 'number', description: 'Pitch scale (default 1.0).' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_audio_stream_position',
+        description: 'Get the playback position of an AudioStreamPlayer.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the AudioStreamPlayer node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'seek_audio_stream',
+        description: 'Seek an AudioStreamPlayer to a position in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the AudioStreamPlayer node.' },
+            position: { type: 'number', description: 'Position in seconds to seek to.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_character_body_velocity',
+        description: 'Get the velocity of a CharacterBody node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the CharacterBody node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_character_body_velocity',
+        description: 'Set the velocity on a CharacterBody in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the CharacterBody node.' },
+            x: { type: 'number', description: 'Velocity x component.' },
+            y: { type: 'number', description: 'Velocity y component.' },
+            z: { type: 'number', description: 'Velocity z component (default 0).' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'move_and_slide_character',
+        description: 'Call move_and_slide on a CharacterBody in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the CharacterBody node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'is_character_on_floor',
+        description: 'Check if a CharacterBody is on the floor in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the CharacterBody node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_navigation_agent_target',
+        description: 'Get the target position from a NavigationAgent in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the NavigationAgent node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
       ],
     }));
 
@@ -13538,6 +13779,46 @@ class GodotServer {
           return await this.handleGetNode2dPosition(request.params.arguments);
         case 'set_node_2d_position':
           return await this.handleSetNode2dPosition(request.params.arguments);
+        case 'rotate_node_2d':
+          return await this.handleRotateNode2d(request.params.arguments);
+        case 'scale_node_2d':
+          return await this.handleScaleNode2d(request.params.arguments);
+        case 'rotate_node_3d':
+          return await this.handleRotateNode3d(request.params.arguments);
+        case 'scale_node_3d':
+          return await this.handleScaleNode3d(request.params.arguments);
+        case 'get_node_2d_transform':
+          return await this.handleGetNode2dTransform(request.params.arguments);
+        case 'get_node_3d_transform':
+          return await this.handleGetNode3dTransform(request.params.arguments);
+        case 'align_node_to_path':
+          return await this.handleAlignNodeToPath(request.params.arguments);
+        case 'get_path_2d_length':
+          return await this.handleGetPath2dLength(request.params.arguments);
+        case 'set_animated_sprite_animation':
+          return await this.handleSetAnimatedSpriteAnimation(request.params.arguments);
+        case 'get_animated_sprite_frame':
+          return await this.handleGetAnimatedSpriteFrame(request.params.arguments);
+        case 'set_animated_sprite_frame':
+          return await this.handleSetAnimatedSpriteFrame(request.params.arguments);
+        case 'set_audio_stream_player_stream':
+          return await this.handleSetAudioStreamPlayerStream(request.params.arguments);
+        case 'set_audio_stream_pitch_scale':
+          return await this.handleSetAudioStreamPitchScale(request.params.arguments);
+        case 'get_audio_stream_position':
+          return await this.handleGetAudioStreamPosition(request.params.arguments);
+        case 'seek_audio_stream':
+          return await this.handleSeekAudioStream(request.params.arguments);
+        case 'get_character_body_velocity':
+          return await this.handleGetCharacterBodyVelocity(request.params.arguments);
+        case 'set_character_body_velocity':
+          return await this.handleSetCharacterBodyVelocity(request.params.arguments);
+        case 'move_and_slide_character':
+          return await this.handleMoveAndSlideCharacter(request.params.arguments);
+        case 'is_character_on_floor':
+          return await this.handleIsCharacterOnFloor(request.params.arguments);
+        case 'get_navigation_agent_target':
+          return await this.handleGetNavigationAgentTarget(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -24622,6 +24903,129 @@ class GodotServer {
     args = normalizeParameters(args || {});
     if (!args.nodePath) return createErrorResponse('nodePath is required.');
     return this.gameCommand('set_node_2d_position', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0 }));
+  }
+
+  private async handleRotateNode2d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('rotate_node_2d', args, a => ({ node_path: a.nodePath, angle: a.angle ?? 0, absolute: a.absolute ?? false }));
+  }
+
+  private async handleScaleNode2d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('scale_node_2d', args, a => ({ node_path: a.nodePath, x: a.x ?? 1.0, y: a.y ?? 1.0 }));
+  }
+
+  private async handleRotateNode3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('rotate_node_3d', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0, z: a.z ?? 0 }));
+  }
+
+  private async handleScaleNode3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('scale_node_3d', args, a => ({ node_path: a.nodePath, x: a.x ?? 1.0, y: a.y ?? 1.0, z: a.z ?? 1.0 }));
+  }
+
+  private async handleGetNode2dTransform(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_2d_transform', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetNode3dTransform(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_3d_transform', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleAlignNodeToPath(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.pathNodePath) return createErrorResponse('pathNodePath is required.');
+    return this.gameCommand('align_node_to_path', args, a => ({ node_path: a.nodePath, path_node_path: a.pathNodePath, offset: a.offset ?? 0 }));
+  }
+
+  private async handleGetPath2dLength(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_path_2d_length', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetAnimatedSpriteAnimation(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.animationName) return createErrorResponse('animationName is required.');
+    return this.gameCommand('set_animated_sprite_animation', args, a => ({ node_path: a.nodePath, animation_name: a.animationName, playing: a.playing ?? true }));
+  }
+
+  private async handleGetAnimatedSpriteFrame(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_animated_sprite_frame', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetAnimatedSpriteFrame(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_animated_sprite_frame', args, a => ({ node_path: a.nodePath, frame: a.frame ?? 0 }));
+  }
+
+  private async handleSetAudioStreamPlayerStream(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.streamPath) return createErrorResponse('streamPath is required.');
+    return this.gameCommand('set_audio_stream_player_stream', args, a => ({ node_path: a.nodePath, stream_path: a.streamPath }));
+  }
+
+  private async handleSetAudioStreamPitchScale(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_audio_stream_pitch_scale', args, a => ({ node_path: a.nodePath, pitch_scale: a.pitchScale ?? 1.0 }));
+  }
+
+  private async handleGetAudioStreamPosition(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_audio_stream_position', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSeekAudioStream(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('seek_audio_stream', args, a => ({ node_path: a.nodePath, position: a.position ?? 0 }));
+  }
+
+  private async handleGetCharacterBodyVelocity(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_character_body_velocity', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetCharacterBodyVelocity(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_character_body_velocity', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0, z: a.z ?? 0 }));
+  }
+
+  private async handleMoveAndSlideCharacter(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('move_and_slide_character', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleIsCharacterOnFloor(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('is_character_on_floor', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetNavigationAgentTarget(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_navigation_agent_target', args, a => ({ node_path: a.nodePath }));
   }
 
 }
