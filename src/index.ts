@@ -16475,6 +16475,281 @@ class GodotServer {
             required: ['projectPath', 'scenePath', 'nodeName'],
           },
         },
+        // Batch 54 — Group A: Navigation/Pathfinding runtime
+        {
+          name: 'get_navigation_agent_2d_path',
+          description: 'Get current navigation path of NavigationAgent2D.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the NavigationAgent2D node.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_navigation_agent_2d_target',
+          description: 'Set the target position of NavigationAgent2D.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the NavigationAgent2D node.' },
+              x: { type: 'number', description: 'Target X position. Default 0.' },
+              y: { type: 'number', description: 'Target Y position. Default 0.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_navigation_agent_3d_path',
+          description: 'Get current navigation path of NavigationAgent3D.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the NavigationAgent3D node.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_navigation_agent_3d_target',
+          description: 'Set the target position of NavigationAgent3D.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the NavigationAgent3D node.' },
+              x: { type: 'number', description: 'Target X position. Default 0.' },
+              y: { type: 'number', description: 'Target Y position. Default 0.' },
+              z: { type: 'number', description: 'Target Z position. Default 0.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'is_navigation_agent_2d_finished',
+          description: 'Check if NavigationAgent2D reached its target.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the NavigationAgent2D node.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'is_navigation_agent_3d_finished',
+          description: 'Check if NavigationAgent3D reached its target.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the NavigationAgent3D node.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_navigation_map_rid',
+          description: 'Get the navigation map RID for a NavigationAgent.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the NavigationAgent node.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_navigation_agent_velocity',
+          description: 'Get next safe velocity from NavigationAgent2D/3D.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the NavigationAgent node.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        // Batch 54 — Group B: Multiplayer / Network stubs
+        {
+          name: 'get_multiplayer_authority',
+          description: 'Get the multiplayer authority of a node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_multiplayer_authority',
+          description: 'Set the multiplayer authority of a node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node.' },
+              peerId: { type: 'number', description: 'Peer ID to set as authority. Default 1.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'is_multiplayer_authority',
+          description: 'Check if local peer is authority for a node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_network_latency',
+          description: 'Get estimated network latency to multiplayer server.',
+          inputSchema: {
+            type: 'object',
+            properties: {},
+            required: [],
+          },
+        },
+        // Batch 54 — Group C: Node visibility
+        {
+          name: 'set_node_visible',
+          description: 'Set visibility of a CanvasItem or 3D node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node.' },
+              visible: { type: 'boolean', description: 'Visibility state. Default true.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_node_visible',
+          description: 'Get visibility state of a CanvasItem or 3D node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        // Batch 54 — Group D: Sprite / TextureRect runtime
+        {
+          name: 'set_sprite_2d_frame',
+          description: 'Set the current frame of an animated Sprite2D.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the Sprite2D node.' },
+              frame: { type: 'number', description: 'Frame index to set. Default 0.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_sprite_2d_frame_count',
+          description: 'Get total frame count of a Sprite2D sprite sheet.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the Sprite2D node.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_sprite_2d_hframes',
+          description: 'Set horizontal frame count of a Sprite2D sprite sheet.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the Sprite2D node.' },
+              hframes: { type: 'number', description: 'Horizontal frame count. Default 1.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_sprite_2d_vframes',
+          description: 'Set vertical frame count of a Sprite2D sprite sheet.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the Sprite2D node.' },
+              vframes: { type: 'number', description: 'Vertical frame count. Default 1.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_sprite_2d_flip',
+          description: 'Set horizontal/vertical flip on a Sprite2D node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the Sprite2D node.' },
+              flipH: { type: 'boolean', description: 'Flip horizontally. Default false.' },
+              flipV: { type: 'boolean', description: 'Flip vertically. Default false.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_animated_sprite_2d_speed',
+          description: 'Set playback speed of AnimatedSprite2D.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the AnimatedSprite2D node.' },
+              speedScale: { type: 'number', description: 'Speed scale multiplier. Default 1.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_animated_sprite_2d_frame',
+          description: 'Get current frame of an AnimatedSprite2D.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the AnimatedSprite2D node.' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        // Batch 54 — Group E: Resource creation headlessOp
+        {
+          name: 'create_standard_material_3d',
+          description: 'Create and save a StandardMaterial3D resource.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string', description: 'Path to the Godot project.' },
+              savePath: { type: 'string', description: 'res:// path to save the material.' },
+              albedoR: { type: 'number', description: 'Albedo red channel (0-1). Default 1.' },
+              albedoG: { type: 'number', description: 'Albedo green channel (0-1). Default 1.' },
+              albedoB: { type: 'number', description: 'Albedo blue channel (0-1). Default 1.' },
+            },
+            required: ['projectPath', 'savePath'],
+          },
+        },
+        {
+          name: 'create_audio_stream_ogg',
+          description: 'Import an OGG file as AudioStreamOggVorbis resource.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string', description: 'Path to the Godot project.' },
+              oggPath: { type: 'string', description: 'Absolute path to the OGG file.' },
+              savePath: { type: 'string', description: 'res:// destination path.' },
+            },
+            required: ['projectPath', 'oggPath', 'savePath'],
+          },
+        },
       ],
     }));
 
@@ -18703,6 +18978,57 @@ class GodotServer {
           return await this.handleSetNodeRotationInScene(request.params.arguments);
         case 'list_node_properties_in_scene':
           return await this.handleListNodePropertiesInScene(request.params.arguments);
+        // Batch 54 — Group A: Navigation/Pathfinding runtime
+        case 'get_navigation_agent_2d_path':
+          return await this.handleGetNavigationAgent2dPath(request.params.arguments);
+        case 'set_navigation_agent_2d_target':
+          return await this.handleSetNavigationAgent2dTarget(request.params.arguments);
+        case 'get_navigation_agent_3d_path':
+          return await this.handleGetNavigationAgent3dPath(request.params.arguments);
+        case 'set_navigation_agent_3d_target':
+          return await this.handleSetNavigationAgent3dTarget(request.params.arguments);
+        case 'is_navigation_agent_2d_finished':
+          return await this.handleIsNavigationAgent2dFinished(request.params.arguments);
+        case 'is_navigation_agent_3d_finished':
+          return await this.handleIsNavigationAgent3dFinished(request.params.arguments);
+        case 'get_navigation_map_rid':
+          return await this.handleGetNavigationMapRid(request.params.arguments);
+        case 'get_navigation_agent_velocity':
+          return await this.handleGetNavigationAgentVelocity(request.params.arguments);
+        // Batch 54 — Group B: Multiplayer / Network stubs
+        case 'get_multiplayer_authority':
+          return await this.handleGetMultiplayerAuthority(request.params.arguments);
+        case 'set_multiplayer_authority':
+          return await this.handleSetMultiplayerAuthority(request.params.arguments);
+        case 'is_multiplayer_authority':
+          return await this.handleIsMultiplayerAuthority(request.params.arguments);
+        case 'get_network_latency':
+          return await this.handleGetNetworkLatency(request.params.arguments);
+        // Batch 54 — Group C: Node visibility
+        case 'set_node_visible':
+          return await this.handleSetNodeVisible(request.params.arguments);
+        case 'get_node_visible':
+          return await this.handleGetNodeVisible(request.params.arguments);
+        // Batch 54 — Group D: Sprite / TextureRect runtime
+        case 'set_sprite_2d_frame':
+          return await this.handleSetSprite2dFrame(request.params.arguments);
+        case 'get_sprite_2d_frame_count':
+          return await this.handleGetSprite2dFrameCount(request.params.arguments);
+        case 'set_sprite_2d_hframes':
+          return await this.handleSetSprite2dHframes(request.params.arguments);
+        case 'set_sprite_2d_vframes':
+          return await this.handleSetSprite2dVframes(request.params.arguments);
+        case 'set_sprite_2d_flip':
+          return await this.handleSetSprite2dFlip(request.params.arguments);
+        case 'set_animated_sprite_2d_speed':
+          return await this.handleSetAnimatedSprite2dSpeed(request.params.arguments);
+        case 'get_animated_sprite_2d_frame':
+          return await this.handleGetAnimatedSprite2dFrame(request.params.arguments);
+        // Batch 54 — Group E: Resource creation headlessOp
+        case 'create_standard_material_3d':
+          return await this.handleCreateStandardMaterial3d(request.params.arguments);
+        case 'create_audio_stream_ogg':
+          return await this.handleCreateAudioStreamOgg(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -32971,6 +33297,153 @@ class GodotServer {
     if (!args.scenePath) return createErrorResponse('scenePath is required.');
     if (!args.nodeName) return createErrorResponse('nodeName is required.');
     return this.headlessOp('list_node_properties_in_scene', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName ?? '' } }));
+  }
+
+  // ── Batch 54 handlers ───────────────────────────────────────────────────────
+
+  // Group A: Navigation/Pathfinding runtime
+  private async handleGetNavigationAgent2dPath(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_navigation_agent_2d_path', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetNavigationAgent2dTarget(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_navigation_agent_2d_target', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0 }));
+  }
+
+  private async handleGetNavigationAgent3dPath(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_navigation_agent_3d_path', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetNavigationAgent3dTarget(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_navigation_agent_3d_target', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0, z: a.z ?? 0 }));
+  }
+
+  private async handleIsNavigationAgent2dFinished(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('is_navigation_agent_2d_finished', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleIsNavigationAgent3dFinished(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('is_navigation_agent_3d_finished', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetNavigationMapRid(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_navigation_map_rid', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetNavigationAgentVelocity(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_navigation_agent_velocity', args, a => ({ node_path: a.nodePath }));
+  }
+
+  // Group B: Multiplayer / Network stubs
+  private async handleGetMultiplayerAuthority(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_multiplayer_authority', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetMultiplayerAuthority(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_multiplayer_authority', args, a => ({ node_path: a.nodePath, peer_id: a.peerId ?? 1 }));
+  }
+
+  private async handleIsMultiplayerAuthority(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('is_multiplayer_authority', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetNetworkLatency(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_network_latency', args, _a => ({}));
+  }
+
+  // Group C: Node visibility
+  private async handleSetNodeVisible(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_node_visible', args, a => ({ node_path: a.nodePath, visible: a.visible ?? true }));
+  }
+
+  private async handleGetNodeVisible(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_visible', args, a => ({ node_path: a.nodePath }));
+  }
+
+  // Group D: Sprite / TextureRect runtime
+  private async handleSetSprite2dFrame(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_sprite_2d_frame', args, a => ({ node_path: a.nodePath, frame: a.frame ?? 0 }));
+  }
+
+  private async handleGetSprite2dFrameCount(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_sprite_2d_frame_count', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetSprite2dHframes(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_sprite_2d_hframes', args, a => ({ node_path: a.nodePath, hframes: a.hframes ?? 1 }));
+  }
+
+  private async handleSetSprite2dVframes(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_sprite_2d_vframes', args, a => ({ node_path: a.nodePath, vframes: a.vframes ?? 1 }));
+  }
+
+  private async handleSetSprite2dFlip(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_sprite_2d_flip', args, a => ({ node_path: a.nodePath, flip_h: a.flipH ?? false, flip_v: a.flipV ?? false }));
+  }
+
+  private async handleSetAnimatedSprite2dSpeed(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_animated_sprite_2d_speed', args, a => ({ node_path: a.nodePath, speed_scale: a.speedScale ?? 1.0 }));
+  }
+
+  private async handleGetAnimatedSprite2dFrame(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_animated_sprite_2d_frame', args, a => ({ node_path: a.nodePath }));
+  }
+
+  // Group E: Resource creation headlessOp
+  private async handleCreateStandardMaterial3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.savePath) return createErrorResponse('savePath is required.');
+    return this.headlessOp('create_standard_material_3d', args, a => ({ projectPath: a.projectPath, params: { save_path: a.savePath ?? 'res://material.tres', r: a.albedoR ?? 1, g: a.albedoG ?? 1, b: a.albedoB ?? 1 } }));
+  }
+
+  private async handleCreateAudioStreamOgg(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.oggPath) return createErrorResponse('oggPath is required.');
+    if (!args.savePath) return createErrorResponse('savePath is required.');
+    return this.headlessOp('create_audio_stream_ogg', args, a => ({ projectPath: a.projectPath, params: { ogg_path: a.oggPath ?? '', save_path: a.savePath ?? 'res://audio.ogg' } }));
   }
 
   // ── Navigation / Discovery helpers ──────────────────────────────────────────

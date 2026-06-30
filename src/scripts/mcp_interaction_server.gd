@@ -1475,6 +1475,48 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_input_action_strength(params)
 		"get_connected_joypads":
 			_cmd_get_connected_joypads(params)
+		"get_navigation_agent_2d_path":
+			_cmd_get_navigation_agent_2d_path(params)
+		"set_navigation_agent_2d_target":
+			_cmd_set_navigation_agent_2d_target(params)
+		"get_navigation_agent_3d_path":
+			_cmd_get_navigation_agent_3d_path(params)
+		"set_navigation_agent_3d_target":
+			_cmd_set_navigation_agent_3d_target(params)
+		"is_navigation_agent_2d_finished":
+			_cmd_is_navigation_agent_2d_finished(params)
+		"is_navigation_agent_3d_finished":
+			_cmd_is_navigation_agent_3d_finished(params)
+		"get_navigation_map_rid":
+			_cmd_get_navigation_map_rid(params)
+		"get_navigation_agent_velocity":
+			_cmd_get_navigation_agent_velocity(params)
+		"get_multiplayer_authority":
+			_cmd_get_multiplayer_authority(params)
+		"set_multiplayer_authority":
+			_cmd_set_multiplayer_authority(params)
+		"is_multiplayer_authority":
+			_cmd_is_multiplayer_authority(params)
+		"get_network_latency":
+			_cmd_get_network_latency(params)
+		"set_node_visible":
+			_cmd_set_node_visible(params)
+		"get_node_visible":
+			_cmd_get_node_visible(params)
+		"set_sprite_2d_frame":
+			_cmd_set_sprite_2d_frame(params)
+		"get_sprite_2d_frame_count":
+			_cmd_get_sprite_2d_frame_count(params)
+		"set_sprite_2d_hframes":
+			_cmd_set_sprite_2d_hframes(params)
+		"set_sprite_2d_vframes":
+			_cmd_set_sprite_2d_vframes(params)
+		"set_sprite_2d_flip":
+			_cmd_set_sprite_2d_flip(params)
+		"set_animated_sprite_2d_speed":
+			_cmd_set_animated_sprite_2d_speed(params)
+		"get_animated_sprite_2d_frame":
+			_cmd_get_animated_sprite_2d_frame(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -12475,6 +12517,254 @@ func _cmd_get_connected_joypads(_params: Dictionary) -> void:
 	for pad in pads:
 		result.append({"id": pad, "name": Input.get_joy_name(pad)})
 	_send_response({"success": true, "joypads": result, "count": result.size()})
+
+
+func _cmd_get_navigation_agent_2d_path(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is NavigationAgent2D:
+		_send_response({"error": "NavigationAgent2D not found: " + node_path})
+		return
+	var agent := node as NavigationAgent2D
+	var path = agent.get_current_navigation_path()
+	var result = []
+	for p in path:
+		result.append({"x": p.x, "y": p.y})
+	_send_response({"success": true, "path": result, "target_reached": agent.is_target_reached()})
+
+
+func _cmd_set_navigation_agent_2d_target(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is NavigationAgent2D:
+		_send_response({"error": "NavigationAgent2D not found: " + node_path})
+		return
+	(node as NavigationAgent2D).target_position = Vector2(x, y)
+	_send_response({"success": true, "target": {"x": x, "y": y}})
+
+
+func _cmd_get_navigation_agent_3d_path(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is NavigationAgent3D:
+		_send_response({"error": "NavigationAgent3D not found: " + node_path})
+		return
+	var agent := node as NavigationAgent3D
+	var path = agent.get_current_navigation_path()
+	var result = []
+	for p in path:
+		result.append({"x": p.x, "y": p.y, "z": p.z})
+	_send_response({"success": true, "path": result, "target_reached": agent.is_target_reached()})
+
+
+func _cmd_set_navigation_agent_3d_target(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is NavigationAgent3D:
+		_send_response({"error": "NavigationAgent3D not found: " + node_path})
+		return
+	(node as NavigationAgent3D).target_position = Vector3(x, y, z)
+	_send_response({"success": true, "target": {"x": x, "y": y, "z": z}})
+
+
+func _cmd_is_navigation_agent_2d_finished(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is NavigationAgent2D:
+		_send_response({"error": "NavigationAgent2D not found: " + node_path})
+		return
+	var agent := node as NavigationAgent2D
+	_send_response({"success": true, "finished": agent.is_navigation_finished(), "target_reached": agent.is_target_reached()})
+
+
+func _cmd_is_navigation_agent_3d_finished(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is NavigationAgent3D:
+		_send_response({"error": "NavigationAgent3D not found: " + node_path})
+		return
+	var agent := node as NavigationAgent3D
+	_send_response({"success": true, "finished": agent.is_navigation_finished(), "target_reached": agent.is_target_reached()})
+
+
+func _cmd_get_navigation_map_rid(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is NavigationAgent2D:
+		_send_response({"success": true, "map_rid": str((node as NavigationAgent2D).get_navigation_map())})
+	elif node is NavigationAgent3D:
+		_send_response({"success": true, "map_rid": str((node as NavigationAgent3D).get_navigation_map())})
+	else:
+		_send_response({"error": "Not a NavigationAgent node: " + node_path})
+
+
+func _cmd_get_navigation_agent_velocity(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is NavigationAgent2D:
+		var v = (node as NavigationAgent2D).velocity
+		_send_response({"success": true, "velocity": {"x": v.x, "y": v.y}})
+	elif node is NavigationAgent3D:
+		var v = (node as NavigationAgent3D).velocity
+		_send_response({"success": true, "velocity": {"x": v.x, "y": v.y, "z": v.z}})
+	else:
+		_send_response({"error": "Not a NavigationAgent node: " + node_path})
+
+
+func _cmd_get_multiplayer_authority(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	_send_response({"success": true, "authority": node.get_multiplayer_authority()})
+
+
+func _cmd_set_multiplayer_authority(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var peer_id: int = params.get("peer_id", 1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	node.set_multiplayer_authority(peer_id)
+	_send_response({"success": true, "peer_id": peer_id})
+
+
+func _cmd_is_multiplayer_authority(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	_send_response({"success": true, "is_authority": node.is_multiplayer_authority()})
+
+
+func _cmd_get_network_latency(params: Dictionary) -> void:
+	var peer = multiplayer.multiplayer_peer
+	if peer == null:
+		_send_response({"error": "No multiplayer peer connected"})
+		return
+	_send_response({"success": true, "note": "Latency measurement requires active connection"})
+
+
+func _cmd_set_node_visible(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var visible: bool = params.get("visible", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is CanvasItem:
+		(node as CanvasItem).visible = visible
+	elif node is Node3D:
+		(node as Node3D).visible = visible
+	else:
+		_send_response({"error": "Node does not support visibility: " + node_path})
+		return
+	_send_response({"success": true, "visible": visible})
+
+
+func _cmd_get_node_visible(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is CanvasItem:
+		_send_response({"success": true, "visible": (node as CanvasItem).visible, "is_visible_in_tree": (node as CanvasItem).is_visible_in_tree()})
+	elif node is Node3D:
+		_send_response({"success": true, "visible": (node as Node3D).visible})
+	else:
+		_send_response({"error": "Node does not support visibility: " + node_path})
+
+
+func _cmd_set_sprite_2d_frame(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var frame: int = params.get("frame", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Sprite2D:
+		_send_response({"error": "Sprite2D not found: " + node_path})
+		return
+	(node as Sprite2D).frame = frame
+	_send_response({"success": true, "frame": frame})
+
+
+func _cmd_get_sprite_2d_frame_count(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Sprite2D:
+		_send_response({"error": "Sprite2D not found: " + node_path})
+		return
+	var s := node as Sprite2D
+	_send_response({"success": true, "frame_count": s.hframes * s.vframes, "hframes": s.hframes, "vframes": s.vframes, "current_frame": s.frame})
+
+
+func _cmd_set_sprite_2d_hframes(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var hframes: int = params.get("hframes", 1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Sprite2D:
+		_send_response({"error": "Sprite2D not found: " + node_path})
+		return
+	(node as Sprite2D).hframes = hframes
+	_send_response({"success": true, "hframes": hframes})
+
+
+func _cmd_set_sprite_2d_vframes(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var vframes: int = params.get("vframes", 1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Sprite2D:
+		_send_response({"error": "Sprite2D not found: " + node_path})
+		return
+	(node as Sprite2D).vframes = vframes
+	_send_response({"success": true, "vframes": vframes})
+
+
+func _cmd_set_sprite_2d_flip(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var flip_h: bool = params.get("flip_h", false)
+	var flip_v: bool = params.get("flip_v", false)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Sprite2D:
+		_send_response({"error": "Sprite2D not found: " + node_path})
+		return
+	(node as Sprite2D).flip_h = flip_h
+	(node as Sprite2D).flip_v = flip_v
+	_send_response({"success": true, "flip_h": flip_h, "flip_v": flip_v})
+
+
+func _cmd_set_animated_sprite_2d_speed(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var speed_scale: float = params.get("speed_scale", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimatedSprite2D:
+		_send_response({"error": "AnimatedSprite2D not found: " + node_path})
+		return
+	(node as AnimatedSprite2D).speed_scale = speed_scale
+	_send_response({"success": true, "speed_scale": speed_scale})
+
+
+func _cmd_get_animated_sprite_2d_frame(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimatedSprite2D:
+		_send_response({"error": "AnimatedSprite2D not found: " + node_path})
+		return
+	var s := node as AnimatedSprite2D
+	_send_response({"success": true, "frame": s.frame, "animation": s.animation, "is_playing": s.is_playing(), "speed_scale": s.speed_scale})
 
 
 func _exit_tree() -> void:
