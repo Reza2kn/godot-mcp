@@ -14784,6 +14784,206 @@ class GodotServer {
           description: 'Get the current maximum FPS cap.',
           inputSchema: { type: 'object', properties: {} },
         },
+        // Batch 48 tool definitions
+        {
+          name: 'get_control_position',
+          description: 'Get the position of a Control node in its parent.',
+          inputSchema: {
+            type: 'object',
+            properties: { nodePath: { type: 'string' } },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_control_anchor',
+          description: 'Get anchor values of a Control node (left/top/right/bottom).',
+          inputSchema: {
+            type: 'object',
+            properties: { nodePath: { type: 'string' } },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_control_anchor_preset',
+          description: 'Set anchor preset on a Control (e.g. full_rect, center).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              preset: { type: 'string' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_progress_bar_max',
+          description: 'Set max_value of a ProgressBar node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              maxValue: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'add_item_list_item_text',
+          description: 'Add a text item to an ItemList node at runtime.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              text: { type: 'string' },
+            },
+            required: ['nodePath', 'text'],
+          },
+        },
+        {
+          name: 'get_item_list_count',
+          description: 'Get item count of an ItemList node.',
+          inputSchema: {
+            type: 'object',
+            properties: { nodePath: { type: 'string' } },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_rich_text_label_text',
+          description: 'Set BBCode text on a RichTextLabel node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              text: { type: 'string' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_rich_text_label_text',
+          description: 'Get text content of a RichTextLabel node.',
+          inputSchema: {
+            type: 'object',
+            properties: { nodePath: { type: 'string' } },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'append_rich_text',
+          description: 'Append BBCode text to a RichTextLabel node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              text: { type: 'string' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'clear_rich_text',
+          description: 'Clear all text from a RichTextLabel node.',
+          inputSchema: {
+            type: 'object',
+            properties: { nodePath: { type: 'string' } },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_project_name',
+          description: 'Get the application name from project.godot.',
+          inputSchema: {
+            type: 'object',
+            properties: { projectPath: { type: 'string' } },
+            required: ['projectPath'],
+          },
+        },
+        {
+          name: 'set_project_name',
+          description: 'Set the application name in project.godot.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              name: { type: 'string' },
+            },
+            required: ['projectPath', 'name'],
+          },
+        },
+        {
+          name: 'get_project_main_scene',
+          description: 'Get the main scene path from project.godot.',
+          inputSchema: {
+            type: 'object',
+            properties: { projectPath: { type: 'string' } },
+            required: ['projectPath'],
+          },
+        },
+        {
+          name: 'set_project_main_scene',
+          description: 'Set the main scene path in project.godot.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'get_project_window_size',
+          description: 'Get window width/height from project.godot.',
+          inputSchema: {
+            type: 'object',
+            properties: { projectPath: { type: 'string' } },
+            required: ['projectPath'],
+          },
+        },
+        {
+          name: 'set_project_window_size',
+          description: 'Set window width and height in project.godot.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              width: { type: 'number' },
+              height: { type: 'number' },
+            },
+            required: ['projectPath'],
+          },
+        },
+        {
+          name: 'list_project_autoloads',
+          description: 'List all autoloads defined in project.godot.',
+          inputSchema: {
+            type: 'object',
+            properties: { projectPath: { type: 'string' } },
+            required: ['projectPath'],
+          },
+        },
+        {
+          name: 'set_project_version',
+          description: 'Set application version in project.godot.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              version: { type: 'string' },
+            },
+            required: ['projectPath', 'version'],
+          },
+        },
+        {
+          name: 'get_project_description',
+          description: 'Get app description from project.godot.',
+          inputSchema: {
+            type: 'object',
+            properties: { projectPath: { type: 'string' } },
+            required: ['projectPath'],
+          },
+        },
       ],
     }));
 
@@ -15718,9 +15918,9 @@ class GodotServer {
         case 'get_scene_node_path':
           return await this.handleGetSceneNodePath(request.params.arguments);
         case 'get_project_setting':
-          return await this.handleGetProjectSetting(request.params.arguments);
+          return await this.handleGetProjectSettingB48(request.params.arguments);
         case 'set_project_setting':
-          return await this.handleSetProjectSetting(request.params.arguments);
+          return await this.handleSetProjectSettingB48(request.params.arguments);
         case 'scene_toggle_node_visible':
           return await this.handleSceneToggleNodeVisible(request.params.arguments);
         case 'get_scene_inheritance_info':
@@ -16132,7 +16332,7 @@ class GodotServer {
         case 'find_orphan_resources':
           return await this.handleFindOrphanResources(request.params.arguments);
         case 'get_project_version':
-          return await this.handleGetProjectVersion(request.params.arguments);
+          return await this.handleGetProjectVersionB48(request.params.arguments);
         case 'get_scene_node_count':
           return await this.handleGetSceneNodeCount(request.params.arguments);
         case 'get_signal_connections':
@@ -16863,6 +17063,45 @@ class GodotServer {
           return await this.handleGetWorkflow(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
+        // Batch 48 switch cases
+        case 'get_control_position':
+          return await this.handleGetControlPosition(request.params.arguments);
+        case 'get_control_anchor':
+          return await this.handleGetControlAnchor(request.params.arguments);
+        case 'set_control_anchor_preset':
+          return await this.handleSetControlAnchorPreset(request.params.arguments);
+        case 'set_progress_bar_max':
+          return await this.handleSetProgressBarMax(request.params.arguments);
+        case 'add_item_list_item_text':
+          return await this.handleAddItemListItemText(request.params.arguments);
+        case 'get_item_list_count':
+          return await this.handleGetItemListCount(request.params.arguments);
+        case 'set_rich_text_label_text':
+          return await this.handleSetRichTextLabelText(request.params.arguments);
+        case 'get_rich_text_label_text':
+          return await this.handleGetRichTextLabelText(request.params.arguments);
+        case 'append_rich_text':
+          return await this.handleAppendRichText(request.params.arguments);
+        case 'clear_rich_text':
+          return await this.handleClearRichText(request.params.arguments);
+        case 'get_project_name':
+          return await this.handleGetProjectName(request.params.arguments);
+        case 'set_project_name':
+          return await this.handleSetProjectName(request.params.arguments);
+        case 'get_project_main_scene':
+          return await this.handleGetProjectMainScene(request.params.arguments);
+        case 'set_project_main_scene':
+          return await this.handleSetProjectMainScene(request.params.arguments);
+        case 'get_project_window_size':
+          return await this.handleGetProjectWindowSize(request.params.arguments);
+        case 'set_project_window_size':
+          return await this.handleSetProjectWindowSize(request.params.arguments);
+        case 'list_project_autoloads':
+          return await this.handleListProjectAutoloads(request.params.arguments);
+        case 'set_project_version':
+          return await this.handleSetProjectVersion(request.params.arguments);
+        case 'get_project_description':
+          return await this.handleGetProjectDescription(request.params.arguments);
         // Batch 47 switch cases
         case 'get_node_z_index':
           return await this.handleGetNodeZIndex(request.params.arguments);
@@ -30030,6 +30269,178 @@ class GodotServer {
 
   private async handleGetMaxFps(_args: any) {
     return this.gameCommand('get_max_fps', {}, _a => ({}));
+  }
+
+  // ── Batch 48 handlers ────────────────────────────────────────────────────────
+
+  private async handleGetControlPosition(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_control_position', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetControlAnchor(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_control_anchor', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetControlAnchorPreset(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_control_anchor_preset', args, a => ({ node_path: a.nodePath, preset: a.preset ?? 'full_rect' }));
+  }
+
+  private async handleSetProgressBarMax(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_progress_bar_max', args, a => ({ node_path: a.nodePath, max_value: a.maxValue ?? 100 }));
+  }
+
+  private async handleAddItemListItemText(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('add_item_list_item_text', args, a => ({ node_path: a.nodePath, text: a.text ?? '' }));
+  }
+
+  private async handleGetItemListCount(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_item_list_count', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetRichTextLabelText(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_rich_text_label_text', args, a => ({ node_path: a.nodePath, text: a.text ?? '' }));
+  }
+
+  private async handleGetRichTextLabelText(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_rich_text_label_text', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleAppendRichText(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('append_rich_text', args, a => ({ node_path: a.nodePath, text: a.text ?? '' }));
+  }
+
+  private async handleClearRichText(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('clear_rich_text', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private readProjectSetting(projectPath: string, settingKey: string): { content: { type: string; text: string }[] } {
+    const projectFile = join(projectPath, 'project.godot');
+    if (!existsSync(projectFile)) return createErrorResponse('project.godot not found at: ' + projectPath);
+    const content = readFileSync(projectFile, 'utf8');
+    const lines = content.split('\n');
+    const match = lines.find(l => l.startsWith(settingKey + '=') || l.startsWith(settingKey + ' ='));
+    if (!match) return { content: [{ type: 'text', text: JSON.stringify({ found: false, key: settingKey, value: null }) }] };
+    const value = match.split('=').slice(1).join('=').trim();
+    return { content: [{ type: 'text', text: JSON.stringify({ found: true, key: settingKey, value }) }] };
+  }
+
+  private writeProjectSetting(projectPath: string, settingKey: string, value: string): { content: { type: string; text: string }[] } {
+    const projectFile = join(projectPath, 'project.godot');
+    if (!existsSync(projectFile)) return createErrorResponse('project.godot not found.');
+    let content = readFileSync(projectFile, 'utf8');
+    const regex = new RegExp('^' + settingKey.replace(/\//g, '\\/') + '\\s*=.*$', 'm');
+    if (regex.test(content)) {
+      content = content.replace(regex, settingKey + '=' + value);
+    } else {
+      content += '\n' + settingKey + '=' + value;
+    }
+    writeFileSync(projectFile, content, 'utf8');
+    return { content: [{ type: 'text', text: JSON.stringify({ success: true, key: settingKey, value }) }] };
+  }
+
+  private async handleGetProjectSettingB48(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.settingKey) return createErrorResponse('projectPath and settingKey are required.');
+    return this.readProjectSetting(args.projectPath, args.settingKey as string);
+  }
+
+  private async handleSetProjectSettingB48(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.settingKey || args.value === undefined) return createErrorResponse('projectPath, settingKey, and value are required.');
+    return this.writeProjectSetting(args.projectPath, args.settingKey as string, String(args.value));
+  }
+
+  private async handleGetProjectName(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    return this.readProjectSetting(args.projectPath, 'application/config/name');
+  }
+
+  private async handleSetProjectName(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.name) return createErrorResponse('projectPath and name are required.');
+    return this.writeProjectSetting(args.projectPath, 'application/config/name', args.name);
+  }
+
+  private async handleGetProjectMainScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    return this.readProjectSetting(args.projectPath, 'application/run/main_scene');
+  }
+
+  private async handleSetProjectMainScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    return this.writeProjectSetting(args.projectPath, 'application/run/main_scene', `"${args.scenePath}"`);
+  }
+
+  private async handleGetProjectWindowSize(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    const projectFile = join(args.projectPath, 'project.godot');
+    if (!existsSync(projectFile)) return createErrorResponse('project.godot not found.');
+    const content = readFileSync(projectFile, 'utf8');
+    const getVal = (key: string) => { const m = content.match(new RegExp('^' + key + '\\s*=\\s*(.+)$', 'm')); return m ? m[1].trim() : null; };
+    return { content: [{ type: 'text', text: JSON.stringify({ width: getVal('display/window/size/viewport_width'), height: getVal('display/window/size/viewport_height') }) }] };
+  }
+
+  private async handleSetProjectWindowSize(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    const projectFile = join(args.projectPath, 'project.godot');
+    if (!existsSync(projectFile)) return createErrorResponse('project.godot not found.');
+    let content = readFileSync(projectFile, 'utf8');
+    const setVal = (key: string, val: string) => {
+      const regex = new RegExp('^' + key.replace(/\//g, '\\/') + '\\s*=.*$', 'm');
+      if (regex.test(content)) { content = content.replace(regex, key + '=' + val); }
+      else { content += '\n' + key + '=' + val; }
+    };
+    if (args.width !== undefined) setVal('display/window/size/viewport_width', String(args.width));
+    if (args.height !== undefined) setVal('display/window/size/viewport_height', String(args.height));
+    writeFileSync(projectFile, content, 'utf8');
+    return { content: [{ type: 'text', text: JSON.stringify({ success: true, width: args.width, height: args.height }) }] };
+  }
+
+  private async handleListProjectAutoloads(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    const projectFile = join(args.projectPath, 'project.godot');
+    if (!existsSync(projectFile)) return createErrorResponse('project.godot not found.');
+    const content = readFileSync(projectFile, 'utf8');
+    const autoloads: Array<{name: string, path: string}> = [];
+    for (const line of content.split('\n')) {
+      const m = line.match(/^autoload\/(\w+)="([^"]+)"/);
+      if (m) autoloads.push({ name: m[1], path: m[2] });
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ autoloads, count: autoloads.length }) }] };
+  }
+
+  private async handleGetProjectVersionB48(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    return this.readProjectSetting(args.projectPath, 'application/config/version');
+  }
+
+  private async handleSetProjectVersion(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.version) return createErrorResponse('projectPath and version are required.');
+    return this.writeProjectSetting(args.projectPath, 'application/config/version', args.version);
+  }
+
+  private async handleGetProjectDescription(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    return this.readProjectSetting(args.projectPath, 'application/config/description');
   }
 
   // ── Navigation / Discovery helpers ──────────────────────────────────────────

@@ -1289,6 +1289,26 @@ func _handle_command(json_str: String) -> void:
 			_cmd_set_max_fps(params)
 		"get_max_fps":
 			_cmd_get_max_fps(params)
+		"get_control_position":
+			_cmd_get_control_position(params)
+		"get_control_anchor":
+			_cmd_get_control_anchor(params)
+		"set_control_anchor_preset":
+			_cmd_set_control_anchor_preset(params)
+		"set_progress_bar_max":
+			_cmd_set_progress_bar_max(params)
+		"add_item_list_item_text":
+			_cmd_add_item_list_item_text(params)
+		"get_item_list_count":
+			_cmd_get_item_list_count(params)
+		"set_rich_text_label_text":
+			_cmd_set_rich_text_label_text(params)
+		"get_rich_text_label_text":
+			_cmd_get_rich_text_label_text(params)
+		"append_rich_text":
+			_cmd_append_rich_text(params)
+		"clear_rich_text":
+			_cmd_clear_rich_text(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -11234,6 +11254,118 @@ func _cmd_set_max_fps(params: Dictionary) -> void:
 
 func _cmd_get_max_fps(params: Dictionary) -> void:
 	_send_response({"success": true, "max_fps": Engine.max_fps})
+
+
+func _cmd_get_control_position(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control not found: " + node_path})
+		return
+	var pos: Vector2 = (node as Control).position
+	_send_response({"success": true, "x": pos.x, "y": pos.y})
+
+
+func _cmd_get_control_anchor(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control not found: " + node_path})
+		return
+	var ctrl := node as Control
+	_send_response({"success": true, "anchor_left": ctrl.anchor_left, "anchor_top": ctrl.anchor_top, "anchor_right": ctrl.anchor_right, "anchor_bottom": ctrl.anchor_bottom})
+
+
+func _cmd_set_control_anchor_preset(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var preset_str: String = params.get("preset", "full_rect")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control not found: " + node_path})
+		return
+	var preset_map = {
+		"top_left": 0, "top_right": 1, "bottom_left": 2, "bottom_right": 3,
+		"center_left": 4, "center_top": 5, "center_right": 6, "center_bottom": 7,
+		"center": 8, "left_wide": 9, "top_wide": 10, "right_wide": 11,
+		"bottom_wide": 12, "vcenter_wide": 13, "hcenter_wide": 14, "full_rect": 15
+	}
+	if not preset_map.has(preset_str):
+		_send_response({"error": "Unknown preset: " + preset_str})
+		return
+	(node as Control).set_anchors_preset(preset_map[preset_str])
+	_send_response({"success": true, "preset": preset_str})
+
+
+func _cmd_set_progress_bar_max(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var max_value: float = params.get("max_value", 100.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is ProgressBar:
+		_send_response({"error": "ProgressBar not found: " + node_path})
+		return
+	(node as ProgressBar).max_value = max_value
+	_send_response({"success": true, "max_value": max_value})
+
+
+func _cmd_add_item_list_item_text(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var text: String = params.get("text", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is ItemList:
+		_send_response({"error": "ItemList not found: " + node_path})
+		return
+	(node as ItemList).add_item(text)
+	_send_response({"success": true, "text": text, "item_count": (node as ItemList).item_count})
+
+
+func _cmd_get_item_list_count(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is ItemList:
+		_send_response({"error": "ItemList not found: " + node_path})
+		return
+	_send_response({"success": true, "count": (node as ItemList).item_count})
+
+
+func _cmd_set_rich_text_label_text(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var text: String = params.get("text", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RichTextLabel:
+		_send_response({"error": "RichTextLabel not found: " + node_path})
+		return
+	(node as RichTextLabel).text = text
+	_send_response({"success": true, "text": text})
+
+
+func _cmd_get_rich_text_label_text(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RichTextLabel:
+		_send_response({"error": "RichTextLabel not found: " + node_path})
+		return
+	_send_response({"success": true, "text": (node as RichTextLabel).text, "parsed_text": (node as RichTextLabel).get_parsed_text()})
+
+
+func _cmd_append_rich_text(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var text: String = params.get("text", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RichTextLabel:
+		_send_response({"error": "RichTextLabel not found: " + node_path})
+		return
+	(node as RichTextLabel).append_text(text)
+	_send_response({"success": true, "appended": text})
+
+
+func _cmd_clear_rich_text(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RichTextLabel:
+		_send_response({"error": "RichTextLabel not found: " + node_path})
+		return
+	(node as RichTextLabel).clear()
+	_send_response({"success": true})
 
 
 func _exit_tree() -> void:
