@@ -15976,6 +15976,162 @@ class GodotServer {
             properties: {},
           },
         },
+        // Batch 52 — Group A: 2D node adders
+        {
+          name: 'add_path_2d_to_scene',
+          description: 'Add a Path2D node to a scene.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_tile_map_to_scene',
+          description: 'Add a TileMap node to a scene.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_visibility_notifier_2d_to_scene',
+          description: 'Add VisibleOnScreenNotifier2D to scene.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        // Batch 52 — Group B: 3D node adders
+        {
+          name: 'add_visual_instance_3d_to_scene',
+          description: 'Add a VisualInstance3D to a scene.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        // Batch 52 — Group C: UI / Control node adders
+        {
+          name: 'add_panel_to_scene',
+          description: 'Add a Panel control node to a scene.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_h_split_container_to_scene',
+          description: 'Add an HSplitContainer to a scene.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_v_split_container_to_scene',
+          description: 'Add a VSplitContainer to a scene.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_grid_container_to_scene',
+          description: 'Add a GridContainer to a scene.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        // Batch 52 — Group D: Beginner setup guides
+        {
+          name: 'get_platformer_2d_setup_guide',
+          description: 'Step-by-step guide to set up a 2D platformer.',
+          inputSchema: {
+            type: 'object',
+            properties: {},
+          },
+        },
+        {
+          name: 'get_fps_3d_setup_guide',
+          description: 'Step-by-step guide to set up a 3D FPS game.',
+          inputSchema: {
+            type: 'object',
+            properties: {},
+          },
+        },
+        {
+          name: 'get_top_down_2d_setup_guide',
+          description: 'Step-by-step guide for a top-down 2D game.',
+          inputSchema: {
+            type: 'object',
+            properties: {},
+          },
+        },
+        {
+          name: 'get_ui_scene_setup_guide',
+          description: 'Guide to setting up a UI/HUD scene in Godot.',
+          inputSchema: {
+            type: 'object',
+            properties: {},
+          },
+        },
+        {
+          name: 'get_audio_setup_guide',
+          description: 'Guide to setting up audio in a Godot project.',
+          inputSchema: {
+            type: 'object',
+            properties: {},
+          },
+        },
       ],
     }));
 
@@ -18117,6 +18273,36 @@ class GodotServer {
           return await this.handleMakeCameraCurrent(request.params.arguments);
         case 'get_visible_rect':
           return await this.handleGetVisibleRect(request.params.arguments);
+        // Batch 52 switch cases — Group A: 2D node adders
+        case 'add_path_2d_to_scene':
+          return await this.handleAddPath2dToScene(request.params.arguments);
+        case 'add_tile_map_to_scene':
+          return await this.handleAddTileMapToScene(request.params.arguments);
+        case 'add_visibility_notifier_2d_to_scene':
+          return await this.handleAddVisibilityNotifier2dToScene(request.params.arguments);
+        // Batch 52 switch cases — Group B: 3D node adders
+        case 'add_visual_instance_3d_to_scene':
+          return await this.handleAddVisualInstance3dToScene(request.params.arguments);
+        // Batch 52 switch cases — Group C: UI / Control node adders
+        case 'add_panel_to_scene':
+          return await this.handleAddPanelToScene(request.params.arguments);
+        case 'add_h_split_container_to_scene':
+          return await this.handleAddHSplitContainerToScene(request.params.arguments);
+        case 'add_v_split_container_to_scene':
+          return await this.handleAddVSplitContainerToScene(request.params.arguments);
+        case 'add_grid_container_to_scene':
+          return await this.handleAddGridContainerToScene(request.params.arguments);
+        // Batch 52 switch cases — Group D: Beginner setup guides
+        case 'get_platformer_2d_setup_guide':
+          return await this.handleGetPlatformer2dSetupGuide(request.params.arguments);
+        case 'get_fps_3d_setup_guide':
+          return await this.handleGetFps3dSetupGuide(request.params.arguments);
+        case 'get_top_down_2d_setup_guide':
+          return await this.handleGetTopDown2dSetupGuide(request.params.arguments);
+        case 'get_ui_scene_setup_guide':
+          return await this.handleGetUiSceneSetupGuide(request.params.arguments);
+        case 'get_audio_setup_guide':
+          return await this.handleGetAudioSetupGuide(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -32021,6 +32207,174 @@ class GodotServer {
   private async handleGetVisibleRect(args: any) {
     args = normalizeParameters(args || {});
     return this.gameCommand('get_visible_rect', args, _a => ({}));
+  }
+
+  // ── Batch 52 handlers — Group A: 2D node adders ─────────────────────────────
+
+  private async handleAddPath2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'Path2D', node_type: 'Path2D', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddTileMapToScene(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'TileMap', node_type: 'TileMap', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddVisibilityNotifier2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'VisibleOnScreenNotifier2D', node_type: 'VisibleOnScreenNotifier2D', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  // ── Batch 52 handlers — Group B: 3D node adders ─────────────────────────────
+
+  private async handleAddVisualInstance3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'VisualInstance3D', node_type: 'VisualInstance3D', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  // ── Batch 52 handlers — Group C: UI / Control node adders ───────────────────
+
+  private async handleAddPanelToScene(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'Panel', node_type: 'Panel', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddHSplitContainerToScene(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'HSplitContainer', node_type: 'HSplitContainer', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddVSplitContainerToScene(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'VSplitContainer', node_type: 'VSplitContainer', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddGridContainerToScene(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'GridContainer', node_type: 'GridContainer', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  // ── Batch 52 handlers — Group D: Beginner setup guides ──────────────────────
+
+  private async handleGetPlatformer2dSetupGuide(_args: any) {
+    const guide = {
+      title: '2D Platformer Setup Guide',
+      steps: [
+        'create_godot_project with projectName and projectPath',
+        'create_scene with sceneName=Player, rootType=CharacterBody2D',
+        'add_collision_shape_2d_to_scene for player hitbox',
+        'add_sprite_2d_to_scene for player visual',
+        'write_gdscript with physics_process for move_and_slide',
+        'create_scene with sceneName=Level, rootType=Node2D',
+        'add_tile_map_to_scene for ground/platforms',
+        'add_character_body_2d_to_scene or instance Player scene',
+        'create_scene with rootType=CanvasLayer for UI',
+        'add_label_to_scene for score/health display'
+      ],
+      tips: [
+        'CharacterBody2D needs CollisionShape2D to work with physics',
+        'TileMap handles ground, walls and platforms efficiently',
+        'Use groups to tag enemies: add_node_to_group',
+        'Signals connect player hits to health: connect_signal'
+      ]
+    };
+    return { content: [{ type: 'text', text: JSON.stringify(guide, null, 2) }] };
+  }
+
+  private async handleGetFps3dSetupGuide(_args: any) {
+    const guide = {
+      title: '3D FPS Setup Guide',
+      steps: [
+        'create_godot_project with projectName and projectPath',
+        'create_scene with sceneName=Player, rootType=CharacterBody3D',
+        'add_camera_3d_to_scene as child of Player',
+        'add_collision_shape_3d_to_scene for player capsule',
+        'write_gdscript for mouse look and move_and_slide_with_rotate',
+        'create_scene with sceneName=World, rootType=Node3D',
+        'add_directional_light_3d_to_scene for sun',
+        'add_world_environment_to_scene for sky/fog',
+        'add_mesh_instance_3d_to_scene for floor/walls',
+        'Instance Player scene into World scene'
+      ],
+      tips: [
+        'Lock mouse with Input.mouse_mode = Input.MOUSE_MODE_CAPTURED',
+        'Camera3D should be a child of the player node',
+        'Use RayCast3D for hit detection / shooting',
+        'SpringArm3D is useful for third-person camera setups'
+      ]
+    };
+    return { content: [{ type: 'text', text: JSON.stringify(guide, null, 2) }] };
+  }
+
+  private async handleGetTopDown2dSetupGuide(_args: any) {
+    const guide = {
+      title: 'Top-Down 2D Setup Guide',
+      steps: [
+        'create_godot_project with projectName and projectPath',
+        'create_scene with sceneName=Player, rootType=CharacterBody2D',
+        'add_sprite_2d_to_scene for player sprite',
+        'add_collision_shape_2d_to_scene for player shape',
+        'write_gdscript using velocity with 4-directional input',
+        'create_scene with sceneName=World, rootType=Node2D',
+        'add_tile_map_to_scene for top-down map',
+        'Instance Player scene into World',
+        'add_camera_2d_to_scene and set it to follow player'
+      ],
+      tips: [
+        'Set CharacterBody2D motion_mode to MOTION_MODE_FLOATING for top-down',
+        'Camera2D drag smoothing gives a polished feel',
+        'Use TileMap layers: one for ground, one for walls',
+        'NavigationAgent2D enables pathfinding for enemies'
+      ]
+    };
+    return { content: [{ type: 'text', text: JSON.stringify(guide, null, 2) }] };
+  }
+
+  private async handleGetUiSceneSetupGuide(_args: any) {
+    const guide = {
+      title: 'UI / HUD Scene Setup Guide',
+      steps: [
+        'create_scene with sceneName=HUD, rootType=CanvasLayer',
+        'add_h_box_container_to_scene for horizontal layout',
+        'add_label_to_scene for score text',
+        'add_progress_bar_to_scene for health bar',
+        'add_texture_rect_to_scene for icons/portraits',
+        'add_button_to_scene for pause/menu buttons',
+        'write_gdscript to update label text and progress bar value',
+        'Instance HUD scene as autoload or child of main scene'
+      ],
+      tips: [
+        'CanvasLayer renders on top of 3D/2D world always',
+        'Anchors and margins control how UI scales with screen size',
+        'Use signals from game nodes to update HUD values',
+        'Theme resource lets you style all UI nodes at once'
+      ]
+    };
+    return { content: [{ type: 'text', text: JSON.stringify(guide, null, 2) }] };
+  }
+
+  private async handleGetAudioSetupGuide(_args: any) {
+    const guide = {
+      title: 'Audio Setup Guide',
+      steps: [
+        'add_audio_stream_player_to_scene for background music',
+        'add_audio_stream_player_to_scene for sound effects',
+        'Import .ogg or .mp3 files into res://sounds/',
+        'write_gdscript to call play() and stop() on AudioStreamPlayer',
+        'Use AudioBus for volume control: set_audio_bus_volume_db',
+        'Create Master/Music/SFX buses via AudioServer in Godot editor',
+        'add_audio_stream_player_2d_to_scene for positional 2D audio',
+        'add_audio_stream_player_3d_to_scene for positional 3D audio'
+      ],
+      tips: [
+        'AudioStreamPlayer for non-positional music/sfx',
+        'AudioStreamPlayer2D/3D for spatial audio effects',
+        'Buses let you control volume of music vs sfx independently',
+        'autoplay=true makes music start when scene loads'
+      ]
+    };
+    return { content: [{ type: 'text', text: JSON.stringify(guide, null, 2) }] };
   }
 
   // ── Navigation / Discovery helpers ──────────────────────────────────────────
