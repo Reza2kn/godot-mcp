@@ -14984,6 +14984,235 @@ class GodotServer {
             required: ['projectPath'],
           },
         },
+        // Batch 49 tool definitions
+        // Group A: Input map tools
+        {
+          name: 'list_input_actions',
+          description: 'List all input actions defined in the project.',
+          inputSchema: { type: 'object', properties: {} },
+        },
+        {
+          name: 'is_action_just_pressed',
+          description: 'Check if input action was pressed this frame.',
+          inputSchema: {
+            type: 'object',
+            properties: { actionName: { type: 'string' } },
+            required: ['actionName'],
+          },
+        },
+        {
+          name: 'is_action_just_released',
+          description: 'Check if input action was released this frame.',
+          inputSchema: {
+            type: 'object',
+            properties: { actionName: { type: 'string' } },
+            required: ['actionName'],
+          },
+        },
+        {
+          name: 'get_action_strength',
+          description: 'Get analog strength of an input action (0.0 to 1.0).',
+          inputSchema: {
+            type: 'object',
+            properties: { actionName: { type: 'string' } },
+            required: ['actionName'],
+          },
+        },
+        {
+          name: 'simulate_action_press',
+          description: 'Simulate pressing an input action in the running game.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              actionName: { type: 'string' },
+              strength: { type: 'number' },
+            },
+            required: ['actionName'],
+          },
+        },
+        {
+          name: 'simulate_action_release',
+          description: 'Simulate releasing an input action in the running game.',
+          inputSchema: {
+            type: 'object',
+            properties: { actionName: { type: 'string' } },
+            required: ['actionName'],
+          },
+        },
+        {
+          name: 'set_mouse_mode',
+          description: 'Set mouse mode: visible/hidden/captured/confined.',
+          inputSchema: {
+            type: 'object',
+            properties: { mode: { type: 'string' } },
+          },
+        },
+        {
+          name: 'get_mouse_mode',
+          description: 'Get current mouse cursor mode.',
+          inputSchema: { type: 'object', properties: {} },
+        },
+        // Group B: Multiplayer / networking tools
+        {
+          name: 'get_multiplayer_peer_id',
+          description: 'Get the local peer ID in a multiplayer session.',
+          inputSchema: { type: 'object', properties: {} },
+        },
+        {
+          name: 'is_multiplayer_server',
+          description: 'Check if this peer is the multiplayer server.',
+          inputSchema: { type: 'object', properties: {} },
+        },
+        {
+          name: 'get_network_peer_count',
+          description: 'Get number of connected peers in session.',
+          inputSchema: { type: 'object', properties: {} },
+        },
+        {
+          name: 'set_node_multiplayer_authority',
+          description: 'Set the multiplayer authority of a node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              peerId: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_node_multiplayer_authority',
+          description: 'Get the multiplayer authority of a node.',
+          inputSchema: {
+            type: 'object',
+            properties: { nodePath: { type: 'string' } },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'rpc_call',
+          description: 'Call a remote procedure (RPC) on a node method.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              methodName: { type: 'string' },
+              args: { type: 'array' },
+            },
+            required: ['nodePath', 'methodName'],
+          },
+        },
+        {
+          name: 'broadcast_to_group',
+          description: 'Call a method on all nodes in a group.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              groupName: { type: 'string' },
+              methodName: { type: 'string' },
+            },
+            required: ['groupName', 'methodName'],
+          },
+        },
+        // Group C: Node adders (headlessOp)
+        {
+          name: 'add_path_3d_to_scene',
+          description: 'Add Path3D node (3D bezier path) to a scene.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_open_xr_camera_3d_to_scene',
+          description: 'Add OpenXRCamera3D node to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_open_xr_controller_to_scene',
+          description: 'Add OpenXRController3D to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_open_xr_origin_to_scene',
+          description: 'Add OpenXROrigin3D node to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_open_xr_hand_tracker_to_scene',
+          description: 'Add OpenXRHandTracker to a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_label_3d_to_scene',
+          description: 'Add Label3D node (3D world space text) to scene.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'add_sprite_3d_to_scene',
+          description: 'Add Sprite3D node (3D billboard sprite) to scene.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+              parentNodePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
       ],
     }));
 
@@ -17238,6 +17467,54 @@ class GodotServer {
           return await this.handleGetGameScreenSize(request.params.arguments);
         case 'get_game_mouse_position':
           return await this.handleGetGameMousePosition(request.params.arguments);
+        // Batch 49 switch cases
+        // Group A: Input map
+        case 'list_input_actions':
+          return await this.handleListInputActions(request.params.arguments);
+        case 'is_action_just_pressed':
+          return await this.handleIsActionJustPressed(request.params.arguments);
+        case 'is_action_just_released':
+          return await this.handleIsActionJustReleased(request.params.arguments);
+        case 'get_action_strength':
+          return await this.handleGetActionStrength(request.params.arguments);
+        case 'simulate_action_press':
+          return await this.handleSimulateActionPress(request.params.arguments);
+        case 'simulate_action_release':
+          return await this.handleSimulateActionRelease(request.params.arguments);
+        case 'set_mouse_mode':
+          return await this.handleSetMouseMode(request.params.arguments);
+        case 'get_mouse_mode':
+          return await this.handleGetMouseMode(request.params.arguments);
+        // Group B: Multiplayer / networking
+        case 'get_multiplayer_peer_id':
+          return await this.handleGetMultiplayerPeerId(request.params.arguments);
+        case 'is_multiplayer_server':
+          return await this.handleIsMultiplayerServer(request.params.arguments);
+        case 'get_network_peer_count':
+          return await this.handleGetNetworkPeerCount(request.params.arguments);
+        case 'set_node_multiplayer_authority':
+          return await this.handleSetNodeMultiplayerAuthority(request.params.arguments);
+        case 'get_node_multiplayer_authority':
+          return await this.handleGetNodeMultiplayerAuthority(request.params.arguments);
+        case 'rpc_call':
+          return await this.handleRpcCall(request.params.arguments);
+        case 'broadcast_to_group':
+          return await this.handleBroadcastToGroup(request.params.arguments);
+        // Group C: Node adders
+        case 'add_path_3d_to_scene':
+          return await this.handleAddPath3dToScene(request.params.arguments);
+        case 'add_open_xr_camera_3d_to_scene':
+          return await this.handleAddOpenXrCamera3dToScene(request.params.arguments);
+        case 'add_open_xr_controller_to_scene':
+          return await this.handleAddOpenXrControllerToScene(request.params.arguments);
+        case 'add_open_xr_origin_to_scene':
+          return await this.handleAddOpenXrOriginToScene(request.params.arguments);
+        case 'add_open_xr_hand_tracker_to_scene':
+          return await this.handleAddOpenXrHandTrackerToScene(request.params.arguments);
+        case 'add_label_3d_to_scene':
+          return await this.handleAddLabel3dToScene(request.params.arguments);
+        case 'add_sprite_3d_to_scene':
+          return await this.handleAddSprite3dToScene(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -30441,6 +30718,116 @@ class GodotServer {
     args = normalizeParameters(args || {});
     if (!args.projectPath) return createErrorResponse('projectPath is required.');
     return this.readProjectSetting(args.projectPath, 'application/config/description');
+  }
+
+  // ── Batch 49 handlers ────────────────────────────────────────────────────────
+
+  // Group A: Input map tools
+  private async handleListInputActions(_args: any) {
+    return this.gameCommand('list_input_actions', {}, _a => ({}));
+  }
+
+  private async handleIsActionJustPressed(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('is_action_just_pressed', args, a => ({ action_name: a.actionName ?? '' }));
+  }
+
+  private async handleIsActionJustReleased(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('is_action_just_released', args, a => ({ action_name: a.actionName ?? '' }));
+  }
+
+  private async handleGetActionStrength(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_action_strength', args, a => ({ action_name: a.actionName ?? '' }));
+  }
+
+  private async handleSimulateActionPress(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('simulate_action_press', args, a => ({ action_name: a.actionName ?? '', strength: a.strength ?? 1.0 }));
+  }
+
+  private async handleSimulateActionRelease(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('simulate_action_release', args, a => ({ action_name: a.actionName ?? '' }));
+  }
+
+  private async handleSetMouseMode(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_mouse_mode', args, a => ({ mode: a.mode ?? 'visible' }));
+  }
+
+  private async handleGetMouseMode(_args: any) {
+    return this.gameCommand('get_mouse_mode', {}, _a => ({}));
+  }
+
+  // Group B: Multiplayer / networking tools
+  private async handleGetMultiplayerPeerId(_args: any) {
+    return this.gameCommand('get_multiplayer_peer_id', {}, _a => ({}));
+  }
+
+  private async handleIsMultiplayerServer(_args: any) {
+    return this.gameCommand('is_multiplayer_server', {}, _a => ({}));
+  }
+
+  private async handleGetNetworkPeerCount(_args: any) {
+    return this.gameCommand('get_network_peer_count', {}, _a => ({}));
+  }
+
+  private async handleSetNodeMultiplayerAuthority(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_node_multiplayer_authority', args, a => ({ node_path: a.nodePath, peer_id: a.peerId ?? 1 }));
+  }
+
+  private async handleGetNodeMultiplayerAuthority(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_node_multiplayer_authority', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleRpcCall(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('rpc_call', args, a => ({ node_path: a.nodePath, method_name: a.methodName ?? '', args: a.args ?? [] }));
+  }
+
+  private async handleBroadcastToGroup(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('broadcast_to_group', args, a => ({ group_name: a.groupName ?? '', method_name: a.methodName ?? '' }));
+  }
+
+  // Group C: Node adders (headlessOp)
+  private async handleAddPath3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'Path3D', node_type: 'Path3D', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddOpenXrCamera3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'OpenXRCamera3D', node_type: 'OpenXRCamera3D', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddOpenXrControllerToScene(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'OpenXRController3D', node_type: 'OpenXRController3D', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddOpenXrOriginToScene(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'OpenXROrigin3D', node_type: 'OpenXROrigin3D', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddOpenXrHandTrackerToScene(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'OpenXRHandTracker', node_type: 'OpenXRHandTracker', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddLabel3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'Label3D', node_type: 'Label3D', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddSprite3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'Sprite3D', node_type: 'Sprite3D', parent_node_path: a.parentNodePath || '.' } }));
   }
 
   // ── Navigation / Discovery helpers ──────────────────────────────────────────

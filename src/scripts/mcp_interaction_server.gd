@@ -1309,6 +1309,34 @@ func _handle_command(json_str: String) -> void:
 			_cmd_append_rich_text(params)
 		"clear_rich_text":
 			_cmd_clear_rich_text(params)
+		"list_input_actions":
+			_cmd_list_input_actions(params)
+		"is_action_just_pressed":
+			_cmd_is_action_just_pressed(params)
+		"is_action_just_released":
+			_cmd_is_action_just_released(params)
+		"get_action_strength":
+			_cmd_get_action_strength(params)
+		"simulate_action_press":
+			_cmd_simulate_action_press(params)
+		"simulate_action_release":
+			_cmd_simulate_action_release(params)
+		"get_mouse_mode":
+			_cmd_get_mouse_mode(params)
+		"get_multiplayer_peer_id":
+			_cmd_get_multiplayer_peer_id(params)
+		"is_multiplayer_server":
+			_cmd_is_multiplayer_server(params)
+		"get_network_peer_count":
+			_cmd_get_network_peer_count(params)
+		"set_node_multiplayer_authority":
+			_cmd_set_node_multiplayer_authority(params)
+		"get_node_multiplayer_authority":
+			_cmd_get_node_multiplayer_authority(params)
+		"rpc_call":
+			_cmd_rpc_call(params)
+		"broadcast_to_group":
+			_cmd_broadcast_to_group(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -11366,6 +11394,119 @@ func _cmd_clear_rich_text(params: Dictionary) -> void:
 		return
 	(node as RichTextLabel).clear()
 	_send_response({"success": true})
+
+
+func _cmd_list_input_actions(params: Dictionary) -> void:
+	var actions: Array = InputMap.get_actions()
+	var result: Array = []
+	for action in actions:
+		result.append(str(action))
+	_send_response({"success": true, "actions": result, "count": result.size()})
+
+
+func _cmd_is_action_just_pressed(params: Dictionary) -> void:
+	var action_name: String = params.get("action_name", "")
+	if not InputMap.has_action(action_name):
+		_send_response({"error": "Action not found: " + action_name})
+		return
+	_send_response({"success": true, "just_pressed": Input.is_action_just_pressed(action_name)})
+
+
+func _cmd_is_action_just_released(params: Dictionary) -> void:
+	var action_name: String = params.get("action_name", "")
+	if not InputMap.has_action(action_name):
+		_send_response({"error": "Action not found: " + action_name})
+		return
+	_send_response({"success": true, "just_released": Input.is_action_just_released(action_name)})
+
+
+func _cmd_get_action_strength(params: Dictionary) -> void:
+	var action_name: String = params.get("action_name", "")
+	if not InputMap.has_action(action_name):
+		_send_response({"error": "Action not found: " + action_name})
+		return
+	_send_response({"success": true, "strength": Input.get_action_strength(action_name)})
+
+
+func _cmd_simulate_action_press(params: Dictionary) -> void:
+	var action_name: String = params.get("action_name", "")
+	var strength: float = params.get("strength", 1.0)
+	var ev = InputEventAction.new()
+	ev.action = action_name
+	ev.pressed = true
+	ev.strength = strength
+	Input.parse_input_event(ev)
+	_send_response({"success": true, "action": action_name, "strength": strength})
+
+
+func _cmd_simulate_action_release(params: Dictionary) -> void:
+	var action_name: String = params.get("action_name", "")
+	var ev = InputEventAction.new()
+	ev.action = action_name
+	ev.pressed = false
+	Input.parse_input_event(ev)
+	_send_response({"success": true, "action": action_name, "released": true})
+
+
+func _cmd_get_mouse_mode(params: Dictionary) -> void:
+	var mode_names = ["visible", "hidden", "captured", "confined", "confined_hidden"]
+	var mode_int: int = Input.mouse_mode
+	var mode_str: String = mode_names[mode_int] if mode_int < mode_names.size() else str(mode_int)
+	_send_response({"success": true, "mode": mode_str, "mode_int": mode_int})
+
+
+func _cmd_get_multiplayer_peer_id(params: Dictionary) -> void:
+	_send_response({"success": true, "peer_id": multiplayer.get_unique_id()})
+
+
+func _cmd_is_multiplayer_server(params: Dictionary) -> void:
+	_send_response({"success": true, "is_server": multiplayer.is_server()})
+
+
+func _cmd_get_network_peer_count(params: Dictionary) -> void:
+	_send_response({"success": true, "count": multiplayer.get_peers().size()})
+
+
+func _cmd_set_node_multiplayer_authority(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var peer_id: int = params.get("peer_id", 1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	node.set_multiplayer_authority(peer_id)
+	_send_response({"success": true, "node_path": node_path, "peer_id": peer_id})
+
+
+func _cmd_get_node_multiplayer_authority(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	_send_response({"success": true, "authority": node.get_multiplayer_authority(), "is_authority": node.is_multiplayer_authority()})
+
+
+func _cmd_rpc_call(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var method_name: String = params.get("method_name", "")
+	var call_args: Array = params.get("args", [])
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	node.rpc(method_name, call_args)
+	_send_response({"success": true, "method": method_name, "node_path": node_path})
+
+
+func _cmd_broadcast_to_group(params: Dictionary) -> void:
+	var group_name: String = params.get("group_name", "")
+	var method_name: String = params.get("method_name", "")
+	if group_name.is_empty() or method_name.is_empty():
+		_send_response({"error": "group_name and method_name are required"})
+		return
+	get_tree().call_group(group_name, method_name)
+	_send_response({"success": true, "group": group_name, "method": method_name})
 
 
 func _exit_tree() -> void:
