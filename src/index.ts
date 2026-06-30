@@ -9,7 +9,7 @@
 
 import { fileURLToPath } from 'url';
 import { join, dirname, basename, normalize } from 'path';
-import { existsSync, readdirSync, readFileSync, writeFileSync, copyFileSync, unlinkSync, mkdirSync, renameSync } from 'fs';
+import { existsSync, readdirSync, readFileSync, writeFileSync, copyFileSync, unlinkSync, mkdirSync, renameSync, statSync } from 'fs';
 import { spawn, execFile } from 'child_process';
 import { promisify } from 'util';
 import { createConnection, Socket } from 'net';
@@ -13136,6 +13136,193 @@ class GodotServer {
           required: [],
         },
       },
+      {
+        name: 'set_vehicle_steering',
+        description: 'Set the steering on a VehicleBody3D in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path of the VehicleBody3D.' },
+            steering: { type: 'number', description: 'Steering angle (default 0).' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_vehicle_brake',
+        description: 'Set the brake force on a VehicleBody3D in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path of the VehicleBody3D.' },
+            brake: { type: 'number', description: 'Brake force (default 0).' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_audio_bus_count',
+        description: 'Get the number of audio buses in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'get_audio_bus_name',
+        description: 'Get the name of an audio bus by index in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            busIndex: { type: 'number', description: 'Bus index (default 0).' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'set_audio_bus_volume_db',
+        description: 'Set the volume dB of an audio bus in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            busName: { type: 'string', description: 'Name of the audio bus.' },
+            volumeDb: { type: 'number', description: 'Volume in dB (default 0).' },
+          },
+          required: ['busName'],
+        },
+      },
+      {
+        name: 'get_audio_bus_volume_db',
+        description: 'Get the volume dB of an audio bus in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            busName: { type: 'string', description: 'Name of the audio bus.' },
+          },
+          required: ['busName'],
+        },
+      },
+      {
+        name: 'set_audio_bus_muted',
+        description: 'Mute or unmute an audio bus in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            busName: { type: 'string', description: 'Name of the audio bus.' },
+            muted: { type: 'boolean', description: 'True to mute, false to unmute (default true).' },
+          },
+          required: ['busName'],
+        },
+      },
+      {
+        name: 'is_audio_bus_muted',
+        description: 'Check if an audio bus is muted in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            busName: { type: 'string', description: 'Name of the audio bus.' },
+          },
+          required: ['busName'],
+        },
+      },
+      {
+        name: 'set_audio_stream_player_bus',
+        description: 'Set the bus on an AudioStreamPlayer in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path of the AudioStreamPlayer.' },
+            busName: { type: 'string', description: 'Name of the audio bus to assign.' },
+          },
+          required: ['nodePath', 'busName'],
+        },
+      },
+      {
+        name: 'create_gdscript_resource',
+        description: 'Create a GDScript resource file from code.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Godot project path.' },
+            scriptPath: { type: 'string', description: 'res:// path for the new script file.' },
+            code: { type: 'string', description: 'GDScript source code.' },
+          },
+          required: ['projectPath', 'scriptPath'],
+        },
+      },
+      {
+        name: 'list_project_gdscript_files',
+        description: 'List all GDScript files in a Godot project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Godot project path.' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'list_project_shaders_glsl',
+        description: 'List all GLSL shader files in a Godot project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Godot project path.' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_project_directory_structure',
+        description: 'Get top-level directory structure of a project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Godot project path.' },
+            maxDepth: { type: 'number', description: 'Max scan depth (default 2).' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_file_content',
+        description: 'Read the content of a text file in a project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Godot project path.' },
+            filePath: { type: 'string', description: 'res:// or relative path to the file.' },
+          },
+          required: ['projectPath', 'filePath'],
+        },
+      },
+      {
+        name: 'write_file_content',
+        description: 'Write content to a file in the project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Godot project path.' },
+            filePath: { type: 'string', description: 'res:// or relative path to the file.' },
+            content: { type: 'string', description: 'Content to write.' },
+          },
+          required: ['projectPath', 'filePath', 'content'],
+        },
+      },
+      {
+        name: 'copy_file',
+        description: 'Copy a file within the Godot project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Godot project path.' },
+            sourcePath: { type: 'string', description: 'res:// or relative source path.' },
+            destPath: { type: 'string', description: 'res:// or relative destination path.' },
+          },
+          required: ['projectPath', 'sourcePath', 'destPath'],
+        },
+      },
       ],
     }));
 
@@ -15069,6 +15256,38 @@ class GodotServer {
           return await this.handleReloadCurrentScene(request.params.arguments);
         case 'quit_game':
           return await this.handleQuitGame(request.params.arguments);
+        case 'set_vehicle_steering':
+          return await this.handleSetVehicleSteering(request.params.arguments);
+        case 'set_vehicle_brake':
+          return await this.handleSetVehicleBrake(request.params.arguments);
+        case 'get_audio_bus_count':
+          return await this.handleGetAudioBusCount(request.params.arguments);
+        case 'get_audio_bus_name':
+          return await this.handleGetAudioBusName(request.params.arguments);
+        case 'set_audio_bus_volume_db':
+          return await this.handleSetAudioBusVolumeDb(request.params.arguments);
+        case 'get_audio_bus_volume_db':
+          return await this.handleGetAudioBusVolumeDb(request.params.arguments);
+        case 'set_audio_bus_muted':
+          return await this.handleSetAudioBusMuted(request.params.arguments);
+        case 'is_audio_bus_muted':
+          return await this.handleIsAudioBusMuted(request.params.arguments);
+        case 'set_audio_stream_player_bus':
+          return await this.handleSetAudioStreamPlayerBus(request.params.arguments);
+        case 'create_gdscript_resource':
+          return await this.handleCreateGdscriptResource(request.params.arguments);
+        case 'list_project_gdscript_files':
+          return await this.handleListProjectGdscriptFiles(request.params.arguments);
+        case 'list_project_shaders_glsl':
+          return await this.handleListProjectShadersGlsl(request.params.arguments);
+        case 'get_project_directory_structure':
+          return await this.handleGetProjectDirectoryStructure(request.params.arguments);
+        case 'get_file_content':
+          return await this.handleGetFileContent(request.params.arguments);
+        case 'write_file_content':
+          return await this.handleWriteFileContent(request.params.arguments);
+        case 'copy_file':
+          return await this.handleCopyFile(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -27030,6 +27249,158 @@ class GodotServer {
   private async handleQuitGame(args: any) {
     args = normalizeParameters(args || {});
     return this.gameCommand('quit_game', args, a => ({ exit_code: a.exitCode ?? 0 }));
+  }
+
+  private async handleSetVehicleSteering(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_vehicle_steering', args, a => ({ node_path: a.nodePath, steering: a.steering ?? 0 }));
+  }
+
+  private async handleSetVehicleBrake(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_vehicle_brake', args, a => ({ node_path: a.nodePath, brake: a.brake ?? 0 }));
+  }
+
+  private async handleGetAudioBusCount(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_audio_bus_count', args, a => ({}));
+  }
+
+  private async handleGetAudioBusName(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_audio_bus_name', args, a => ({ bus_index: a.busIndex ?? 0 }));
+  }
+
+  private async handleSetAudioBusVolumeDb(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.busName) return createErrorResponse('busName is required.');
+    return this.gameCommand('set_audio_bus_volume_db', args, a => ({ bus_name: a.busName, volume_db: a.volumeDb ?? 0 }));
+  }
+
+  private async handleGetAudioBusVolumeDb(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.busName) return createErrorResponse('busName is required.');
+    return this.gameCommand('get_audio_bus_volume_db', args, a => ({ bus_name: a.busName }));
+  }
+
+  private async handleSetAudioBusMuted(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.busName) return createErrorResponse('busName is required.');
+    return this.gameCommand('set_audio_bus_muted', args, a => ({ bus_name: a.busName, muted: a.muted ?? true }));
+  }
+
+  private async handleIsAudioBusMuted(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.busName) return createErrorResponse('busName is required.');
+    return this.gameCommand('is_audio_bus_muted', args, a => ({ bus_name: a.busName }));
+  }
+
+  private async handleSetAudioStreamPlayerBus(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.busName) return createErrorResponse('busName is required.');
+    return this.gameCommand('set_audio_stream_player_bus', args, a => ({ node_path: a.nodePath, bus_name: a.busName }));
+  }
+
+  private async handleCreateGdscriptResource(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    return this.headlessOp('create_gdscript_resource', args, a => ({
+      projectPath: a.projectPath,
+      params: { script_path: a.scriptPath, code: a.code || 'extends Resource\n' },
+    }));
+  }
+
+  private async handleListProjectGdscriptFiles(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const files = this.collectFiles(args.projectPath, ['.gd']);
+    const list = files.map(f => f.replace(args.projectPath + '/', '')).sort();
+    return { content: [{ type: 'text', text: JSON.stringify({ count: list.length, files: list }, null, 2) }] };
+  }
+
+  private async handleListProjectShadersGlsl(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const files = this.collectFiles(args.projectPath, ['.glsl']);
+    const list = files.map(f => f.replace(args.projectPath + '/', '')).sort();
+    return { content: [{ type: 'text', text: JSON.stringify({ count: list.length, files: list }, null, 2) }] };
+  }
+
+  private async handleGetProjectDirectoryStructure(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const maxDepth = args.maxDepth ?? 2;
+    function scan(dir: string, depth: number): any {
+      if (depth < 0) return null;
+      try {
+        const entries = readdirSync(dir);
+        return entries.map((e: string) => {
+          const full = dir + '/' + e;
+          try {
+            const stat = statSync(full);
+            return stat.isDirectory()
+              ? { name: e, type: 'dir', children: scan(full, depth - 1) }
+              : { name: e, type: 'file' };
+          } catch { return { name: e, type: 'unknown' }; }
+        });
+      } catch { return []; }
+    }
+    const structure = scan(args.projectPath, maxDepth);
+    return { content: [{ type: 'text', text: JSON.stringify({ success: true, structure }, null, 2) }] };
+  }
+
+  private async handleGetFileContent(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.filePath) return createErrorResponse('filePath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.filePath);
+    if (!existsSync(absPath)) return createErrorResponse(`File not found: ${args.filePath}`);
+    try {
+      const content = readFileSync(absPath, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, filePath: args.filePath, content }, null, 2) }] };
+    } catch (error: any) {
+      return createErrorResponse(`Failed to read file: ${error?.message || 'Unknown error'}`);
+    }
+  }
+
+  private async handleWriteFileContent(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.filePath) return createErrorResponse('filePath is required.');
+    if (args.content === undefined || args.content === null) return createErrorResponse('content is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.filePath);
+    try {
+      writeFileSync(absPath, args.content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, filePath: args.filePath }, null, 2) }] };
+    } catch (error: any) {
+      return createErrorResponse(`Failed to write file: ${error?.message || 'Unknown error'}`);
+    }
+  }
+
+  private async handleCopyFile(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.sourcePath) return createErrorResponse('sourcePath is required.');
+    if (!args.destPath) return createErrorResponse('destPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const srcAbs = this.resolveResPath(args.projectPath, args.sourcePath);
+    const destAbs = this.resolveResPath(args.projectPath, args.destPath);
+    if (!existsSync(srcAbs)) return createErrorResponse(`Source file not found: ${args.sourcePath}`);
+    try {
+      copyFileSync(srcAbs, destAbs);
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, sourcePath: args.sourcePath, destPath: args.destPath }, null, 2) }] };
+    } catch (error: any) {
+      return createErrorResponse(`Failed to copy file: ${error?.message || 'Unknown error'}`);
+    }
   }
 
 }

@@ -1125,6 +1125,24 @@ func _handle_command(json_str: String) -> void:
 			_cmd_reload_current_scene(params)
 		"quit_game":
 			_cmd_quit_game(params)
+		"set_vehicle_steering":
+			_cmd_set_vehicle_steering(params)
+		"set_vehicle_brake":
+			_cmd_set_vehicle_brake(params)
+		"get_audio_bus_count":
+			_cmd_get_audio_bus_count(params)
+		"get_audio_bus_name":
+			_cmd_get_audio_bus_name(params)
+		"set_audio_bus_volume_db":
+			_cmd_set_audio_bus_volume_db(params)
+		"get_audio_bus_volume_db":
+			_cmd_get_audio_bus_volume_db(params)
+		"set_audio_bus_muted":
+			_cmd_set_audio_bus_muted(params)
+		"is_audio_bus_muted":
+			_cmd_is_audio_bus_muted(params)
+		"set_audio_stream_player_bus":
+			_cmd_set_audio_stream_player_bus(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -10267,6 +10285,85 @@ func _cmd_quit_game(params: Dictionary) -> void:
 	var exit_code: int = params.get("exit_code", 0)
 	_send_response({"success": true, "exit_code": exit_code})
 	get_tree().quit(exit_code)
+
+func _cmd_set_vehicle_steering(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var steering: float = params.get("steering", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is VehicleBody3D:
+		_send_response({"error": "VehicleBody3D not found: " + node_path})
+		return
+	(node as VehicleBody3D).steering = steering
+	_send_response({"success": true, "steering": steering})
+
+func _cmd_set_vehicle_brake(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var brake: float = params.get("brake", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is VehicleBody3D:
+		_send_response({"error": "VehicleBody3D not found: " + node_path})
+		return
+	(node as VehicleBody3D).brake = brake
+	_send_response({"success": true, "brake": brake})
+
+func _cmd_get_audio_bus_count(params: Dictionary) -> void:
+	_send_response({"success": true, "bus_count": AudioServer.bus_count})
+
+func _cmd_get_audio_bus_name(params: Dictionary) -> void:
+	var bus_index: int = params.get("bus_index", 0)
+	if bus_index >= AudioServer.bus_count:
+		_send_response({"error": "Bus index out of range: " + str(bus_index)})
+		return
+	_send_response({"success": true, "bus_index": bus_index, "name": AudioServer.get_bus_name(bus_index)})
+
+func _cmd_set_audio_bus_volume_db(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "")
+	var volume_db: float = params.get("volume_db", 0.0)
+	var bus_idx = AudioServer.get_bus_index(bus_name)
+	if bus_idx == -1:
+		_send_response({"error": "Audio bus not found: " + bus_name})
+		return
+	AudioServer.set_bus_volume_db(bus_idx, volume_db)
+	_send_response({"success": true, "bus_name": bus_name, "volume_db": volume_db})
+
+func _cmd_get_audio_bus_volume_db(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "")
+	var bus_idx = AudioServer.get_bus_index(bus_name)
+	if bus_idx == -1:
+		_send_response({"error": "Audio bus not found: " + bus_name})
+		return
+	_send_response({"success": true, "bus_name": bus_name, "volume_db": AudioServer.get_bus_volume_db(bus_idx), "muted": AudioServer.is_bus_mute(bus_idx)})
+
+func _cmd_set_audio_bus_muted(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "")
+	var muted: bool = params.get("muted", true)
+	var bus_idx = AudioServer.get_bus_index(bus_name)
+	if bus_idx == -1:
+		_send_response({"error": "Audio bus not found: " + bus_name})
+		return
+	AudioServer.set_bus_mute(bus_idx, muted)
+	_send_response({"success": true, "bus_name": bus_name, "muted": muted})
+
+func _cmd_is_audio_bus_muted(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "")
+	var bus_idx = AudioServer.get_bus_index(bus_name)
+	if bus_idx == -1:
+		_send_response({"error": "Audio bus not found: " + bus_name})
+		return
+	_send_response({"success": true, "bus_name": bus_name, "muted": AudioServer.is_bus_mute(bus_idx)})
+
+func _cmd_set_audio_stream_player_bus(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var bus_name: String = params.get("bus_name", "Master")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node.get("bus") != null:
+		node.set("bus", StringName(bus_name))
+		_send_response({"success": true, "bus_name": bus_name})
+	else:
+		_send_response({"error": "Node does not have bus property: " + node.get_class()})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()
