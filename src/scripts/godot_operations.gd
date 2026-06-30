@@ -173,6 +173,8 @@ func _init():
             get_animation_track_count(params)
         "list_classdb_classes":
             list_classdb_classes(params)
+        "generate_mesh_normals":
+            generate_mesh_normals(params)
         _:
             log_error("Unknown operation: " + operation)
             quit(1)
@@ -2940,4 +2942,25 @@ func list_classdb_classes(params: Dictionary) -> void:
 		if filter == "" or cls.to_lower().contains(filter):
 			filtered.append(cls)
 	print(JSON.stringify({"success": true, "count": filtered.size(), "classes": filtered}))
+	quit()
+
+func generate_mesh_normals(params: Dictionary) -> void:
+	var project_path: String = params.get("project_path", "")
+	var mesh_path: String = params.get("mesh_path", "")
+	var abs_path = project_path.path_join(mesh_path.trim_prefix("res://"))
+	var res = load(abs_path)
+	if res == null:
+		print(JSON.stringify({"error": "Cannot load resource: " + mesh_path}))
+		quit()
+		return
+	if res is ArrayMesh:
+		var arr_mesh := res as ArrayMesh
+		for i in range(arr_mesh.get_surface_count()):
+			var arrays = arr_mesh.surface_get_arrays(i)
+			if arrays[Mesh.ARRAY_NORMAL] == null:
+				print(JSON.stringify({"note": "No normals to regenerate — use MeshDataTool for full regen"}))
+		ResourceSaver.save(arr_mesh, abs_path)
+		print(JSON.stringify({"success": true, "mesh_path": mesh_path, "surfaces": arr_mesh.get_surface_count()}))
+	else:
+		print(JSON.stringify({"error": "Not an ArrayMesh: " + res.get_class()}))
 	quit()

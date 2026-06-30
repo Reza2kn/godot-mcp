@@ -899,6 +899,20 @@ func _handle_command(json_str: String) -> void:
 			_cmd_wait_for_signal(params)
 		"get_theme_color":
 			_cmd_get_theme_color(params)
+		"set_spot_light_angle":
+			_cmd_set_spot_light_angle(params)
+		"set_light_shadow":
+			_cmd_set_light_shadow(params)
+		"set_light_range":
+			_cmd_set_light_range(params)
+		"set_mesh_surface_material":
+			_cmd_set_mesh_surface_material(params)
+		"get_mesh_surface_count":
+			_cmd_get_mesh_surface_count(params)
+		"get_node_2d_position":
+			_cmd_get_node_2d_position(params)
+		"set_node_2d_position":
+			_cmd_set_node_2d_position(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -8765,6 +8779,87 @@ func _cmd_get_theme_color(params: Dictionary) -> void:
 	else:
 		color = ctrl.get_theme_color(color_name, theme_type)
 	_send_response({"success": true, "color_name": color_name, "color": {"r": color.r, "g": color.g, "b": color.b, "a": color.a}, "html": color.to_html()})
+
+func _cmd_set_spot_light_angle(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var angle: float = params.get("angle", 45.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is SpotLight3D:
+		_send_response({"error": "SpotLight3D not found: " + node_path})
+		return
+	(node as SpotLight3D).spot_angle = angle
+	_send_response({"success": true, "spot_angle": angle})
+
+func _cmd_set_light_shadow(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var shadow_enabled: bool = params.get("shadow_enabled", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Light3D:
+		_send_response({"error": "Light3D not found: " + node_path})
+		return
+	(node as Light3D).shadow_enabled = shadow_enabled
+	_send_response({"success": true, "shadow_enabled": shadow_enabled})
+
+func _cmd_set_light_range(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var range_val: float = params.get("range", 5.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is OmniLight3D:
+		(node as OmniLight3D).omni_range = range_val
+		_send_response({"success": true, "omni_range": range_val})
+	elif node is SpotLight3D:
+		(node as SpotLight3D).spot_range = range_val
+		_send_response({"success": true, "spot_range": range_val})
+	else:
+		_send_response({"error": "Not an OmniLight3D or SpotLight3D: " + node.get_class()})
+
+func _cmd_set_mesh_surface_material(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var surface_idx: int = params.get("surface_idx", 0)
+	var material_path: String = params.get("material_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var mat = load(material_path)
+	if mat == null:
+		_send_response({"error": "Cannot load material: " + material_path})
+		return
+	(node as MeshInstance3D).set_surface_override_material(surface_idx, mat)
+	_send_response({"success": true, "surface_idx": surface_idx, "material_path": material_path})
+
+func _cmd_get_mesh_surface_count(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var mi := node as MeshInstance3D
+	var count = mi.mesh.get_surface_count() if mi.mesh != null else 0
+	_send_response({"success": true, "surface_count": count, "mesh_class": mi.mesh.get_class() if mi.mesh != null else null})
+
+func _cmd_get_node_2d_position(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node2D:
+		_send_response({"error": "Node2D not found: " + node_path})
+		return
+	var n2d := node as Node2D
+	_send_response({"success": true, "global_position": {"x": n2d.global_position.x, "y": n2d.global_position.y}, "position": {"x": n2d.position.x, "y": n2d.position.y}, "rotation": n2d.rotation, "scale": {"x": n2d.scale.x, "y": n2d.scale.y}})
+
+func _cmd_set_node_2d_position(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node2D:
+		_send_response({"error": "Node2D not found: " + node_path})
+		return
+	(node as Node2D).global_position = Vector2(x, y)
+	_send_response({"success": true, "global_position": {"x": x, "y": y}})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()

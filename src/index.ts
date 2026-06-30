@@ -11578,6 +11578,253 @@ class GodotServer {
           required: ['nodePath', 'colorName'],
         },
       },
+      {
+        name: 'add_spot_light_3d_to_scene',
+        description: 'Add a SpotLight3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name of the new node (default SpotLight3D).' },
+            parentNodePath: { type: 'string', description: 'Path of parent node (default .).' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_omni_light_3d_to_scene',
+        description: 'Add an OmniLight3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name of the new node (default OmniLight3D).' },
+            parentNodePath: { type: 'string', description: 'Path of parent node (default .).' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_directional_light_3d_to_scene',
+        description: 'Add a DirectionalLight3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name of the new node (default DirectionalLight3D).' },
+            parentNodePath: { type: 'string', description: 'Path of parent node (default .).' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_csg_sphere_to_scene',
+        description: 'Add a CSGSphere3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name of the new node (default CSGSphere3D).' },
+            parentNodePath: { type: 'string', description: 'Path of parent node (default .).' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_csg_box_to_scene',
+        description: 'Add a CSGBox3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name of the new node (default CSGBox3D).' },
+            parentNodePath: { type: 'string', description: 'Path of parent node (default .).' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_csg_cylinder_to_scene',
+        description: 'Add a CSGCylinder3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name of the new node (default CSGCylinder3D).' },
+            parentNodePath: { type: 'string', description: 'Path of parent node (default .).' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_csg_torus_to_scene',
+        description: 'Add a CSGTorus3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name of the new node (default CSGTorus3D).' },
+            parentNodePath: { type: 'string', description: 'Path of parent node (default .).' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_csg_combiner_to_scene',
+        description: 'Add a CSGCombiner3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name of the new node (default CSGCombiner3D).' },
+            parentNodePath: { type: 'string', description: 'Path of parent node (default .).' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_animated_sprite_3d_to_scene',
+        description: 'Add an AnimatedSprite3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name of the new node (default AnimatedSprite3D).' },
+            parentNodePath: { type: 'string', description: 'Path of parent node (default .).' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_billboard_3d_to_scene',
+        description: 'Add a billboard Sprite3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name of the new node (default Billboard3D).' },
+            parentNodePath: { type: 'string', description: 'Path of parent node (default .).' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'set_spot_light_angle',
+        description: 'Set the spot_angle on a SpotLight3D in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the SpotLight3D node.' },
+            angle: { type: 'number', description: 'Spot angle in degrees (e.g. 45.0).' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_light_shadow',
+        description: 'Enable or disable shadows on a Light3D in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Light3D node.' },
+            shadowEnabled: { type: 'boolean', description: 'Whether shadows are enabled.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_light_range',
+        description: 'Set the range on a Light3D node in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Light3D node.' },
+            range: { type: 'number', description: 'Light range value (e.g. 5.0).' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_mesh_surface_material',
+        description: 'Set surface material on a MeshInstance3D in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the MeshInstance3D node.' },
+            surfaceIdx: { type: 'integer', description: 'Surface index (default 0).' },
+            materialPath: { type: 'string', description: 'res:// path to the material resource.' },
+          },
+          required: ['nodePath', 'materialPath'],
+        },
+      },
+      {
+        name: 'get_mesh_surface_count',
+        description: 'Get the surface count of a MeshInstance3D in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the MeshInstance3D node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'generate_mesh_normals',
+        description: 'Regenerate normals on a mesh resource (headless).',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            meshPath: { type: 'string', description: 'res:// path to the mesh resource.' },
+          },
+          required: ['projectPath', 'meshPath'],
+        },
+      },
+      {
+        name: 'list_project_meshes',
+        description: 'Find all mesh files in the project directory.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_node_2d_position',
+        description: 'Get the global position of a Node2D in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Node2D node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_node_2d_position',
+        description: 'Set the global position of a Node2D in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Node2D node.' },
+            x: { type: 'number', description: 'Global x position.' },
+            y: { type: 'number', description: 'Global y position.' },
+          },
+          required: ['nodePath'],
+        },
+      },
       ],
     }));
 
@@ -13253,6 +13500,44 @@ class GodotServer {
           return await this.handleWaitForSignal(request.params.arguments);
         case 'get_editor_theme_color':
           return await this.handleGetEditorThemeColor(request.params.arguments);
+        case 'add_spot_light_3d_to_scene':
+          return await this.handleAddSpotLight3dToScene(request.params.arguments);
+        case 'add_omni_light_3d_to_scene':
+          return await this.handleAddOmniLight3dToScene(request.params.arguments);
+        case 'add_directional_light_3d_to_scene':
+          return await this.handleAddDirectionalLight3dToScene(request.params.arguments);
+        case 'add_csg_sphere_to_scene':
+          return await this.handleAddCsgSphereToScene(request.params.arguments);
+        case 'add_csg_box_to_scene':
+          return await this.handleAddCsgBoxToScene(request.params.arguments);
+        case 'add_csg_cylinder_to_scene':
+          return await this.handleAddCsgCylinderToScene(request.params.arguments);
+        case 'add_csg_torus_to_scene':
+          return await this.handleAddCsgTorusToScene(request.params.arguments);
+        case 'add_csg_combiner_to_scene':
+          return await this.handleAddCsgCombinerToScene(request.params.arguments);
+        case 'add_animated_sprite_3d_to_scene':
+          return await this.handleAddAnimatedSprite3dToScene(request.params.arguments);
+        case 'add_billboard_3d_to_scene':
+          return await this.handleAddBillboard3dToScene(request.params.arguments);
+        case 'set_spot_light_angle':
+          return await this.handleSetSpotLightAngle(request.params.arguments);
+        case 'set_light_shadow':
+          return await this.handleSetLightShadow(request.params.arguments);
+        case 'set_light_range':
+          return await this.handleSetLightRange(request.params.arguments);
+        case 'set_mesh_surface_material':
+          return await this.handleSetMeshSurfaceMaterial(request.params.arguments);
+        case 'get_mesh_surface_count':
+          return await this.handleGetMeshSurfaceCount(request.params.arguments);
+        case 'generate_mesh_normals':
+          return await this.handleGenerateMeshNormals(request.params.arguments);
+        case 'list_project_meshes':
+          return await this.handleListProjectMeshes(request.params.arguments);
+        case 'get_node_2d_position':
+          return await this.handleGetNode2dPosition(request.params.arguments);
+        case 'set_node_2d_position':
+          return await this.handleSetNode2dPosition(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -24207,6 +24492,136 @@ class GodotServer {
     args = normalizeParameters(args || {});
     if (!args.nodePath || !args.colorName) return createErrorResponse('nodePath and colorName are required.');
     return this.gameCommand('get_theme_color', args, a => ({ node_path: a.nodePath, color_name: a.colorName, theme_type: a.themeType || '' }));
+  }
+
+  private async handleAddSpotLight3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_type: 'SpotLight3D', node_name: a.nodeName ?? 'SpotLight3D', parent_node_path: a.parentNodePath ?? '.' } }));
+  }
+
+  private async handleAddOmniLight3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_type: 'OmniLight3D', node_name: a.nodeName ?? 'OmniLight3D', parent_node_path: a.parentNodePath ?? '.' } }));
+  }
+
+  private async handleAddDirectionalLight3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_type: 'DirectionalLight3D', node_name: a.nodeName ?? 'DirectionalLight3D', parent_node_path: a.parentNodePath ?? '.' } }));
+  }
+
+  private async handleAddCsgSphereToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_type: 'CSGSphere3D', node_name: a.nodeName ?? 'CSGSphere3D', parent_node_path: a.parentNodePath ?? '.' } }));
+  }
+
+  private async handleAddCsgBoxToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_type: 'CSGBox3D', node_name: a.nodeName ?? 'CSGBox3D', parent_node_path: a.parentNodePath ?? '.' } }));
+  }
+
+  private async handleAddCsgCylinderToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_type: 'CSGCylinder3D', node_name: a.nodeName ?? 'CSGCylinder3D', parent_node_path: a.parentNodePath ?? '.' } }));
+  }
+
+  private async handleAddCsgTorusToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_type: 'CSGTorus3D', node_name: a.nodeName ?? 'CSGTorus3D', parent_node_path: a.parentNodePath ?? '.' } }));
+  }
+
+  private async handleAddCsgCombinerToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_type: 'CSGCombiner3D', node_name: a.nodeName ?? 'CSGCombiner3D', parent_node_path: a.parentNodePath ?? '.' } }));
+  }
+
+  private async handleAddAnimatedSprite3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_type: 'AnimatedSprite3D', node_name: a.nodeName ?? 'AnimatedSprite3D', parent_node_path: a.parentNodePath ?? '.' } }));
+  }
+
+  private async handleAddBillboard3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_type: 'Sprite3D', node_name: a.nodeName ?? 'Billboard3D', parent_node_path: a.parentNodePath ?? '.' } }));
+  }
+
+  private async handleSetSpotLightAngle(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_spot_light_angle', args, a => ({ node_path: a.nodePath, angle: a.angle ?? 45.0 }));
+  }
+
+  private async handleSetLightShadow(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_light_shadow', args, a => ({ node_path: a.nodePath, shadow_enabled: a.shadowEnabled ?? true }));
+  }
+
+  private async handleSetLightRange(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_light_range', args, a => ({ node_path: a.nodePath, range: a.range ?? 5.0 }));
+  }
+
+  private async handleSetMeshSurfaceMaterial(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.materialPath) return createErrorResponse('materialPath is required.');
+    return this.gameCommand('set_mesh_surface_material', args, a => ({ node_path: a.nodePath, surface_idx: a.surfaceIdx ?? 0, material_path: a.materialPath }));
+  }
+
+  private async handleGetMeshSurfaceCount(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_mesh_surface_count', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGenerateMeshNormals(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.meshPath) return createErrorResponse('meshPath is required.');
+    return this.headlessOp('generate_mesh_normals', args, a => ({ projectPath: a.projectPath, params: { mesh_path: a.meshPath } }));
+  }
+
+  private async handleListProjectMeshes(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const meshes = this.collectFiles(args.projectPath, ['.mesh', '.meshlib', '.tres', '.res']);
+    const filtered = meshes.filter(f => f.endsWith('.mesh') || f.endsWith('.meshlib') || f.toLowerCase().includes('mesh'));
+    const items = filtered.map(f => ({ file: f.replace(args.projectPath + '/', ''), resPath: 'res://' + f.replace(args.projectPath + '/', '') }));
+    return { content: [{ type: 'text', text: JSON.stringify({ count: items.length, meshes: items }, null, 2) }] };
+  }
+
+  private async handleGetNode2dPosition(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_2d_position', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetNode2dPosition(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_node_2d_position', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0 }));
   }
 
 }
