@@ -95,6 +95,14 @@ class GodotServer {
   private lastErrorIndex: number = 0;
   private lastLogIndex: number = 0;
   private readonly INTERACTION_PORT = 9090;
+  private readonly EDITOR_PORT = 9091;
+  private editorConnection: GameConnection = {
+    socket: null,
+    connected: false,
+    responseBuffer: '',
+    pendingResolve: null,
+    projectPath: null,
+  };
   private readonly AUTOLOAD_NAME = 'McpInteractionServer';
 
   constructor(config?: GodotServerConfig) {
@@ -519,6 +527,24 @@ class GodotServer {
     });
   }
 
+  private async sendEditorCommand(command: string, params: Record<string, any> = {}, timeoutMs: number = 10000): Promise<any> {
+    if (!this.editorConnection.connected || !this.editorConnection.socket) {
+      throw new Error('Not connected to Godot editor. Use connect_to_godot_editor first.');
+    }
+    const payload = JSON.stringify({ command, params }) + '\n';
+    return new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        this.editorConnection.pendingResolve = null;
+        reject(new Error(`Editor command '${command}' timed out after ${timeoutMs / 1000}s`));
+      }, timeoutMs);
+      this.editorConnection.pendingResolve = (response: any) => {
+        clearTimeout(timeout);
+        resolve(response);
+      };
+      this.editorConnection.socket!.write(payload);
+    });
+  }
+
   /**
    * Clean up resources when shutting down
    */
@@ -548,6 +574,23 @@ class GodotServer {
     args = normalizeParameters(args || {});
     try {
       const response = await this.sendGameCommand(name, argsFn(args), timeoutMs);
+      if (response.error) return createErrorResponse(`${name} failed: ${response.error}`);
+      return { content: [{ type: 'text', text: JSON.stringify(response, null, 2) }] };
+    } catch (error: any) {
+      return createErrorResponse(`${name} failed: ${error?.message || 'Unknown error'}`);
+    }
+  }
+
+  private async editorCommand(
+    name: string,
+    args: any,
+    argsFn: (a: any) => Record<string, any>,
+    timeoutMs?: number
+  ): Promise<any> {
+    if (!this.editorConnection.connected) return createErrorResponse('Not connected to Godot editor. Use connect_to_godot_editor first.');
+    args = normalizeParameters(args || {});
+    try {
+      const response = await this.sendEditorCommand(name, argsFn(args), timeoutMs);
       if (response.error) return createErrorResponse(`${name} failed: ${response.error}`);
       return { content: [{ type: 'text', text: JSON.stringify(response, null, 2) }] };
     } catch (error: any) {
@@ -16750,6 +16793,127 @@ class GodotServer {
             required: ['projectPath', 'oggPath', 'savePath'],
           },
         },
+      // ── Editor tools ──────────────────────────────────────────────────────────
+      {
+        name: 'connect_to_godot_editor',
+        description: 'Connect to Godot editor plugin on port 9091.',
+        inputSchema: { type: 'object', properties: {} },
+      },
+      {
+        name: 'disconnect_from_godot_editor',
+        description: 'Disconnect from the Godot editor plugin.',
+        inputSchema: { type: 'object', properties: {} },
+      },
+      {
+        name: 'editor_get_scene_info',
+        description: 'Get info about the currently open scene in editor.',
+        inputSchema: { type: 'object', properties: {} },
+      },
+      {
+        name: 'editor_get_selected_node',
+        description: 'Get the currently selected node in Godot editor.',
+        inputSchema: { type: 'object', properties: {} },
+      },
+      {
+        name: 'editor_select_node',
+        description: 'Select a node by path in the Godot editor.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'editor_add_node',
+        description: 'Add a node to the scene in Godot editor.',
+        inputSchema: { type: 'object', properties: { nodeType: { type: 'string' }, nodeName: { type: 'string' }, parentPath: { type: 'string' } }, required: ['nodeType'] },
+      },
+      {
+        name: 'editor_delete_node',
+        description: 'Delete the selected node in Godot editor.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } } },
+      },
+      {
+        name: 'editor_duplicate_node',
+        description: 'Duplicate a node in the Godot editor.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } } },
+      },
+      {
+        name: 'editor_move_node',
+        description: 'Move a node to a new parent in Godot editor.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, newParentPath: { type: 'string' } }, required: ['nodePath', 'newParentPath'] },
+      },
+      {
+        name: 'editor_set_node_property',
+        description: 'Set a node property value in Godot editor.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, property: { type: 'string' }, value: { type: 'string' } }, required: ['nodePath', 'property', 'value'] },
+      },
+      {
+        name: 'editor_get_node_property',
+        description: 'Get a node property value in Godot editor.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, property: { type: 'string' } }, required: ['nodePath', 'property'] },
+      },
+      {
+        name: 'editor_open_scene',
+        description: 'Open a scene file in the Godot editor.',
+        inputSchema: { type: 'object', properties: { scenePath: { type: 'string' } }, required: ['scenePath'] },
+      },
+      {
+        name: 'editor_save_scene',
+        description: 'Save the current scene in Godot editor.',
+        inputSchema: { type: 'object', properties: {} },
+      },
+      {
+        name: 'editor_create_scene',
+        description: 'Create a new scene in Godot editor.',
+        inputSchema: { type: 'object', properties: { rootType: { type: 'string' }, sceneName: { type: 'string' } } },
+      },
+      {
+        name: 'editor_undo',
+        description: 'Undo the last action in Godot editor.',
+        inputSchema: { type: 'object', properties: {} },
+      },
+      {
+        name: 'editor_redo',
+        description: 'Redo the last undone action in Godot editor.',
+        inputSchema: { type: 'object', properties: {} },
+      },
+      {
+        name: 'editor_get_filesystem_files',
+        description: 'List files in the Godot editor filesystem.',
+        inputSchema: { type: 'object', properties: { path: { type: 'string' } } },
+      },
+      {
+        name: 'editor_focus_node',
+        description: 'Focus/center the viewport on a node in editor.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'editor_get_scene_tree',
+        description: 'Get the full scene tree from Godot editor.',
+        inputSchema: { type: 'object', properties: {} },
+      },
+      {
+        name: 'editor_run_scene',
+        description: 'Run the current scene from Godot editor.',
+        inputSchema: { type: 'object', properties: {} },
+      },
+      {
+        name: 'editor_stop_scene',
+        description: 'Stop the running scene from Godot editor.',
+        inputSchema: { type: 'object', properties: {} },
+      },
+      {
+        name: 'editor_create_script',
+        description: 'Create a new GDScript file in Godot editor.',
+        inputSchema: { type: 'object', properties: { scriptPath: { type: 'string' }, content: { type: 'string' } }, required: ['scriptPath'] },
+      },
+      {
+        name: 'editor_attach_script',
+        description: 'Attach a script to a node in Godot editor.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['nodePath', 'scriptPath'] },
+      },
+      {
+        name: 'editor_reimport_file',
+        description: 'Reimport a file in the Godot editor filesystem.',
+        inputSchema: { type: 'object', properties: { filePath: { type: 'string' } }, required: ['filePath'] },
+      },
       ],
     }));
 
@@ -19029,6 +19193,55 @@ class GodotServer {
           return await this.handleCreateStandardMaterial3d(request.params.arguments);
         case 'create_audio_stream_ogg':
           return await this.handleCreateAudioStreamOgg(request.params.arguments);
+        // ── Editor tool cases ──────────────────────────────────────────────────
+        case 'connect_to_godot_editor':
+          return await this.handleConnectToGodotEditor(request.params.arguments);
+        case 'disconnect_from_godot_editor':
+          return await this.handleDisconnectFromGodotEditor(request.params.arguments);
+        case 'editor_get_scene_info':
+          return await this.handleEditorGetSceneInfo(request.params.arguments);
+        case 'editor_get_selected_node':
+          return await this.handleEditorGetSelectedNode(request.params.arguments);
+        case 'editor_select_node':
+          return await this.handleEditorSelectNode(request.params.arguments);
+        case 'editor_add_node':
+          return await this.handleEditorAddNode(request.params.arguments);
+        case 'editor_delete_node':
+          return await this.handleEditorDeleteNode(request.params.arguments);
+        case 'editor_duplicate_node':
+          return await this.handleEditorDuplicateNode(request.params.arguments);
+        case 'editor_move_node':
+          return await this.handleEditorMoveNode(request.params.arguments);
+        case 'editor_set_node_property':
+          return await this.handleEditorSetNodeProperty(request.params.arguments);
+        case 'editor_get_node_property':
+          return await this.handleEditorGetNodeProperty(request.params.arguments);
+        case 'editor_open_scene':
+          return await this.handleEditorOpenScene(request.params.arguments);
+        case 'editor_save_scene':
+          return await this.handleEditorSaveScene(request.params.arguments);
+        case 'editor_create_scene':
+          return await this.handleEditorCreateScene(request.params.arguments);
+        case 'editor_undo':
+          return await this.handleEditorUndo(request.params.arguments);
+        case 'editor_redo':
+          return await this.handleEditorRedo(request.params.arguments);
+        case 'editor_get_filesystem_files':
+          return await this.handleEditorGetFilesystemFiles(request.params.arguments);
+        case 'editor_focus_node':
+          return await this.handleEditorFocusNode(request.params.arguments);
+        case 'editor_get_scene_tree':
+          return await this.handleEditorGetSceneTree(request.params.arguments);
+        case 'editor_run_scene':
+          return await this.handleEditorRunScene(request.params.arguments);
+        case 'editor_stop_scene':
+          return await this.handleEditorStopScene(request.params.arguments);
+        case 'editor_create_script':
+          return await this.handleEditorCreateScript(request.params.arguments);
+        case 'editor_attach_script':
+          return await this.handleEditorAttachScript(request.params.arguments);
+        case 'editor_reimport_file':
+          return await this.handleEditorReimportFile(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -19321,6 +19534,57 @@ class GodotServer {
           );
       }
     });
+  }
+
+  private async handleConnectToGodotEditor(_args: any) {
+    if (this.editorConnection.connected) return { content: [{ type: 'text', text: 'Already connected to Godot editor.' }] };
+    return new Promise<any>((resolve) => {
+      const socket = createConnection({ port: this.EDITOR_PORT, host: '127.0.0.1' });
+      socket.on('connect', () => {
+        this.editorConnection.socket = socket;
+        this.editorConnection.connected = true;
+        this.editorConnection.responseBuffer = '';
+        resolve({ content: [{ type: 'text', text: 'Connected to Godot editor on port 9091.' }] });
+      });
+      socket.on('data', (data: Buffer) => {
+        this.editorConnection.responseBuffer += data.toString();
+        while (this.editorConnection.responseBuffer.includes('\n')) {
+          const newlinePos = this.editorConnection.responseBuffer.indexOf('\n');
+          const line = this.editorConnection.responseBuffer.substring(0, newlinePos).trim();
+          this.editorConnection.responseBuffer = this.editorConnection.responseBuffer.substring(newlinePos + 1);
+          if (line.length > 0 && this.editorConnection.pendingResolve) {
+            try {
+              const parsed = JSON.parse(line);
+              const resolver = this.editorConnection.pendingResolve;
+              this.editorConnection.pendingResolve = null;
+              resolver(parsed);
+            } catch {}
+          }
+        }
+      });
+      socket.on('close', () => {
+        this.editorConnection.connected = false;
+        this.editorConnection.socket = null;
+        if (this.editorConnection.pendingResolve) {
+          this.editorConnection.pendingResolve({ error: 'Connection closed' });
+          this.editorConnection.pendingResolve = null;
+        }
+      });
+      socket.on('error', (err: any) => {
+        this.editorConnection.connected = false;
+        this.editorConnection.socket = null;
+        resolve(createErrorResponse(`Failed to connect to editor: ${err.message}`));
+      });
+    });
+  }
+
+  private async handleDisconnectFromGodotEditor(_args: any) {
+    if (this.editorConnection.socket) {
+      this.editorConnection.socket.destroy();
+      this.editorConnection.socket = null;
+    }
+    this.editorConnection.connected = false;
+    return { content: [{ type: 'text', text: 'Disconnected from Godot editor.' }] };
   }
 
   /**
@@ -33444,6 +33708,120 @@ class GodotServer {
     if (!args.oggPath) return createErrorResponse('oggPath is required.');
     if (!args.savePath) return createErrorResponse('savePath is required.');
     return this.headlessOp('create_audio_stream_ogg', args, a => ({ projectPath: a.projectPath, params: { ogg_path: a.oggPath ?? '', save_path: a.savePath ?? 'res://audio.ogg' } }));
+  }
+
+  // ── Editor handler methods ────────────────────────────────────────────────
+
+  private async handleEditorGetSceneInfo(_args: any) {
+    return this.editorCommand('get_scene_info', {}, _a => ({}));
+  }
+
+  private async handleEditorGetSelectedNode(_args: any) {
+    return this.editorCommand('get_selected_node', {}, _a => ({}));
+  }
+
+  private async handleEditorSelectNode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.editorCommand('select_node', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleEditorAddNode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodeType) return createErrorResponse('nodeType is required.');
+    return this.editorCommand('add_node', args, a => ({ node_type: a.nodeType, node_name: a.nodeName ?? a.nodeType, parent_path: a.parentPath ?? '.' }));
+  }
+
+  private async handleEditorDeleteNode(args: any) {
+    args = normalizeParameters(args || {});
+    return this.editorCommand('delete_node', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleEditorDuplicateNode(args: any) {
+    args = normalizeParameters(args || {});
+    return this.editorCommand('duplicate_node', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleEditorMoveNode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.newParentPath) return createErrorResponse('nodePath and newParentPath are required.');
+    return this.editorCommand('move_node', args, a => ({ node_path: a.nodePath, new_parent_path: a.newParentPath }));
+  }
+
+  private async handleEditorSetNodeProperty(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.property) return createErrorResponse('nodePath and property are required.');
+    return this.editorCommand('set_node_property', args, a => ({ node_path: a.nodePath, property: a.property, value: a.value ?? '' }));
+  }
+
+  private async handleEditorGetNodeProperty(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.property) return createErrorResponse('nodePath and property are required.');
+    return this.editorCommand('get_node_property', args, a => ({ node_path: a.nodePath, property: a.property }));
+  }
+
+  private async handleEditorOpenScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    return this.editorCommand('open_scene', args, a => ({ scene_path: a.scenePath }));
+  }
+
+  private async handleEditorSaveScene(_args: any) {
+    return this.editorCommand('save_scene', {}, _a => ({}));
+  }
+
+  private async handleEditorCreateScene(args: any) {
+    args = normalizeParameters(args || {});
+    return this.editorCommand('create_scene', args, a => ({ root_type: a.rootType ?? 'Node2D', scene_name: a.sceneName ?? 'NewScene' }));
+  }
+
+  private async handleEditorUndo(_args: any) {
+    return this.editorCommand('undo', {}, _a => ({}));
+  }
+
+  private async handleEditorRedo(_args: any) {
+    return this.editorCommand('redo', {}, _a => ({}));
+  }
+
+  private async handleEditorGetFilesystemFiles(args: any) {
+    args = normalizeParameters(args || {});
+    return this.editorCommand('get_filesystem_files', args, a => ({ path: a.path ?? 'res://' }));
+  }
+
+  private async handleEditorFocusNode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.editorCommand('focus_node', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleEditorGetSceneTree(_args: any) {
+    return this.editorCommand('get_scene_tree', {}, _a => ({}));
+  }
+
+  private async handleEditorRunScene(_args: any) {
+    return this.editorCommand('run_scene', {}, _a => ({}));
+  }
+
+  private async handleEditorStopScene(_args: any) {
+    return this.editorCommand('stop_scene', {}, _a => ({}));
+  }
+
+  private async handleEditorCreateScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    return this.editorCommand('create_script', args, a => ({ script_path: a.scriptPath, content: a.content ?? '' }));
+  }
+
+  private async handleEditorAttachScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.scriptPath) return createErrorResponse('nodePath and scriptPath are required.');
+    return this.editorCommand('attach_script', args, a => ({ node_path: a.nodePath, script_path: a.scriptPath }));
+  }
+
+  private async handleEditorReimportFile(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.filePath) return createErrorResponse('filePath is required.');
+    return this.editorCommand('reimport_file', args, a => ({ file_path: a.filePath }));
   }
 
   // ── Navigation / Discovery helpers ──────────────────────────────────────────
