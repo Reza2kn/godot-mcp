@@ -17178,6 +17178,161 @@ class GodotServer {
         description: 'Write a 2D item pickup/collectible GDScript.',
         inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, itemId: { type: 'string' }, itemName: { type: 'string' }, points: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
       },
+      // Batch 58 — Group A: Skeleton3D / Bone runtime
+      {
+        name: 'get_skeleton_bone_pose',
+        description: 'Get local pose of a bone by name in Skeleton3D.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, boneName: { type: 'string' } }, required: ['nodePath', 'boneName'] },
+      },
+      {
+        name: 'set_skeleton_bone_pose_position',
+        description: 'Set position of a bone in Skeleton3D.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, boneName: { type: 'string' }, x: { type: 'number' }, y: { type: 'number' }, z: { type: 'number' } }, required: ['nodePath', 'boneName'] },
+      },
+      {
+        name: 'get_bone_rest_transform',
+        description: 'Get rest transform of a bone in Skeleton3D.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, boneName: { type: 'string' } }, required: ['nodePath', 'boneName'] },
+      },
+      {
+        name: 'get_bone_index',
+        description: 'Get index of a bone by name in Skeleton3D.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, boneName: { type: 'string' } }, required: ['nodePath', 'boneName'] },
+      },
+      // Batch 58 — Group B: Collision shape manipulation
+      {
+        name: 'set_collision_shape_2d_type',
+        description: 'Change type of CollisionShape2D (circle/rect/capsule).',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' }, nodeName: { type: 'string' }, shapeType: { type: 'string' }, param1: { type: 'number' }, param2: { type: 'number' } }, required: ['projectPath', 'scenePath', 'nodeName', 'shapeType'] },
+      },
+      {
+        name: 'set_collision_shape_3d_type',
+        description: 'Change type of CollisionShape3D (box/sphere/capsule).',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' }, nodeName: { type: 'string' }, shapeType: { type: 'string' }, param1: { type: 'number' }, param2: { type: 'number' }, param3: { type: 'number' } }, required: ['projectPath', 'scenePath', 'nodeName', 'shapeType'] },
+      },
+      {
+        name: 'set_collision_shape_2d_radius',
+        description: 'Set radius of a CircleShape2D in a CollisionShape2D.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' }, nodeName: { type: 'string' }, radius: { type: 'number' } }, required: ['projectPath', 'scenePath', 'nodeName'] },
+      },
+      {
+        name: 'set_collision_rect_extents',
+        description: 'Set extents of RectangleShape2D in CollisionShape2D.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' }, nodeName: { type: 'string' }, w: { type: 'number' }, h: { type: 'number' } }, required: ['projectPath', 'scenePath', 'nodeName'] },
+      },
+      {
+        name: 'set_collision_capsule_2d',
+        description: 'Set radius/height of CapsuleShape2D in scene.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' }, nodeName: { type: 'string' }, radius: { type: 'number' }, height: { type: 'number' } }, required: ['projectPath', 'scenePath', 'nodeName'] },
+      },
+      {
+        name: 'set_collision_box_3d_size',
+        description: 'Set size of BoxShape3D in a CollisionShape3D.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' }, nodeName: { type: 'string' }, sx: { type: 'number' }, sy: { type: 'number' }, sz: { type: 'number' } }, required: ['projectPath', 'scenePath', 'nodeName'] },
+      },
+      {
+        name: 'set_collision_sphere_3d_radius',
+        description: 'Set radius of SphereShape3D in CollisionShape3D.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' }, nodeName: { type: 'string' }, radius: { type: 'number' } }, required: ['projectPath', 'scenePath', 'nodeName'] },
+      },
+      {
+        name: 'set_collision_capsule_3d',
+        description: 'Set radius/height of CapsuleShape3D in scene.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' }, nodeName: { type: 'string' }, radius: { type: 'number' }, height: { type: 'number' } }, required: ['projectPath', 'scenePath', 'nodeName'] },
+      },
+      // Batch 58 — Group C: Resource loading/checking tools
+      {
+        name: 'check_resource_exists',
+        description: 'Check if a resource path exists in a Godot project.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, resourcePath: { type: 'string' } }, required: ['projectPath', 'resourcePath'] },
+      },
+      {
+        name: 'list_project_audio_files',
+        description: 'List audio files (ogg/mp3/wav) in a project.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' } }, required: ['projectPath'] },
+      },
+      // Batch 58 — Group D: GDScript template writers
+      {
+        name: 'write_platformer_ground_script',
+        description: 'Write script for a static ground/platform body.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_top_down_player_script',
+        description: 'Write a top-down CharacterBody2D player script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, speed: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_score_manager_script',
+        description: 'Write a score manager autoload GDScript.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_hud_script',
+        description: 'Write a HUD/UI update script that reacts to signals.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_timer_helper_script',
+        description: 'Write a countdown/interval timer helper script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, waitTime: { type: 'number' }, oneShot: { type: 'boolean' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_scene_transition_script',
+        description: 'Write a scene transition manager script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_input_handler_script',
+        description: 'Write a centralized input handler GDScript.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_spawner_script',
+        description: 'Write a node spawner/instancer script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, spawnInterval: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      // Batch 58 — Group E: More runtime gameCommand tools
+      {
+        name: 'get_game_resolution',
+        description: 'Get current game window resolution and scale.',
+        inputSchema: { type: 'object', properties: {} },
+      },
+      {
+        name: 'set_2d_speed_scale',
+        description: 'Set speed scale of a Node2D or AnimationPlayer.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, scale: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_scene_current_fps',
+        description: 'Get current FPS from the running scene.',
+        inputSchema: { type: 'object', properties: {} },
+      },
+      {
+        name: 'set_canvas_item_clip',
+        description: 'Enable/disable clipping on a CanvasItem node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, clip: { type: 'boolean' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_node_rid',
+        description: 'Get the RID (Resource ID) of a node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_node_owner',
+        description: 'Set the owner of a node (for scene saving).',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, ownerPath: { type: 'string' } }, required: ['nodePath', 'ownerPath'] },
+      },
+      {
+        name: 'get_physics_interpolation_mode',
+        description: 'Get the physics interpolation mode of a node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_memory_usage',
+        description: 'Get current static memory usage and peak memory usage from OS.',
+        inputSchema: { type: 'object', properties: {} },
+      },
       ],
     }));
 
@@ -19617,6 +19772,71 @@ class GodotServer {
           return await this.handleWriteCameraFollowScript(request.params.arguments);
         case 'write_pickup_script':
           return await this.handleWritePickupScript(request.params.arguments);
+        // Batch 58 — Group A: Skeleton3D / Bone runtime
+        case 'get_skeleton_bone_pose':
+          return await this.handleGetSkeletonBonePose(request.params.arguments);
+        case 'set_skeleton_bone_pose_position':
+          return await this.handleSetSkeletonBonePosePosition(request.params.arguments);
+        case 'get_bone_rest_transform':
+          return await this.handleGetBoneRestTransform(request.params.arguments);
+        case 'get_bone_index':
+          return await this.handleGetBoneIndex(request.params.arguments);
+        // Batch 58 — Group B: Collision shape manipulation
+        case 'set_collision_shape_2d_type':
+          return await this.handleSetCollisionShape2DType(request.params.arguments);
+        case 'set_collision_shape_3d_type':
+          return await this.handleSetCollisionShape3DType(request.params.arguments);
+        case 'set_collision_shape_2d_radius':
+          return await this.handleSetCollisionShape2DRadius(request.params.arguments);
+        case 'set_collision_rect_extents':
+          return await this.handleSetCollisionRectExtents(request.params.arguments);
+        case 'set_collision_capsule_2d':
+          return await this.handleSetCollisionCapsule2D(request.params.arguments);
+        case 'set_collision_box_3d_size':
+          return await this.handleSetCollisionBox3DSize(request.params.arguments);
+        case 'set_collision_sphere_3d_radius':
+          return await this.handleSetCollisionSphere3DRadius(request.params.arguments);
+        case 'set_collision_capsule_3d':
+          return await this.handleSetCollisionCapsule3D(request.params.arguments);
+        // Batch 58 — Group C: Resource loading/checking tools
+        case 'check_resource_exists':
+          return await this.handleCheckResourceExists(request.params.arguments);
+        case 'list_project_audio_files':
+          return await this.handleListProjectAudioFiles(request.params.arguments);
+        // Batch 58 — Group D: GDScript template writers
+        case 'write_platformer_ground_script':
+          return await this.handleWritePlatformerGroundScript(request.params.arguments);
+        case 'write_top_down_player_script':
+          return await this.handleWriteTopDownPlayerScript(request.params.arguments);
+        case 'write_score_manager_script':
+          return await this.handleWriteScoreManagerScript(request.params.arguments);
+        case 'write_hud_script':
+          return await this.handleWriteHudScript(request.params.arguments);
+        case 'write_timer_helper_script':
+          return await this.handleWriteTimerHelperScript(request.params.arguments);
+        case 'write_scene_transition_script':
+          return await this.handleWriteSceneTransitionScript(request.params.arguments);
+        case 'write_input_handler_script':
+          return await this.handleWriteInputHandlerScript(request.params.arguments);
+        case 'write_spawner_script':
+          return await this.handleWriteSpawnerScript(request.params.arguments);
+        // Batch 58 — Group E: More runtime gameCommand tools
+        case 'get_game_resolution':
+          return await this.handleGetGameResolution(request.params.arguments);
+        case 'set_2d_speed_scale':
+          return await this.handleSet2DSpeedScale(request.params.arguments);
+        case 'get_scene_current_fps':
+          return await this.handleGetSceneCurrentFps(request.params.arguments);
+        case 'set_canvas_item_clip':
+          return await this.handleSetCanvasItemClip(request.params.arguments);
+        case 'get_node_rid':
+          return await this.handleGetNodeRid(request.params.arguments);
+        case 'set_node_owner':
+          return await this.handleSetNodeOwner(request.params.arguments);
+        case 'get_physics_interpolation_mode':
+          return await this.handleGetPhysicsInterpolationMode(request.params.arguments);
+        case 'get_memory_usage':
+          return await this.handleGetMemoryUsage(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -35009,6 +35229,424 @@ func _on_body_entered(body: Node2D) -> void:
     } catch (e: any) {
       return createErrorResponse(`Failed to write script: ${e.message}`);
     }
+  }
+
+  // ── Batch 58 handlers ───────────────────────────────────────────────────────
+
+  // Group A: Skeleton3D / Bone runtime
+  private async handleGetSkeletonBonePose(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_skeleton_bone_pose', args, a => ({ node_path: a.nodePath, bone_name: a.boneName ?? '' }));
+  }
+
+  private async handleSetSkeletonBonePosePosition(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_skeleton_bone_pose_position', args, a => ({ node_path: a.nodePath, bone_name: a.boneName ?? '', x: a.x ?? 0, y: a.y ?? 0, z: a.z ?? 0 }));
+  }
+
+  private async handleGetBoneRestTransform(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_bone_rest_transform', args, a => ({ node_path: a.nodePath, bone_name: a.boneName ?? '' }));
+  }
+
+  private async handleGetBoneIndex(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_bone_index', args, a => ({ node_path: a.nodePath, bone_name: a.boneName ?? '' }));
+  }
+
+  // Group B: Collision shape manipulation
+  private async handleSetCollisionShape2DType(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('set_collision_shape_2d_type', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName ?? '', shape_type: a.shapeType ?? 'circle', param1: a.param1 ?? 10, param2: a.param2 ?? 10 } }));
+  }
+
+  private async handleSetCollisionShape3DType(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('set_collision_shape_3d_type', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName ?? '', shape_type: a.shapeType ?? 'box', param1: a.param1 ?? 1, param2: a.param2 ?? 1, param3: a.param3 ?? 1 } }));
+  }
+
+  private async handleSetCollisionShape2DRadius(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('set_collision_shape_2d_radius', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName ?? '', radius: a.radius ?? 16 } }));
+  }
+
+  private async handleSetCollisionRectExtents(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('set_collision_rect_extents', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName ?? '', w: a.w ?? 16, h: a.h ?? 16 } }));
+  }
+
+  private async handleSetCollisionCapsule2D(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('set_collision_capsule_2d', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName ?? '', radius: a.radius ?? 16, height: a.height ?? 32 } }));
+  }
+
+  private async handleSetCollisionBox3DSize(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('set_collision_box_3d_size', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName ?? '', sx: a.sx ?? 1, sy: a.sy ?? 1, sz: a.sz ?? 1 } }));
+  }
+
+  private async handleSetCollisionSphere3DRadius(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('set_collision_sphere_3d_radius', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName ?? '', radius: a.radius ?? 0.5 } }));
+  }
+
+  private async handleSetCollisionCapsule3D(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('set_collision_capsule_3d', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName ?? '', radius: a.radius ?? 0.5, height: a.height ?? 2.0 } }));
+  }
+
+  // Group C: Resource loading/checking tools
+  private async handleCheckResourceExists(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.resourcePath) return createErrorResponse('projectPath and resourcePath are required.');
+    const absPath = args.resourcePath.replace('res://', args.projectPath + '/');
+    return { content: [{ type: 'text', text: JSON.stringify({ exists: existsSync(absPath), resourcePath: args.resourcePath, absPath }) }] };
+  }
+
+  private async handleListProjectAudioFiles(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!existsSync(args.projectPath)) return createErrorResponse('Project path not found.');
+    const audio = this.collectFiles(args.projectPath, ['.ogg', '.mp3', '.wav']);
+    return { content: [{ type: 'text', text: JSON.stringify({ audio, count: audio.length }) }] };
+  }
+
+  // Group D: GDScript template writers
+  private async handleWritePlatformerGroundScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends StaticBody2D
+## Ground/Platform body — attach this to StaticBody2D nodes.
+## No logic needed; collision is handled by physics engine.
+## Add CollisionShape2D as child with desired shape.
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteTopDownPlayerScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const speed = args.speed ?? 200;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends CharacterBody2D
+
+const SPEED = ${speed}.0
+
+func _physics_process(delta: float) -> void:
+\tvar input = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+\tvelocity = input * SPEED
+\tmove_and_slide()
+\tif input != Vector2.ZERO:
+\t\trotation = input.angle()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, speed }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteScoreManagerScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+## ScoreManager — add as Autoload
+
+signal score_changed(score: int)
+signal high_score_beaten(score: int)
+
+var score: int = 0
+var high_score: int = 0
+const SAVE_PATH = "user://high_score.dat"
+
+func _ready() -> void:
+\t_load_high_score()
+
+func add_points(points: int) -> void:
+\tscore += points
+\tscore_changed.emit(score)
+\tif score > high_score:
+\t\thigh_score = score
+\t\thigh_score_beaten.emit(high_score)
+\t\t_save_high_score()
+
+func reset() -> void:
+\tscore = 0
+\tscore_changed.emit(score)
+
+func _save_high_score() -> void:
+\tvar f = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+\tif f: f.store_32(high_score)
+
+func _load_high_score() -> void:
+\tif FileAccess.file_exists(SAVE_PATH):
+\t\tvar f = FileAccess.open(SAVE_PATH, FileAccess.READ)
+\t\tif f: high_score = f.get_32()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteHudScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends CanvasLayer
+## HUD script — attach to CanvasLayer node.
+## Connects to ScoreManager and a HealthComponent autoload or player.
+
+@onready var score_label: Label = $ScoreLabel
+@onready var health_bar: ProgressBar = $HealthBar
+@onready var level_label: Label = $LevelLabel
+
+func _ready() -> void:
+\tif has_node("/root/ScoreManager"):
+\t\tScoreManager.score_changed.connect(_on_score_changed)
+\tif has_node("/root/GameManager"):
+\t\tGameManager.score_changed.connect(_on_score_changed)
+
+func _on_score_changed(score: int) -> void:
+\tif score_label:
+\t\tscore_label.text = "Score: %d" % score
+
+func update_health(current: int, maximum: int) -> void:
+\tif health_bar:
+\t\thealth_bar.max_value = maximum
+\t\thealth_bar.value = current
+
+func update_level(level: int) -> void:
+\tif level_label:
+\t\tlevel_label.text = "Level %d" % level
+
+func show_message(text: String, duration: float = 2.0) -> void:
+\tif score_label:
+\t\tscore_label.text = text
+\t\tawait get_tree().create_timer(duration).timeout
+\t\tscore_label.text = ""
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteTimerHelperScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const waitTime = args.waitTime ?? 5.0;
+    const oneShot = args.oneShot ?? false;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+## Timer helper — attach to any node.
+## Emits 'timed_out' when the timer finishes.
+
+signal timed_out(count: int)
+
+@export var wait_time: float = ${waitTime}
+@export var one_shot: bool = ${oneShot}
+@export var autostart: bool = true
+
+var _timer: Timer
+var _fire_count: int = 0
+
+func _ready() -> void:
+\t_timer = Timer.new()
+\t_timer.wait_time = wait_time
+\t_timer.one_shot = one_shot
+\t_timer.timeout.connect(_on_timeout)
+\tadd_child(_timer)
+\tif autostart:
+\t\t_timer.start()
+
+func start() -> void:
+\t_timer.start()
+
+func stop() -> void:
+\t_timer.stop()
+
+func get_time_left() -> float:
+\treturn _timer.time_left
+
+func _on_timeout() -> void:
+\t_fire_count += 1
+\ttimed_out.emit(_fire_count)
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, waitTime, oneShot }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteSceneTransitionScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends CanvasLayer
+## SceneTransition — add as Autoload, set scene to contain ColorRect full-screen.
+## Usage: SceneTransition.go_to_scene("res://scenes/level_2.tscn")
+
+@onready var color_rect: ColorRect = $ColorRect
+var _is_transitioning: bool = false
+
+func _ready() -> void:
+\tcolor_rect.modulate.a = 0.0
+
+func go_to_scene(scene_path: String, duration: float = 0.5) -> void:
+\tif _is_transitioning:
+\t\treturn
+\t_is_transitioning = true
+\tvar tween = create_tween()
+\ttween.tween_property(color_rect, "modulate:a", 1.0, duration)
+\tawait tween.finished
+\tget_tree().change_scene_to_file(scene_path)
+\ttween = create_tween()
+\ttween.tween_property(color_rect, "modulate:a", 0.0, duration)
+\tawait tween.finished
+\t_is_transitioning = false
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteInputHandlerScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+## InputHandler — add as Autoload for centralized input processing.
+## Emits typed signals rather than checking Input directly in each node.
+
+signal move_left
+signal move_right
+signal move_up
+signal move_down
+signal jump_pressed
+signal attack_pressed
+signal pause_pressed
+signal interact_pressed
+
+func _unhandled_input(event: InputEvent) -> void:
+\tif event.is_action_pressed("ui_left"): move_left.emit()
+\tif event.is_action_pressed("ui_right"): move_right.emit()
+\tif event.is_action_pressed("ui_up"): move_up.emit()
+\tif event.is_action_pressed("ui_down"): move_down.emit()
+\tif event.is_action_pressed("ui_accept"): jump_pressed.emit()
+\tif event.is_action_pressed("ui_cancel"): pause_pressed.emit()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteSpawnerScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const spawnInterval = args.spawnInterval ?? 2.0;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node2D
+## Spawner script — periodically instantiates a scene at spawn points.
+
+signal spawned(instance: Node)
+
+@export var scene_to_spawn: PackedScene
+@export var spawn_interval: float = ${spawnInterval}
+@export var max_spawned: int = 10
+@export var spawn_points: Array[NodePath] = []
+
+var _timer: Timer
+var _spawned_count: int = 0
+
+func _ready() -> void:
+\t_timer = Timer.new()
+\t_timer.wait_time = spawn_interval
+\t_timer.timeout.connect(_spawn)
+\tadd_child(_timer)
+\t_timer.start()
+
+func _spawn() -> void:
+\tif scene_to_spawn == null or _spawned_count >= max_spawned:
+\t\treturn
+\tvar instance = scene_to_spawn.instantiate()
+\tvar spawn_pos = global_position
+\tif spawn_points.size() > 0:
+\t\tvar pt = get_node_or_null(spawn_points[randi() % spawn_points.size()])
+\t\tif pt: spawn_pos = pt.global_position
+\tinstance.global_position = spawn_pos
+\tget_parent().add_child(instance)
+\t_spawned_count += 1
+\tspawned.emit(instance)
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, spawnInterval }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  // Group E: More runtime gameCommand tools
+  private async handleGetGameResolution(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_game_resolution', args, _a => ({}));
+  }
+
+  private async handleSet2DSpeedScale(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_2d_speed_scale', args, a => ({ node_path: a.nodePath, scale: a.scale ?? 1.0 }));
+  }
+
+  private async handleGetSceneCurrentFps(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_scene_current_fps', args, _a => ({}));
+  }
+
+  private async handleSetCanvasItemClip(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_canvas_item_clip', args, a => ({ node_path: a.nodePath, clip: a.clip ?? true }));
+  }
+
+  private async handleGetNodeRid(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_node_rid', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetNodeOwner(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_node_owner', args, a => ({ node_path: a.nodePath, owner_path: a.ownerPath ?? '' }));
+  }
+
+  private async handleGetPhysicsInterpolationMode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_physics_interpolation_mode', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetMemoryUsage(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_memory_usage', args, _a => ({}));
   }
 
   // ── Navigation / Discovery helpers ──────────────────────────────────────────

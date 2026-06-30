@@ -1587,6 +1587,32 @@ func _handle_command(json_str: String) -> void:
 			_cmd_set_light_2d_texture_scale(params)
 		"toggle_light_2d":
 			_cmd_toggle_light_2d(params)
+		"get_skeleton_bone_pose":
+			_cmd_get_skeleton_bone_pose(params)
+		"set_skeleton_bone_pose_position":
+			_cmd_set_skeleton_bone_pose_position(params)
+		"get_bone_rest_transform":
+			_cmd_get_bone_rest_transform(params)
+		"get_bone_index":
+			_cmd_get_bone_index(params)
+		"get_game_resolution":
+			_cmd_get_game_resolution(params)
+		"set_2d_speed_scale":
+			_cmd_set_2d_speed_scale(params)
+		"get_scene_current_fps":
+			_cmd_get_scene_current_fps(params)
+		"set_canvas_item_clip":
+			_cmd_set_canvas_item_clip(params)
+		"get_node_rid":
+			_cmd_get_node_rid(params)
+		"set_node_owner":
+			_cmd_set_node_owner(params)
+		"get_physics_interpolation_mode":
+			_cmd_get_physics_interpolation_mode(params)
+		"get_memory_usage":
+			_cmd_get_memory_usage(params)
+		"get_project_name":
+			_cmd_get_project_name(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -13316,6 +13342,149 @@ func _cmd_toggle_light_2d(params: Dictionary) -> void:
 		return
 	(node as Light2D).enabled = enabled
 	_send_response({"success": true, "enabled": enabled})
+
+
+func _cmd_get_skeleton_bone_pose(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var bone_name: String = params.get("bone_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Skeleton3D:
+		_send_response({"error": "Skeleton3D not found: " + node_path})
+		return
+	var sk := node as Skeleton3D
+	var idx = sk.find_bone(bone_name)
+	if idx < 0:
+		_send_response({"error": "Bone not found: " + bone_name})
+		return
+	var pose = sk.get_bone_pose_position(idx)
+	var rot = sk.get_bone_pose_rotation(idx)
+	_send_response({"success": true, "position": {"x": pose.x, "y": pose.y, "z": pose.z}, "rotation": {"x": rot.x, "y": rot.y, "z": rot.z, "w": rot.w}, "bone_index": idx})
+
+
+func _cmd_set_skeleton_bone_pose_position(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var bone_name: String = params.get("bone_name", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Skeleton3D:
+		_send_response({"error": "Skeleton3D not found: " + node_path})
+		return
+	var sk := node as Skeleton3D
+	var idx = sk.find_bone(bone_name)
+	if idx < 0:
+		_send_response({"error": "Bone not found: " + bone_name})
+		return
+	sk.set_bone_pose_position(idx, Vector3(x, y, z))
+	_send_response({"success": true, "bone_name": bone_name, "position": {"x": x, "y": y, "z": z}})
+
+
+func _cmd_get_bone_rest_transform(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var bone_name: String = params.get("bone_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Skeleton3D:
+		_send_response({"error": "Skeleton3D not found: " + node_path})
+		return
+	var sk := node as Skeleton3D
+	var idx = sk.find_bone(bone_name)
+	if idx < 0:
+		_send_response({"error": "Bone not found: " + bone_name})
+		return
+	var rest = sk.get_bone_rest(idx)
+	var o = rest.origin
+	_send_response({"success": true, "bone_name": bone_name, "rest_origin": {"x": o.x, "y": o.y, "z": o.z}})
+
+
+func _cmd_get_bone_index(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var bone_name: String = params.get("bone_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Skeleton3D:
+		_send_response({"error": "Skeleton3D not found: " + node_path})
+		return
+	var idx = (node as Skeleton3D).find_bone(bone_name)
+	_send_response({"success": true, "bone_name": bone_name, "bone_index": idx, "found": idx >= 0})
+
+
+func _cmd_get_game_resolution(params: Dictionary) -> void:
+	var win_size = DisplayServer.window_get_size()
+	var viewport_size = get_viewport().get_visible_rect().size
+	_send_response({"success": true, "window_width": win_size.x, "window_height": win_size.y, "viewport_width": viewport_size.x, "viewport_height": viewport_size.y})
+
+
+func _cmd_set_2d_speed_scale(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var scale_val: float = params.get("scale", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is AnimationPlayer:
+		(node as AnimationPlayer).speed_scale = scale_val
+	elif node is AnimatedSprite2D:
+		(node as AnimatedSprite2D).speed_scale = scale_val
+	else:
+		_send_response({"error": "Node does not support speed_scale: " + node_path})
+		return
+	_send_response({"success": true, "scale": scale_val})
+
+
+func _cmd_get_scene_current_fps(params: Dictionary) -> void:
+	_send_response({"success": true, "fps": Engine.get_frames_per_second(), "target_fps": Engine.max_fps, "physics_fps": Engine.physics_ticks_per_second})
+
+
+func _cmd_set_canvas_item_clip(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var clip: bool = params.get("clip", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CanvasItem:
+		_send_response({"error": "CanvasItem not found: " + node_path})
+		return
+	(node as CanvasItem).clip_contents = clip
+	_send_response({"success": true, "clip_contents": clip})
+
+
+func _cmd_get_node_rid(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	_send_response({"success": true, "rid": str(node.get_rid() if node.has_method("get_rid") else "N/A"), "class": node.get_class()})
+
+
+func _cmd_set_node_owner(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var owner_path: String = params.get("owner_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	var owner_node = get_tree().root.get_node_or_null(NodePath(owner_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if owner_node == null:
+		_send_response({"error": "Owner node not found: " + owner_path})
+		return
+	node.owner = owner_node
+	_send_response({"success": true, "owner": owner_path})
+
+
+func _cmd_get_physics_interpolation_mode(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	_send_response({"success": true, "physics_interpolation_mode": node.physics_interpolation_mode})
+
+
+func _cmd_get_memory_usage(params: Dictionary) -> void:
+	_send_response({"success": true, "static_memory": OS.get_static_memory_usage(), "static_memory_peak": OS.get_static_memory_peak_usage()})
+
+
+func _cmd_get_project_name(params: Dictionary) -> void:
+	_send_response({"success": true, "project_name": ProjectSettings.get_setting("application/config/name", "Unknown"), "version": ProjectSettings.get_setting("application/config/version", "1.0")})
 
 
 func _exit_tree() -> void:
