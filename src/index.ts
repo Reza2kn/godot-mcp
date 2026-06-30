@@ -12997,6 +12997,145 @@ class GodotServer {
           required: ['nodePath'],
         },
       },
+      {
+        name: 'set_control_position',
+        description: 'Set the position of a Control node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Control node.' },
+            x: { type: 'number', description: 'X position in pixels.' },
+            y: { type: 'number', description: 'Y position in pixels.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_control_size',
+        description: 'Set the size of a Control node in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Control node.' },
+            width: { type: 'number', description: 'Width in pixels.' },
+            height: { type: 'number', description: 'Height in pixels.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_children_of_node',
+        description: 'Get immediate children of a node in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the node.' },
+            includeInternal: { type: 'boolean', description: 'Include internal children.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_parent_of_node',
+        description: 'Get the parent node path in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'count_nodes_by_class',
+        description: 'Count nodes of a class in the running scene tree.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            className: { type: 'string', description: 'Godot class name to count.' },
+          },
+          required: ['className'],
+        },
+      },
+      {
+        name: 'find_nodes_by_class',
+        description: 'Find all nodes of a class in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            className: { type: 'string', description: 'Godot class name to find.' },
+            maxResults: { type: 'number', description: 'Max results (default 50).' },
+          },
+          required: ['className'],
+        },
+      },
+      {
+        name: 'get_node_property',
+        description: 'Get any property value from a node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the node.' },
+            property: { type: 'string', description: 'Property name to read.' },
+          },
+          required: ['nodePath', 'property'],
+        },
+      },
+      {
+        name: 'remove_node_from_game',
+        description: 'Remove and free a node from the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the node to remove.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'add_child_node_in_game',
+        description: 'Instantiate a scene and add as child in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            parentNodePath: { type: 'string', description: 'Scene path to the parent node.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene to instantiate.' },
+            childName: { type: 'string', description: 'Optional name for the new child node.' },
+          },
+          required: ['parentNodePath', 'scenePath'],
+        },
+      },
+      {
+        name: 'change_scene_to',
+        description: 'Change the active scene in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            scenePath: { type: 'string', description: 'res:// path to the new scene.' },
+          },
+          required: ['scenePath'],
+        },
+      },
+      {
+        name: 'reload_current_scene',
+        description: 'Reload the current scene in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'quit_game',
+        description: 'Quit the running Godot game instance.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            exitCode: { type: 'number', description: 'Exit code (default 0).' },
+          },
+          required: [],
+        },
+      },
       ],
     }));
 
@@ -14906,6 +15045,30 @@ class GodotServer {
           return await this.handleGetPanelStylebox(request.params.arguments);
         case 'get_control_size':
           return await this.handleGetControlSize(request.params.arguments);
+        case 'set_control_position':
+          return await this.handleSetControlPosition(request.params.arguments);
+        case 'set_control_size':
+          return await this.handleSetControlSize(request.params.arguments);
+        case 'get_children_of_node':
+          return await this.handleGetChildrenOfNode(request.params.arguments);
+        case 'get_parent_of_node':
+          return await this.handleGetParentOfNode(request.params.arguments);
+        case 'count_nodes_by_class':
+          return await this.handleCountNodesByClass(request.params.arguments);
+        case 'find_nodes_by_class':
+          return await this.handleFindNodesByClass(request.params.arguments);
+        case 'get_node_property':
+          return await this.handleGetNodeProperty(request.params.arguments);
+        case 'remove_node_from_game':
+          return await this.handleRemoveNodeFromGame(request.params.arguments);
+        case 'add_child_node_in_game':
+          return await this.handleAddChildNodeInGame(request.params.arguments);
+        case 'change_scene_to':
+          return await this.handleChangeSceneTo(request.params.arguments);
+        case 'reload_current_scene':
+          return await this.handleReloadCurrentScene(request.params.arguments);
+        case 'quit_game':
+          return await this.handleQuitGame(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -26795,6 +26958,78 @@ class GodotServer {
     args = normalizeParameters(args || {});
     if (!args.nodePath) return createErrorResponse('nodePath is required.');
     return this.gameCommand('get_control_size', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetControlPosition(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_control_position', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0 }));
+  }
+
+  private async handleSetControlSize(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_control_size', args, a => ({ node_path: a.nodePath, width: a.width ?? 0, height: a.height ?? 0 }));
+  }
+
+  private async handleGetChildrenOfNode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_children_of_node', args, a => ({ node_path: a.nodePath, include_internal: a.includeInternal ?? false }));
+  }
+
+  private async handleGetParentOfNode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_parent_of_node', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleCountNodesByClass(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.className) return createErrorResponse('className is required.');
+    return this.gameCommand('count_nodes_by_class', args, a => ({ class_name: a.className }));
+  }
+
+  private async handleFindNodesByClass(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.className) return createErrorResponse('className is required.');
+    return this.gameCommand('find_nodes_by_class', args, a => ({ class_name: a.className, max_results: a.maxResults ?? 50 }));
+  }
+
+  private async handleGetNodeProperty(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.property) return createErrorResponse('property is required.');
+    return this.gameCommand('get_node_property', args, a => ({ node_path: a.nodePath, property: a.property }));
+  }
+
+  private async handleRemoveNodeFromGame(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('remove_node_from_game', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleAddChildNodeInGame(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.parentNodePath) return createErrorResponse('parentNodePath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    return this.gameCommand('add_child_node_in_game', args, a => ({ parent_node_path: a.parentNodePath, scene_path: a.scenePath, child_name: a.childName ?? '' }));
+  }
+
+  private async handleChangeSceneTo(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    return this.gameCommand('change_scene_to', args, a => ({ scene_path: a.scenePath }));
+  }
+
+  private async handleReloadCurrentScene(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('reload_current_scene', args, a => ({}));
+  }
+
+  private async handleQuitGame(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('quit_game', args, a => ({ exit_code: a.exitCode ?? 0 }));
   }
 
 }
