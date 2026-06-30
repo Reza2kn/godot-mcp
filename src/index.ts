@@ -9665,6 +9665,254 @@ class GodotServer {
           required: ['projectPath', 'pattern'],
         },
       },
+      {
+        name: 'add_line_2d_to_scene',
+        description: 'Add a Line2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: Line2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_polygon_2d_to_scene',
+        description: 'Add a Polygon2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: Polygon2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_cpu_particles_2d_to_scene',
+        description: 'Add a CPUParticles2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: CPUParticles2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_cpu_particles_3d_to_scene',
+        description: 'Add a CPUParticles3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: CPUParticles3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_spring_arm_3d_to_scene',
+        description: 'Add a SpringArm3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: SpringArm3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_remote_transform_3d_to_scene',
+        description: 'Add a RemoteTransform3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: RemoteTransform3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_marker_3d_to_scene',
+        description: 'Add a Marker3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: Marker3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_marker_2d_to_scene',
+        description: 'Add a Marker2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: Marker2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_animation_tree_to_scene',
+        description: 'Add an AnimationTree node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: AnimationTree)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_multi_mesh_instance_3d_to_scene',
+        description: 'Add a MultiMeshInstance3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: MultiMeshInstance3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'set_particle_emission_rate',
+        description: 'Set emission amount/lifetime on a particle node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the particle node' },
+            amount: { type: 'integer', description: 'Particle amount (-1 to leave unchanged)' },
+            lifetime: { type: 'number', description: 'Particle lifetime in seconds (-1 to leave unchanged)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_particle_state',
+        description: 'Get the state of a particle emitter node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the particle node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'restart_particles',
+        description: 'Restart a particle emitter node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the particle node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_shader_uniform',
+        description: 'Set a named uniform on a ShaderMaterial in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the node' },
+            uniformName: { type: 'string', description: 'Name of the shader uniform to set' },
+            value: { description: 'Value to assign to the uniform' },
+          },
+          required: ['nodePath', 'uniformName'],
+        },
+      },
+      {
+        name: 'get_shader_uniforms',
+        description: 'Get all shader uniforms from a ShaderMaterial in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_material_properties',
+        description: 'Get all material properties from a node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the MeshInstance3D/Sprite2D node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_light_3d_color',
+        description: 'Set the color on a Light3D node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the Light3D node' },
+            r: { type: 'number', description: 'Red channel 0-1 (default 1)' },
+            g: { type: 'number', description: 'Green channel 0-1 (default 1)' },
+            b: { type: 'number', description: 'Blue channel 0-1 (default 1)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_light_3d_energy',
+        description: 'Set the energy on a Light3D node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the Light3D node' },
+            energy: { type: 'number', description: 'Light energy value (default 1.0)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_sky_material',
+        description: 'Set the sky material on a WorldEnvironment in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to WorldEnvironment (default: /root/WorldEnvironment)' },
+            skyMaterialPath: { type: 'string', description: 'res:// path to the sky material resource' },
+          },
+          required: ['skyMaterialPath'],
+        },
+      },
       ],
     }));
 
@@ -11040,6 +11288,44 @@ class GodotServer {
           return await this.handleGetProjectFileStats(request.params.arguments);
         case 'search_in_scripts':
           return await this.handleSearchInScripts(request.params.arguments);
+        case 'add_line_2d_to_scene':
+          return await this.handleAddLine2dToScene(request.params.arguments);
+        case 'add_polygon_2d_to_scene':
+          return await this.handleAddPolygon2dToScene(request.params.arguments);
+        case 'add_cpu_particles_2d_to_scene':
+          return await this.handleAddCpuParticles2dToScene(request.params.arguments);
+        case 'add_cpu_particles_3d_to_scene':
+          return await this.handleAddCpuParticles3dToScene(request.params.arguments);
+        case 'add_spring_arm_3d_to_scene':
+          return await this.handleAddSpringArm3dToScene(request.params.arguments);
+        case 'add_remote_transform_3d_to_scene':
+          return await this.handleAddRemoteTransform3dToScene(request.params.arguments);
+        case 'add_marker_3d_to_scene':
+          return await this.handleAddMarker3dToScene(request.params.arguments);
+        case 'add_marker_2d_to_scene':
+          return await this.handleAddMarker2dToScene(request.params.arguments);
+        case 'add_animation_tree_to_scene':
+          return await this.handleAddAnimationTreeToScene(request.params.arguments);
+        case 'add_multi_mesh_instance_3d_to_scene':
+          return await this.handleAddMultiMeshInstance3dToScene(request.params.arguments);
+        case 'set_particle_emission_rate':
+          return await this.handleSetParticleEmissionRate(request.params.arguments);
+        case 'get_particle_state':
+          return await this.handleGetParticleState(request.params.arguments);
+        case 'restart_particles':
+          return await this.handleRestartParticles(request.params.arguments);
+        case 'set_shader_uniform':
+          return await this.handleSetShaderUniform(request.params.arguments);
+        case 'get_shader_uniforms':
+          return await this.handleGetShaderUniforms(request.params.arguments);
+        case 'get_material_properties':
+          return await this.handleGetMaterialProperties(request.params.arguments);
+        case 'set_light_3d_color':
+          return await this.handleSetLight3dColor(request.params.arguments);
+        case 'set_light_3d_energy':
+          return await this.handleSetLight3dEnergy(request.params.arguments);
+        case 'set_sky_material':
+          return await this.handleSetSkyMaterial(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -20796,6 +21082,160 @@ class GodotServer {
       }
     }
     return { content: [{ type: 'text', text: JSON.stringify({ pattern: args.pattern, matchCount: matches.length, matches }, null, 2) }] };
+  }
+
+  private async handleAddLine2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'Line2D', nodeType: 'Line2D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddPolygon2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'Polygon2D', nodeType: 'Polygon2D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddCpuParticles2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'CPUParticles2D', nodeType: 'CPUParticles2D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddCpuParticles3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'CPUParticles3D', nodeType: 'CPUParticles3D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddSpringArm3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'SpringArm3D', nodeType: 'SpringArm3D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddRemoteTransform3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'RemoteTransform3D', nodeType: 'RemoteTransform3D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddMarker3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'Marker3D', nodeType: 'Marker3D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddMarker2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'Marker2D', nodeType: 'Marker2D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddAnimationTreeToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'AnimationTree', nodeType: 'AnimationTree', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddMultiMeshInstance3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'MultiMeshInstance3D', nodeType: 'MultiMeshInstance3D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleSetParticleEmissionRate(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_particle_emission_rate', args, a => ({ node_path: a.nodePath, amount: a.amount ?? -1, lifetime: a.lifetime ?? -1 }));
+  }
+
+  private async handleGetParticleState(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_particle_state', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleRestartParticles(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('restart_particles', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetShaderUniform(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.uniformName) return createErrorResponse('nodePath and uniformName are required.');
+    return this.gameCommand('set_shader_uniform', args, a => ({ node_path: a.nodePath, uniform_name: a.uniformName, value: a.value }));
+  }
+
+  private async handleGetShaderUniforms(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_shader_uniforms', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetMaterialProperties(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_material_properties', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetLight3dColor(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_light_3d_color', args, a => ({ node_path: a.nodePath, r: a.r ?? 1, g: a.g ?? 1, b: a.b ?? 1 }));
+  }
+
+  private async handleSetLight3dEnergy(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_light_3d_energy', args, a => ({ node_path: a.nodePath, energy: a.energy ?? 1.0 }));
+  }
+
+  private async handleSetSkyMaterial(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.skyMaterialPath) return createErrorResponse('skyMaterialPath is required.');
+    return this.gameCommand('set_sky_material', args, a => ({ node_path: a.nodePath || '/root/WorldEnvironment', sky_material_path: a.skyMaterialPath }));
   }
 
 }

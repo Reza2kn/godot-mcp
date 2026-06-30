@@ -733,6 +733,24 @@ func _handle_command(json_str: String) -> void:
 			_cmd_remove_node_from_group(params)
 		"call_group_method":
 			_cmd_call_group_method(params)
+		"set_particle_emission_rate":
+			_cmd_set_particle_emission_rate(params)
+		"get_particle_state":
+			_cmd_get_particle_state(params)
+		"restart_particles":
+			_cmd_restart_particles(params)
+		"set_shader_uniform":
+			_cmd_set_shader_uniform(params)
+		"get_shader_uniforms":
+			_cmd_get_shader_uniforms(params)
+		"get_material_properties":
+			_cmd_get_material_properties(params)
+		"set_light_3d_color":
+			_cmd_set_light_3d_color(params)
+		"set_light_3d_energy":
+			_cmd_set_light_3d_energy(params)
+		"set_sky_material":
+			_cmd_set_sky_material(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -7625,6 +7643,156 @@ func _cmd_call_group_method(params: Dictionary) -> void:
 			node.callv(method_name, call_args)
 			called_count += 1
 	_send_response({"success": true, "group": group_name, "method": method_name, "called_count": called_count, "total_in_group": nodes_in_group.size()})
+
+func _cmd_set_particle_emission_rate(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var amount: int = params.get("amount", -1)
+	var lifetime: float = params.get("lifetime", -1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var changed: Dictionary = {}
+	if node.has_method("set_amount") and amount >= 0:
+		node.set("amount", amount)
+		changed["amount"] = amount
+	if node.has_method("set_lifetime") and lifetime >= 0:
+		node.set("lifetime", lifetime)
+		changed["lifetime"] = lifetime
+	_send_response({"success": true, "node_path": node_path, "changed": changed})
+
+func _cmd_get_particle_state(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var result: Dictionary = {"node_path": node_path, "class": node.get_class()}
+	for prop in ["emitting", "amount", "lifetime", "one_shot", "preprocess", "speed_scale"]:
+		if node.get(prop) != null:
+			result[prop] = node.get(prop)
+	_send_response(result)
+
+func _cmd_restart_particles(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node.has_method("restart"):
+		node.restart()
+		_send_response({"success": true, "node_path": node_path})
+	else:
+		_send_response({"error": "Node does not support restart(): " + node.get_class()})
+
+func _cmd_set_shader_uniform(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var uniform_name: String = params.get("uniform_name", "")
+	var value = params.get("value", null)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var mat: Material = null
+	if node.has_method("get_material"):
+		mat = node.get_material()
+	elif node.get("material_override") != null:
+		mat = node.get("material_override")
+	elif node.get("material") != null:
+		mat = node.get("material")
+	if mat == null or not mat is ShaderMaterial:
+		_send_response({"error": "ShaderMaterial not found on node"})
+		return
+	(mat as ShaderMaterial).set_shader_parameter(uniform_name, value)
+	_send_response({"success": true, "uniform_name": uniform_name, "value": str(value)})
+
+func _cmd_get_shader_uniforms(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var mat: Material = null
+	if node.has_method("get_material"):
+		mat = node.get_material()
+	elif node.get("material_override") != null:
+		mat = node.get("material_override")
+	elif node.get("material") != null:
+		mat = node.get("material")
+	if mat == null or not mat is ShaderMaterial:
+		_send_response({"error": "ShaderMaterial not found on node"})
+		return
+	var shader_mat := mat as ShaderMaterial
+	var uniforms: Array = []
+	if shader_mat.shader != null:
+		for param in shader_mat.shader.get_shader_uniform_list():
+			uniforms.append({"name": param["name"], "type": param["type"], "value": str(shader_mat.get_shader_parameter(param["name"]))})
+	_send_response({"success": true, "count": uniforms.size(), "uniforms": uniforms})
+
+func _cmd_get_material_properties(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var mat: Material = null
+	if node.get("material_override") != null:
+		mat = node.get("material_override")
+	if mat == null and node is MeshInstance3D:
+		mat = (node as MeshInstance3D).get_surface_override_material(0)
+	if mat == null and node.get("material") != null:
+		mat = node.get("material")
+	if mat == null:
+		_send_response({"error": "No material found on node"})
+		return
+	var props: Dictionary = {"class": mat.get_class()}
+	for p in mat.get_property_list():
+		if p["usage"] & PROPERTY_USAGE_EDITOR:
+			var val = mat.get(p["name"])
+			props[p["name"]] = str(val) if val != null else null
+	_send_response({"success": true, "material_class": mat.get_class(), "properties": props})
+
+func _cmd_set_light_3d_color(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var r: float = params.get("r", 1.0)
+	var g: float = params.get("g", 1.0)
+	var b: float = params.get("b", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Light3D:
+		_send_response({"error": "Light3D not found: " + node_path})
+		return
+	(node as Light3D).light_color = Color(r, g, b)
+	_send_response({"success": true, "light_color": {"r": r, "g": g, "b": b}})
+
+func _cmd_set_light_3d_energy(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var energy: float = params.get("energy", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Light3D:
+		_send_response({"error": "Light3D not found: " + node_path})
+		return
+	(node as Light3D).light_energy = energy
+	_send_response({"success": true, "light_energy": energy})
+
+func _cmd_set_sky_material(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "/root/WorldEnvironment")
+	var sky_material_path: String = params.get("sky_material_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is WorldEnvironment:
+		_send_response({"error": "WorldEnvironment not found: " + node_path})
+		return
+	var env = (node as WorldEnvironment).environment
+	if env == null:
+		_send_response({"error": "No Environment resource"})
+		return
+	var sky_mat = load(sky_material_path) as SkyMaterial
+	if sky_mat == null:
+		_send_response({"error": "Cannot load SkyMaterial: " + sky_material_path})
+		return
+	if env.sky == null:
+		env.sky = Sky.new()
+	env.sky.sky_material = sky_mat
+	_send_response({"success": true, "sky_material_path": sky_material_path})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()
