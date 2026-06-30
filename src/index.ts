@@ -7944,6 +7944,258 @@ class GodotServer {
           required: ['nodePath', 'propertyName'],
         },
       },
+      {
+        name: 'add_polygon_2d',
+        description: 'Add a Polygon2D node to a 2D scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the target scene' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: Polygon2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_line_2d',
+        description: 'Add a Line2D node to a 2D scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the target scene' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: Line2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_tile_map_layer',
+        description: 'Add a TileMapLayer node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the target scene' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: TileMapLayer)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_parallax_background',
+        description: 'Add a ParallaxBackground node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the target scene' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: ParallaxBackground)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_parallax_layer',
+        description: 'Add a ParallaxLayer node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the target scene' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: ParallaxLayer)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_canvas_modulate',
+        description: 'Add a CanvasModulate node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the target scene' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: CanvasModulate)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_touch_screen_button',
+        description: 'Add a TouchScreenButton node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the target scene' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: TouchScreenButton)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_joint_2d',
+        description: 'Add a PinJoint2D node to a 2D scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the target scene' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: PinJoint2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_back_buffer_copy',
+        description: 'Add a BackBufferCopy node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the target scene' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: BackBufferCopy)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_ray_cast_2d_from_camera',
+        description: 'Add a camera-aligned RayCast2D to a 2D scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the target scene' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: RayCast2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'get_tileset_sources',
+        description: 'List tile sources in a TileSet resource file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            tilesetPath: { type: 'string', description: 'res:// path to the TileSet .tres/.res file' },
+          },
+          required: ['projectPath', 'tilesetPath'],
+        },
+      },
+      {
+        name: 'get_sprite_frames_info',
+        description: 'Read a SpriteFrames .tres and list animations.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            spriteFramesPath: { type: 'string', description: 'res:// path to the SpriteFrames .tres file' },
+          },
+          required: ['projectPath', 'spriteFramesPath'],
+        },
+      },
+      {
+        name: 'get_animation_library_info',
+        description: 'List animations in an AnimationLibrary .tres resource.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            libraryPath: { type: 'string', description: 'res:// path to the AnimationLibrary .tres file' },
+          },
+          required: ['projectPath', 'libraryPath'],
+        },
+      },
+      {
+        name: 'get_gdextension_info',
+        description: 'Read a .gdextension file and return its config.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            extensionPath: { type: 'string', description: 'res:// or filesystem path to the .gdextension file' },
+          },
+          required: ['projectPath', 'extensionPath'],
+        },
+      },
+      {
+        name: 'get_scene_by_main_script',
+        description: 'Find scenes whose root node uses a given script.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scriptPath: { type: 'string', description: 'res:// path or filename of the script to search for' },
+          },
+          required: ['projectPath', 'scriptPath'],
+        },
+      },
+      {
+        name: 'get_runtime_scene_list',
+        description: 'List all loaded scenes in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'game_set_debug_visible',
+        description: 'Toggle debug draw mode in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            enabled: { type: 'boolean', description: 'Whether to enable debug draw (default: true)' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'get_print_output',
+        description: 'Get recent print() output from the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            maxLines: { type: 'integer', description: 'Maximum number of lines to return (default: 50)' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'clear_print_output',
+        description: 'Clear the print output buffer in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'send_message_to_game',
+        description: 'Send a custom message to the running game MCP server.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            messageType: { type: 'string', description: 'Message type identifier to send' },
+            data: { type: 'object', description: 'Optional payload data to include with the message' },
+          },
+          required: ['messageType'],
+        },
+      },
       ],
     }));
 
@@ -9047,6 +9299,46 @@ class GodotServer {
           return await this.handleGetLightProperties(request.params.arguments);
         case 'set_light_property':
           return await this.handleSetLightProperty(request.params.arguments);
+        case 'add_polygon_2d':
+          return await this.handleAddPolygon2D(request.params.arguments);
+        case 'add_line_2d':
+          return await this.handleAddLine2D(request.params.arguments);
+        case 'add_tile_map_layer':
+          return await this.handleAddTileMapLayer(request.params.arguments);
+        case 'add_parallax_background':
+          return await this.handleAddParallaxBackground(request.params.arguments);
+        case 'add_parallax_layer':
+          return await this.handleAddParallaxLayer(request.params.arguments);
+        case 'add_canvas_modulate':
+          return await this.handleAddCanvasModulate(request.params.arguments);
+        case 'add_touch_screen_button':
+          return await this.handleAddTouchScreenButton(request.params.arguments);
+        case 'add_joint_2d':
+          return await this.handleAddJoint2D(request.params.arguments);
+        case 'add_back_buffer_copy':
+          return await this.handleAddBackBufferCopy(request.params.arguments);
+        case 'add_ray_cast_2d_from_camera':
+          return await this.handleAddRayCast2DFromCamera(request.params.arguments);
+        case 'get_tileset_sources':
+          return await this.handleGetTilesetSources(request.params.arguments);
+        case 'get_sprite_frames_info':
+          return await this.handleGetSpriteFramesInfo(request.params.arguments);
+        case 'get_animation_library_info':
+          return await this.handleGetAnimationLibraryInfo(request.params.arguments);
+        case 'get_gdextension_info':
+          return await this.handleGetGdextensionInfo(request.params.arguments);
+        case 'get_scene_by_main_script':
+          return await this.handleGetSceneByMainScript(request.params.arguments);
+        case 'get_runtime_scene_list':
+          return await this.handleGetRuntimeSceneList(request.params.arguments);
+        case 'game_set_debug_visible':
+          return await this.handleGameSetDebugVisible(request.params.arguments);
+        case 'get_print_output':
+          return await this.handleGetPrintOutput(request.params.arguments);
+        case 'clear_print_output':
+          return await this.handleClearPrintOutput(request.params.arguments);
+        case 'send_message_to_game':
+          return await this.handleSendMessageToGame(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -17300,6 +17592,205 @@ class GodotServer {
     if (!args.nodePath) return createErrorResponse('nodePath is required.');
     if (!args.propertyName) return createErrorResponse('propertyName is required.');
     return this.gameCommand('set_light_property', args, a => ({ node_path: a.nodePath, property_name: a.propertyName, value: a.value }));
+  }
+
+  private async handleAddPolygon2D(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'Polygon2D', nodeType: 'Polygon2D', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddLine2D(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'Line2D', nodeType: 'Line2D', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddTileMapLayer(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'TileMapLayer', nodeType: 'TileMapLayer', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddParallaxBackground(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'ParallaxBackground', nodeType: 'ParallaxBackground', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddParallaxLayer(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'ParallaxLayer', nodeType: 'ParallaxLayer', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddCanvasModulate(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'CanvasModulate', nodeType: 'CanvasModulate', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddTouchScreenButton(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'TouchScreenButton', nodeType: 'TouchScreenButton', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddJoint2D(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'PinJoint2D', nodeType: 'PinJoint2D', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddBackBufferCopy(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'BackBufferCopy', nodeType: 'BackBufferCopy', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddRayCast2DFromCamera(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'RayCast2D', nodeType: 'RayCast2D', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleGetTilesetSources(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.tilesetPath) return createErrorResponse('projectPath and tilesetPath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.tilesetPath);
+    if (!existsSync(absPath)) return createErrorResponse(`TileSet not found: ${absPath}`);
+    let content: string;
+    try { content = readFileSync(absPath, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const sources: Array<{ id: number; type: string; texture?: string }> = [];
+    const sourceMatches = content.matchAll(/\[sub_resource[^\]]*?type="(TileSetAtlasSource|TileSetScenesCollectionSource)"[^\]]*?id="(\d+)"/g);
+    for (const m of sourceMatches) {
+      const texMatch = content.slice(content.indexOf(m[0])).match(/texture\s*=\s*ExtResource\("([^"]+)"\)/);
+      sources.push({ id: parseInt(m[2]), type: m[1], texture: texMatch?.[1] });
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ tilesetPath: args.tilesetPath, sourceCount: sources.length, sources }, null, 2) }] };
+  }
+
+  private async handleGetSpriteFramesInfo(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.spriteFramesPath) return createErrorResponse('projectPath and spriteFramesPath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.spriteFramesPath);
+    if (!existsSync(absPath)) return createErrorResponse(`SpriteFrames not found: ${absPath}`);
+    let content: string;
+    try { content = readFileSync(absPath, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const animations: Array<{ name: string; loop: boolean; fps: number }> = [];
+    const animMatches = content.matchAll(/"(\w+)":\s*\{[^}]*?"loop":\s*(true|false)[^}]*?"speed":\s*([\d.]+)/g);
+    for (const m of animMatches) {
+      animations.push({ name: m[1], loop: m[2] === 'true', fps: parseFloat(m[3]) });
+    }
+    if (animations.length === 0) {
+      const nameMatches = content.matchAll(/^animations\/(\d+)\/name\s*=\s*"([^"]+)"/mg);
+      const frameMatches = content.matchAll(/^animations\/(\d+)\/speed\s*=\s*([\d.]+)/mg);
+      const loopMatches = content.matchAll(/^animations\/(\d+)\/loop\s*=\s*(\w+)/mg);
+      const names: Record<string, string> = {};
+      const speeds: Record<string, number> = {};
+      const loops: Record<string, boolean> = {};
+      for (const m of nameMatches) { names[m[1]] = m[2]; }
+      for (const m of frameMatches) { speeds[m[1]] = parseFloat(m[2]); }
+      for (const m of loopMatches) { loops[m[1]] = m[2] === 'true'; }
+      for (const idx of Object.keys(names)) {
+        animations.push({ name: names[idx], loop: loops[idx] ?? true, fps: speeds[idx] ?? 5 });
+      }
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ spriteFramesPath: args.spriteFramesPath, animationCount: animations.length, animations }, null, 2) }] };
+  }
+
+  private async handleGetAnimationLibraryInfo(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.libraryPath) return createErrorResponse('projectPath and libraryPath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.libraryPath);
+    if (!existsSync(absPath)) return createErrorResponse(`AnimationLibrary not found: ${absPath}`);
+    let content: string;
+    try { content = readFileSync(absPath, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const animations: string[] = [];
+    const matches = content.matchAll(/"([^"]+)":\s*SubResource\(/g);
+    for (const m of matches) animations.push(m[1]);
+    const altMatches = content.matchAll(/^_animations\/(\d+)\/name\s*=\s*"([^"]+)"/mg);
+    const seen = new Set(animations);
+    for (const m of altMatches) { if (!seen.has(m[2])) animations.push(m[2]); }
+    return { content: [{ type: 'text', text: JSON.stringify({ libraryPath: args.libraryPath, count: animations.length, animations }, null, 2) }] };
+  }
+
+  private async handleGetGdextensionInfo(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.extensionPath) return createErrorResponse('projectPath and extensionPath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.extensionPath);
+    if (!existsSync(absPath)) return createErrorResponse(`GDExtension not found: ${absPath}`);
+    let content: string;
+    try { content = readFileSync(absPath, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const sections: Record<string, Record<string, string>> = {};
+    let currentSection = 'default';
+    for (const line of content.split('\n')) {
+      const trimmed = line.trim();
+      const sectionMatch = trimmed.match(/^\[(\w+)\]$/);
+      if (sectionMatch) { currentSection = sectionMatch[1]; sections[currentSection] = sections[currentSection] || {}; continue; }
+      const kv = trimmed.match(/^(\S+)\s*=\s*"?([^"]+)"?/);
+      if (kv && !trimmed.startsWith(';')) sections[currentSection] = { ...sections[currentSection], [kv[1]]: kv[2] };
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ extensionPath: args.extensionPath, config: sections }, null, 2) }] };
+  }
+
+  private async handleGetSceneByMainScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const scenes = this.collectFiles(args.projectPath, ['.tscn']);
+    const matches: string[] = [];
+    for (const scene of scenes) {
+      let content: string;
+      try { content = readFileSync(scene, 'utf8'); } catch { continue; }
+      const nodes = this.parseTscnNodes(content);
+      if (nodes.length === 0) continue;
+      const root = nodes[0];
+      if (root && root.body.includes(args.scriptPath)) {
+        matches.push(scene.replace(args.projectPath + '/', ''));
+      }
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ scriptPath: args.scriptPath, count: matches.length, scenes: matches }, null, 2) }] };
+  }
+
+  private async handleGetRuntimeSceneList(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_runtime_scene_list', args, _a => ({}));
+  }
+
+  private async handleGameSetDebugVisible(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('game_set_debug_visible', args, a => ({ enabled: a.enabled ?? true }));
+  }
+
+  private async handleGetPrintOutput(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_print_output', args, a => ({ max_lines: a.maxLines ?? 50 }));
+  }
+
+  private async handleClearPrintOutput(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('clear_print_output', args, _a => ({}));
+  }
+
+  private async handleSendMessageToGame(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.messageType) return createErrorResponse('messageType is required.');
+    return this.gameCommand('send_message_to_game', args, a => ({ message_type: a.messageType, data: a.data || {} }));
   }
 
 }

@@ -18,6 +18,8 @@ var _recorded_events: Array = []
 var _recording_start_ms: float = 0.0
 var _fps_history: Array = []
 var _fps_history_max: int = 300
+var _print_buffer: Array = []
+var _print_buffer_max: int = 200
 var _profiler_start_time: int = 0
 var _profiler_running: bool = false
 
@@ -613,6 +615,16 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_light_properties(params)
 		"set_light_property":
 			_cmd_set_light_property(params)
+		"get_runtime_scene_list":
+			_cmd_get_runtime_scene_list(params)
+		"game_set_debug_visible":
+			_cmd_game_set_debug_visible(params)
+		"get_print_output":
+			_cmd_get_print_output(params)
+		"clear_print_output":
+			_cmd_clear_print_output(params)
+		"send_message_to_game":
+			_cmd_send_message_to_game(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -6793,6 +6805,39 @@ func _cmd_set_light_property(params: Dictionary) -> void:
 		return
 	node.set(property_name, value)
 	_send_response({"success": true, "property_name": property_name})
+
+func _cmd_get_runtime_scene_list(_params: Dictionary) -> void:
+	var scenes: Array = []
+	var queue: Array = [get_tree().root]
+	while queue.size() > 0:
+		var node = queue.pop_front()
+		var scene_path = node.scene_file_path if node.scene_file_path != "" else null
+		if scene_path != null:
+			scenes.append({"path": str(node.get_path()), "scene_file": scene_path, "name": node.name})
+		for child in node.get_children():
+			queue.append(child)
+	_send_response({"success": true, "count": scenes.size(), "scenes": scenes})
+
+func _cmd_game_set_debug_visible(params: Dictionary) -> void:
+	var enabled: bool = params.get("enabled", true)
+	get_viewport().debug_draw = Viewport.DEBUG_DRAW_WIREFRAME if enabled else Viewport.DEBUG_DRAW_DISABLED
+	_send_response({"success": true, "debug_draw": enabled})
+
+func _cmd_get_print_output(params: Dictionary) -> void:
+	var max_lines: int = params.get("max_lines", 50)
+	var output = _print_buffer.slice(max(_print_buffer.size() - max_lines, 0))
+	_send_response({"success": true, "line_count": output.size(), "total_buffered": _print_buffer.size(), "output": output})
+
+func _cmd_clear_print_output(_params: Dictionary) -> void:
+	var count = _print_buffer.size()
+	_print_buffer.clear()
+	_send_response({"success": true, "cleared_lines": count})
+
+func _cmd_send_message_to_game(params: Dictionary) -> void:
+	var message_type: String = params.get("message_type", "")
+	var data: Dictionary = params.get("data", {})
+	emit_signal("mcp_message_received", message_type, data) if has_signal("mcp_message_received") else null
+	_send_response({"success": true, "message_type": message_type, "data": data})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()
