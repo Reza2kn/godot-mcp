@@ -485,6 +485,26 @@ func _handle_command(json_str: String) -> void:
 			_cmd_set_material_property(params)
 		"rich_text_append":
 			_cmd_rich_text_append(params)
+		"timer_start":
+			_cmd_timer_start(params)
+		"timer_stop":
+			_cmd_timer_stop(params)
+		"timer_set_wait_time":
+			_cmd_timer_set_wait_time(params)
+		"rigid_body_apply_impulse":
+			_cmd_rigid_body_apply_impulse(params)
+		"character_body_set_velocity":
+			_cmd_character_body_set_velocity(params)
+		"ray_cast_force_update":
+			_cmd_ray_cast_force_update(params)
+		"area_get_overlapping":
+			_cmd_area_get_overlapping(params)
+		"visibility_notifier_set_rect":
+			_cmd_visibility_notifier_set_rect(params)
+		"spring_arm_3d_set_length":
+			_cmd_spring_arm_3d_set_length(params)
+		"get_collision_shape_info":
+			_cmd_get_collision_shape_info(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -5788,6 +5808,178 @@ func _cmd_rich_text_append(params: Dictionary) -> void:
 		rtl.clear()
 	rtl.append_text(bbcode)
 	_send_response({"success": true, "appended": bbcode.length(), "node_path": node_path})
+
+
+func _cmd_timer_start(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var wait_time = params.get("wait_time", null)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Timer:
+		_send_response({"error": "Timer not found: " + node_path})
+		return
+	var timer := node as Timer
+	if wait_time != null:
+		timer.wait_time = wait_time
+	timer.start()
+	_send_response({"success": true, "wait_time": timer.wait_time, "one_shot": timer.one_shot})
+
+
+func _cmd_timer_stop(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Timer:
+		_send_response({"error": "Timer not found: " + node_path})
+		return
+	(node as Timer).stop()
+	_send_response({"success": true, "stopped": true})
+
+
+func _cmd_timer_set_wait_time(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var wait_time: float = params.get("wait_time", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Timer:
+		_send_response({"error": "Timer not found: " + node_path})
+		return
+	(node as Timer).wait_time = wait_time
+	_send_response({"success": true, "wait_time": wait_time})
+
+
+func _cmd_rigid_body_apply_impulse(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is RigidBody2D:
+		(node as RigidBody2D).apply_impulse(Vector2(x, y))
+		_send_response({"success": true, "type": "RigidBody2D", "impulse": {"x": x, "y": y}})
+	elif node is RigidBody3D:
+		(node as RigidBody3D).apply_impulse(Vector3(x, y, z))
+		_send_response({"success": true, "type": "RigidBody3D", "impulse": {"x": x, "y": y, "z": z}})
+	else:
+		_send_response({"error": "Node is not a RigidBody: " + node.get_class()})
+
+
+func _cmd_character_body_set_velocity(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is CharacterBody2D:
+		(node as CharacterBody2D).velocity = Vector2(x, y)
+		_send_response({"success": true, "type": "CharacterBody2D", "velocity": {"x": x, "y": y}})
+	elif node is CharacterBody3D:
+		(node as CharacterBody3D).velocity = Vector3(x, y, z)
+		_send_response({"success": true, "type": "CharacterBody3D", "velocity": {"x": x, "y": y, "z": z}})
+	else:
+		_send_response({"error": "Node is not a CharacterBody: " + node.get_class()})
+
+
+func _cmd_ray_cast_force_update(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is RayCast2D:
+		(node as RayCast2D).force_raycast_update()
+		var rc2 := node as RayCast2D
+		_send_response({"success": true, "is_colliding": rc2.is_colliding(), "collider": str(rc2.get_collider()) if rc2.is_colliding() else null})
+	elif node is RayCast3D:
+		(node as RayCast3D).force_raycast_update()
+		var rc3 := node as RayCast3D
+		_send_response({"success": true, "is_colliding": rc3.is_colliding(), "collider": str(rc3.get_collider()) if rc3.is_colliding() else null})
+	else:
+		_send_response({"error": "Node is not a RayCast: " + node.get_class()})
+
+
+func _cmd_area_get_overlapping(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is Area2D:
+		var area2 := node as Area2D
+		var bodies: Array = []
+		for b in area2.get_overlapping_bodies():
+			bodies.append({"path": str(b.get_path()), "class": b.get_class()})
+		var areas: Array = []
+		for a in area2.get_overlapping_areas():
+			areas.append({"path": str(a.get_path()), "class": a.get_class()})
+		_send_response({"success": true, "type": "Area2D", "overlapping_bodies": bodies, "overlapping_areas": areas})
+	elif node is Area3D:
+		var area3 := node as Area3D
+		var bodies: Array = []
+		for b in area3.get_overlapping_bodies():
+			bodies.append({"path": str(b.get_path()), "class": b.get_class()})
+		var areas: Array = []
+		for a in area3.get_overlapping_areas():
+			areas.append({"path": str(a.get_path()), "class": a.get_class()})
+		_send_response({"success": true, "type": "Area3D", "overlapping_bodies": bodies, "overlapping_areas": areas})
+	else:
+		_send_response({"error": "Node is not an Area: " + node.get_class()})
+
+
+func _cmd_visibility_notifier_set_rect(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var width: float = params.get("width", 100.0)
+	var height: float = params.get("height", 100.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is VisibleOnScreenNotifier2D:
+		_send_response({"error": "VisibleOnScreenNotifier2D not found: " + node_path})
+		return
+	(node as VisibleOnScreenNotifier2D).rect = Rect2(x, y, width, height)
+	_send_response({"success": true, "rect": {"x": x, "y": y, "width": width, "height": height}})
+
+
+func _cmd_spring_arm_3d_set_length(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var spring_length: float = params.get("spring_length", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is SpringArm3D:
+		_send_response({"error": "SpringArm3D not found: " + node_path})
+		return
+	(node as SpringArm3D).spring_length = spring_length
+	_send_response({"success": true, "spring_length": spring_length})
+
+
+func _cmd_get_collision_shape_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var shapes: Array = []
+	for child in node.get_children():
+		if child is CollisionShape2D:
+			var cs := child as CollisionShape2D
+			shapes.append({
+				"name": child.name,
+				"type": "CollisionShape2D",
+				"shape_class": cs.shape.get_class() if cs.shape else null,
+				"disabled": cs.disabled,
+				"position": {"x": cs.position.x, "y": cs.position.y}
+			})
+		elif child is CollisionShape3D:
+			var cs3 := child as CollisionShape3D
+			shapes.append({
+				"name": child.name,
+				"type": "CollisionShape3D",
+				"shape_class": cs3.shape.get_class() if cs3.shape else null,
+				"disabled": cs3.disabled
+			})
+	_send_response({"success": true, "node_path": node_path, "shapes": shapes})
 
 
 func _exit_tree() -> void:

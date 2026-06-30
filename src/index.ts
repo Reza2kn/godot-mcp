@@ -5540,6 +5540,244 @@ class GodotServer {
           required: ['nodePath', 'bbcode'],
         },
       },
+      {
+        name: 'check_missing_resources',
+        description: 'Find missing ext_resource files referenced in scenes.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project root' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_resource_usage',
+        description: 'Find all scenes that reference a specific resource.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project root' },
+            resourcePath: { type: 'string', description: 'Resource path (res:// or partial) to search for' },
+          },
+          required: ['projectPath', 'resourcePath'],
+        },
+      },
+      {
+        name: 'list_custom_classes',
+        description: 'List all class_name declarations across all GDScript files.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project root' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'find_deprecated_apis',
+        description: 'Find deprecated Godot 3 API patterns in GDScript files.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project root' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_project_total_size',
+        description: 'Calculate total size of project files in bytes.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project root' },
+            includeHidden: { type: 'boolean', description: 'Include hidden files (default false)' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_node_count_by_type',
+        description: 'Count occurrences of each node type across all scenes.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project root' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'list_all_autoloads',
+        description: 'List all autoload singletons defined in project.godot.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project root' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_scene_size',
+        description: 'Get file size and node/connection counts of a scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project root' },
+            scenePath: { type: 'string', description: 'res:// or absolute path to the .tscn file' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'compare_scene_nodes',
+        description: 'Compare nodes between two scene files and show differences.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project root' },
+            scenePath1: { type: 'string', description: 'res:// or absolute path to the first .tscn file' },
+            scenePath2: { type: 'string', description: 'res:// or absolute path to the second .tscn file' },
+          },
+          required: ['projectPath', 'scenePath1', 'scenePath2'],
+        },
+      },
+      {
+        name: 'get_scene_statistics_all',
+        description: 'Get node/connection counts for all scenes in the project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project root' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'timer_start',
+        description: 'Start a Timer node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the Timer node' },
+            waitTime: { type: 'number', description: 'Optional wait_time to set before starting' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'timer_stop',
+        description: 'Stop a Timer node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the Timer node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'timer_set_wait_time',
+        description: 'Set the wait_time of a Timer node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the Timer node' },
+            waitTime: { type: 'number', description: 'New wait_time value in seconds' },
+          },
+          required: ['nodePath', 'waitTime'],
+        },
+      },
+      {
+        name: 'rigid_body_apply_impulse',
+        description: 'Apply an impulse to a RigidBody in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the RigidBody node' },
+            x: { type: 'number', description: 'X component of the impulse vector' },
+            y: { type: 'number', description: 'Y component of the impulse vector' },
+            z: { type: 'number', description: 'Z component (3D only, default 0)' },
+          },
+          required: ['nodePath', 'x', 'y'],
+        },
+      },
+      {
+        name: 'character_body_set_velocity',
+        description: 'Set velocity on a CharacterBody in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the CharacterBody node' },
+            x: { type: 'number', description: 'X component of the velocity vector' },
+            y: { type: 'number', description: 'Y component of the velocity vector' },
+            z: { type: 'number', description: 'Z component (3D only, default 0)' },
+          },
+          required: ['nodePath', 'x', 'y'],
+        },
+      },
+      {
+        name: 'ray_cast_force_update',
+        description: 'Force a RayCast to update collision in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the RayCast node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'area_get_overlapping',
+        description: 'Get bodies/areas overlapping an Area node in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the Area2D/Area3D node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'visibility_notifier_set_rect',
+        description: 'Set the Rect of a VisibleOnScreenNotifier2D in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the VisibleOnScreenNotifier2D' },
+            x: { type: 'number', description: 'X position of the rect (default 0)' },
+            y: { type: 'number', description: 'Y position of the rect (default 0)' },
+            width: { type: 'number', description: 'Width of the rect' },
+            height: { type: 'number', description: 'Height of the rect' },
+          },
+          required: ['nodePath', 'width', 'height'],
+        },
+      },
+      {
+        name: 'spring_arm_3d_set_length',
+        description: 'Set the spring length of a SpringArm3D in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the SpringArm3D node' },
+            springLength: { type: 'number', description: 'New spring_length value' },
+          },
+          required: ['nodePath', 'springLength'],
+        },
+      },
+      {
+        name: 'get_collision_shape_info',
+        description: 'Get collision shape info from a physics body in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the physics body node' },
+          },
+          required: ['nodePath'],
+        },
+      },
       ],
     }));
 
@@ -6261,6 +6499,46 @@ class GodotServer {
           return await this.handleSetMaterialProperty(request.params.arguments);
         case 'rich_text_append':
           return await this.handleRichTextAppend(request.params.arguments);
+        case 'check_missing_resources':
+          return await this.handleCheckMissingResources(request.params.arguments);
+        case 'get_resource_usage':
+          return await this.handleGetResourceUsage(request.params.arguments);
+        case 'list_custom_classes':
+          return await this.handleListCustomClasses(request.params.arguments);
+        case 'find_deprecated_apis':
+          return await this.handleFindDeprecatedApis(request.params.arguments);
+        case 'get_project_total_size':
+          return await this.handleGetProjectTotalSize(request.params.arguments);
+        case 'get_node_count_by_type':
+          return await this.handleGetNodeCountByType(request.params.arguments);
+        case 'list_all_autoloads':
+          return await this.handleListAllAutoloads(request.params.arguments);
+        case 'get_scene_size':
+          return await this.handleGetSceneSize(request.params.arguments);
+        case 'compare_scene_nodes':
+          return await this.handleCompareSceneNodes(request.params.arguments);
+        case 'get_scene_statistics_all':
+          return await this.handleGetSceneStatisticsAll(request.params.arguments);
+        case 'timer_start':
+          return await this.handleTimerStart(request.params.arguments);
+        case 'timer_stop':
+          return await this.handleTimerStop(request.params.arguments);
+        case 'timer_set_wait_time':
+          return await this.handleTimerSetWaitTime(request.params.arguments);
+        case 'rigid_body_apply_impulse':
+          return await this.handleRigidBodyApplyImpulse(request.params.arguments);
+        case 'character_body_set_velocity':
+          return await this.handleCharacterBodySetVelocity(request.params.arguments);
+        case 'ray_cast_force_update':
+          return await this.handleRayCastForceUpdate(request.params.arguments);
+        case 'area_get_overlapping':
+          return await this.handleAreaGetOverlapping(request.params.arguments);
+        case 'visibility_notifier_set_rect':
+          return await this.handleVisibilityNotifierSetRect(request.params.arguments);
+        case 'spring_arm_3d_set_length':
+          return await this.handleSpringArm3dSetLength(request.params.arguments);
+        case 'get_collision_shape_info':
+          return await this.handleGetCollisionShapeInfo(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -12378,6 +12656,307 @@ class GodotServer {
     args = normalizeParameters(args || {});
     if (!args.nodePath || args.bbcode === undefined) return createErrorResponse('nodePath and bbcode are required.');
     return this.gameCommand('rich_text_append', args, a => ({ node_path: a.nodePath, bbcode: a.bbcode, clear: a.clear ?? false }));
+  }
+
+  private async handleCheckMissingResources(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const scenes = this.collectFiles(args.projectPath, ['.tscn']);
+    const missing: Array<{ scene: string; resourcePath: string; type: string }> = [];
+    for (const scene of scenes) {
+      let content: string;
+      try { content = readFileSync(scene, 'utf8'); } catch { continue; }
+      const matches = content.matchAll(/\[ext_resource[^\]]*?type="([^"]+)"[^\]]*?path="([^"]+)"/g);
+      for (const m of matches) {
+        const resPath = m[2];
+        let absPath: string;
+        if (resPath.startsWith('res://')) {
+          absPath = join(args.projectPath, resPath.slice('res://'.length));
+        } else {
+          absPath = resPath;
+        }
+        if (!existsSync(absPath)) {
+          missing.push({
+            scene: scene.replace(args.projectPath + '/', ''),
+            resourcePath: resPath,
+            type: m[1],
+          });
+        }
+      }
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ missingCount: missing.length, missing }, null, 2) }] };
+  }
+
+  private async handleGetResourceUsage(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.resourcePath) return createErrorResponse('projectPath and resourcePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const scenes = this.collectFiles(args.projectPath, ['.tscn']);
+    const scripts = this.collectFiles(args.projectPath, ['.gd']);
+    const allFiles = [...scenes, ...scripts];
+    const usages: Array<{ file: string; lineNumber: number; context: string }> = [];
+    const searchTerm = args.resourcePath;
+    for (const file of allFiles) {
+      let content: string;
+      try { content = readFileSync(file, 'utf8'); } catch { continue; }
+      const lines = content.split('\n');
+      lines.forEach((line, idx) => {
+        if (line.includes(searchTerm)) {
+          usages.push({ file: file.replace(args.projectPath + '/', ''), lineNumber: idx + 1, context: line.trim().slice(0, 80) });
+        }
+      });
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ resourcePath: args.resourcePath, usageCount: usages.length, usages }, null, 2) }] };
+  }
+
+  private async handleListCustomClasses(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const scripts = this.collectFiles(args.projectPath, ['.gd']);
+    const classes: Array<{ className: string; extends?: string; file: string }> = [];
+    for (const script of scripts) {
+      let content: string;
+      try { content = readFileSync(script, 'utf8'); } catch { continue; }
+      const classMatch = content.match(/^class_name\s+(\w+)/m);
+      if (classMatch) {
+        const extendsMatch = content.match(/^extends\s+(\S+)/m);
+        classes.push({
+          className: classMatch[1],
+          extends: extendsMatch ? extendsMatch[1] : undefined,
+          file: script.replace(args.projectPath + '/', ''),
+        });
+      }
+    }
+    classes.sort((a, b) => a.className.localeCompare(b.className));
+    return { content: [{ type: 'text', text: JSON.stringify({ count: classes.length, classes }, null, 2) }] };
+  }
+
+  private async handleFindDeprecatedApis(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const scripts = this.collectFiles(args.projectPath, ['.gd']);
+    const deprecatedPatterns = [
+      { pattern: /\byield\s*\(/, label: 'yield() — use await instead' },
+      { pattern: /\bsetget\b/, label: 'setget — use @property annotation' },
+      { pattern: /\bonready\b/, label: 'onready — use @onready annotation' },
+      { pattern: /^export\s+var\b/m, label: 'export var — use @export annotation' },
+      { pattern: /^tool\s*$/m, label: 'tool — use @tool annotation' },
+      { pattern: /\bOS\.get_ticks_msec\b/, label: 'OS.get_ticks_msec — use Time.get_ticks_msec' },
+      { pattern: /\bVisualServer\b/, label: 'VisualServer — renamed to RenderingServer' },
+      { pattern: /\bPhysicsServer\b/, label: 'PhysicsServer — renamed to PhysicsServer3D' },
+    ];
+    const findings: Array<{ file: string; line: number; pattern: string; context: string }> = [];
+    for (const script of scripts) {
+      let content: string;
+      try { content = readFileSync(script, 'utf8'); } catch { continue; }
+      const lines = content.split('\n');
+      for (const { pattern, label } of deprecatedPatterns) {
+        lines.forEach((line, idx) => {
+          if (pattern.test(line)) {
+            findings.push({ file: script.replace(args.projectPath + '/', ''), line: idx + 1, pattern: label, context: line.trim().slice(0, 80) });
+          }
+        });
+      }
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ findingCount: findings.length, findings }, null, 2) }] };
+  }
+
+  private async handleGetProjectTotalSize(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const { statSync, readdirSync } = await import('node:fs');
+    const byExt: Record<string, { count: number; bytes: number }> = {};
+    let totalBytes = 0;
+    const walk = (dir: string) => {
+      let entries: string[];
+      try { entries = readdirSync(dir); } catch { return; }
+      for (const entry of entries) {
+        if (entry.startsWith('.') && !args.includeHidden) continue;
+        if (entry === '.godot') continue;
+        const full = join(dir, entry);
+        try {
+          const stat = statSync(full);
+          if (stat.isDirectory()) { walk(full); continue; }
+          totalBytes += stat.size;
+          const ext = entry.includes('.') ? '.' + entry.split('.').pop()! : 'no-ext';
+          byExt[ext] = byExt[ext] || { count: 0, bytes: 0 };
+          byExt[ext].count++;
+          byExt[ext].bytes += stat.size;
+        } catch {}
+      }
+    };
+    walk(args.projectPath);
+    const sorted = Object.entries(byExt).sort((a, b) => b[1].bytes - a[1].bytes);
+    return { content: [{ type: 'text', text: JSON.stringify({ totalBytes, totalMb: (totalBytes / 1048576).toFixed(2), byExtension: Object.fromEntries(sorted) }, null, 2) }] };
+  }
+
+  private async handleGetNodeCountByType(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const scenes = this.collectFiles(args.projectPath, ['.tscn']);
+    const typeCounts: Record<string, number> = {};
+    let totalNodes = 0;
+    for (const scene of scenes) {
+      let content: string;
+      try { content = readFileSync(scene, 'utf8'); } catch { continue; }
+      const matches = content.matchAll(/\[node[^\]]*\btype="([^"]+)"/g);
+      for (const m of matches) {
+        typeCounts[m[1]] = (typeCounts[m[1]] || 0) + 1;
+        totalNodes++;
+      }
+    }
+    const sorted = Object.entries(typeCounts).sort((a, b) => b[1] - a[1]);
+    return { content: [{ type: 'text', text: JSON.stringify({ totalNodes, uniqueTypes: sorted.length, typeCounts: Object.fromEntries(sorted) }, null, 2) }] };
+  }
+
+  private async handleListAllAutoloads(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const projectFile = join(args.projectPath, 'project.godot');
+    if (!existsSync(projectFile)) return createErrorResponse('project.godot not found.');
+    let content: string;
+    try { content = readFileSync(projectFile, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const autoloadMatch = content.match(/\[autoload\]([\s\S]*?)(?=\n\[|$)/);
+    const autoloads: Array<{ name: string; path: string; singleton: boolean }> = [];
+    if (autoloadMatch) {
+      for (const line of autoloadMatch[1].split('\n')) {
+        const kv = line.trim().match(/^(\w+)\s*=\s*"(\*?)([^"]+)"$/);
+        if (kv) autoloads.push({ name: kv[1], path: kv[3], singleton: kv[2] === '*' });
+      }
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ count: autoloads.length, autoloads }, null, 2) }] };
+  }
+
+  private async handleGetSceneSize(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    const { statSync } = await import('node:fs');
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const stat = statSync(absScene);
+    const nodeCount = (content.match(/^\[node /gm) || []).length;
+    const connCount = (content.match(/^\[connection /gm) || []).length;
+    const extResCount = (content.match(/^\[ext_resource /gm) || []).length;
+    const subResCount = (content.match(/^\[sub_resource /gm) || []).length;
+    return { content: [{ type: 'text', text: JSON.stringify({ scenePath: args.scenePath, sizeBytes: stat.size, sizeKb: (stat.size / 1024).toFixed(1), nodeCount, connectionCount: connCount, extResourceCount: extResCount, subResourceCount: subResCount }, null, 2) }] };
+  }
+
+  private async handleCompareSceneNodes(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath1 || !args.scenePath2) return createErrorResponse('projectPath, scenePath1, and scenePath2 are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const abs1 = this.resolveResPath(args.projectPath, args.scenePath1);
+    const abs2 = this.resolveResPath(args.projectPath, args.scenePath2);
+    if (!existsSync(abs1)) return createErrorResponse(`Scene1 not found: ${abs1}`);
+    if (!existsSync(abs2)) return createErrorResponse(`Scene2 not found: ${abs2}`);
+    let c1: string, c2: string;
+    try { c1 = readFileSync(abs1, 'utf8'); } catch (e: any) { return createErrorResponse(`Read scene1 failed: ${e.message}`); }
+    try { c2 = readFileSync(abs2, 'utf8'); } catch (e: any) { return createErrorResponse(`Read scene2 failed: ${e.message}`); }
+    const nodes1 = this.parseTscnNodes(c1);
+    const nodes2 = this.parseTscnNodes(c2);
+    const names1 = new Set(nodes1.map(n => n.name));
+    const names2 = new Set(nodes2.map(n => n.name));
+    const added = [...names2].filter(n => !names1.has(n));
+    const removed = [...names1].filter(n => !names2.has(n));
+    const common = [...names1].filter(n => names2.has(n));
+    const typeChanged = common.filter(name => {
+      const n1 = nodes1.find(n => n.name === name);
+      const n2 = nodes2.find(n => n.name === name);
+      return n1 && n2 && n1.type !== n2.type;
+    });
+    return { content: [{ type: 'text', text: JSON.stringify({ added, removed, typeChanged, commonCount: common.length }, null, 2) }] };
+  }
+
+  private async handleGetSceneStatisticsAll(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const scenes = this.collectFiles(args.projectPath, ['.tscn']);
+    const { statSync } = await import('node:fs');
+    const results: Array<{ scene: string; nodes: number; connections: number; sizeKb: number }> = [];
+    for (const scene of scenes) {
+      let content: string;
+      try { content = readFileSync(scene, 'utf8'); } catch { continue; }
+      const stat = statSync(scene);
+      results.push({
+        scene: scene.replace(args.projectPath + '/', ''),
+        nodes: (content.match(/^\[node /gm) || []).length,
+        connections: (content.match(/^\[connection /gm) || []).length,
+        sizeKb: Math.round(stat.size / 1024),
+      });
+    }
+    results.sort((a, b) => b.nodes - a.nodes);
+    const totalNodes = results.reduce((s, r) => s + r.nodes, 0);
+    return { content: [{ type: 'text', text: JSON.stringify({ sceneCount: results.length, totalNodes, scenes: results }, null, 2) }] };
+  }
+
+  private async handleTimerStart(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('timer_start', args, a => ({ node_path: a.nodePath, wait_time: a.waitTime }));
+  }
+
+  private async handleTimerStop(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('timer_stop', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleTimerSetWaitTime(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || args.waitTime === undefined) return createErrorResponse('nodePath and waitTime are required.');
+    return this.gameCommand('timer_set_wait_time', args, a => ({ node_path: a.nodePath, wait_time: a.waitTime }));
+  }
+
+  private async handleRigidBodyApplyImpulse(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || args.x === undefined || args.y === undefined) return createErrorResponse('nodePath, x, and y are required.');
+    return this.gameCommand('rigid_body_apply_impulse', args, a => ({ node_path: a.nodePath, x: a.x, y: a.y, z: a.z ?? 0 }));
+  }
+
+  private async handleCharacterBodySetVelocity(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || args.x === undefined || args.y === undefined) return createErrorResponse('nodePath, x, and y are required.');
+    return this.gameCommand('character_body_set_velocity', args, a => ({ node_path: a.nodePath, x: a.x, y: a.y, z: a.z ?? 0 }));
+  }
+
+  private async handleRayCastForceUpdate(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('ray_cast_force_update', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleAreaGetOverlapping(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('area_get_overlapping', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleVisibilityNotifierSetRect(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || args.width === undefined || args.height === undefined) return createErrorResponse('nodePath, width, and height are required.');
+    return this.gameCommand('visibility_notifier_set_rect', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0, width: a.width, height: a.height }));
+  }
+
+  private async handleSpringArm3dSetLength(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || args.springLength === undefined) return createErrorResponse('nodePath and springLength are required.');
+    return this.gameCommand('spring_arm_3d_set_length', args, a => ({ node_path: a.nodePath, spring_length: a.springLength }));
+  }
+
+  private async handleGetCollisionShapeInfo(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_collision_shape_info', args, a => ({ node_path: a.nodePath }));
   }
 
 }
