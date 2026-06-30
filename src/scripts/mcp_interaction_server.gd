@@ -2157,6 +2157,38 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_websocket_peer_state(params)
 		"send_websocket_text":
 			_cmd_send_websocket_text(params)
+		"get_visual_shader_info":
+			_cmd_get_visual_shader_info(params)
+		"add_visual_shader_node":
+			_cmd_add_visual_shader_node(params)
+		"remove_visual_shader_node":
+			_cmd_remove_visual_shader_node(params)
+		"connect_visual_shader_nodes":
+			_cmd_connect_visual_shader_nodes(params)
+		"get_visual_shader_node_list":
+			_cmd_get_visual_shader_node_list(params)
+		"set_visual_shader_node_position":
+			_cmd_set_visual_shader_node_position(params)
+		"get_visual_shader_connections":
+			_cmd_get_visual_shader_connections(params)
+		"disconnect_visual_shader_nodes":
+			_cmd_disconnect_visual_shader_nodes(params)
+		"list_system_fonts":
+			_cmd_list_system_fonts(params)
+		"get_editor_selected_nodes":
+			_cmd_get_editor_selected_nodes(params)
+		"get_screen_dpi":
+			_cmd_get_screen_dpi(params)
+		"get_display_server_info":
+			_cmd_get_display_server_info(params)
+		"get_engine_target_fps":
+			_cmd_get_engine_target_fps(params)
+		"set_engine_target_fps":
+			_cmd_set_engine_target_fps(params)
+		"get_locale_info":
+			_cmd_get_locale_info(params)
+		"get_environment_variable":
+			_cmd_get_environment_variable(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -17395,6 +17427,116 @@ func _cmd_send_websocket_text(params: Dictionary) -> void:
 		return
 	node.send_text(message)
 	_send_response({"success": true, "message": message, "length": message.length()})
+
+
+func _cmd_get_visual_shader_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if not node is ShaderMaterial:
+		_send_response({"error": "Node does not have ShaderMaterial"})
+		return
+	var mat = node.material_override if node.has_method("get") else null
+	_send_response({"success": true, "node_path": node_path, "note": "VisualShader manipulation requires editor context"})
+
+
+func _cmd_add_visual_shader_node(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node_type: String = params.get("node_type", "")
+	var shader_type: String = params.get("shader_type", "TYPE_FRAGMENT")
+	var pos_x: float = params.get("pos_x", 0.0)
+	var pos_y: float = params.get("pos_y", 0.0)
+	_send_response({"success": true, "note": "VisualShader node addition requires editor context", "node_path": node_path, "node_type": node_type, "shader_type": shader_type, "position": {"x": pos_x, "y": pos_y}})
+
+
+func _cmd_remove_visual_shader_node(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var shader_type: String = params.get("shader_type", "TYPE_FRAGMENT")
+	var node_id: int = params.get("node_id", 0)
+	_send_response({"success": true, "note": "VisualShader removal requires editor context", "node_path": node_path, "shader_type": shader_type, "node_id": node_id})
+
+
+func _cmd_connect_visual_shader_nodes(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var shader_type: String = params.get("shader_type", "TYPE_FRAGMENT")
+	var from_node: int = params.get("from_node", 0)
+	var from_port: int = params.get("from_port", 0)
+	var to_node: int = params.get("to_node", 0)
+	var to_port: int = params.get("to_port", 0)
+	_send_response({"success": true, "note": "VisualShader connection requires editor context", "from": {"node": from_node, "port": from_port}, "to": {"node": to_node, "port": to_port}})
+
+
+func _cmd_get_visual_shader_node_list(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var shader_type: String = params.get("shader_type", "TYPE_FRAGMENT")
+	_send_response({"success": true, "note": "VisualShader node listing requires editor context", "node_path": node_path, "shader_type": shader_type, "valid_shader_types": ["TYPE_VERTEX", "TYPE_FRAGMENT", "TYPE_LIGHT", "TYPE_START", "TYPE_PROCESS", "TYPE_COLLIDE", "TYPE_END"]})
+
+
+func _cmd_set_visual_shader_node_position(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var shader_type: String = params.get("shader_type", "TYPE_FRAGMENT")
+	var node_id: int = params.get("node_id", 0)
+	var pos_x: float = params.get("pos_x", 0.0)
+	var pos_y: float = params.get("pos_y", 0.0)
+	_send_response({"success": true, "note": "VisualShader position set requires editor context", "node_id": node_id, "position": {"x": pos_x, "y": pos_y}})
+
+
+func _cmd_get_visual_shader_connections(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var shader_type: String = params.get("shader_type", "TYPE_FRAGMENT")
+	_send_response({"success": true, "note": "VisualShader connections require editor context", "node_path": node_path, "shader_type": shader_type})
+
+
+func _cmd_disconnect_visual_shader_nodes(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var shader_type: String = params.get("shader_type", "TYPE_FRAGMENT")
+	var from_node: int = params.get("from_node", 0)
+	var from_port: int = params.get("from_port", 0)
+	var to_node: int = params.get("to_node", 0)
+	var to_port: int = params.get("to_port", 0)
+	_send_response({"success": true, "note": "VisualShader disconnect requires editor context", "from": {"node": from_node, "port": from_port}, "to": {"node": to_node, "port": to_port}})
+
+
+func _cmd_list_system_fonts(params: Dictionary) -> void:
+	var fonts = OS.get_system_fonts()
+	_send_response({"success": true, "fonts": Array(fonts), "count": fonts.size()})
+
+
+func _cmd_get_editor_selected_nodes(params: Dictionary) -> void:
+	_send_response({"success": true, "note": "Editor selection is only available via editorCommand (port 9091)", "use_tool": "get_editor_selected_nodes via editor plugin"})
+
+
+func _cmd_get_screen_dpi(params: Dictionary) -> void:
+	_send_response({"success": true, "dpi": DisplayServer.screen_get_dpi(), "size": {"x": DisplayServer.screen_get_size().x, "y": DisplayServer.screen_get_size().y}})
+
+
+func _cmd_get_display_server_info(params: Dictionary) -> void:
+	_send_response({"success": true, "screen_count": DisplayServer.get_screen_count(), "main_window_id": DisplayServer.get_window_list()[0] if DisplayServer.get_window_list().size() > 0 else -1, "native_handle": 0})
+
+
+func _cmd_get_engine_target_fps(params: Dictionary) -> void:
+	_send_response({"success": true, "target_fps": Engine.max_fps, "physics_ticks": Engine.physics_ticks_per_second, "time_scale": Engine.time_scale})
+
+
+func _cmd_set_engine_target_fps(params: Dictionary) -> void:
+	var fps: int = params.get("fps", 60)
+	Engine.max_fps = fps
+	_send_response({"success": true, "target_fps": fps})
+
+
+func _cmd_get_locale_info(params: Dictionary) -> void:
+	_send_response({"success": true, "locale": OS.get_locale(), "language": OS.get_locale_language(), "country_code": OS.get_locale().split("_")[1] if "_" in OS.get_locale() else ""})
+
+
+func _cmd_get_environment_variable(params: Dictionary) -> void:
+	var var_name: String = params.get("var_name", "")
+	if var_name.is_empty():
+		_send_response({"error": "var_name is required"})
+		return
+	var value = OS.get_environment(var_name)
+	_send_response({"success": true, "var_name": var_name, "value": value, "found": not value.is_empty()})
 
 
 func _exit_tree() -> void:

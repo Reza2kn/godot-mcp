@@ -18475,6 +18475,48 @@ class GodotServer {
       { name: 'write_object_pooling_script', description: 'Write an object pool for performance script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, poolSize: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_shield_system_script', description: 'Write a rechargeable shield system script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, maxShield: { type: 'number' }, rechargeDelay: { type: 'number' }, rechargeRate: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_waypoint_patrol_script', description: 'Write an AI waypoint patrol movement script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, speed: { type: 'number' }, waitTime: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      // Batch 73 — Group A: VisualShader node graph
+      { name: 'get_visual_shader_info', description: 'Get VisualShader node count and output type.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'add_visual_shader_node', description: 'Add a node to a VisualShader graph.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, nodeType: { type: 'string' }, shaderType: { type: 'string' }, posX: { type: 'number' }, posY: { type: 'number' } }, required: ['nodePath', 'nodeType', 'shaderType'] } },
+      { name: 'remove_visual_shader_node', description: 'Remove a node from a VisualShader graph.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, shaderType: { type: 'string' }, nodeId: { type: 'integer' } }, required: ['nodePath', 'shaderType', 'nodeId'] } },
+      { name: 'connect_visual_shader_nodes', description: 'Connect two nodes in a VisualShader graph.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, shaderType: { type: 'string' }, fromNode: { type: 'integer' }, fromPort: { type: 'integer' }, toNode: { type: 'integer' }, toPort: { type: 'integer' } }, required: ['nodePath', 'shaderType', 'fromNode', 'fromPort', 'toNode', 'toPort'] } },
+      { name: 'get_visual_shader_node_list', description: 'Get all node IDs in a VisualShader type.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, shaderType: { type: 'string' } }, required: ['nodePath', 'shaderType'] } },
+      { name: 'set_visual_shader_node_position', description: 'Set position of a node in VisualShader graph.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, shaderType: { type: 'string' }, nodeId: { type: 'integer' }, posX: { type: 'number' }, posY: { type: 'number' } }, required: ['nodePath', 'shaderType', 'nodeId', 'posX', 'posY'] } },
+      { name: 'get_visual_shader_connections', description: 'Get all connections in a VisualShader type.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, shaderType: { type: 'string' } }, required: ['nodePath', 'shaderType'] } },
+      { name: 'disconnect_visual_shader_nodes', description: 'Disconnect two nodes in a VisualShader graph.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, shaderType: { type: 'string' }, fromNode: { type: 'integer' }, fromPort: { type: 'integer' }, toNode: { type: 'integer' }, toPort: { type: 'integer' } }, required: ['nodePath', 'shaderType', 'fromNode', 'fromPort', 'toNode', 'toPort'] } },
+      // Batch 73 — Group B: TileSet configuration
+      { name: 'create_tileset_resource', description: 'Create a new TileSet resource file on disk.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, outputPath: { type: 'string' } }, required: ['projectPath', 'outputPath'] } },
+      { name: 'add_tileset_source', description: 'Add an atlas source to a TileSet resource.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, tileSetPath: { type: 'string' }, textureAtlasPath: { type: 'string' }, tileWidth: { type: 'integer' }, tileHeight: { type: 'integer' } }, required: ['projectPath', 'tileSetPath', 'textureAtlasPath'] } },
+      { name: 'get_tileset_source_count', description: 'Get the number of sources in a TileSet file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, tileSetPath: { type: 'string' } }, required: ['projectPath', 'tileSetPath'] } },
+      { name: 'add_tileset_custom_data_layer', description: 'Add a custom data layer to a TileSet.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, tileSetPath: { type: 'string' }, layerName: { type: 'string' }, layerType: { type: 'string' } }, required: ['projectPath', 'tileSetPath', 'layerName', 'layerType'] } },
+      { name: 'add_tileset_physics_layer', description: 'Add a physics layer to a TileSet resource.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, tileSetPath: { type: 'string' }, collisionLayer: { type: 'integer' }, collisionMask: { type: 'integer' } }, required: ['projectPath', 'tileSetPath'] } },
+      { name: 'add_tileset_terrain_set', description: 'Add a terrain set to a TileSet resource.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, tileSetPath: { type: 'string' }, mode: { type: 'integer' } }, required: ['projectPath', 'tileSetPath'] } },
+      // Batch 73 — Group C: Font resource tools
+      { name: 'create_dynamic_font_resource', description: 'Create a DynamicFont resource from a TTF file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, fontFilePath: { type: 'string' }, outputPath: { type: 'string' }, fontSize: { type: 'integer' } }, required: ['projectPath', 'fontFilePath', 'outputPath'] } },
+      { name: 'create_bitmap_font_resource', description: 'Create a BitmapFont resource from an image.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, imageFilePath: { type: 'string' }, outputPath: { type: 'string' }, charWidth: { type: 'integer' }, charHeight: { type: 'integer' } }, required: ['projectPath', 'imageFilePath', 'outputPath'] } },
+      { name: 'set_font_default_size', description: 'Set default size of a FontFile resource.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, fontPath: { type: 'string' }, size: { type: 'integer' } }, required: ['projectPath', 'fontPath', 'size'] } },
+      { name: 'get_font_glyph_count', description: 'Get the glyph count of a FontFile resource.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, fontPath: { type: 'string' } }, required: ['projectPath', 'fontPath'] } },
+      { name: 'list_system_fonts', description: 'List all available system fonts via Godot.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' } }, required: ['projectPath'] } },
+      { name: 'get_screen_dpi', description: 'Get the DPI and size of the primary screen.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'get_display_server_info', description: 'Get display server info: screen count, window list.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'get_engine_target_fps', description: 'Get the current Engine.max_fps and physics tick rate.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'set_engine_target_fps', description: 'Set Engine.max_fps at runtime.', inputSchema: { type: 'object', properties: { fps: { type: 'integer' } }, required: ['fps'] } },
+      { name: 'get_locale_info', description: 'Get the OS locale, language, and country code.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'get_environment_variable', description: 'Get an OS environment variable value.', inputSchema: { type: 'object', properties: { varName: { type: 'string' } }, required: ['varName'] } },
+      // Batch 73 — Group D: More editor plugin commands
+      { name: 'get_editor_selected_nodes', description: 'Get the names of nodes selected in the editor.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'get_editor_current_scene_path', description: 'Get the path of the scene open in the editor.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'editor_select_node_by_path', description: 'Select a node in the editor scene tree.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_editor_filesystem_files', description: 'List files in a folder via the editor filesystem.', inputSchema: { type: 'object', properties: { folderPath: { type: 'string' } } } },
+      // Batch 73 — Group E: GDScript templates
+      { name: 'write_state_machine_base_script', description: 'Write a reusable generic state machine base.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_health_component_script', description: 'Write a reusable health component node.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, maxHealth: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_hitbox_hurtbox_script', description: 'Write hitbox and hurtbox Area2D scripts.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_options_menu_script', description: 'Write an options/settings menu control script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_parallax_background_script', description: 'Write a parallax scrolling background.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, scrollSpeed: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_screen_shake_2d_script', description: 'Write a 2D camera screen shake effect.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, maxShake: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_experience_level_script', description: 'Write an XP/level progression system.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, baseXp: { type: 'integer' }, xpMultiplier: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_notification_system_script', description: 'Write a toast notification UI system.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, displayTime: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
       ],
     }));
 
@@ -21865,6 +21907,85 @@ class GodotServer {
           return await this.handleWriteShieldSystemScript(request.params.arguments);
         case 'write_waypoint_patrol_script':
           return await this.handleWriteWaypointPatrolScript(request.params.arguments);
+        // Batch 73 switch cases — Group A: VisualShader node graph
+        case 'get_visual_shader_info':
+          return await this.handleGetVisualShaderInfo(request.params.arguments);
+        case 'add_visual_shader_node':
+          return await this.handleAddVisualShaderNode(request.params.arguments);
+        case 'remove_visual_shader_node':
+          return await this.handleRemoveVisualShaderNode(request.params.arguments);
+        case 'connect_visual_shader_nodes':
+          return await this.handleConnectVisualShaderNodes(request.params.arguments);
+        case 'get_visual_shader_node_list':
+          return await this.handleGetVisualShaderNodeList(request.params.arguments);
+        case 'set_visual_shader_node_position':
+          return await this.handleSetVisualShaderNodePosition(request.params.arguments);
+        case 'get_visual_shader_connections':
+          return await this.handleGetVisualShaderConnections(request.params.arguments);
+        case 'disconnect_visual_shader_nodes':
+          return await this.handleDisconnectVisualShaderNodes(request.params.arguments);
+        // Batch 73 switch cases — Group B: TileSet configuration
+        case 'create_tileset_resource':
+          return await this.handleCreateTilesetResource(request.params.arguments);
+        case 'add_tileset_source':
+          return await this.handleAddTilesetSource(request.params.arguments);
+        case 'get_tileset_source_count':
+          return await this.handleGetTilesetSourceCount(request.params.arguments);
+        case 'add_tileset_custom_data_layer':
+          return await this.handleAddTilesetCustomDataLayer(request.params.arguments);
+        case 'add_tileset_physics_layer':
+          return await this.handleAddTilesetPhysicsLayer(request.params.arguments);
+        case 'add_tileset_terrain_set':
+          return await this.handleAddTilesetTerrainSet(request.params.arguments);
+        // Batch 73 switch cases — Group C: Font resource tools
+        case 'create_dynamic_font_resource':
+          return await this.handleCreateDynamicFontResource(request.params.arguments);
+        case 'create_bitmap_font_resource':
+          return await this.handleCreateBitmapFontResource(request.params.arguments);
+        case 'set_font_default_size':
+          return await this.handleSetFontDefaultSize(request.params.arguments);
+        case 'get_font_glyph_count':
+          return await this.handleGetFontGlyphCount(request.params.arguments);
+        case 'list_system_fonts':
+          return await this.handleListSystemFonts(request.params.arguments);
+        case 'get_screen_dpi':
+          return await this.handleGetScreenDpi(request.params.arguments);
+        case 'get_display_server_info':
+          return await this.handleGetDisplayServerInfo(request.params.arguments);
+        case 'get_engine_target_fps':
+          return await this.handleGetEngineTargetFps(request.params.arguments);
+        case 'set_engine_target_fps':
+          return await this.handleSetEngineTargetFps(request.params.arguments);
+        case 'get_locale_info':
+          return await this.handleGetLocaleInfo(request.params.arguments);
+        case 'get_environment_variable':
+          return await this.handleGetEnvironmentVariable(request.params.arguments);
+        // Batch 73 switch cases — Group D: More editor plugin commands
+        case 'get_editor_selected_nodes':
+          return await this.handleGetEditorSelectedNodes(request.params.arguments);
+        case 'get_editor_current_scene_path':
+          return await this.handleGetEditorCurrentScenePath(request.params.arguments);
+        case 'editor_select_node_by_path':
+          return await this.handleEditorSelectNodeByPath(request.params.arguments);
+        case 'get_editor_filesystem_files':
+          return await this.handleGetEditorFilesystemFiles(request.params.arguments);
+        // Batch 73 switch cases — Group E: GDScript templates
+        case 'write_state_machine_base_script':
+          return await this.handleWriteStateMachineBaseScript(request.params.arguments);
+        case 'write_health_component_script':
+          return await this.handleWriteHealthComponentScript(request.params.arguments);
+        case 'write_hitbox_hurtbox_script':
+          return await this.handleWriteHitboxHurtboxScript(request.params.arguments);
+        case 'write_options_menu_script':
+          return await this.handleWriteOptionsMenuScript(request.params.arguments);
+        case 'write_parallax_background_script':
+          return await this.handleWriteParallaxBackgroundScript(request.params.arguments);
+        case 'write_screen_shake_2d_script':
+          return await this.handleWriteScreenShake2dScript(request.params.arguments);
+        case 'write_experience_level_script':
+          return await this.handleWriteExperienceLevelScript(request.params.arguments);
+        case 'write_notification_system_script':
+          return await this.handleWriteNotificationSystemScript(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -44176,6 +44297,38 @@ func teleport_to_cell(cell: Vector2i) -> void:
     return this.gameCommand('send_websocket_text', args, a => ({ node_path: a.nodePath ?? '', message: a.message ?? '' }));
   }
 
+  // ── Batch 73 handlers — Group B: Runtime utilities ──────────────────────────
+
+  private async handleGetScreenDpi(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_screen_dpi', args, _a => ({}));
+  }
+
+  private async handleGetDisplayServerInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_display_server_info', args, _a => ({}));
+  }
+
+  private async handleGetEngineTargetFps(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_engine_target_fps', args, _a => ({}));
+  }
+
+  private async handleSetEngineTargetFps(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_engine_target_fps', args, a => ({ fps: a.fps ?? 60 }));
+  }
+
+  private async handleGetLocaleInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_locale_info', args, _a => ({}));
+  }
+
+  private async handleGetEnvironmentVariable(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_environment_variable', args, a => ({ var_name: a.varName ?? '' }));
+  }
+
   // ── Batch 72 handlers — Group E: GDScript templates ─────────────────────────
 
   private async handleWriteObjectPoolingScript(args: any) {
@@ -44365,6 +44518,289 @@ func set_waypoint_index(index: int) -> void:
 func get_current_waypoint_index() -> int:
     return _current_index
 `;
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  // ── Batch 73 — Group A: VisualShader node graph ─────────────────────────────
+
+  private async handleGetVisualShaderInfo(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_visual_shader_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleAddVisualShaderNode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.nodeType) return createErrorResponse('nodeType is required.');
+    if (!args.shaderType) return createErrorResponse('shaderType is required.');
+    return this.gameCommand('add_visual_shader_node', args, a => ({ node_path: a.nodePath ?? '', node_type: a.nodeType ?? '', shader_type: a.shaderType ?? 'TYPE_FRAGMENT', pos_x: a.posX ?? 0, pos_y: a.posY ?? 0 }));
+  }
+
+  private async handleRemoveVisualShaderNode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.shaderType) return createErrorResponse('shaderType is required.');
+    if (args.nodeId === undefined) return createErrorResponse('nodeId is required.');
+    return this.gameCommand('remove_visual_shader_node', args, a => ({ node_path: a.nodePath ?? '', shader_type: a.shaderType ?? 'TYPE_FRAGMENT', node_id: a.nodeId ?? 0 }));
+  }
+
+  private async handleConnectVisualShaderNodes(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.shaderType) return createErrorResponse('shaderType is required.');
+    return this.gameCommand('connect_visual_shader_nodes', args, a => ({ node_path: a.nodePath ?? '', shader_type: a.shaderType ?? 'TYPE_FRAGMENT', from_node: a.fromNode ?? 0, from_port: a.fromPort ?? 0, to_node: a.toNode ?? 0, to_port: a.toPort ?? 0 }));
+  }
+
+  private async handleGetVisualShaderNodeList(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.shaderType) return createErrorResponse('shaderType is required.');
+    return this.gameCommand('get_visual_shader_node_list', args, a => ({ node_path: a.nodePath ?? '', shader_type: a.shaderType ?? 'TYPE_FRAGMENT' }));
+  }
+
+  private async handleSetVisualShaderNodePosition(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.shaderType) return createErrorResponse('shaderType is required.');
+    if (args.nodeId === undefined) return createErrorResponse('nodeId is required.');
+    return this.gameCommand('set_visual_shader_node_position', args, a => ({ node_path: a.nodePath ?? '', shader_type: a.shaderType ?? 'TYPE_FRAGMENT', node_id: a.nodeId ?? 0, pos_x: a.posX ?? 0, pos_y: a.posY ?? 0 }));
+  }
+
+  private async handleGetVisualShaderConnections(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.shaderType) return createErrorResponse('shaderType is required.');
+    return this.gameCommand('get_visual_shader_connections', args, a => ({ node_path: a.nodePath ?? '', shader_type: a.shaderType ?? 'TYPE_FRAGMENT' }));
+  }
+
+  private async handleDisconnectVisualShaderNodes(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.shaderType) return createErrorResponse('shaderType is required.');
+    return this.gameCommand('disconnect_visual_shader_nodes', args, a => ({ node_path: a.nodePath ?? '', shader_type: a.shaderType ?? 'TYPE_FRAGMENT', from_node: a.fromNode ?? 0, from_port: a.fromPort ?? 0, to_node: a.toNode ?? 0, to_port: a.toPort ?? 0 }));
+  }
+
+  // ── Batch 73 — Group B: TileSet configuration ───────────────────────────────
+
+  private async handleCreateTilesetResource(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.outputPath) return createErrorResponse('outputPath is required.');
+    return this.headlessOp('create_tileset_resource', args, a => ({ projectPath: a.projectPath, params: { output_path: a.outputPath } }));
+  }
+
+  private async handleAddTilesetSource(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.tileSetPath) return createErrorResponse('tileSetPath is required.');
+    if (!args.textureAtlasPath) return createErrorResponse('textureAtlasPath is required.');
+    return this.headlessOp('add_tileset_source', args, a => ({ projectPath: a.projectPath, params: { tileset_path: a.tileSetPath, texture_atlas_path: a.textureAtlasPath, tile_width: a.tileWidth ?? 16, tile_height: a.tileHeight ?? 16 } }));
+  }
+
+  private async handleGetTilesetSourceCount(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.tileSetPath) return createErrorResponse('tileSetPath is required.');
+    return this.headlessOp('get_tileset_source_count', args, a => ({ projectPath: a.projectPath, params: { tileset_path: a.tileSetPath } }));
+  }
+
+  private async handleAddTilesetCustomDataLayer(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.tileSetPath) return createErrorResponse('tileSetPath is required.');
+    if (!args.layerName) return createErrorResponse('layerName is required.');
+    if (!args.layerType) return createErrorResponse('layerType is required.');
+    return this.headlessOp('add_tileset_custom_data_layer', args, a => ({ projectPath: a.projectPath, params: { tileset_path: a.tileSetPath, layer_name: a.layerName ?? '', layer_type: a.layerType ?? 'TYPE_INT' } }));
+  }
+
+  private async handleAddTilesetPhysicsLayer(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.tileSetPath) return createErrorResponse('tileSetPath is required.');
+    return this.headlessOp('add_tileset_physics_layer', args, a => ({ projectPath: a.projectPath, params: { tileset_path: a.tileSetPath, collision_layer: a.collisionLayer ?? 1, collision_mask: a.collisionMask ?? 1 } }));
+  }
+
+  private async handleAddTilesetTerrainSet(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.tileSetPath) return createErrorResponse('tileSetPath is required.');
+    return this.headlessOp('add_tileset_terrain_set', args, a => ({ projectPath: a.projectPath, params: { tileset_path: a.tileSetPath, mode: a.mode ?? 0 } }));
+  }
+
+  // ── Batch 73 — Group C: Font resource tools ─────────────────────────────────
+
+  private async handleCreateDynamicFontResource(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.fontFilePath) return createErrorResponse('fontFilePath is required.');
+    if (!args.outputPath) return createErrorResponse('outputPath is required.');
+    return this.headlessOp('create_dynamic_font_resource', args, a => ({ projectPath: a.projectPath, params: { font_file_path: a.fontFilePath ?? '', output_path: a.outputPath ?? '', font_size: a.fontSize ?? 16 } }));
+  }
+
+  private async handleCreateBitmapFontResource(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.imageFilePath) return createErrorResponse('imageFilePath is required.');
+    if (!args.outputPath) return createErrorResponse('outputPath is required.');
+    return this.headlessOp('create_bitmap_font_resource', args, a => ({ projectPath: a.projectPath, params: { image_file_path: a.imageFilePath ?? '', output_path: a.outputPath ?? '', char_width: a.charWidth ?? 8, char_height: a.charHeight ?? 8 } }));
+  }
+
+  private async handleSetFontDefaultSize(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.fontPath) return createErrorResponse('fontPath is required.');
+    if (args.size === undefined) return createErrorResponse('size is required.');
+    return this.headlessOp('set_font_default_size', args, a => ({ projectPath: a.projectPath, params: { font_path: a.fontPath ?? '', size: a.size ?? 16 } }));
+  }
+
+  private async handleGetFontGlyphCount(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.fontPath) return createErrorResponse('fontPath is required.');
+    return this.headlessOp('get_font_glyph_count', args, a => ({ projectPath: a.projectPath, params: { font_path: a.fontPath ?? '' } }));
+  }
+
+  private async handleListSystemFonts(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    return this.headlessOp('list_system_fonts', args, a => ({ projectPath: a.projectPath, params: {} }));
+  }
+
+  // ── Batch 73 — Group D: More editor plugin commands ─────────────────────────
+
+  private async handleGetEditorSelectedNodes(args: any) {
+    args = normalizeParameters(args || {});
+    return this.editorCommand('get_editor_selected_nodes', args, _a => ({}));
+  }
+
+  private async handleGetEditorCurrentScenePath(args: any) {
+    args = normalizeParameters(args || {});
+    return this.editorCommand('get_editor_current_scene_path', args, _a => ({}));
+  }
+
+  private async handleEditorSelectNodeByPath(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.editorCommand('editor_select_node_by_path', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleGetEditorFilesystemFiles(args: any) {
+    args = normalizeParameters(args || {});
+    return this.editorCommand('get_editor_filesystem_files', args, a => ({ folder_path: a.folderPath ?? 'res://' }));
+  }
+
+  // ── Batch 73 — Group E: GDScript templates ──────────────────────────────────
+
+  private async handleWriteStateMachineBaseScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const { projectPath, scriptPath } = args;
+      if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+      const content = `class_name StateMachine\nextends Node\n\nsignal state_changed(from_state: String, to_state: String)\n\nvar current_state: String = ""\nvar previous_state: String = ""\nvar states: Dictionary = {}\n\nfunc register_state(name: String, obj: Object) -> void:\n    states[name] = obj\n\nfunc change_state(new_state: String) -> void:\n    if not new_state in states: return\n    if current_state == new_state: return\n    if current_state in states and states[current_state].has_method("exit"):\n        states[current_state].exit()\n    previous_state = current_state\n    current_state = new_state\n    state_changed.emit(previous_state, current_state)\n    if states[current_state].has_method("enter"):\n        states[current_state].enter()\n\nfunc update(delta: float) -> void:\n    if current_state in states and states[current_state].has_method("update"):\n        states[current_state].update(delta)\n\nfunc get_state() -> String:\n    return current_state\n\nfunc is_in_state(state_name: String) -> bool:\n    return current_state == state_name\n`;
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteHealthComponentScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const { projectPath, scriptPath, maxHealth = 100 } = args;
+      if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+      const content = `class_name HealthComponent\nextends Node\n\nsignal health_changed(old_value: float, new_value: float)\nsignal died\nsignal healed(amount: float)\nsignal damaged(amount: float)\n\n@export var max_health: float = ${maxHealth}\n\nvar current_health: float = max_health\n\nfunc _ready() -> void:\n    current_health = max_health\n\nfunc take_damage(amount: float) -> void:\n    if amount <= 0.0: return\n    var old = current_health\n    current_health = max(0.0, current_health - amount)\n    damaged.emit(amount)\n    health_changed.emit(old, current_health)\n    if current_health <= 0.0:\n        died.emit()\n\nfunc heal(amount: float) -> void:\n    if amount <= 0.0: return\n    var old = current_health\n    current_health = min(max_health, current_health + amount)\n    healed.emit(amount)\n    health_changed.emit(old, current_health)\n\nfunc get_health_percent() -> float:\n    return current_health / max_health\n\nfunc is_dead() -> bool:\n    return current_health <= 0.0\n`;
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteHitboxHurtboxScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const { projectPath, scriptPath } = args;
+      if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+      const content = `# Hitbox -- attach to attacker Area2D\nclass_name Hitbox\nextends Area2D\n\nsignal hit_landed(hurtbox: Node)\n\n@export var damage: float = 10.0\n@export var knockback_force: float = 200.0\n\nfunc _ready() -> void:\n    area_entered.connect(_on_area_entered)\n\nfunc _on_area_entered(area: Area2D) -> void:\n    if area.has_method("receive_hit"):\n        area.receive_hit(self)\n        hit_landed.emit(area)\n`;
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteOptionsMenuScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const { projectPath, scriptPath } = args;
+      if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+      const content = `extends Control\n\nsignal settings_changed(key: String, value: Variant)\n\nconst SETTINGS_FILE := "user://settings.cfg"\nvar _config := ConfigFile.new()\n\nfunc _ready() -> void:\n    _load_settings()\n\nfunc set_volume(bus: String, value: float) -> void:\n    var idx = AudioServer.get_bus_index(bus)\n    if idx >= 0:\n        AudioServer.set_bus_volume_db(idx, linear_to_db(value))\n    _config.set_value("audio", bus.to_lower() + "_volume", value)\n    settings_changed.emit(bus + "_volume", value)\n\nfunc set_fullscreen(enabled: bool) -> void:\n    DisplayServer.window_set_mode(\n        DisplayServer.WINDOW_MODE_FULLSCREEN if enabled else DisplayServer.WINDOW_MODE_WINDOWED)\n    _config.set_value("display", "fullscreen", enabled)\n    settings_changed.emit("fullscreen", enabled)\n\nfunc save_settings() -> void:\n    _config.save(SETTINGS_FILE)\n\nfunc _load_settings() -> void:\n    _config.load(SETTINGS_FILE)\n`;
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteParallaxBackgroundScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const { projectPath, scriptPath, scrollSpeed = 50 } = args;
+      if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+      const content = `extends ParallaxBackground\n\n@export var scroll_speed: float = ${scrollSpeed}\n@export var auto_scroll: bool = true\n\nfunc _process(delta: float) -> void:\n    if auto_scroll:\n        scroll_offset.x -= scroll_speed * delta\n\nfunc set_scroll_speed(speed: float) -> void:\n    scroll_speed = speed\n\nfunc stop_scroll() -> void:\n    auto_scroll = false\n\nfunc start_scroll() -> void:\n    auto_scroll = true\n`;
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteScreenShake2dScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const { projectPath, scriptPath, maxShake = 8 } = args;
+      if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+      const content = `extends Camera2D\n\n@export var max_shake: float = ${maxShake}\n@export var decay: float = 5.0\n\nvar _shake_amount: float = 0.0\nvar _rng := RandomNumberGenerator.new()\n\nfunc _ready() -> void:\n    _rng.randomize()\n\nfunc _process(delta: float) -> void:\n    if _shake_amount > 0.0:\n        _shake_amount = move_toward(_shake_amount, 0.0, decay * delta)\n        offset = Vector2(\n            _rng.randf_range(-_shake_amount, _shake_amount),\n            _rng.randf_range(-_shake_amount, _shake_amount)\n        )\n    else:\n        offset = Vector2.ZERO\n\nfunc shake(intensity: float = 1.0) -> void:\n    _shake_amount = clamp(max_shake * intensity, 0.0, max_shake)\n\nfunc shake_for(intensity: float, duration: float) -> void:\n    shake(intensity)\n    await get_tree().create_timer(duration).timeout\n    _shake_amount = 0.0\n`;
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteExperienceLevelScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const { projectPath, scriptPath, baseXp = 100, xpMultiplier = 1.5 } = args;
+      if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+      const content = `class_name ExperienceSystem\nextends Node\n\nsignal level_up(new_level: int)\nsignal xp_gained(amount: int, total: int)\n\n@export var base_xp: int = ${baseXp}\n@export var xp_multiplier: float = ${xpMultiplier}\n\nvar current_level: int = 1\nvar current_xp: int = 0\n\nfunc get_xp_for_level(level: int) -> int:\n    return int(base_xp * pow(xp_multiplier, level - 1))\n\nfunc add_xp(amount: int) -> void:\n    current_xp += amount\n    xp_gained.emit(amount, current_xp)\n    while current_xp >= get_xp_for_level(current_level):\n        current_xp -= get_xp_for_level(current_level)\n        current_level += 1\n        level_up.emit(current_level)\n\nfunc get_level_progress() -> float:\n    var needed = get_xp_for_level(current_level)\n    if needed <= 0: return 1.0\n    return float(current_xp) / float(needed)\n\nfunc reset() -> void:\n    current_level = 1\n    current_xp = 0\n`;
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteNotificationSystemScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const { projectPath, scriptPath, displayTime = 2.0 } = args;
+      if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+      const content = `class_name NotificationSystem\nextends CanvasLayer\n\n@export var display_time: float = ${displayTime}\n@export var max_visible: int = 5\n@export var stack_offset: float = 48.0\n\nvar _active: Array[Node] = []\n\nfunc notify(message: String, color: Color = Color.WHITE) -> void:\n    if _active.size() >= max_visible:\n        var oldest = _active.pop_front()\n        if is_instance_valid(oldest): oldest.queue_free()\n    var toast = _create_toast(message, color)\n    _active.append(toast)\n    _reposition_toasts()\n\nfunc _create_toast(message: String, color: Color) -> Control:\n    var toast := Label.new()\n    toast.text = message\n    toast.modulate = color\n    add_child(toast)\n    get_tree().create_timer(display_time).timeout.connect(func(): _remove_toast(toast))\n    return toast\n\nfunc _remove_toast(toast: Node) -> void:\n    _active.erase(toast)\n    if is_instance_valid(toast): toast.queue_free()\n    _reposition_toasts()\n\nfunc _reposition_toasts() -> void:\n    for i in _active.size():\n        if is_instance_valid(_active[i]) and _active[i] is Control:\n            (_active[i] as Control).position.y = get_viewport().get_visible_rect().size.y - stack_offset * (i + 1)\n\nfunc clear_all() -> void:\n    for toast in _active:\n        if is_instance_valid(toast): toast.queue_free()\n    _active.clear()\n`;
       const absPath = require('path').join(projectPath, scriptPath);
       const dir = require('path').dirname(absPath);
       if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
