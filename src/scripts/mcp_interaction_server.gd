@@ -665,6 +665,38 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_bone_global_pose(params)
 		"set_bone_pose_xyz":
 			_cmd_set_bone_pose_xyz(params)
+		"add_audio_effect_to_bus":
+			_cmd_add_audio_effect_to_bus(params)
+		"remove_audio_effect_from_bus":
+			_cmd_remove_audio_effect_from_bus(params)
+		"get_audio_bus_effects":
+			_cmd_get_audio_bus_effects(params)
+		"set_audio_effect_parameter":
+			_cmd_set_audio_effect_parameter(params)
+		"create_audio_bus":
+			_cmd_create_audio_bus(params)
+		"list_audio_buses":
+			_cmd_list_audio_buses(params)
+		"set_environment_glow":
+			_cmd_set_environment_glow(params)
+		"set_environment_ssao":
+			_cmd_set_environment_ssao(params)
+		"set_environment_fog":
+			_cmd_set_environment_fog(params)
+		"get_environment_properties":
+			_cmd_get_environment_properties(params)
+		"setup_enet_multiplayer":
+			_cmd_setup_enet_multiplayer(params)
+		"get_connected_peers":
+			_cmd_get_connected_peers(params)
+		"disconnect_multiplayer":
+			_cmd_disconnect_multiplayer(params)
+		"send_multiplayer_rpc":
+			_cmd_send_multiplayer_rpc(params)
+		"reload_script_at_runtime":
+			_cmd_reload_script_at_runtime(params)
+		"get_loaded_gdextensions":
+			_cmd_get_loaded_gdextensions(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -7107,6 +7139,206 @@ func _cmd_set_bone_pose_xyz(params: Dictionary) -> void:
 	pose.origin = Vector3(x, y, z)
 	skel.set_bone_pose(bone_idx, pose)
 	_send_response({"success": true, "bone_idx": bone_idx, "position": {"x": x, "y": y, "z": z}})
+
+func _cmd_add_audio_effect_to_bus(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "Master")
+	var effect_class: String = params.get("effect_class", "")
+	if effect_class.is_empty():
+		_send_response({"error": "effect_class is required"})
+		return
+	var bus_idx = AudioServer.get_bus_index(bus_name)
+	if bus_idx < 0:
+		_send_response({"error": "Audio bus not found: " + bus_name})
+		return
+	var effect = ClassDB.instantiate(effect_class) as AudioEffect
+	if effect == null:
+		_send_response({"error": "Cannot create AudioEffect: " + effect_class})
+		return
+	AudioServer.add_bus_effect(bus_idx, effect)
+	var new_idx = AudioServer.get_bus_effect_count(bus_idx) - 1
+	_send_response({"success": true, "bus_name": bus_name, "effect_class": effect_class, "effect_idx": new_idx})
+
+func _cmd_remove_audio_effect_from_bus(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "Master")
+	var effect_idx: int = params.get("effect_idx", 0)
+	var bus_idx = AudioServer.get_bus_index(bus_name)
+	if bus_idx < 0:
+		_send_response({"error": "Audio bus not found: " + bus_name})
+		return
+	if effect_idx >= AudioServer.get_bus_effect_count(bus_idx):
+		_send_response({"error": "Effect index out of range"})
+		return
+	AudioServer.remove_bus_effect(bus_idx, effect_idx)
+	_send_response({"success": true, "bus_name": bus_name, "removed_idx": effect_idx})
+
+func _cmd_get_audio_bus_effects(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "Master")
+	var bus_idx = AudioServer.get_bus_index(bus_name)
+	if bus_idx < 0:
+		_send_response({"error": "Audio bus not found: " + bus_name})
+		return
+	var effects: Array = []
+	for i in range(AudioServer.get_bus_effect_count(bus_idx)):
+		var eff = AudioServer.get_bus_effect(bus_idx, i)
+		effects.append({"idx": i, "class": eff.get_class(), "enabled": AudioServer.is_bus_effect_enabled(bus_idx, i)})
+	_send_response({"success": true, "bus_name": bus_name, "effects": effects})
+
+func _cmd_set_audio_effect_parameter(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "Master")
+	var effect_idx: int = params.get("effect_idx", 0)
+	var param_name: String = params.get("param_name", "")
+	var param_value = params.get("param_value", null)
+	var bus_idx = AudioServer.get_bus_index(bus_name)
+	if bus_idx < 0:
+		_send_response({"error": "Audio bus not found: " + bus_name})
+		return
+	if effect_idx >= AudioServer.get_bus_effect_count(bus_idx):
+		_send_response({"error": "Effect index out of range"})
+		return
+	var eff = AudioServer.get_bus_effect(bus_idx, effect_idx)
+	if not eff.has_method("set"):
+		_send_response({"error": "Cannot set parameter on effect"})
+		return
+	eff.set(param_name, param_value)
+	_send_response({"success": true, "param_name": param_name, "value": param_value})
+
+func _cmd_create_audio_bus(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "")
+	if bus_name.is_empty():
+		_send_response({"error": "bus_name is required"})
+		return
+	var existing = AudioServer.get_bus_index(bus_name)
+	if existing >= 0:
+		_send_response({"error": "Bus already exists: " + bus_name})
+		return
+	var new_idx = AudioServer.get_bus_count()
+	AudioServer.add_bus(new_idx)
+	AudioServer.set_bus_name(new_idx, bus_name)
+	_send_response({"success": true, "bus_name": bus_name, "bus_idx": new_idx})
+
+func _cmd_list_audio_buses(params: Dictionary) -> void:
+	var buses: Array = []
+	for i in range(AudioServer.get_bus_count()):
+		buses.append({"idx": i, "name": AudioServer.get_bus_name(i), "volume_db": AudioServer.get_bus_volume_db(i), "muted": AudioServer.is_bus_mute(i), "solo": AudioServer.is_bus_solo(i), "effect_count": AudioServer.get_bus_effect_count(i)})
+	_send_response({"success": true, "count": buses.size(), "buses": buses})
+
+func _cmd_set_environment_glow(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "/root/WorldEnvironment")
+	var enabled: bool = params.get("enabled", true)
+	var intensity: float = params.get("intensity", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is WorldEnvironment:
+		_send_response({"error": "WorldEnvironment not found: " + node_path})
+		return
+	var env = (node as WorldEnvironment).environment
+	if env == null:
+		_send_response({"error": "No Environment resource on WorldEnvironment"})
+		return
+	env.glow_enabled = enabled
+	env.glow_intensity = intensity
+	_send_response({"success": true, "glow_enabled": enabled, "glow_intensity": intensity})
+
+func _cmd_set_environment_ssao(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "/root/WorldEnvironment")
+	var enabled: bool = params.get("enabled", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is WorldEnvironment:
+		_send_response({"error": "WorldEnvironment not found: " + node_path})
+		return
+	var env = (node as WorldEnvironment).environment
+	if env == null:
+		_send_response({"error": "No Environment resource"})
+		return
+	env.ssao_enabled = enabled
+	_send_response({"success": true, "ssao_enabled": enabled})
+
+func _cmd_set_environment_fog(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "/root/WorldEnvironment")
+	var enabled: bool = params.get("enabled", true)
+	var fog_density: float = params.get("fog_density", 0.01)
+	var fog_color_hex: String = params.get("fog_color", "#FFFFFF")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is WorldEnvironment:
+		_send_response({"error": "WorldEnvironment not found: " + node_path})
+		return
+	var env = (node as WorldEnvironment).environment
+	if env == null:
+		_send_response({"error": "No Environment resource"})
+		return
+	env.fog_enabled = enabled
+	env.fog_density = fog_density
+	env.fog_light_color = Color(fog_color_hex)
+	_send_response({"success": true, "fog_enabled": enabled, "fog_density": fog_density})
+
+func _cmd_get_environment_properties(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "/root/WorldEnvironment")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is WorldEnvironment:
+		_send_response({"error": "WorldEnvironment not found: " + node_path})
+		return
+	var env = (node as WorldEnvironment).environment
+	if env == null:
+		_send_response({"error": "No Environment resource"})
+		return
+	_send_response({"success": true, "glow_enabled": env.glow_enabled, "glow_intensity": env.glow_intensity, "ssao_enabled": env.ssao_enabled, "ssil_enabled": env.ssil_enabled, "fog_enabled": env.fog_enabled, "fog_density": env.fog_density, "background_mode": env.background_mode, "ambient_light_energy": env.ambient_light_energy})
+
+func _cmd_setup_enet_multiplayer(params: Dictionary) -> void:
+	var mode: String = params.get("mode", "server")
+	var port: int = params.get("port", 7777)
+	var address: String = params.get("address", "127.0.0.1")
+	var max_clients: int = params.get("max_clients", 32)
+	var peer = ENetMultiplayerPeer.new()
+	var err: int
+	if mode == "server":
+		err = peer.create_server(port, max_clients)
+	else:
+		err = peer.create_client(address, port)
+	if err != OK:
+		_send_response({"error": "ENet setup failed with error code: " + str(err)})
+		return
+	multiplayer.multiplayer_peer = peer
+	_send_response({"success": true, "mode": mode, "port": port, "address": address})
+
+func _cmd_get_connected_peers(params: Dictionary) -> void:
+	var peers = multiplayer.get_peers()
+	_send_response({"success": true, "unique_id": multiplayer.get_unique_id(), "is_server": multiplayer.is_server(), "peer_count": peers.size(), "peers": peers})
+
+func _cmd_disconnect_multiplayer(params: Dictionary) -> void:
+	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
+	_send_response({"success": true, "disconnected": true})
+
+func _cmd_send_multiplayer_rpc(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var method_name: String = params.get("method_name", "")
+	var target_peer_id: int = params.get("target_peer_id", 0)
+	var rpc_args: Array = params.get("args", [])
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if not node.has_method(method_name):
+		_send_response({"error": "Method not found: " + method_name})
+		return
+	node.rpc_id(target_peer_id, method_name, rpc_args)
+	_send_response({"success": true, "node_path": node_path, "method_name": method_name, "target_peer_id": target_peer_id})
+
+func _cmd_reload_script_at_runtime(params: Dictionary) -> void:
+	var script_path: String = params.get("script_path", "")
+	if script_path.is_empty():
+		_send_response({"error": "script_path is required"})
+		return
+	var script = load(script_path) as GDScript
+	if script == null:
+		_send_response({"error": "Cannot load script: " + script_path})
+		return
+	script.reload()
+	_send_response({"success": true, "script_path": script_path})
+
+func _cmd_get_loaded_gdextensions(params: Dictionary) -> void:
+	var extensions: Array = []
+	for ext in GDExtensionManager.get_loaded_extensions():
+		extensions.append({"path": ext})
+	_send_response({"success": true, "count": extensions.size(), "extensions": extensions})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()

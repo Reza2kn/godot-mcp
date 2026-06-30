@@ -8710,6 +8710,248 @@ class GodotServer {
           required: ['projectPath'],
         },
       },
+      {
+        name: 'add_audio_effect_to_bus',
+        description: 'Add an AudioEffect to a named audio bus in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            busName: { type: 'string', description: 'Audio bus name (default Master)' },
+            effectClass: { type: 'string', description: 'AudioEffect class name e.g. AudioEffectReverb' },
+          },
+          required: ['effectClass'],
+        },
+      },
+      {
+        name: 'remove_audio_effect_from_bus',
+        description: 'Remove an AudioEffect from an audio bus in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            busName: { type: 'string', description: 'Audio bus name (default Master)' },
+            effectIdx: { type: 'integer', description: 'Effect index to remove (default 0)' },
+          },
+          required: ['busName'],
+        },
+      },
+      {
+        name: 'get_audio_bus_effects',
+        description: 'List all AudioEffects on an audio bus in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            busName: { type: 'string', description: 'Audio bus name (default Master)' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'set_audio_effect_parameter',
+        description: 'Set a parameter on an AudioEffect on a bus in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            busName: { type: 'string', description: 'Audio bus name (default Master)' },
+            effectIdx: { type: 'integer', description: 'Effect index on the bus (default 0)' },
+            paramName: { type: 'string', description: 'Parameter name to set' },
+            paramValue: { type: 'number', description: 'Parameter value' },
+          },
+          required: ['paramName', 'paramValue'],
+        },
+      },
+      {
+        name: 'create_audio_bus',
+        description: 'Create a new named audio bus in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            busName: { type: 'string', description: 'Name for the new audio bus' },
+          },
+          required: ['busName'],
+        },
+      },
+      {
+        name: 'list_audio_buses',
+        description: 'List all audio buses in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'set_environment_glow',
+        description: 'Configure glow on a WorldEnvironment node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path (default /root/WorldEnvironment)' },
+            enabled: { type: 'boolean', description: 'Enable or disable glow' },
+            intensity: { type: 'number', description: 'Glow intensity (default 1.0)' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'set_environment_ssao',
+        description: 'Enable or disable SSAO on a WorldEnvironment in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path (default /root/WorldEnvironment)' },
+            enabled: { type: 'boolean', description: 'Enable or disable SSAO' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'set_environment_fog',
+        description: 'Configure fog on a WorldEnvironment node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path (default /root/WorldEnvironment)' },
+            enabled: { type: 'boolean', description: 'Enable or disable fog' },
+            fogDensity: { type: 'number', description: 'Fog density (default 0.01)' },
+            fogColor: { type: 'string', description: 'Fog color as hex string (default #FFFFFF)' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'get_environment_properties',
+        description: 'Get all environment settings from a WorldEnvironment.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path (default /root/WorldEnvironment)' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'setup_enet_multiplayer',
+        description: 'Set up ENetMultiplayerPeer as server or client in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            mode: { type: 'string', description: 'server or client' },
+            port: { type: 'integer', description: 'Port number (default 7777)' },
+            address: { type: 'string', description: 'Server address (default 127.0.0.1)' },
+            maxClients: { type: 'integer', description: 'Max clients for server (default 32)' },
+          },
+          required: ['mode'],
+        },
+      },
+      {
+        name: 'get_connected_peers',
+        description: 'Get connected peer IDs from the MultiplayerAPI in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'disconnect_multiplayer',
+        description: 'Close the current multiplayer peer connection in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'send_multiplayer_rpc',
+        description: 'Call an RPC method on a node for a peer in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path to call RPC on' },
+            methodName: { type: 'string', description: 'RPC method name' },
+            targetPeerId: { type: 'integer', description: 'Peer ID (0 = broadcast)' },
+            args: { type: 'array', description: 'Arguments to pass to the RPC' },
+          },
+          required: ['nodePath', 'methodName'],
+        },
+      },
+      {
+        name: 'add_code_edit_to_scene',
+        description: 'Add a CodeEdit node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default CodeEdit)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_text_edit_to_scene',
+        description: 'Add a TextEdit node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default TextEdit)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_tree_to_scene',
+        description: 'Add a Tree UI widget node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default Tree)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_split_container_to_scene',
+        description: 'Add a SplitContainer node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default .)' },
+            orientation: { type: 'string', description: 'horizontal or vertical (default horizontal)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'reload_script_at_runtime',
+        description: 'Hot-reload a GDScript file in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            scriptPath: { type: 'string', description: 'res:// path to the GDScript file' },
+          },
+          required: ['scriptPath'],
+        },
+      },
+      {
+        name: 'get_loaded_gdextensions',
+        description: 'List all loaded GDExtension plugins in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
       ],
     }));
 
@@ -9933,6 +10175,46 @@ class GodotServer {
           return await this.handleRenameResource(request.params.arguments);
         case 'find_large_textures':
           return await this.handleFindLargeTextures(request.params.arguments);
+        case 'add_audio_effect_to_bus':
+          return await this.handleAddAudioEffectToBus(request.params.arguments);
+        case 'remove_audio_effect_from_bus':
+          return await this.handleRemoveAudioEffectFromBus(request.params.arguments);
+        case 'get_audio_bus_effects':
+          return await this.handleGetAudioBusEffects(request.params.arguments);
+        case 'set_audio_effect_parameter':
+          return await this.handleSetAudioEffectParameter(request.params.arguments);
+        case 'create_audio_bus':
+          return await this.handleCreateAudioBus(request.params.arguments);
+        case 'list_audio_buses':
+          return await this.handleListAudioBuses(request.params.arguments);
+        case 'set_environment_glow':
+          return await this.handleSetEnvironmentGlow(request.params.arguments);
+        case 'set_environment_ssao':
+          return await this.handleSetEnvironmentSsao(request.params.arguments);
+        case 'set_environment_fog':
+          return await this.handleSetEnvironmentFog(request.params.arguments);
+        case 'get_environment_properties':
+          return await this.handleGetEnvironmentProperties(request.params.arguments);
+        case 'setup_enet_multiplayer':
+          return await this.handleSetupEnetMultiplayer(request.params.arguments);
+        case 'get_connected_peers':
+          return await this.handleGetConnectedPeers(request.params.arguments);
+        case 'disconnect_multiplayer':
+          return await this.handleDisconnectMultiplayer(request.params.arguments);
+        case 'send_multiplayer_rpc':
+          return await this.handleSendMultiplayerRpc(request.params.arguments);
+        case 'add_code_edit_to_scene':
+          return await this.handleAddCodeEditToScene(request.params.arguments);
+        case 'add_text_edit_to_scene':
+          return await this.handleAddTextEditToScene(request.params.arguments);
+        case 'add_tree_to_scene':
+          return await this.handleAddTreeToScene(request.params.arguments);
+        case 'add_split_container_to_scene':
+          return await this.handleAddSplitContainerToScene(request.params.arguments);
+        case 'reload_script_at_runtime':
+          return await this.handleReloadScriptAtRuntime(request.params.arguments);
+        case 'get_loaded_gdextensions':
+          return await this.handleGetLoadedGdextensions(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -18777,6 +19059,197 @@ class GodotServer {
     }
     large.sort((a, b) => b.sizeKb - a.sizeKb);
     return { content: [{ type: 'text', text: JSON.stringify({ threshold: `${args.maxKb ?? 512}KB`, count: large.length, textures: large }, null, 2) }] };
+  }
+
+  private async handleAddAudioEffectToBus(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.effectClass) return createErrorResponse('effectClass is required.');
+    return this.gameCommand('add_audio_effect_to_bus', args, a => ({
+      bus_name: a.busName || 'Master',
+      effect_class: a.effectClass,
+    }));
+  }
+
+  private async handleRemoveAudioEffectFromBus(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.busName) return createErrorResponse('busName is required.');
+    return this.gameCommand('remove_audio_effect_from_bus', args, a => ({
+      bus_name: a.busName || 'Master',
+      effect_idx: a.effectIdx ?? 0,
+    }));
+  }
+
+  private async handleGetAudioBusEffects(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_audio_bus_effects', args, a => ({
+      bus_name: a.busName || 'Master',
+    }));
+  }
+
+  private async handleSetAudioEffectParameter(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.paramName) return createErrorResponse('paramName is required.');
+    if (args.paramValue === undefined) return createErrorResponse('paramValue is required.');
+    return this.gameCommand('set_audio_effect_parameter', args, a => ({
+      bus_name: a.busName || 'Master',
+      effect_idx: a.effectIdx ?? 0,
+      param_name: a.paramName,
+      param_value: a.paramValue,
+    }));
+  }
+
+  private async handleCreateAudioBus(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.busName) return createErrorResponse('busName is required.');
+    return this.gameCommand('create_audio_bus', args, a => ({
+      bus_name: a.busName,
+    }));
+  }
+
+  private async handleListAudioBuses(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('list_audio_buses', args, _a => ({}));
+  }
+
+  private async handleSetEnvironmentGlow(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_environment_glow', args, a => ({
+      node_path: a.nodePath || '/root/WorldEnvironment',
+      enabled: a.enabled ?? true,
+      intensity: a.intensity ?? 1.0,
+    }));
+  }
+
+  private async handleSetEnvironmentSsao(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_environment_ssao', args, a => ({
+      node_path: a.nodePath || '/root/WorldEnvironment',
+      enabled: a.enabled ?? true,
+    }));
+  }
+
+  private async handleSetEnvironmentFog(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_environment_fog', args, a => ({
+      node_path: a.nodePath || '/root/WorldEnvironment',
+      enabled: a.enabled ?? true,
+      fog_density: a.fogDensity ?? 0.01,
+      fog_color: a.fogColor || '#FFFFFF',
+    }));
+  }
+
+  private async handleGetEnvironmentProperties(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_environment_properties', args, a => ({
+      node_path: a.nodePath || '/root/WorldEnvironment',
+    }));
+  }
+
+  private async handleSetupEnetMultiplayer(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.mode) return createErrorResponse('mode is required.');
+    return this.gameCommand('setup_enet_multiplayer', args, a => ({
+      mode: a.mode || 'server',
+      port: a.port ?? 7777,
+      address: a.address || '127.0.0.1',
+      max_clients: a.maxClients ?? 32,
+    }));
+  }
+
+  private async handleGetConnectedPeers(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_connected_peers', args, _a => ({}));
+  }
+
+  private async handleDisconnectMultiplayer(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('disconnect_multiplayer', args, _a => ({}));
+  }
+
+  private async handleSendMultiplayerRpc(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.methodName) return createErrorResponse('methodName is required.');
+    return this.gameCommand('send_multiplayer_rpc', args, a => ({
+      node_path: a.nodePath,
+      method_name: a.methodName,
+      target_peer_id: a.targetPeerId ?? 0,
+      args: a.args || [],
+    }));
+  }
+
+  private async handleAddCodeEditToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'CodeEdit',
+        node_type: 'CodeEdit',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddTextEditToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'TextEdit',
+        node_type: 'TextEdit',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddTreeToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'Tree',
+        node_type: 'Tree',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddSplitContainerToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const nodeType = (args.orientation || 'horizontal') === 'vertical' ? 'VSplitContainer' : 'HSplitContainer';
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || nodeType,
+        node_type: nodeType,
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleReloadScriptAtRuntime(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.scriptPath) return createErrorResponse('scriptPath is required.');
+    return this.gameCommand('reload_script_at_runtime', args, a => ({
+      script_path: a.scriptPath,
+    }));
+  }
+
+  private async handleGetLoadedGdextensions(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_loaded_gdextensions', args, _a => ({}));
   }
 
 }
