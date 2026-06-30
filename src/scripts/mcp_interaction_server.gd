@@ -835,6 +835,32 @@ func _handle_command(json_str: String) -> void:
 			_cmd_set_text_edit_text(params)
 		"set_label_horizontal_alignment":
 			_cmd_set_label_horizontal_alignment(params)
+		"get_node_property_list":
+			_cmd_get_node_property_list(params)
+		"get_node_method_list":
+			_cmd_get_node_method_list(params)
+		"call_node_method":
+			_cmd_call_node_method(params)
+		"get_node_constant":
+			_cmd_get_node_constant(params)
+		"set_process_enabled":
+			_cmd_set_process_enabled(params)
+		"get_process_state":
+			_cmd_get_process_state(params)
+		"add_node_type_in_game":
+			_cmd_add_node_type_in_game(params)
+		"remove_node_in_game":
+			_cmd_remove_node_in_game(params)
+		"reparent_node_in_game":
+			_cmd_reparent_node_in_game(params)
+		"get_node_owner":
+			_cmd_get_node_owner(params)
+		"set_node_name_in_game":
+			_cmd_set_node_name_in_game(params)
+		"get_children_count":
+			_cmd_get_children_count(params)
+		"find_node_by_name":
+			_cmd_find_node_by_name(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -8332,6 +8358,173 @@ func _cmd_set_label_horizontal_alignment(params: Dictionary) -> void:
 		"fill": align_val = HORIZONTAL_ALIGNMENT_FILL
 	(node as Label).horizontal_alignment = align_val
 	_send_response({"success": true, "alignment": alignment_str})
+
+func _cmd_get_node_property_list(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var include_script: bool = params.get("include_script", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var props: Array = []
+	for p in node.get_property_list():
+		if p["usage"] & PROPERTY_USAGE_EDITOR or include_script:
+			props.append({"name": p["name"], "type": p["type"], "usage": p["usage"]})
+	_send_response({"success": true, "node_path": node_path, "class": node.get_class(), "property_count": props.size(), "properties": props})
+
+func _cmd_get_node_method_list(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var methods: Array = []
+	for m in node.get_method_list():
+		methods.append({"name": m["name"], "args": m["args"].size(), "flags": m["flags"]})
+	_send_response({"success": true, "node_path": node_path, "method_count": methods.size(), "methods": methods})
+
+func _cmd_call_node_method(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var method_name: String = params.get("method_name", "")
+	var call_args: Array = params.get("args", [])
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if not node.has_method(method_name):
+		_send_response({"error": "Method not found: " + method_name})
+		return
+	var result = node.callv(method_name, call_args)
+	_send_response({"success": true, "result": str(result), "method": method_name})
+
+func _cmd_get_node_constant(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var constant_name: String = params.get("constant_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var class_name_str = node.get_class()
+	if ClassDB.class_has_integer_constant(class_name_str, constant_name):
+		var val = ClassDB.class_get_integer_constant(class_name_str, constant_name)
+		_send_response({"success": true, "constant_name": constant_name, "value": val})
+	else:
+		_send_response({"error": "Constant not found: " + constant_name + " on " + class_name_str})
+
+func _cmd_set_process_enabled(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var process_enabled: bool = params.get("process_enabled", true)
+	var physics_enabled: bool = params.get("physics_enabled", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	node.set_process(process_enabled)
+	node.set_physics_process(physics_enabled)
+	_send_response({"success": true, "process_enabled": process_enabled, "physics_enabled": physics_enabled})
+
+func _cmd_get_process_state(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	_send_response({"success": true, "process_enabled": node.is_processing(), "physics_enabled": node.is_physics_processing(), "input_enabled": node.is_processing_input(), "unhandled_input_enabled": node.is_processing_unhandled_input()})
+
+func _cmd_add_node_type_in_game(params: Dictionary) -> void:
+	var node_type: String = params.get("node_type", "Node")
+	var parent_path: String = params.get("parent_path", "/root")
+	var node_name: String = params.get("node_name", node_type)
+	var parent = get_tree().root.get_node_or_null(NodePath(parent_path))
+	if parent == null:
+		_send_response({"error": "Parent not found: " + parent_path})
+		return
+	if not ClassDB.class_exists(node_type):
+		_send_response({"error": "Unknown node type: " + node_type})
+		return
+	var new_node = ClassDB.instantiate(node_type) as Node
+	if new_node == null:
+		_send_response({"error": "Cannot instantiate: " + node_type})
+		return
+	new_node.name = node_name
+	parent.add_child(new_node)
+	new_node.owner = get_tree().root
+	_send_response({"success": true, "node_path": str(new_node.get_path()), "type": node_type, "name": node_name})
+
+func _cmd_remove_node_in_game(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	node.queue_free()
+	_send_response({"success": true, "removed_path": node_path})
+
+func _cmd_reparent_node_in_game(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var new_parent_path: String = params.get("new_parent_path", "")
+	var keep_global_transform: bool = params.get("keep_global_transform", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	var new_parent = get_tree().root.get_node_or_null(NodePath(new_parent_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if new_parent == null:
+		_send_response({"error": "New parent not found: " + new_parent_path})
+		return
+	node.reparent(new_parent, keep_global_transform)
+	_send_response({"success": true, "new_path": str(node.get_path())})
+
+func _cmd_get_node_owner(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var owner = node.owner
+	_send_response({"success": true, "owner_path": str(owner.get_path()) if owner != null else null})
+
+func _cmd_set_node_name_in_game(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var new_name: String = params.get("new_name", "")
+	if new_name.is_empty():
+		_send_response({"error": "new_name is required"})
+		return
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var old_name = node.name
+	node.name = new_name
+	_send_response({"success": true, "old_name": old_name, "new_name": node.name, "new_path": str(node.get_path())})
+
+func _cmd_get_children_count(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var children: Array = []
+	for child in node.get_children():
+		children.append({"name": child.name, "class": child.get_class(), "path": str(child.get_path())})
+	_send_response({"success": true, "child_count": node.get_child_count(), "children": children})
+
+func _cmd_find_node_by_name(params: Dictionary) -> void:
+	var search_name: String = params.get("search_name", "")
+	var root_path: String = params.get("root_path", "/root")
+	var root = get_tree().root.get_node_or_null(NodePath(root_path))
+	if root == null:
+		_send_response({"error": "Root node not found: " + root_path})
+		return
+	var found: Array = []
+	var queue: Array = [root]
+	while not queue.is_empty():
+		var current = queue.pop_front()
+		if current.name == search_name:
+			found.append(str(current.get_path()))
+		for child in current.get_children():
+			queue.append(child)
+	_send_response({"success": true, "search_name": search_name, "count": found.size(), "paths": found})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()

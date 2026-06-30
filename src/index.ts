@@ -11162,6 +11162,200 @@ class GodotServer {
           required: ['nodePath'],
         },
       },
+      {
+        name: 'create_resource_file',
+        description: 'Create a new .tres resource file in the project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            resourcePath: { type: 'string', description: 'res:// path for the new resource file.' },
+            resourceType: { type: 'string', description: 'Godot resource type (default Resource).' },
+            content: { type: 'string', description: 'Optional full file content override.' },
+          },
+          required: ['projectPath', 'resourcePath'],
+        },
+      },
+      {
+        name: 'get_resource_file_content',
+        description: 'Read the raw content of a resource or script file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            filePath: { type: 'string', description: 'res:// path to the file to read.' },
+          },
+          required: ['projectPath', 'filePath'],
+        },
+      },
+      {
+        name: 'write_resource_file_content',
+        description: 'Write raw content to a resource or script file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            filePath: { type: 'string', description: 'res:// path to the file to write.' },
+            content: { type: 'string', description: 'Content to write to the file.' },
+          },
+          required: ['projectPath', 'filePath', 'content'],
+        },
+      },
+      {
+        name: 'list_project_3d_models',
+        description: 'Find all 3D model files in the project directory.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_node_property_list',
+        description: 'Get all properties with types from a node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the node in the scene tree.' },
+            includeScript: { type: 'boolean', description: 'Include script properties (default true).' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_node_method_list',
+        description: 'Get all methods available on a node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the node in the scene tree.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'call_node_method',
+        description: 'Call any method on a node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the node in the scene tree.' },
+            methodName: { type: 'string', description: 'Name of the method to call.' },
+            args: { type: 'array', description: 'Optional arguments to pass to the method.' },
+          },
+          required: ['nodePath', 'methodName'],
+        },
+      },
+      {
+        name: 'get_node_constant',
+        description: 'Get the value of a class constant from a node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the node in the scene tree.' },
+            constantName: { type: 'string', description: 'Name of the class constant to retrieve.' },
+          },
+          required: ['nodePath', 'constantName'],
+        },
+      },
+      {
+        name: 'set_process_enabled',
+        description: 'Enable or disable process on a node in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the node in the scene tree.' },
+            processEnabled: { type: 'boolean', description: 'Enable or disable _process.' },
+            physicsEnabled: { type: 'boolean', description: 'Enable or disable _physics_process.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_process_state',
+        description: 'Get the process enabled states of a node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the node in the scene tree.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'add_to_scene_at_runtime',
+        description: 'Add a new typed child node to a parent in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodeType: { type: 'string', description: 'Godot node type to instantiate (e.g. Label).' },
+            parentNodePath: { type: 'string', description: 'Path to the parent node in scene tree.' },
+            nodeName: { type: 'string', description: 'Optional name for the new node.' },
+          },
+          required: ['nodeType', 'parentNodePath'],
+        },
+      },
+      {
+        name: 'remove_node_in_game',
+        description: 'Queue free (remove) a node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the node to remove.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'reparent_node_in_game',
+        description: 'Move a node to a new parent in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the node to reparent.' },
+            newParentPath: { type: 'string', description: 'Path to the new parent node.' },
+            keepGlobalTransform: { type: 'boolean', description: 'Keep global transform (default true).' },
+          },
+          required: ['nodePath', 'newParentPath'],
+        },
+      },
+      {
+        name: 'set_node_name',
+        description: 'Rename a node in the running game scene tree.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the node to rename.' },
+            newName: { type: 'string', description: 'New name for the node.' },
+          },
+          required: ['nodePath', 'newName'],
+        },
+      },
+      {
+        name: 'get_children_count',
+        description: 'Get the child count of a node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the node in the scene tree.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'find_node_by_name',
+        description: 'Find a node by name in the running game scene tree.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            searchName: { type: 'string', description: 'Name of the node to search for.' },
+            rootPath: { type: 'string', description: 'Root path to search from (default /root).' },
+          },
+          required: ['searchName'],
+        },
+      },
       ],
     }));
 
@@ -12769,6 +12963,38 @@ class GodotServer {
           return await this.handleSetTextEditText(request.params.arguments);
         case 'set_label_horizontal_alignment':
           return await this.handleSetLabelHorizontalAlignment(request.params.arguments);
+        case 'create_resource_file':
+          return await this.handleCreateResourceFile(request.params.arguments);
+        case 'get_resource_file_content':
+          return await this.handleGetResourceFileContent(request.params.arguments);
+        case 'write_resource_file_content':
+          return await this.handleWriteResourceFileContent(request.params.arguments);
+        case 'list_project_3d_models':
+          return await this.handleListProject3dModels(request.params.arguments);
+        case 'get_node_property_list':
+          return await this.handleGetNodePropertyList(request.params.arguments);
+        case 'get_node_method_list':
+          return await this.handleGetNodeMethodList(request.params.arguments);
+        case 'call_node_method':
+          return await this.handleCallNodeMethod(request.params.arguments);
+        case 'get_node_constant':
+          return await this.handleGetNodeConstant(request.params.arguments);
+        case 'set_process_enabled':
+          return await this.handleSetProcessEnabled(request.params.arguments);
+        case 'get_process_state':
+          return await this.handleGetProcessState(request.params.arguments);
+        case 'add_to_scene_at_runtime':
+          return await this.handleAddToSceneAtRuntime(request.params.arguments);
+        case 'remove_node_in_game':
+          return await this.handleRemoveNodeInGame(request.params.arguments);
+        case 'reparent_node_in_game':
+          return await this.handleReparentNodeInGame(request.params.arguments);
+        case 'set_node_name':
+          return await this.handleSetNodeName(request.params.arguments);
+        case 'get_children_count':
+          return await this.handleGetChildrenCount(request.params.arguments);
+        case 'find_node_by_name':
+          return await this.handleFindNodeByName(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -23514,6 +23740,119 @@ class GodotServer {
     args = normalizeParameters(args || {});
     if (!args.nodePath) return createErrorResponse('nodePath is required.');
     return this.gameCommand('set_label_horizontal_alignment', args, a => ({ node_path: a.nodePath, alignment: a.alignment || 'left' }));
+  }
+
+  private async handleCreateResourceFile(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.resourcePath) return createErrorResponse('projectPath and resourcePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.resourcePath);
+    if (existsSync(absPath)) return createErrorResponse(`File already exists: ${args.resourcePath}`);
+    const rType = args.resourceType || 'Resource';
+    const fileContent = args.content || `[gd_resource type="${rType}" format=3]\n\n[resource]\n`;
+    try { writeFileSync(absPath, fileContent, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: JSON.stringify({ success: true, resourcePath: args.resourcePath, resourceType: rType }) }] };
+  }
+
+  private async handleGetResourceFileContent(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.filePath) return createErrorResponse('projectPath and filePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.filePath);
+    if (!existsSync(absPath)) return createErrorResponse(`File not found: ${absPath}`);
+    let content: string;
+    try { content = readFileSync(absPath, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: content }] };
+  }
+
+  private async handleWriteResourceFileContent(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.filePath || args.content === undefined) return createErrorResponse('projectPath, filePath, and content are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.filePath);
+    try { writeFileSync(absPath, args.content, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: JSON.stringify({ success: true, filePath: args.filePath, bytesWritten: Buffer.byteLength(args.content) }) }] };
+  }
+
+  private async handleListProject3dModels(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const models = this.collectFiles(args.projectPath, ['.glb', '.gltf', '.obj', '.fbx', '.dae', '.blend']);
+    const items = models.map(f => ({ file: f.replace(args.projectPath + '/', ''), resPath: 'res://' + f.replace(args.projectPath + '/', '') }));
+    return { content: [{ type: 'text', text: JSON.stringify({ count: items.length, models: items }, null, 2) }] };
+  }
+
+  private async handleGetNodePropertyList(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_property_list', args, a => ({ node_path: a.nodePath, include_script: a.includeScript ?? true }));
+  }
+
+  private async handleGetNodeMethodList(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_method_list', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleCallNodeMethod(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.methodName) return createErrorResponse('nodePath and methodName are required.');
+    return this.gameCommand('call_node_method', args, a => ({ node_path: a.nodePath, method_name: a.methodName, args: a.args || [] }));
+  }
+
+  private async handleGetNodeConstant(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.constantName) return createErrorResponse('nodePath and constantName are required.');
+    return this.gameCommand('get_node_constant', args, a => ({ node_path: a.nodePath, constant_name: a.constantName }));
+  }
+
+  private async handleSetProcessEnabled(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_process_enabled', args, a => ({ node_path: a.nodePath, process_enabled: a.processEnabled ?? true, physics_enabled: a.physicsEnabled ?? true }));
+  }
+
+  private async handleGetProcessState(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_process_state', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleAddToSceneAtRuntime(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodeType || !args.parentNodePath) return createErrorResponse('nodeType and parentNodePath are required.');
+    return this.gameCommand('add_node_type_in_game', args, a => ({ node_type: a.nodeType, parent_path: a.parentNodePath, node_name: a.nodeName || a.nodeType }));
+  }
+
+  private async handleRemoveNodeInGame(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('remove_node_in_game', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleReparentNodeInGame(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.newParentPath) return createErrorResponse('nodePath and newParentPath are required.');
+    return this.gameCommand('reparent_node_in_game', args, a => ({ node_path: a.nodePath, new_parent_path: a.newParentPath, keep_global_transform: a.keepGlobalTransform ?? true }));
+  }
+
+  private async handleSetNodeName(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.newName) return createErrorResponse('nodePath and newName are required.');
+    return this.gameCommand('set_node_name_in_game', args, a => ({ node_path: a.nodePath, new_name: a.newName }));
+  }
+
+  private async handleGetChildrenCount(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_children_count', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleFindNodeByName(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.searchName) return createErrorResponse('searchName is required.');
+    return this.gameCommand('find_node_by_name', args, a => ({ search_name: a.searchName, root_path: a.rootPath || '/root' }));
   }
 
 }
