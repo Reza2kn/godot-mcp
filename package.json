@@ -1,0 +1,59 @@
+{
+  "name": "@tugcantopaloglu/godot-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for full Godot 4.x engine control — 165 tools for AI-driven game development",
+  "keywords": [
+    "godot",
+    "mcp",
+    "ai",
+    "claude",
+    "cline",
+    "game-engine",
+    "gdscript",
+    "runtime",
+    "model-context-protocol"
+  ],
+  "homepage": "https://github.com/tugcantopaloglu/godot-mcp",
+  "bugs": {
+    "url": "https://github.com/tugcantopaloglu/godot-mcp/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tugcantopaloglu/godot-mcp.git"
+  },
+  "mcpName": "io.github.tugcantopaloglu/godot-mcp",
+  "license": "MIT",
+  "author": "Tugcan Topaloglu",
+  "contributors": [
+    "Solomon Elias <solomon@sippy.ai> (https://github.com/Coding-Solo)"
+  ],
+  "type": "module",
+  "bin": {
+    "godot-mcp": "./build/index.js"
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "tsc && node scripts/build.js",
+    "inspector": "npx @modelcontextprotocol/inspector build/index.js",
+    "prepare": "npm run build",
+    "watch": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.26.0",
+    "axios": "^1.13.5",
+    "fs-extra": "^11.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "@vitest/coverage-v8": "^3.2.4",
+    "typescript": "^5.3.3",
+    "vitest": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
