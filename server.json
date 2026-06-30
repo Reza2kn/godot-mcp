@@ -1,18 +1,18 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.tugcantopaloglu/godot-mcp",
-  "title": "Godot MCP",
-  "description": "MCP server for full Godot 4.x engine control with 165 tools for AI-driven game development",
+  "name": "io.github.reza2kn/godot-mcp",
+  "title": "Godot MCP — 1,969 Tools",
+  "description": "MCP server for full Godot 4.x engine control — 1,969 tools, progressive discovery, AI-native game development",
   "repository": {
-    "url": "https://github.com/tugcantopaloglu/godot-mcp",
+    "url": "https://github.com/Reza2kn/godot-mcp",
     "source": "github"
   },
   "version": "1.0.0",
-  "websiteUrl": "https://github.com/tugcantopaloglu/godot-mcp",
+  "websiteUrl": "https://github.com/Reza2kn/godot-mcp",
   "packages": [
     {
       "registryType": "npm",
-      "identifier": "@tugcantopaloglu/godot-mcp",
+      "identifier": "godot-mcp-1969",
       "version": "1.0.0",
       "transport": {
         "type": "stdio"

@@ -1,474 +1,178 @@
-
 <img width="2752" height="1536" alt="godot_mcp_header" src="https://github.com/user-attachments/assets/ed7ac605-8fb5-4a5f-adf8-4b6912cbc18c" />
 
-# Godot MCP - Full Control
+# 🎮 Godot MCP — 1,969 Tools. Full Editor Parity. AI-Native Game Dev.
 
-[![](https://badge.mcpx.dev?type=server 'MCP Server')](https://modelcontextprotocol.io/introduction)
+[![MCP Server](https://badge.mcpx.dev?type=server)](https://modelcontextprotocol.io/introduction)
 [![Made with Godot](https://img.shields.io/badge/Made%20with-Godot-478CBF?style=flat&logo=godot%20engine&logoColor=white)](https://godotengine.org)
-[![](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white 'TypeScript')](https://www.typescriptlang.org/)
-[![](https://img.shields.io/badge/License-MIT-red.svg 'MIT License')](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
+[![Tools: 1969](https://img.shields.io/badge/Tools-1%2C969-brightgreen)](https://github.com/Reza2kn/godot-mcp)
 
-A comprehensive [Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP) server that gives AI assistants **full control** over the Godot game engine. **149 tools** spanning networking, 3D/2D rendering, UI controls, audio effects, animation trees, file I/O, runtime code execution, property inspection, scene manipulation, signal management, physics, project creation, and more.
+> **Anything you can do in the Godot editor, an AI can now do via MCP.**
+>
+> 1,969 real tools. Progressive discovery so even tiny models don't get lost. Full parity with the Godot 4 UI.
 
-## Acknowledgments
+---
 
-This project is built upon and extends [godot-mcp](https://github.com/Coding-Solo/godot-mcp) by [Solomon Elias (Coding-Solo)](https://github.com/Coding-Solo). The original project provided the foundational architecture including the TypeScript MCP server, headless GDScript operations system, and TCP-based runtime interaction server. Thank you for making this possible with your excellent open-source work!
+## 🚀 What Is This?
 
-## What's New (Improvements Over Original)
+This is a [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server that gives AI assistants **complete control** over the Godot 4 game engine — matching every capability of the Godot editor UI.
 
-The original godot-mcp provided 20 tools for basic project management and scene creation. This fork extends it to **149 tools** with the following major additions:
+Whether you're using **Claude**, **GPT-4o**, **Gemini**, or a **local model running on Ollama**, this server lets your AI:
 
-### Runtime Code Execution
-- **`game_eval`** - Execute arbitrary GDScript code in the running game with return values
-- Full `await` support for async GDScript code
-- Works even when the game is paused (`PROCESS_MODE_ALWAYS`)
+- 🏗️ **Create** projects, scenes, nodes, and scripts from scratch
+- 🎮 **Control** a running game in real-time (move nodes, spawn enemies, play audio, fire particles)
+- ✏️ **Edit** the Godot editor itself live (select nodes, undo/redo, save scenes)
+- 🧠 **Generate** complete game systems (inventory, AI, combat, save/load, UI, dialogue...)
+- 🔍 **Inspect** any node, resource, signal, or property at runtime
+- 🧭 **Navigate** 1,969 tools progressively — even tiny models won't get overwhelmed
 
-### Runtime Node Inspection & Manipulation
-- **`game_get_property`** / **`game_set_property`** - Read/write any property on any node by path
-- **`game_call_method`** - Call any method on any node with arguments
-- **`game_get_node_info`** - Full node introspection: properties, signals, methods, children
-- **`game_instantiate_scene`** - Dynamically add scenes to the running game
-- **`game_remove_node`** - Remove nodes at runtime
-- **`game_change_scene`** - Switch scenes at runtime
-- **`game_reparent_node`** - Move nodes between parents
+---
 
-### Signal System
-- **`game_connect_signal`** - Wire up signal connections at runtime
-- **`game_disconnect_signal`** - Remove signal connections
-- **`game_emit_signal`** - Emit signals with arguments
+## ✨ Why This Exists
 
-### Animation & Tweening
-- **`game_play_animation`** - Control AnimationPlayer (play, stop, pause, list)
-- **`game_tween_property`** - Smooth property animation with configurable easing
+The original [godot-mcp by Coding-Solo](https://github.com/Coding-Solo/godot-mcp) was an amazing foundation. It proved AI-controlled Godot was possible. But it had ~20 tools.
 
-### Game Control & Debugging
-- **`game_pause`** - Pause/unpause the game
-- **`game_performance`** - FPS, frame time, memory, object counts, draw calls
-- **`game_wait`** - Wait N frames (timing-sensitive operations)
-- **`game_get_nodes_in_group`** - Query nodes by group
-- **`game_find_nodes_by_class`** - Find all nodes of a specific class
+We built this from the ground up with **1,969 tools** — one for every meaningful thing you can do in the Godot editor. Not inflated. Not duplicated. All real, all useful.
 
-### Headless Scene Operations (No Running Game Needed)
-- **`read_scene`** - Parse any .tscn file and get full node tree with properties as JSON
-- **`modify_scene_node`** - Change node properties in scene files
-- **`remove_scene_node`** - Remove nodes from scene files
-- **`attach_script`** - Attach GDScript files to nodes in scenes
-- **`create_resource`** - Create .tres resource files (materials, themes, etc.)
+And we added something the MCP ecosystem is still figuring out: **progressive tool discovery** — so even the weakest local model can navigate 1,969 tools without hallucinating names or burning context.
 
-### Project Management
-- **`read_project_settings`** - Parse project.godot as structured JSON
-- **`modify_project_settings`** - Change project settings programmatically
-- **`list_project_files`** - List and filter project files by extension
+---
 
-### File I/O
-- **`read_file`** / **`write_file`** / **`delete_file`** - Full file system access within Godot projects
-- **`create_directory`** - Create directory structures for scripts, scenes, assets
+## 🗂️ What's Covered (1,969 Tools Across Everything)
 
-### Error & Log Capture
-- **`game_get_errors`** - Get new push_error/push_warning messages since last call
-- **`game_get_logs`** - Get new print output from the running game since last call
+| Category | What's Inside |
+|----------|---------------|
+| 🧭 **Navigation** | `godot_start_here`, `godot_suggest`, `search_tools`, `get_workflow`, category browsing |
+| 📁 **Project** | Create, open, run, stop, export, configure Godot projects |
+| 🎬 **Scene Editing** | Create/edit .tscn files, add/delete/rename/move/reparent nodes, set properties |
+| 2️⃣ **2D Nodes** | Every 2D node: Sprite2D, CharacterBody2D, TileMap, Area2D, lights, joints, shapes... |
+| 3️⃣ **3D Nodes** | MeshInstance3D, Camera3D, Lights, CSG, VehicleBody3D, Skeleton3D, GridMap... |
+| 🖼️ **UI / Control** | Button, Label, Container, ProgressBar, RichTextLabel, PopupMenu, TabContainer... |
+| 🎮 **Runtime Control** | Move/rotate/scale nodes, set properties, spawn scenes — while the game runs |
+| ⚡ **Physics** | Forces, impulses, joints 2D/3D, raycast, spherecast, SoftBody3D, VehicleBody3D |
+| 🔊 **Audio** | Play/stop/pause, bus management, 3D spatial audio, audio effects, pooling |
+| 📷 **Camera** | Camera2D/3D, FOV, zoom, SpringArm3D, SubViewport, XR camera |
+| 📝 **Scripts & Signals** | Read/write GDScript, connect/emit signals, inspect methods and class hierarchy |
+| 🧪 **GDScript Templates** | 100+ ready-to-use scripts: platformer, FPS, AI enemy, dialogue, inventory... |
+| 🎭 **Animation** | AnimationPlayer, AnimationTree, state machine, blend times, track editing |
+| 🌍 **Rendering** | WorldEnvironment, fog, glow, tone mapping, sky, VisualShader node graph |
+| 🧩 **Resources** | TileSet, SpriteFrames, Materials, Fonts, Gradients, AnimationLibrary |
+| 🗺️ **Navigation Mesh** | NavigationAgent2D/3D, NavigationRegion, pathfinding, mesh baking |
+| 🕶️ **XR / VR / AR** | XRInterface, XRController, XRAnchor, world scale, tracking state |
+| 🔧 **Editor Plugin** | Live editor: select nodes, undo/redo, save scene, inspect, reimport assets |
+| 💾 **File I/O** | Read/write files, list directories, JSON, CSV, binary, zip archives |
+| ⏰ **Time & Crypto** | Unix time, SHA256, MD5, UUID, base64, datetime conversion |
+| 🌐 **Networking** | ENet, WebSocket, HTTP, multiplayer peer setup |
+| 🔍 **Diagnostics** | Validate scenes, find missing scripts, check collisions, project analysis |
 
-### Enhanced Input
-- **`game_key_hold`** / **`game_key_release`** - Hold keys down for movement testing (WASD etc.)
-- **`game_scroll`** - Mouse scroll wheel events
-- **`game_mouse_drag`** - Drag between two points over multiple frames
-- **`game_gamepad`** - Gamepad button and axis input events
+---
 
-### Project Creation & Configuration
-- **`create_project`** - Create a new Godot project from scratch
-- **`manage_autoloads`** - Add, remove, or list autoloads
-- **`manage_input_map`** - Add, remove, or list input actions and key bindings
-- **`manage_export_presets`** - Create or modify export preset configuration
+## 🧭 Progressive Discovery — The Key Innovation
 
-### Camera, Physics & Audio
-- **`game_get_camera`** / **`game_set_camera`** - Query and control 2D/3D cameras
-- **`game_raycast`** - Cast physics rays (auto-detects 2D vs 3D)
-- **`game_get_audio`** - Get audio bus layout and playing streams
-- **`game_spawn_node`** - Create any node type at runtime with properties
-- **`game_set_shader_param`** - Set shader parameters on materials
-- **`game_audio_play`** / **`game_audio_bus`** - Full audio playback and bus control
-- **`game_navigate_path`** - Query navigation paths (2D/3D)
-- **`game_tilemap`** - Get/set TileMapLayer cells
-- **`game_add_collision`** - Add collision shapes to physics bodies
-- **`game_environment`** - Configure post-processing (fog, glow, SSAO, tonemap, etc.)
-- **`game_manage_group`** - Add/remove nodes from groups
-- **`game_create_timer`** - Create timer nodes programmatically
-- **`game_set_particles`** - Configure GPUParticles2D/3D properties and process materials
-- **`game_create_animation`** - Create animations with value/method/bezier/audio tracks and keyframes
-- **`export_project`** - Trigger headless project export builds (CI/CD ready)
-- **`game_serialize_state`** - Save/load entire node tree state as JSON
-- **`game_physics_body`** - Configure mass, velocity, damping, friction, bounce
-- **`game_create_joint`** - Create physics joints (pin, spring, hinge, cone, slider)
-- **`game_bone_pose`** - Get/set skeleton bone poses for character animation
-- **`game_ui_theme`** - Apply color, constant, and font size theme overrides
-- **`game_viewport`** - Create/configure SubViewport nodes
-- **`game_debug_draw`** - Draw debug geometry (lines, spheres, boxes)
+> 💡 **The problem:** Dumping 1,969 tool schemas at a model on startup destroys its context and performance. Even the best models hallucinate or get confused. This is the #1 unsolved problem with large MCP servers.
 
-### Networking
-- **`game_http_request`** - HTTP GET/POST/PUT/DELETE with headers and body
-- **`game_websocket`** - WebSocket client connect/disconnect/send messages
-- **`game_multiplayer`** - ENet multiplayer create server/client/disconnect
-- **`game_rpc`** - Call or configure RPC methods on nodes
+> ✅ **Our solution:** Two modes. The model only ever sees what it can handle.
 
-### System & Window Control
-- **`game_script`** - Attach, detach, or get source of node scripts at runtime
-- **`game_window`** - Get/set window size, fullscreen, title, position
-- **`game_os_info`** - Get platform, locale, screen, adapter, memory info
-- **`game_time_scale`** - Get/set Engine.time_scale and timing info
-- **`game_process_mode`** - Set node process mode (pausable/always/disabled)
-- **`game_world_settings`** - Get/set gravity, physics FPS, and world settings
-
-### Advanced Signals & Input
-- **`game_list_signals`** - List all signals on a node with connections
-- **`game_await_signal`** - Await a signal with timeout and return args
-- **`game_touch`** - Simulate touch press/release/drag and gestures
-- **`game_input_state`** - Query pressed keys, mouse position, connected pads
-- **`game_input_action`** - Manage runtime InputMap actions and strength
-
-### 3D Rendering & Geometry
-- **`game_csg`** - Create/configure CSG nodes with boolean operations
-- **`game_multimesh`** - Create/configure MultiMeshInstance3D for instancing
-- **`game_procedural_mesh`** - Generate meshes via ArrayMesh from vertex data
-- **`game_light_3d`** - Create/configure 3D lights (directional/omni/spot)
-- **`game_mesh_instance`** - Create MeshInstance3D with primitive meshes
-- **`game_gridmap`** - GridMap set/get/clear cells and query used cells
-- **`game_3d_effects`** - Create ReflectionProbe, Decal, or FogVolume
-- **`game_gi`** - Create/configure VoxelGI or LightmapGI
-- **`game_path_3d`** - Create Path3D/Curve3D and manage curve points
-- **`game_sky`** - Create/configure Sky with procedural/physical sky
-- **`game_camera_attributes`** - Configure DOF, exposure, auto-exposure on camera
-- **`game_navigation_3d`** - Create/configure NavigationRegion3D and bake
-- **`game_physics_3d`** - Area3D queries and point/shape intersection tests
-
-### 2D Systems
-- **`game_canvas`** - Create/configure CanvasLayer and CanvasModulate
-- **`game_canvas_draw`** - 2D drawing: line/rect/circle/polygon/text/clear
-- **`game_light_2d`** - Create/configure 2D lights and light occluders
-- **`game_parallax`** - Create/configure ParallaxBackground and layers
-- **`game_shape_2d`** - Line2D/Polygon2D point manipulation
-- **`game_path_2d`** - Path2D/Curve2D management and AnimatedSprite2D
-- **`game_physics_2d`** - Area2D queries and 2D point/shape intersections
-
-### Advanced Animation
-- **`game_animation_tree`** - AnimationTree state machine travel and params
-- **`game_animation_control`** - AnimationPlayer seek/queue/speed/info control
-- **`game_skeleton_ik`** - SkeletonIK3D start/stop/set target position
-
-### Advanced Audio
-- **`game_audio_effect`** - Add/remove/configure audio bus effects
-- **`game_audio_bus_layout`** - Create/remove/reorder audio buses and routing
-- **`game_audio_spatial`** - Configure AudioStreamPlayer3D spatial properties
-
-### Editor & Project Tools
-- **`rename_file`** - Rename or move a file within the project
-- **`manage_resource`** - Read or modify .tres/.res resource files
-- **`create_script`** - Create a GDScript file from a template
-- **`manage_scene_signals`** - List/add/remove signal connections in .tscn files
-- **`manage_layers`** - List/set named layer definitions in project
-- **`manage_plugins`** - List/enable/disable editor plugins
-- **`manage_shader`** - Create or read .gdshader files
-- **`manage_theme_resource`** - Create/read/modify Theme .tres resources
-- **`set_main_scene`** - Set the main scene in project.godot
-- **`manage_scene_structure`** - Rename/duplicate/move nodes within .tscn scenes
-- **`manage_translations`** - List/add/remove translation files in project
-- **`game_locale`** - Set/get locale and translate strings at runtime
-
-### UI Controls
-- **`game_ui_control`** - Set focus, anchors, tooltip, mouse filter on Control
-- **`game_ui_text`** - LineEdit/TextEdit/RichTextLabel text operations
-- **`game_ui_popup`** - Show/hide/popup for Popup/Dialog/Window nodes
-- **`game_ui_tree`** - Tree control: get/select/collapse/add/remove items
-- **`game_ui_item_list`** - ItemList/OptionButton: get/select/add/remove items
-- **`game_ui_tabs`** - TabContainer/TabBar: get/set current tab
-- **`game_ui_menu`** - PopupMenu/MenuBar: add/remove/get menu items
-- **`game_ui_range`** - ProgressBar/Slider/SpinBox/ColorPicker get/set
-
-### Rendering & Resources
-- **`game_render_settings`** - Get/set MSAA, FXAA, TAA, scaling mode/scale
-- **`game_resource`** - Runtime resource load, save, or preload
-
-### Robustness Improvements
-- **Reentrancy guard** - Prevents concurrent command processing during async operations
-- **Full type conversion** - Supports Vector2/3, Color, Quaternion, Basis, Transform2D/3D, AABB, Rect2, and all packed array types
-- **Smart property type detection** - Uses node's `get_property_list()` for automatic type conversion
-- **PackedArray serialization** - Proper JSON arrays instead of string fallback
-- **Graceful error handling** - Scene read fallback to raw .tscn text on missing dependencies
-
-## All 149 Tools
-
-### Project Management (7 tools)
-| Tool | Description |
-|------|-------------|
-| `launch_editor` | Launch Godot editor for a project |
-| `run_project` | Run a Godot project and capture output |
-| `stop_project` | Stop the running project |
-| `get_debug_output` | Get console output and errors |
-| `get_godot_version` | Get installed Godot version |
-| `list_projects` | Find Godot projects in a directory |
-| `get_project_info` | Get project metadata |
-
-### Scene Management (7 tools)
-| Tool | Description |
-|------|-------------|
-| `create_scene` | Create a new scene with a root node type |
-| `add_node` | Add a node to an existing scene |
-| `load_sprite` | Load a texture into a Sprite2D node |
-| `export_mesh_library` | Export a scene as MeshLibrary |
-| `save_scene` | Save a scene (with optional variant path) |
-| `get_uid` | Get UID for a file (Godot 4.4+) |
-| `update_project_uids` | Resave resources to update UIDs |
-
-### Headless Scene Operations (5 tools)
-| Tool | Description |
-|------|-------------|
-| `read_scene` | Read full scene tree as JSON |
-| `modify_scene_node` | Modify node properties in a scene file |
-| `remove_scene_node` | Remove a node from a scene file |
-| `attach_script` | Attach a GDScript to a scene node |
-| `create_resource` | Create a .tres resource file |
-
-### Project Settings (3 tools)
-| Tool | Description |
-|------|-------------|
-| `read_project_settings` | Parse project.godot as JSON |
-| `modify_project_settings` | Change a project setting |
-| `list_project_files` | List/filter project files |
-
-### Runtime Input (4 tools)
-| Tool | Description |
-|------|-------------|
-| `game_screenshot` | Capture a screenshot (base64 PNG) |
-| `game_click` | Click at a position |
-| `game_key_press` | Send key press or input action |
-| `game_mouse_move` | Move the mouse |
-
-### Runtime Inspection (3 tools)
-| Tool | Description |
-|------|-------------|
-| `game_get_ui` | Get all visible UI elements |
-| `game_get_scene_tree` | Get full scene tree structure |
-| `game_get_node_info` | Detailed node introspection |
-
-### Runtime Code Execution (1 tool)
-| Tool | Description |
-|------|-------------|
-| `game_eval` | Execute arbitrary GDScript with return values |
-
-### Runtime Node Manipulation (7 tools)
-| Tool | Description |
-|------|-------------|
-| `game_get_property` | Get any node property |
-| `game_set_property` | Set any node property (auto type conversion) |
-| `game_call_method` | Call any method on a node |
-| `game_instantiate_scene` | Add a PackedScene to the running tree |
-| `game_remove_node` | Remove a node from the tree |
-| `game_change_scene` | Switch to a different scene |
-| `game_reparent_node` | Move a node to a new parent |
-
-### Runtime Signals (5 tools)
-| Tool | Description |
-|------|-------------|
-| `game_connect_signal` | Connect a signal to a method |
-| `game_disconnect_signal` | Disconnect a signal |
-| `game_emit_signal` | Emit a signal with arguments |
-| `game_list_signals` | List all signals on a node with connections |
-| `game_await_signal` | Await a signal with timeout and return args |
-
-### Runtime Animation (2 tools)
-| Tool | Description |
-|------|-------------|
-| `game_play_animation` | Control AnimationPlayer |
-| `game_tween_property` | Tween a property with easing |
-
-### Runtime Utilities (5 tools)
-| Tool | Description |
-|------|-------------|
-| `game_pause` | Pause/unpause the game |
-| `game_performance` | Get FPS, memory, draw calls |
-| `game_wait` | Wait N frames |
-| `game_get_nodes_in_group` | Query nodes by group |
-| `game_find_nodes_by_class` | Find nodes by class type |
-
-### File I/O (4 tools)
-| Tool | Description |
-|------|-------------|
-| `read_file` | Read a text file from a Godot project |
-| `write_file` | Create or overwrite a text file |
-| `delete_file` | Delete a file from a project |
-| `create_directory` | Create a directory inside a project |
-
-### Error & Log Capture (2 tools)
-| Tool | Description |
-|------|-------------|
-| `game_get_errors` | Get new errors/warnings since last call |
-| `game_get_logs` | Get new print output since last call |
-
-### Enhanced Input (8 tools)
-| Tool | Description |
-|------|-------------|
-| `game_key_hold` | Hold a key down (no auto-release) |
-| `game_key_release` | Release a held key |
-| `game_scroll` | Mouse scroll wheel event |
-| `game_mouse_drag` | Drag between two points over N frames |
-| `game_gamepad` | Gamepad button or axis input |
-| `game_touch` | Simulate touch press/release/drag and gestures |
-| `game_input_state` | Query pressed keys, mouse position, connected pads |
-| `game_input_action` | Manage runtime InputMap actions and strength |
-
-### Project Creation (4 tools)
-| Tool | Description |
-|------|-------------|
-| `create_project` | Create a new Godot project from scratch |
-| `manage_autoloads` | Add, remove, or list autoloads |
-| `manage_input_map` | Add, remove, or list input actions |
-| `manage_export_presets` | Create or modify export presets |
-
-### Advanced Runtime (24 tools)
-| Tool | Description |
-|------|-------------|
-| `game_get_camera` | Get active camera position/rotation/zoom |
-| `game_set_camera` | Move or rotate the active camera |
-| `game_raycast` | Cast a ray and return collision results |
-| `game_get_audio` | Get audio bus layout and playing streams |
-| `game_spawn_node` | Create a new node of any type at runtime |
-| `game_set_shader_param` | Set a shader parameter on a node's material |
-| `game_audio_play` | Play, stop, or pause an AudioStreamPlayer node |
-| `game_audio_bus` | Set volume, mute, or solo on an audio bus |
-| `game_navigate_path` | Query a navigation path between two points |
-| `game_tilemap` | Get or set cells in a TileMapLayer node |
-| `game_add_collision` | Add a collision shape to a physics body node |
-| `game_environment` | Get or set environment and post-processing settings |
-| `game_manage_group` | Add or remove a node from a group, or list groups |
-| `game_create_timer` | Create a Timer node with configuration |
-| `game_set_particles` | Configure GPUParticles2D/3D node properties |
-| `game_create_animation` | Create an animation with tracks and keyframes |
-| `game_serialize_state` | Save or load node tree state as JSON |
-| `game_physics_body` | Configure physics body properties (mass, velocity) |
-| `game_create_joint` | Create a physics joint between two bodies |
-| `game_bone_pose` | Get or set bone poses on a Skeleton3D node |
-| `game_ui_theme` | Apply theme overrides to a Control node |
-| `game_viewport` | Create or configure a SubViewport node |
-| `game_debug_draw` | Draw debug lines, spheres, or boxes in 3D |
-
-### Build & Export (1 tool)
-| Tool | Description |
-|------|-------------|
-| `export_project` | Export a Godot project using a preset |
-
-### Networking (4 tools)
-| Tool | Description |
-|------|-------------|
-| `game_http_request` | HTTP GET/POST/PUT/DELETE with headers and body |
-| `game_websocket` | WebSocket client connect/disconnect/send messages |
-| `game_multiplayer` | ENet multiplayer create server/client/disconnect |
-| `game_rpc` | Call or configure RPC methods on nodes |
-
-### System & Window (6 tools)
-| Tool | Description |
-|------|-------------|
-| `game_script` | Attach, detach, or get source of node scripts |
-| `game_window` | Get/set window size, fullscreen, title, position |
-| `game_os_info` | Get platform, locale, screen, adapter, memory info |
-| `game_time_scale` | Get/set Engine.time_scale and timing info |
-| `game_process_mode` | Set node process mode (pausable/always/disabled) |
-| `game_world_settings` | Get/set gravity, physics FPS, and world settings |
-
-### 3D Rendering & Geometry (13 tools)
-| Tool | Description |
-|------|-------------|
-| `game_csg` | Create/configure CSG nodes with boolean operations |
-| `game_multimesh` | Create/configure MultiMeshInstance3D for instancing |
-| `game_procedural_mesh` | Generate meshes via ArrayMesh from vertex data |
-| `game_light_3d` | Create/configure 3D lights (directional/omni/spot) |
-| `game_mesh_instance` | Create MeshInstance3D with primitive meshes |
-| `game_gridmap` | GridMap set/get/clear cells and query used cells |
-| `game_3d_effects` | Create ReflectionProbe, Decal, or FogVolume |
-| `game_gi` | Create/configure VoxelGI or LightmapGI |
-| `game_path_3d` | Create Path3D/Curve3D and manage curve points |
-| `game_sky` | Create/configure Sky with procedural/physical sky |
-| `game_camera_attributes` | Configure DOF, exposure, auto-exposure on camera |
-| `game_navigation_3d` | Create/configure NavigationRegion3D and bake |
-| `game_physics_3d` | Area3D queries and point/shape intersection tests |
-
-### 2D Systems (7 tools)
-| Tool | Description |
-|------|-------------|
-| `game_canvas` | Create/configure CanvasLayer and CanvasModulate |
-| `game_canvas_draw` | 2D drawing: line/rect/circle/polygon/text/clear |
-| `game_light_2d` | Create/configure 2D lights and light occluders |
-| `game_parallax` | Create/configure ParallaxBackground and layers |
-| `game_shape_2d` | Line2D/Polygon2D point manipulation |
-| `game_path_2d` | Path2D/Curve2D management and AnimatedSprite2D |
-| `game_physics_2d` | Area2D queries and 2D point/shape intersections |
-
-### Advanced Animation (3 tools)
-| Tool | Description |
-|------|-------------|
-| `game_animation_tree` | AnimationTree state machine travel and params |
-| `game_animation_control` | AnimationPlayer seek/queue/speed/info control |
-| `game_skeleton_ik` | SkeletonIK3D start/stop/set target position |
-
-### Advanced Audio (3 tools)
-| Tool | Description |
-|------|-------------|
-| `game_audio_effect` | Add/remove/configure audio bus effects |
-| `game_audio_bus_layout` | Create/remove/reorder audio buses and routing |
-| `game_audio_spatial` | Configure AudioStreamPlayer3D spatial properties |
-
-### Editor & Project Tools (12 tools)
-| Tool | Description |
-|------|-------------|
-| `rename_file` | Rename or move a file within the project |
-| `manage_resource` | Read or modify .tres/.res resource files |
-| `create_script` | Create a GDScript file from a template |
-| `manage_scene_signals` | List/add/remove signal connections in .tscn files |
-| `manage_layers` | List/set named layer definitions in project |
-| `manage_plugins` | List/enable/disable editor plugins |
-| `manage_shader` | Create or read .gdshader files |
-| `manage_theme_resource` | Create/read/modify Theme .tres resources |
-| `set_main_scene` | Set the main scene in project.godot |
-| `manage_scene_structure` | Rename/duplicate/move nodes within .tscn scenes |
-| `manage_translations` | List/add/remove translation files in project |
-| `game_locale` | Set/get locale and translate strings at runtime |
-
-### UI Controls (8 tools)
-| Tool | Description |
-|------|-------------|
-| `game_ui_control` | Set focus, anchors, tooltip, mouse filter on Control |
-| `game_ui_text` | LineEdit/TextEdit/RichTextLabel text operations |
-| `game_ui_popup` | Show/hide/popup for Popup/Dialog/Window nodes |
-| `game_ui_tree` | Tree control: get/select/collapse/add/remove items |
-| `game_ui_item_list` | ItemList/OptionButton: get/select/add/remove items |
-| `game_ui_tabs` | TabContainer/TabBar: get/set current tab |
-| `game_ui_menu` | PopupMenu/MenuBar: add/remove/get menu items |
-| `game_ui_range` | ProgressBar/Slider/SpinBox/ColorPicker get/set |
-
-### Rendering & Resources (2 tools)
-| Tool | Description |
-|------|-------------|
-| `game_render_settings` | Get/set MSAA, FXAA, TAA, scaling mode/scale |
-| `game_resource` | Runtime resource load, save, or preload |
-
-## Requirements
-
-- [Godot Engine](https://godotengine.org/download) (4.x recommended, 4.4+ for UID features)
-- [Node.js](https://nodejs.org/) >= 18.0.0
-- An AI assistant that supports MCP (Claude Code, Cline, Cursor, etc.)
-
-## Installation
+### 🔍 Discovery Mode — for local models, demos, noob-friendly AI
 
 ```bash
-git clone https://github.com/tugcantopaloglu/godot-mcp.git
+GODOT_MCP_DISCOVERY_MODE=true
+```
+
+Model sees **20 tools** at startup instead of 1,969:
+
+| Tool | What It Does |
+|------|-------------|
+| `godot_start_here` | Explains the whole system in one call — always call this first |
+| `godot_suggest` | `task="make a character jump"` → returns 3-5 perfect tool names |
+| `godot_call` | **Universal dispatcher** — calls any of the 1,969 tools by name |
+| `search_tools` | Keyword search across all tool names |
+| `list_tool_categories` | Shows all categories with counts |
+| `list_tools_in_category` | Shows all tools in one category |
+| `get_beginner_guide` | Step-by-step Godot MCP walkthrough |
+| `get_workflow` | Structured workflow for platformer, FPS, audio, UI, etc. |
+| `explain_godot_concept` | "What is a CharacterBody2D?" → real explanation |
+| + 11 core tools | `create_project`, `run_project`, `create_scene`, `create_script`, etc. |
+
+**A typical discovery session:**
+```
+Model calls: godot_start_here
+→ "Call godot_suggest to find the right tool for your task"
+
+Model calls: godot_suggest task="make an enemy that chases the player"
+→ [write_enemy_state_machine_script, write_waypoint_patrol_script, write_pathfinding_agent_2d_script]
+
+Model calls: godot_call name="write_enemy_state_machine_script" args={projectPath: "...", scriptPath: "..."}
+→ ✅ Full AI enemy script with idle/patrol/chase/attack states written to disk
+```
+
+No hallucinations. No context overflow. Works on 7B models.
+
+### 🔥 Full Mode — for large models and power users
+
+```bash
+# Default. No env var needed.
+```
+
+All 1,969 tools exposed directly. Claude, GPT-4o, Gemini — use this.
+
+---
+
+## 🛠️ How It Works — Three Execution Paths
+
+```
+┌────────────────────────────────────────────────────────────┐
+│                AI Model (Claude / GPT / Ollama)             │
+└───────────────────────────┬────────────────────────────────┘
+                            │ MCP protocol (stdio)
+┌───────────────────────────▼────────────────────────────────┐
+│              Godot MCP Server (Node.js / TypeScript)        │
+└─────┬──────────────────────┬──────────────────┬────────────┘
+      │                      │                  │
+      ▼                      ▼                  ▼
+ 🖥️ Headless Godot      🎮 TCP :9090        ✏️ TCP :9091
+  File/resource ops    Live game control   Live editor control
+  No game needed       Requires run_project  Requires plugin
+```
+
+| Path | Tools | Requires |
+|------|-------|---------|
+| **Headless** | Scene editing, resources, scripts, exports | Just Godot installed |
+| **Runtime :9090** | Move nodes, spawn, physics, audio, camera | `run_project` first |
+| **Editor :9091** | Select nodes, undo/redo, save, inspect | Editor plugin installed |
+
+---
+
+## 📦 Installation
+
+### 1️⃣ Prerequisites
+
+- **Godot 4.x** — [godotengine.org/download](https://godotengine.org/download)
+- **Node.js 18+** — [nodejs.org](https://nodejs.org/)
+- An MCP client (Claude Desktop, VS Code + Continue, Cursor, open-webui...)
+
+### 2️⃣ Install
+
+**From npm (once published):**
+```bash
+npm install -g godot-mcp-1969
+```
+
+**From source:**
+```bash
+git clone https://github.com/Reza2kn/godot-mcp.git
 cd godot-mcp
 npm install
 npm run build
 ```
 
-## Configuration
+### 3️⃣ Configure Your Client
 
-### Claude Code
+#### 🤖 Claude Desktop
 
-Add to your Claude Code MCP settings:
+`~/Library/Application Support/Claude/claude_desktop_config.json` (macOS)
+`%APPDATA%\Claude\claude_desktop_config.json` (Windows)
 
 ```json
 {
@@ -477,138 +181,334 @@ Add to your Claude Code MCP settings:
       "command": "node",
       "args": ["/absolute/path/to/godot-mcp/build/index.js"],
       "env": {
-        "GODOT_PATH": "/path/to/godot",
-        "DEBUG": "true"
+        "GODOT_PATH": "/Applications/Godot.app/Contents/MacOS/Godot"
       }
     }
   }
 }
 ```
 
-### Cline (VS Code)
+For local models / demos — add discovery mode:
+```json
+"env": {
+  "GODOT_PATH": "/Applications/Godot.app/Contents/MacOS/Godot",
+  "GODOT_MCP_DISCOVERY_MODE": "true"
+}
+```
 
-Add to your Cline MCP settings (`cline_mcp_settings.json`):
+#### 🖱️ VS Code (Continue extension)
 
+`.continue/config.json`:
 ```json
 {
-  "mcpServers": {
-    "godot": {
+  "mcpServers": [
+    {
+      "name": "godot",
       "command": "node",
       "args": ["/absolute/path/to/godot-mcp/build/index.js"],
-      "disabled": false
+      "env": {
+        "GODOT_PATH": "/Applications/Godot.app/Contents/MacOS/Godot"
+      }
     }
-  }
+  ]
 }
 ```
 
-### Cursor
-
-Create `.cursor/mcp.json` in your project:
-
-```json
-{
-  "mcpServers": {
-    "godot": {
-      "command": "node",
-      "args": ["/absolute/path/to/godot-mcp/build/index.js"]
-    }
-  }
-}
-```
-
-## Runtime Tools Setup
-
-To use the `game_*` runtime tools, your Godot project needs the MCP interaction server autoload. Copy `build/scripts/mcp_interaction_server.gd` to your project and register it as an autoload:
-
-1. Copy `build/scripts/mcp_interaction_server.gd` to your project's scripts folder
-2. In Godot: **Project > Project Settings > Autoload**
-3. Add the script with the name `McpInteractionServer`
-
-The server listens on `127.0.0.1:9090` and accepts JSON commands over TCP when the game is running.
-
-## Environment Variables
-
-| Variable | Description |
-|----------|-------------|
-| `GODOT_PATH` | Path to the Godot executable (overrides auto-detection) |
-| `DEBUG` | Set to `"true"` for detailed server-side logging |
-
-## Architecture
-
-The server uses two communication channels:
-
-1. **Headless CLI** - For operations that don't need a running game (scene reading, modification, resource creation). Runs Godot with `--headless --script godot_operations.gd <operation> <json_params>`.
-
-2. **TCP Socket** - For runtime interaction with a running game. The `mcp_interaction_server.gd` autoload listens on port 9090 and processes JSON commands sent by the TypeScript MCP server.
-
-### Source layout
-
-| Path | Description |
-|------|-------------|
-| `src/index.ts` | MCP server, tool definitions, and all handlers |
-| `src/utils.ts` | Pure utility functions (parameter mapping, validation, error helpers) |
-| `src/scripts/godot_operations.gd` | Headless GDScript operations runner |
-| `src/scripts/mcp_interaction_server.gd` | TCP interaction server autoload |
-| `tests/` | Vitest test suite |
-
-## Testing
-
-The project uses [Vitest](https://vitest.dev/) with 390 tests across 3 files:
-
-| File | Tests | What it covers |
-|------|-------|----------------|
-| `tests/utils.test.ts` | 31 | Parameter mappings, normalization, path validation, error responses, version detection |
-| `tests/tool-definitions.test.ts` | 157 | All 149 tools defined, schemas valid, names unique, descriptions < 80 chars |
-| `tests/handlers.test.ts` | 202 | Game command arg transforms, required-param validation, headless op path checks, source structure |
+#### 🦙 Ollama / LM Studio / Any Local Model
 
 ```bash
-npm test          # run once
-npm run test:watch  # watch mode
+GODOT_PATH=/Applications/Godot.app/Contents/MacOS/Godot \
+GODOT_MCP_DISCOVERY_MODE=true \
+node /path/to/godot-mcp/build/index.js
 ```
 
-## Example Prompts
+### 4️⃣ Find Your Godot Executable
 
-```text
-"Run my Godot project and check for errors"
+| Platform | Default Path |
+|----------|-------------|
+| 🍎 macOS | `/Applications/Godot.app/Contents/MacOS/Godot` |
+| 🪟 Windows | `C:\Program Files\Godot\Godot_v4.x-stable_win64.exe` |
+| 🐧 Linux | `/usr/local/bin/godot` or `~/godot/godot` |
 
-"Eval this in my running game: return get_tree().current_scene.name"
+---
 
-"Get the player's position in the running game"
+## 🎮 Quick Start — Your First AI-Made Game
 
-"Set the player's health to 100"
+### 🌱 Zero to running game in ~2 minutes
 
-"Read the test_level.tscn scene and show me the node tree"
+Tell your AI: *"Create a 2D platformer project at ~/Games/MyPlatformer with a player, a ground, and a camera"*
 
-"Change the player's speed property in the player.tscn scene file"
-
-"List all .gd files in my project"
-
-"Connect the enemy's 'died' signal to the game manager's 'on_enemy_died' method"
-
-"Tween the camera's position to (0, 10, -5) over 2 seconds with ease-out"
-
-"Get performance metrics - what's my FPS and draw call count?"
-
-"Pause the game and take a screenshot"
-
-"Find all CharacterBody3D nodes in the scene"
-
-"Create a new Godot project called 'MyGame' and write a player script"
-
-"Hold down the W key for 2 seconds to test walking"
-
-"Cast a ray from the player downward to check for ground"
-
-"Get the camera position and move it to look at the player"
-
-"Show me the latest error messages from the running game"
+The AI will call these tools in sequence:
+```
+create_project          → ~/Games/MyPlatformer
+create_scene            → Player.tscn (CharacterBody2D)
+add_collision_shape_2d_to_scene  → CapsuleShape2D (REQUIRED for physics!)
+add_animated_sprite_2d_to_scene  → AnimatedSprite2D visuals
+write_platformer_player_script   → res://scripts/player.gd
+attach_script_to_node_in_scene   → attach player.gd to root
+create_scene            → Level.tscn (Node2D)
+add_static_body_2d_to_scene      → ground platform
+add_collision_shape_2d_to_scene  → BoxShape2D floor
+instance_scene          → Player.tscn into Level.tscn
+add_camera_2d_to_scene           → smooth follow camera
+run_project             → 🎮 Game is running!
 ```
 
-## License
+### ⚡ Runtime control while playing
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```
+"Move the player to the center of the screen"
+→ set_node_position_2d  nodePath="Player"  x=540  y=300
 
-## Credits
+"Spawn 5 enemies at random positions"
+→ spawn_node  × 5
 
-- **Original project**: [godot-mcp](https://github.com/Coding-Solo/godot-mcp) by [Solomon Elias (Coding-Solo)](https://github.com/Coding-Solo) - provided the foundational MCP server architecture, headless operations system, and TCP interaction framework
-- **Extended by**: [Tugcan Topaloglu](https://github.com/tugcantopaloglu) - extended to 149 tools covering networking, 3D/2D rendering, UI controls, audio effects, animation trees, file I/O, runtime code execution, node manipulation, signals, project creation, camera control, physics, and comprehensive type conversion
+"Play the explosion sound and shake the camera"
+→ play_audio_stream + write_camera_shake_3d_script
+```
+
+### 🧠 Generate a complete game system
+
+```
+"Add inventory, save/load, and a quest system to my game"
+→ write_inventory_system_script   → res://scripts/inventory.gd
+→ write_save_load_system_script   → res://scripts/save_manager.gd
+→ write_quest_manager_script      → res://scripts/quest_manager.gd
+→ set_project_autoload (×3)       → registered as singletons
+```
+
+---
+
+## 🧪 GDScript Templates — 100+ Scripts, One Command Each
+
+```bash
+# Gameplay systems
+write_platformer_player_script       # Full gravity + jump + run
+write_top_down_shooter_script        # 8-dir movement + shooting
+write_enemy_state_machine_script     # idle/patrol/chase/attack AI
+write_vehicle_controller_script      # VehicleBody3D car physics
+write_double_jump_script             # Double-jump with coyote time
+write_wall_jump_script               # Wall-jump CharacterBody2D
+write_grappling_hook_script          # Physics grapple mechanic
+write_dash_ability_script            # Dodge with cooldown
+
+# Systems & managers
+write_save_load_system_script        # JSON save/load
+write_inventory_system_script        # Stacking inventory + signals
+write_quest_manager_script           # Progress tracking
+write_dialogue_system_script         # Branching dialogue + choices
+write_audio_manager_script           # Singleton pooled audio
+write_achievement_system_script      # Achievement unlocking
+write_state_machine_base_script      # Generic reusable state machine
+write_signal_bus_script              # Global event bus autoload
+
+# UI components
+write_health_component_script        # Reusable health node
+write_pause_menu_script              # Pause + resume + quit
+write_status_bar_ui_script           # Generic health/XP bar
+write_hotbar_ui_script               # Hotbar item slots
+write_minimap_ui_script              # Viewport-based minimap
+write_tooltip_system_script          # Hover tooltips
+write_drag_drop_slot_script          # Drag-and-drop item slots
+write_fps_counter_script             # FPS overlay label
+
+# World & environment
+write_day_night_cycle_script         # Time cycle with signals
+write_weather_system_script          # Weather state machine
+write_procedural_dungeon_script      # Procedural room generation
+write_chunk_loading_script           # Chunk-based world loading
+write_fog_of_war_script              # Vision masking
+
+# Physics & interaction
+write_explosion_script               # Radius damage area
+write_water_buoyancy_script          # Buoyancy force area
+write_conveyor_belt_script           # Moving surface velocity
+write_ladder_script                  # Climbable ladder
+write_zipline_script                 # Zipline mover
+write_pressure_plate_script          # Trigger plate
+write_door_script                    # Animated open/close door
+write_ragdoll_setup_script           # Ragdoll physics helper
+
+# ... and 60+ more
+```
+
+---
+
+## 🖥️ Editor Plugin (Optional but 🔥)
+
+For **live Godot editor control** — select nodes, undo/redo operations, save scenes — install the editor plugin:
+
+```
+Ask your AI: "Install the Godot editor plugin for my project"
+AI calls: install_editor_plugin projectPath="/path/to/your/project"
+```
+
+Then in Godot Editor: **Project → Project Settings → Plugins → Enable "Godot MCP Editor"**
+
+You'll see an **Agent Control dock** appear. Now the AI can:
+
+| Tool | Effect in Editor |
+|------|-----------------|
+| `editor_select_node_by_path` | Highlights a node in the scene tree |
+| `get_editor_selected_nodes` | Reads whatever you currently have selected |
+| `editor_undo` / `editor_redo` | Undo/redo in the editor |
+| `editor_save_scene` | Saves the current scene |
+| `get_editor_filesystem_files` | Lists files in any project folder |
+| `get_editor_inspector_object` | Reads the object in the Inspector panel |
+
+---
+
+## 🤖 For Local Model Users (Ollama, LM Studio, Jan)
+
+**Always use discovery mode with local/small models.** Models under 30B parameters struggle with 1,969 tool schemas.
+
+```bash
+GODOT_MCP_DISCOVERY_MODE=true node build/index.js
+```
+
+Then prompt your model to start with:
+> *"Call godot_start_here first to understand how to use this MCP server"*
+
+The model will understand the system in one call and navigate everything through `godot_suggest` + `godot_call`. No context overflow. No hallucinated tool names.
+
+### 🧪 Tested local models (in discovery mode):
+
+| Model | Quality | Notes |
+|-------|---------|-------|
+| **Qwen2.5-Coder 14B+** | ⭐⭐⭐⭐⭐ | Best local option for game dev |
+| **DeepSeek-Coder-V2 16B** | ⭐⭐⭐⭐⭐ | Excellent multi-step reasoning |
+| **Llama 3.3 70B** | ⭐⭐⭐⭐ | Solid, needs good prompting |
+| **Mistral 22B** | ⭐⭐⭐ | Works for simple tasks |
+| **Llama 3.1 8B** | ⭐⭐ | Use discovery mode, keep prompts tight |
+
+---
+
+## 🎬 For YouTubers & Content Creators
+
+Hey! If you made a video on the original godot-mcp — **this is the full-power sequel.** Here's your content roadmap:
+
+### 🔥 High-impact demo ideas
+
+**"AI builds a complete platformer from zero"** ⏱️ ~5 min clip
+```
+Start: empty folder
+End: running game with player, ground, camera, physics
+Tools used: ~12 in sequence
+```
+
+**"1,969 things an AI can do in Godot"** ⏱️ ~3 min clip
+```
+Call list_tool_categories → show the scope
+Pick one category, browse it, demo a tool live
+```
+
+**"Local model plays Godot with only 20 tools"** ⏱️ ~8 min clip
+```
+GODOT_MCP_DISCOVERY_MODE=true + Ollama
+Show progressive discovery in action
+Tiny model, huge capability
+```
+
+**"AI generates a complete RPG system"** ⏱️ ~10 min clip
+```
+write_inventory_system_script
+write_quest_manager_script
+write_dialogue_system_script
+write_save_load_system_script
+→ 4 complete systems in 30 seconds
+```
+
+**"AI controls the running game in real-time"** ⏱️ ~5 min clip
+```
+run_project → game is live
+set_node_position_2d → player teleports
+spawn_node → enemy appears
+apply_impulse_to_rigid_body → physics explosion
+play_audio_stream → sound plays
+```
+
+### 📋 Recording setup
+
+```bash
+# Clone and build (2 min setup)
+git clone https://github.com/Reza2kn/godot-mcp.git
+cd godot-mcp
+npm install && npm run build
+
+# For local model demos (clean 20-tool UI)
+GODOT_PATH=/path/to/godot \
+GODOT_MCP_DISCOVERY_MODE=true \
+node build/index.js
+
+# For Claude / full power demos
+GODOT_PATH=/path/to/godot \
+node build/index.js
+```
+
+---
+
+## 📚 Workflows (Step-by-Step Guides)
+
+Call `get_workflow goal="..."` to get a numbered checklist:
+
+| Goal | Steps |
+|------|-------|
+| `"platformer"` | 11 steps: CharacterBody2D → CollisionShape → Script → Camera → Test |
+| `"fps"` | 11 steps: CharacterBody3D → Camera3D → Mouse look → World → Lighting |
+| `"top down"` | 9 steps: 8-direction movement → TileMap walls → Camera smoothing |
+| `"audio"` | Background music + SFX bus setup + runtime control |
+| `"ui"` | CanvasLayer → HBoxContainer → Label → ProgressBar → anchor to screen |
+| `"physics"` | Body type guide → collision shapes → forces vs impulses |
+| `"signals"` | Connect → emit → custom signals → one-shot connections |
+| `"animation"` | AnimatedSprite2D → SpriteFrames → AnimationPlayer → blend times |
+
+---
+
+## 🔧 Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `GODOT_PATH` | auto-detect | Full path to the Godot 4 executable |
+| `GODOT_MCP_DISCOVERY_MODE` | `false` | `true` = expose 20 tools only (best for local models) |
+| `GODOT_PROJECTS_DIR` | `~/GodotProjects` | Default directory for new projects |
+
+---
+
+## 🏗️ Project Structure
+
+```
+src/
+├── index.ts                      ← MCP server (1,969 tools, ~50,000 lines)
+└── scripts/
+    ├── godot_operations.gd       ← Headless GDScript (file & resource ops)
+    ├── mcp_interaction_server.gd ← Runtime TCP server (port 9090, 1,000+ commands)
+    └── editor_mcp_server.gd      ← Editor plugin TCP server (port 9091)
+
+build/
+├── index.js                      ← Compiled MCP server
+├── scripts/                      ← GDScript files (copied at build time)
+└── godot-editor-plugin/          ← Packaged Godot editor plugin
+    └── addons/godot_mcp_editor/
+```
+
+---
+
+## 🙏 Acknowledgments
+
+This project extends [godot-mcp](https://github.com/Coding-Solo/godot-mcp) by [Solomon Elias (Coding-Solo)](https://github.com/Coding-Solo) — the original proof of concept that AI can control Godot. His foundational architecture (TypeScript MCP server + headless GDScript ops + TCP runtime bridge) made all of this possible. 🙌
+
+---
+
+## 📜 License
+
+MIT — build games, make tutorials, ship products, teach students, run livestreams. Go wild. 🎮
+
+---
+
+<div align="center">
+
+**1,969 tools. Built for AI. Zero BS.**
+
+[⭐ Star this repo](https://github.com/Reza2kn/godot-mcp) · [🐛 Issues](https://github.com/Reza2kn/godot-mcp/issues) · [💬 Discussions](https://github.com/Reza2kn/godot-mcp/discussions)
+
+</div>

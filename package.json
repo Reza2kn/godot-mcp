@@ -1,7 +1,7 @@
 {
-  "name": "@tugcantopaloglu/godot-mcp",
+  "name": "godot-mcp-1969",
   "version": "1.0.0",
-  "description": "MCP server for full Godot 4.x engine control — 184+ tools for AI-driven game development",
+  "description": "MCP server for full Godot 4.x engine control — 1,969 tools for AI-driven game development",
   "keywords": [
     "godot",
     "mcp",
@@ -11,20 +11,25 @@
     "game-engine",
     "gdscript",
     "runtime",
-    "model-context-protocol"
+    "model-context-protocol",
+    "game-development",
+    "godot4",
+    "ollama",
+    "local-llm"
   ],
-  "homepage": "https://github.com/tugcantopaloglu/godot-mcp",
+  "homepage": "https://github.com/Reza2kn/godot-mcp",
   "bugs": {
-    "url": "https://github.com/tugcantopaloglu/godot-mcp/issues"
+    "url": "https://github.com/Reza2kn/godot-mcp/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tugcantopaloglu/godot-mcp.git"
+    "url": "https://github.com/Reza2kn/godot-mcp.git"
   },
-  "mcpName": "io.github.tugcantopaloglu/godot-mcp",
+  "mcpName": "io.github.reza2kn/godot-mcp",
   "license": "MIT",
-  "author": "Tugcan Topaloglu",
+  "author": "Reza Sayar",
   "contributors": [
+    "Tugcan Topaloglu (https://github.com/tugcantopaloglu)",
     "Solomon Elias <solomon@sippy.ai> (https://github.com/Coding-Solo)"
   ],
   "type": "module",
