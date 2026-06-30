@@ -751,6 +751,14 @@ func _handle_command(json_str: String) -> void:
 			_cmd_set_light_3d_energy(params)
 		"set_sky_material":
 			_cmd_set_sky_material(params)
+		"get_node_metadata_in_game":
+			_cmd_get_node_metadata_in_game(params)
+		"set_node_metadata_in_game":
+			_cmd_set_node_metadata_in_game(params)
+		"get_time_in_game":
+			_cmd_get_time_in_game(params)
+		"get_engine_version_in_game":
+			_cmd_get_engine_version_in_game(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -7793,6 +7801,42 @@ func _cmd_set_sky_material(params: Dictionary) -> void:
 		env.sky = Sky.new()
 	env.sky.sky_material = sky_mat
 	_send_response({"success": true, "sky_material_path": sky_material_path})
+
+func _cmd_get_node_metadata_in_game(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var meta_names = node.get_meta_list()
+	var meta_dict: Dictionary = {}
+	for key in meta_names:
+		meta_dict[key] = str(node.get_meta(key))
+	_send_response({"success": true, "node_path": node_path, "meta_count": meta_names.size(), "metadata": meta_dict})
+
+func _cmd_set_node_metadata_in_game(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var key: String = params.get("key", "")
+	var value = params.get("value", null)
+	if key.is_empty():
+		_send_response({"error": "key is required"})
+		return
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	node.set_meta(key, value)
+	_send_response({"success": true, "node_path": node_path, "key": key, "value": str(value)})
+
+func _cmd_get_time_in_game(params: Dictionary) -> void:
+	var ticks_ms = Time.get_ticks_msec()
+	var ticks_usec = Time.get_ticks_usec()
+	var unix_time = Time.get_unix_time_from_system()
+	_send_response({"success": true, "ticks_msec": ticks_ms, "ticks_usec": ticks_usec, "unix_time": unix_time, "engine_time_scale": Engine.time_scale, "physics_ticks_per_second": Engine.physics_ticks_per_second})
+
+func _cmd_get_engine_version_in_game(params: Dictionary) -> void:
+	var version = Engine.get_version_info()
+	_send_response({"success": true, "major": version["major"], "minor": version["minor"], "patch": version["patch"], "status": version["status"], "build": version["build"], "string": version["string"]})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()
