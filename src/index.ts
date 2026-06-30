@@ -9,7 +9,7 @@
 
 import { fileURLToPath } from 'url';
 import { join, dirname, basename, normalize } from 'path';
-import { existsSync, readdirSync, readFileSync, writeFileSync, copyFileSync, unlinkSync, mkdirSync, renameSync, statSync } from 'fs';
+import { existsSync, readdirSync, readFileSync, writeFileSync, copyFileSync, unlinkSync, mkdirSync, renameSync, statSync, appendFileSync } from 'fs';
 import { spawn, execFile } from 'child_process';
 import { promisify } from 'util';
 import { createConnection, Socket } from 'net';
@@ -13323,6 +13323,197 @@ class GodotServer {
           required: ['projectPath', 'sourcePath', 'destPath'],
         },
       },
+      {
+        name: 'file_exists_in_project',
+        description: 'Check if a file exists in the Godot project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Godot project path.' },
+            filePath: { type: 'string', description: 'res:// or relative path to the file.' },
+          },
+          required: ['projectPath', 'filePath'],
+        },
+      },
+      {
+        name: 'get_file_size',
+        description: 'Get the byte size of a file in the Godot project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Godot project path.' },
+            filePath: { type: 'string', description: 'res:// or relative path to the file.' },
+          },
+          required: ['projectPath', 'filePath'],
+        },
+      },
+      {
+        name: 'search_in_file',
+        description: 'Search for a pattern in a project file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Godot project path.' },
+            filePath: { type: 'string', description: 'res:// or relative path to the file.' },
+            pattern: { type: 'string', description: 'String pattern to search for.' },
+          },
+          required: ['projectPath', 'filePath', 'pattern'],
+        },
+      },
+      {
+        name: 'replace_in_file',
+        description: 'Replace all occurrences of a string in a file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Godot project path.' },
+            filePath: { type: 'string', description: 'res:// or relative path to the file.' },
+            search: { type: 'string', description: 'String to search for.' },
+            replacement: { type: 'string', description: 'Replacement string.' },
+          },
+          required: ['projectPath', 'filePath', 'search', 'replacement'],
+        },
+      },
+      {
+        name: 'get_godot_project_settings',
+        description: 'Read project.godot settings as key-value pairs.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Godot project path.' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'list_project_import_files',
+        description: 'List all .import files in a Godot project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Godot project path.' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'append_to_file',
+        description: 'Append text to a file in the Godot project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Godot project path.' },
+            filePath: { type: 'string', description: 'res:// or relative path to the file.' },
+            content: { type: 'string', description: 'Content to append.' },
+          },
+          required: ['projectPath', 'filePath', 'content'],
+        },
+      },
+      {
+        name: 'get_node_count_in_scene_file',
+        description: 'Count nodes in a .tscn scene file (headless).',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Godot project path.' },
+            scenePath: { type: 'string', description: 'res:// path to the .tscn file.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'get_scene_file_connections',
+        description: 'Parse signal connections from a .tscn file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Godot project path.' },
+            scenePath: { type: 'string', description: 'res:// path to the .tscn file.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'get_project_export_presets',
+        description: 'Read export_presets.cfg from a project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Godot project path.' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'add_spring_joint_2d_to_scene',
+        description: 'Add a DampedSpringJoint2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: DampedSpringJoint2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_remote_transform_2d_to_scene',
+        description: 'Add a RemoteTransform2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: RemoteTransform2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_node_3d_to_scene',
+        description: 'Add a plain Node3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: Node3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_node_2d_to_scene',
+        description: 'Add a plain Node2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: Node2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_path_follow_2d_to_scene',
+        description: 'Add a PathFollow2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: PathFollow2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
       ],
     }));
 
@@ -15288,6 +15479,36 @@ class GodotServer {
           return await this.handleWriteFileContent(request.params.arguments);
         case 'copy_file':
           return await this.handleCopyFile(request.params.arguments);
+        case 'file_exists_in_project':
+          return await this.handleFileExistsInProject(request.params.arguments);
+        case 'get_file_size':
+          return await this.handleGetFileSize(request.params.arguments);
+        case 'search_in_file':
+          return await this.handleSearchInFile(request.params.arguments);
+        case 'replace_in_file':
+          return await this.handleReplaceInFile(request.params.arguments);
+        case 'get_godot_project_settings':
+          return await this.handleGetGodotProjectSettings(request.params.arguments);
+        case 'list_project_import_files':
+          return await this.handleListProjectImportFiles(request.params.arguments);
+        case 'append_to_file':
+          return await this.handleAppendToFile(request.params.arguments);
+        case 'get_node_count_in_scene_file':
+          return await this.handleGetNodeCountInSceneFile(request.params.arguments);
+        case 'get_scene_file_connections':
+          return await this.handleGetSceneFileConnections(request.params.arguments);
+        case 'get_project_export_presets':
+          return await this.handleGetProjectExportPresets(request.params.arguments);
+        case 'add_spring_joint_2d_to_scene':
+          return await this.handleAddSpringJoint2dToScene(request.params.arguments);
+        case 'add_remote_transform_2d_to_scene':
+          return await this.handleAddRemoteTransform2dToScene(request.params.arguments);
+        case 'add_node_3d_to_scene':
+          return await this.handleAddNode3dToScene(request.params.arguments);
+        case 'add_node_2d_to_scene':
+          return await this.handleAddNode2dToScene(request.params.arguments);
+        case 'add_path_follow_2d_to_scene':
+          return await this.handleAddPathFollow2dToScene(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -27401,6 +27622,215 @@ class GodotServer {
     } catch (error: any) {
       return createErrorResponse(`Failed to copy file: ${error?.message || 'Unknown error'}`);
     }
+  }
+
+  private async handleFileExistsInProject(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.filePath) return createErrorResponse('filePath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.filePath);
+    const exists = existsSync(absPath);
+    return { content: [{ type: 'text', text: JSON.stringify({ success: true, exists, path: absPath }, null, 2) }] };
+  }
+
+  private async handleGetFileSize(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.filePath) return createErrorResponse('filePath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.filePath);
+    if (!existsSync(absPath)) return createErrorResponse(`File not found: ${args.filePath}`);
+    try {
+      const stat = statSync(absPath);
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, size: stat.size, isDirectory: stat.isDirectory() }, null, 2) }] };
+    } catch (error: any) {
+      return createErrorResponse(`Failed to stat file: ${error?.message || 'Unknown error'}`);
+    }
+  }
+
+  private async handleSearchInFile(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.filePath) return createErrorResponse('filePath is required.');
+    if (!args.pattern) return createErrorResponse('pattern is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.filePath);
+    if (!existsSync(absPath)) return createErrorResponse(`File not found: ${args.filePath}`);
+    try {
+      const content = readFileSync(absPath, 'utf8');
+      const lines = content.split('\n');
+      const matches: { line: number; text: string }[] = [];
+      for (let i = 0; i < lines.length; i++) {
+        if (lines[i].includes(args.pattern)) {
+          matches.push({ line: i + 1, text: lines[i] });
+        }
+      }
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, pattern: args.pattern, matchCount: matches.length, matches }, null, 2) }] };
+    } catch (error: any) {
+      return createErrorResponse(`Failed to search file: ${error?.message || 'Unknown error'}`);
+    }
+  }
+
+  private async handleReplaceInFile(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.filePath) return createErrorResponse('filePath is required.');
+    if (args.search === undefined || args.search === null) return createErrorResponse('search is required.');
+    if (args.replacement === undefined || args.replacement === null) return createErrorResponse('replacement is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.filePath);
+    if (!existsSync(absPath)) return createErrorResponse(`File not found: ${args.filePath}`);
+    try {
+      const original = readFileSync(absPath, 'utf8');
+      const updated = original.split(args.search).join(args.replacement);
+      const count = (original.split(args.search).length - 1);
+      writeFileSync(absPath, updated, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, replacements: count, filePath: args.filePath }, null, 2) }] };
+    } catch (error: any) {
+      return createErrorResponse(`Failed to replace in file: ${error?.message || 'Unknown error'}`);
+    }
+  }
+
+  private async handleGetGodotProjectSettings(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const settingsPath = join(args.projectPath, 'project.godot');
+    if (!existsSync(settingsPath)) return createErrorResponse('project.godot not found in project path.');
+    try {
+      const content = readFileSync(settingsPath, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, content }, null, 2) }] };
+    } catch (error: any) {
+      return createErrorResponse(`Failed to read project.godot: ${error?.message || 'Unknown error'}`);
+    }
+  }
+
+  private async handleListProjectImportFiles(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    try {
+      const files = this.collectFiles(args.projectPath, ['.import']);
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, count: files.length, files }, null, 2) }] };
+    } catch (error: any) {
+      return createErrorResponse(`Failed to list import files: ${error?.message || 'Unknown error'}`);
+    }
+  }
+
+  private async handleAppendToFile(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.filePath) return createErrorResponse('filePath is required.');
+    if (args.content === undefined || args.content === null) return createErrorResponse('content is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.filePath);
+    try {
+      appendFileSync(absPath, args.content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, filePath: args.filePath }, null, 2) }] };
+    } catch (error: any) {
+      return createErrorResponse(`Failed to append to file: ${error?.message || 'Unknown error'}`);
+    }
+  }
+
+  private async handleGetNodeCountInSceneFile(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absPath)) return createErrorResponse(`Scene file not found: ${args.scenePath}`);
+    try {
+      const content = readFileSync(absPath, 'utf8');
+      const lines = content.split('\n');
+      const nodeLines = lines.filter(l => l.startsWith('[node'));
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scenePath: args.scenePath, nodeCount: nodeLines.length }, null, 2) }] };
+    } catch (error: any) {
+      return createErrorResponse(`Failed to count nodes: ${error?.message || 'Unknown error'}`);
+    }
+  }
+
+  private async handleGetSceneFileConnections(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absPath)) return createErrorResponse(`Scene file not found: ${args.scenePath}`);
+    try {
+      const content = readFileSync(absPath, 'utf8');
+      const lines = content.split('\n');
+      const connections = lines
+        .filter(l => l.startsWith('[connection'))
+        .map(l => l.trim());
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scenePath: args.scenePath, connectionCount: connections.length, connections }, null, 2) }] };
+    } catch (error: any) {
+      return createErrorResponse(`Failed to parse connections: ${error?.message || 'Unknown error'}`);
+    }
+  }
+
+  private async handleGetProjectExportPresets(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const presetsPath = join(args.projectPath, 'export_presets.cfg');
+    if (!existsSync(presetsPath)) return createErrorResponse('export_presets.cfg not found in project path.');
+    try {
+      const content = readFileSync(presetsPath, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, content }, null, 2) }] };
+    } catch (error: any) {
+      return createErrorResponse(`Failed to read export_presets.cfg: ${error?.message || 'Unknown error'}`);
+    }
+  }
+
+  private async handleAddSpringJoint2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'DampedSpringJoint2D', nodeType: 'DampedSpringJoint2D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddRemoteTransform2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'RemoteTransform2D', nodeType: 'RemoteTransform2D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddNode3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'Node3D', nodeType: 'Node3D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddNode2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'Node2D', nodeType: 'Node2D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddPathFollow2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'PathFollow2D', nodeType: 'PathFollow2D', parentNodePath: a.parentNodePath || '.' },
+    }));
   }
 
 }
