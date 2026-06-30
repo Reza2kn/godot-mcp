@@ -983,6 +983,22 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_os_name(params)
 		"get_cpu_count":
 			_cmd_get_cpu_count(params)
+		"get_particles_amount":
+			_cmd_get_particles_amount(params)
+		"set_particles_amount":
+			_cmd_set_particles_amount(params)
+		"get_environment_property":
+			_cmd_get_environment_property(params)
+		"get_skeleton_bone_count":
+			_cmd_get_skeleton_bone_count(params)
+		"get_skeleton_bone_names":
+			_cmd_get_skeleton_bone_names(params)
+		"set_skeleton_bone_pose_rotation":
+			_cmd_set_skeleton_bone_pose_rotation(params)
+		"reset_skeleton_pose":
+			_cmd_reset_skeleton_pose(params)
+		"get_node_class":
+			_cmd_get_node_class(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -9322,6 +9338,104 @@ func _cmd_get_cpu_count(params: Dictionary) -> void:
 	var count = OS.get_processor_count()
 	var cpu_name = OS.get_processor_name()
 	_send_response({"success": true, "count": count, "cpu_name": cpu_name})
+
+func _cmd_get_particles_amount(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node.get("amount") != null:
+		_send_response({"success": true, "amount": node.get("amount"), "class": node.get_class()})
+	else:
+		_send_response({"error": "Node does not have amount property: " + node.get_class()})
+
+func _cmd_set_particles_amount(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var amount: int = params.get("amount", 8)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node.get("amount") != null:
+		node.set("amount", amount)
+		_send_response({"success": true, "amount": amount})
+	else:
+		_send_response({"error": "Node does not have amount property: " + node.get_class()})
+
+func _cmd_get_environment_property(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var property: String = params.get("property", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is WorldEnvironment:
+		_send_response({"error": "WorldEnvironment not found: " + node_path})
+		return
+	var env = (node as WorldEnvironment).environment
+	if env == null:
+		_send_response({"error": "WorldEnvironment has no Environment resource"})
+		return
+	var value = env.get(property)
+	_send_response({"success": true, "property": property, "value": value})
+
+func _cmd_get_skeleton_bone_count(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Skeleton3D:
+		_send_response({"error": "Skeleton3D not found: " + node_path})
+		return
+	var sk := node as Skeleton3D
+	_send_response({"success": true, "bone_count": sk.get_bone_count()})
+
+func _cmd_get_skeleton_bone_names(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Skeleton3D:
+		_send_response({"error": "Skeleton3D not found: " + node_path})
+		return
+	var sk := node as Skeleton3D
+	var names: Array = []
+	for i in range(sk.get_bone_count()):
+		names.append(sk.get_bone_name(i))
+	_send_response({"success": true, "bone_count": sk.get_bone_count(), "bone_names": names})
+
+func _cmd_set_skeleton_bone_pose_rotation(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var bone_name: String = params.get("bone_name", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Skeleton3D:
+		_send_response({"error": "Skeleton3D not found: " + node_path})
+		return
+	var sk := node as Skeleton3D
+	var bone_idx = sk.find_bone(bone_name)
+	if bone_idx == -1:
+		_send_response({"error": "Bone not found: " + bone_name})
+		return
+	var pose = sk.get_bone_pose(bone_idx)
+	pose.basis = Basis.from_euler(Vector3(x, y, z))
+	sk.set_bone_pose(bone_idx, pose)
+	_send_response({"success": true, "bone_name": bone_name, "rotation": {"x": x, "y": y, "z": z}})
+
+func _cmd_reset_skeleton_pose(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Skeleton3D:
+		_send_response({"error": "Skeleton3D not found: " + node_path})
+		return
+	var sk := node as Skeleton3D
+	for i in range(sk.get_bone_count()):
+		sk.reset_bone_pose(i)
+	_send_response({"success": true, "bone_count": sk.get_bone_count()})
+
+func _cmd_get_node_class(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	_send_response({"success": true, "class": node.get_class(), "script": str(node.get_script()) if node.get_script() != null else null, "is_class_list": ClassDB.get_inheriters_from_class(node.get_class())})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()

@@ -12209,6 +12209,114 @@ class GodotServer {
           required: ['projectPath', 'scenePath'],
         },
       },
+      {
+        name: 'add_voxel_gi_to_scene',
+        description: 'Add a VoxelGI node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: VoxelGI).' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .).' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'get_particles_amount',
+        description: 'Get the emission amount from a Particles node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the GPUParticles node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_particles_amount',
+        description: 'Set the emission amount on a Particles node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the GPUParticles node.' },
+            amount: { type: 'integer', description: 'Emission amount (default 8).' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_environment_property',
+        description: 'Get a property from the Environment resource in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to a WorldEnvironment node.' },
+            property: { type: 'string', description: 'Property name to get.' },
+          },
+          required: ['nodePath', 'property'],
+        },
+      },
+      {
+        name: 'get_skeleton_bone_count',
+        description: 'Get the bone count of a Skeleton3D in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Skeleton3D node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_skeleton_bone_names',
+        description: 'List all bone names in a Skeleton3D in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Skeleton3D node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_skeleton_bone_pose_rotation',
+        description: 'Set a bone pose rotation in a Skeleton3D in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Skeleton3D node.' },
+            boneName: { type: 'string', description: 'Name of the bone to rotate.' },
+            x: { type: 'number', description: 'X rotation in radians (default 0).' },
+            y: { type: 'number', description: 'Y rotation in radians (default 0).' },
+            z: { type: 'number', description: 'Z rotation in radians (default 0).' },
+          },
+          required: ['nodePath', 'boneName'],
+        },
+      },
+      {
+        name: 'reset_skeleton_pose',
+        description: 'Reset all Skeleton3D bone poses to rest in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Skeleton3D node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_node_class',
+        description: 'Get the class name of a node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
       ],
     }));
 
@@ -13988,6 +14096,24 @@ class GodotServer {
           return await this.handleAddSubViewportToScene(request.params.arguments);
         case 'add_visible_on_screen_notifier_2d':
           return await this.handleAddVisibleOnScreenNotifier2d(request.params.arguments);
+        case 'add_voxel_gi_to_scene':
+          return await this.handleAddVoxelGiToScene(request.params.arguments);
+        case 'get_particles_amount':
+          return await this.handleGetParticlesAmount(request.params.arguments);
+        case 'set_particles_amount':
+          return await this.handleSetParticlesAmount(request.params.arguments);
+        case 'get_environment_property':
+          return await this.handleGetEnvironmentProperty(request.params.arguments);
+        case 'get_skeleton_bone_count':
+          return await this.handleGetSkeletonBoneCount(request.params.arguments);
+        case 'get_skeleton_bone_names':
+          return await this.handleGetSkeletonBoneNames(request.params.arguments);
+        case 'set_skeleton_bone_pose_rotation':
+          return await this.handleSetSkeletonBonePoseRotation(request.params.arguments);
+        case 'reset_skeleton_pose':
+          return await this.handleResetSkeletonPose(request.params.arguments);
+        case 'get_node_class':
+          return await this.handleGetNodeClass(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -25293,6 +25419,77 @@ class GodotServer {
         parent_node_path: a.parentNodePath || '.',
       },
     }));
+  }
+
+  private async handleAddVoxelGiToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'VoxelGI',
+        node_type: 'VoxelGI',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleGetParticlesAmount(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_particles_amount', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetParticlesAmount(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_particles_amount', args, a => ({ node_path: a.nodePath, amount: a.amount ?? 8 }));
+  }
+
+  private async handleGetEnvironmentProperty(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.property) return createErrorResponse('property is required.');
+    return this.gameCommand('get_environment_property', args, a => ({ node_path: a.nodePath, property: a.property }));
+  }
+
+  private async handleGetSkeletonBoneCount(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_skeleton_bone_count', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetSkeletonBoneNames(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_skeleton_bone_names', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetSkeletonBonePoseRotation(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.boneName) return createErrorResponse('boneName is required.');
+    return this.gameCommand('set_skeleton_bone_pose_rotation', args, a => ({
+      node_path: a.nodePath,
+      bone_name: a.boneName,
+      x: a.x ?? 0,
+      y: a.y ?? 0,
+      z: a.z ?? 0,
+    }));
+  }
+
+  private async handleResetSkeletonPose(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('reset_skeleton_pose', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetNodeClass(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_class', args, a => ({ node_path: a.nodePath }));
   }
 
 }
