@@ -505,6 +505,40 @@ func _handle_command(json_str: String) -> void:
 			_cmd_spring_arm_3d_set_length(params)
 		"get_collision_shape_info":
 			_cmd_get_collision_shape_info(params)
+		"get_tilemap_info":
+			_cmd_get_tilemap_info(params)
+		"animation_tree_get_state":
+			_cmd_animation_tree_get_state(params)
+		"animation_tree_set_param":
+			_cmd_animation_tree_set_param(params)
+		"progress_bar_set_value":
+			_cmd_progress_bar_set_value(params)
+		"slider_set_value":
+			_cmd_slider_set_value(params)
+		"line_edit_set_text":
+			_cmd_line_edit_set_text(params)
+		"texture_rect_set_texture":
+			_cmd_texture_rect_set_texture(params)
+		"get_viewport_size":
+			_cmd_get_viewport_size(params)
+		"get_render_info":
+			_cmd_get_render_info(params)
+		"get_audio_bus_list":
+			_cmd_get_audio_bus_list(params)
+		"set_audio_bus_volume":
+			_cmd_set_audio_bus_volume(params)
+		"get_physics_bodies":
+			_cmd_get_physics_bodies(params)
+		"set_gravity_scale":
+			_cmd_set_gravity_scale(params)
+		"get_animation_player_list":
+			_cmd_get_animation_player_list(params)
+		"node_set_modulate":
+			_cmd_node_set_modulate(params)
+		"node_set_z_index":
+			_cmd_node_set_z_index(params)
+		"emit_signal_on_node":
+			_cmd_emit_signal_on_node(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -5980,6 +6014,249 @@ func _cmd_get_collision_shape_info(params: Dictionary) -> void:
 				"disabled": cs3.disabled
 			})
 	_send_response({"success": true, "node_path": node_path, "shapes": shapes})
+
+
+func _cmd_get_tilemap_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TileMap:
+		_send_response({"error": "TileMap not found: " + node_path})
+		return
+	var tm := node as TileMap
+	var layers: Array = []
+	for i in range(tm.get_layers_count()):
+		var cells = tm.get_used_cells(i)
+		layers.append({"index": i, "name": tm.get_layer_name(i), "enabled": tm.is_layer_enabled(i), "cell_count": cells.size()})
+	_send_response({"success": true, "tile_set": str(tm.tile_set), "cell_quadrant_size": tm.rendering_quadrant_size, "layers": layers})
+
+func _cmd_tilemap_set_cell(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var layer: int = params.get("layer", 0)
+	var x: int = params.get("x", 0)
+	var y: int = params.get("y", 0)
+	var source_id: int = params.get("source_id", 0)
+	var atlas_x: int = params.get("atlas_x", 0)
+	var atlas_y: int = params.get("atlas_y", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TileMap:
+		_send_response({"error": "TileMap not found: " + node_path})
+		return
+	(node as TileMap).set_cell(layer, Vector2i(x, y), source_id, Vector2i(atlas_x, atlas_y))
+	_send_response({"success": true, "coords": {"x": x, "y": y}, "layer": layer})
+
+func _cmd_tilemap_clear(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var layer: int = params.get("layer", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TileMap:
+		_send_response({"error": "TileMap not found: " + node_path})
+		return
+	(node as TileMap).clear_layer(layer)
+	_send_response({"success": true, "layer": layer})
+
+func _cmd_animation_tree_get_state(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationTree:
+		_send_response({"error": "AnimationTree not found: " + node_path})
+		return
+	var at := node as AnimationTree
+	_send_response({"success": true, "active": at.active, "root_animation": str(at.tree_root), "anim_player": str(at.anim_player)})
+
+func _cmd_animation_tree_set_param(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var param_path: String = params.get("param_path", "")
+	var value = params.get("value", null)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationTree:
+		_send_response({"error": "AnimationTree not found: " + node_path})
+		return
+	(node as AnimationTree).set(param_path, value)
+	_send_response({"success": true, "param_path": param_path, "value": str(value)})
+
+func _cmd_label_set_text(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var text: String = params.get("text", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is Label:
+		(node as Label).text = text
+	elif node is RichTextLabel:
+		(node as RichTextLabel).text = text
+	else:
+		_send_response({"error": "Node is not a Label: " + node.get_class()})
+		return
+	_send_response({"success": true, "text": text})
+
+func _cmd_progress_bar_set_value(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var value: float = params.get("value", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is ProgressBar:
+		_send_response({"error": "ProgressBar not found: " + node_path})
+		return
+	(node as ProgressBar).value = value
+	_send_response({"success": true, "value": value})
+
+func _cmd_slider_set_value(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var value: float = params.get("value", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is HSlider:
+		(node as HSlider).value = value
+	elif node is VSlider:
+		(node as VSlider).value = value
+	elif node is Slider:
+		(node as Slider).value = value
+	else:
+		_send_response({"error": "Node is not a Slider: " + node.get_class()})
+		return
+	_send_response({"success": true, "value": value})
+
+func _cmd_line_edit_set_text(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var text: String = params.get("text", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is LineEdit:
+		_send_response({"error": "LineEdit not found: " + node_path})
+		return
+	(node as LineEdit).text = text
+	_send_response({"success": true, "text": text})
+
+func _cmd_texture_rect_set_texture(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var texture_path: String = params.get("texture_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TextureRect:
+		_send_response({"error": "TextureRect not found: " + node_path})
+		return
+	var tex = load(texture_path)
+	if tex == null:
+		_send_response({"error": "Cannot load texture: " + texture_path})
+		return
+	(node as TextureRect).texture = tex
+	_send_response({"success": true, "texture_path": texture_path})
+
+func _cmd_get_viewport_size(_params: Dictionary) -> void:
+	var vp = get_viewport()
+	if vp == null:
+		_send_response({"error": "No viewport available"})
+		return
+	var size = vp.get_visible_rect().size
+	_send_response({"success": true, "width": size.x, "height": size.y})
+
+func _cmd_get_render_info(_params: Dictionary) -> void:
+	var ri = RenderingServer
+	_send_response({
+		"success": true,
+		"fps": Engine.get_frames_per_second(),
+		"draw_calls": Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
+		"primitives": Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME),
+		"video_mem_used": Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED)
+	})
+
+func _cmd_get_audio_bus_list(_params: Dictionary) -> void:
+	var buses: Array = []
+	for i in range(AudioServer.bus_count):
+		buses.append({
+			"index": i,
+			"name": AudioServer.get_bus_name(i),
+			"volume_db": AudioServer.get_bus_volume_db(i),
+			"muted": AudioServer.is_bus_mute(i),
+			"solo": AudioServer.is_bus_solo(i)
+		})
+	_send_response({"success": true, "bus_count": buses.size(), "buses": buses})
+
+func _cmd_set_audio_bus_volume(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "")
+	var volume_db: float = params.get("volume_db", 0.0)
+	var idx = AudioServer.get_bus_index(bus_name)
+	if idx < 0:
+		_send_response({"error": "Audio bus not found: " + bus_name})
+		return
+	AudioServer.set_bus_volume_db(idx, volume_db)
+	_send_response({"success": true, "bus_name": bus_name, "volume_db": volume_db})
+
+func _cmd_get_physics_bodies(_params: Dictionary) -> void:
+	var bodies: Array = []
+	var queue: Array = [get_tree().root]
+	while queue.size() > 0:
+		var node = queue.pop_front()
+		if node is PhysicsBody2D or node is PhysicsBody3D:
+			bodies.append({"path": str(node.get_path()), "class": node.get_class(), "name": node.name})
+		for child in node.get_children():
+			queue.append(child)
+	_send_response({"success": true, "count": bodies.size(), "bodies": bodies})
+
+func _cmd_set_gravity_scale(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var gravity_scale: float = params.get("gravity_scale", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is RigidBody2D:
+		(node as RigidBody2D).gravity_scale = gravity_scale
+	elif node is RigidBody3D:
+		(node as RigidBody3D).gravity_scale = gravity_scale
+	else:
+		_send_response({"error": "Node is not a RigidBody: " + node.get_class()})
+		return
+	_send_response({"success": true, "gravity_scale": gravity_scale})
+
+func _cmd_get_animation_player_list(_params: Dictionary) -> void:
+	var players: Array = []
+	var queue: Array = [get_tree().root]
+	while queue.size() > 0:
+		var node = queue.pop_front()
+		if node is AnimationPlayer:
+			var ap := node as AnimationPlayer
+			players.append({"path": str(node.get_path()), "animations": ap.get_animation_list(), "current": ap.current_animation, "playing": ap.is_playing()})
+		for child in node.get_children():
+			queue.append(child)
+	_send_response({"success": true, "count": players.size(), "players": players})
+
+func _cmd_node_set_modulate(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var r: float = params.get("r", 1.0)
+	var g: float = params.get("g", 1.0)
+	var b: float = params.get("b", 1.0)
+	var a: float = params.get("a", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CanvasItem:
+		_send_response({"error": "CanvasItem not found: " + node_path})
+		return
+	(node as CanvasItem).modulate = Color(r, g, b, a)
+	_send_response({"success": true, "modulate": {"r": r, "g": g, "b": b, "a": a}})
+
+func _cmd_node_set_z_index(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var z_index: int = params.get("z_index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node2D:
+		_send_response({"error": "Node2D not found: " + node_path})
+		return
+	(node as Node2D).z_index = z_index
+	_send_response({"success": true, "z_index": z_index})
+
+func _cmd_emit_signal_on_node(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var signal_name: String = params.get("signal_name", "")
+	var args: Array = params.get("args", [])
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if not node.has_signal(signal_name):
+		_send_response({"error": "Signal not found: " + signal_name})
+		return
+	node.emit_signal(signal_name)
+	_send_response({"success": true, "signal_name": signal_name})
 
 
 func _exit_tree() -> void:

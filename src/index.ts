@@ -6044,6 +6044,198 @@ class GodotServer {
           required: ['projectPath'],
         },
       },
+      {
+        name: 'get_tilemap_info',
+        description: 'Get TileMap layers, tile size, and cell count from game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to TileMap node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'animation_tree_get_state',
+        description: 'Get AnimationTree state and blend params in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to AnimationTree node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'animation_tree_set_param',
+        description: 'Set an AnimationTree blend parameter in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to AnimationTree node' },
+            paramPath: { type: 'string', description: 'Parameter path e.g. parameters/blend/blend_amount' },
+            value: { description: 'Value to set on the parameter' },
+          },
+          required: ['nodePath', 'paramPath'],
+        },
+      },
+      {
+        name: 'progress_bar_set_value',
+        description: 'Set the value of a ProgressBar in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to ProgressBar node' },
+            value: { type: 'number', description: 'Value to set on the progress bar' },
+          },
+          required: ['nodePath', 'value'],
+        },
+      },
+      {
+        name: 'slider_set_value',
+        description: 'Set the value of a Slider node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to HSlider or VSlider node' },
+            value: { type: 'number', description: 'Value to set on the slider' },
+          },
+          required: ['nodePath', 'value'],
+        },
+      },
+      {
+        name: 'line_edit_set_text',
+        description: 'Set the text of a LineEdit in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to LineEdit node' },
+            text: { type: 'string', description: 'Text to set in the LineEdit' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'texture_rect_set_texture',
+        description: 'Set the texture of a TextureRect in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to TextureRect node' },
+            texturePath: { type: 'string', description: 'res:// path to the texture' },
+          },
+          required: ['nodePath', 'texturePath'],
+        },
+      },
+      {
+        name: 'get_viewport_size',
+        description: 'Get the viewport size of the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'get_render_info',
+        description: 'Get rendering stats (draw calls, triangles) from game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'get_audio_bus_list',
+        description: 'Get all audio buses and their volumes from game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'set_audio_bus_volume',
+        description: 'Set an audio bus volume (dB) in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            busName: { type: 'string', description: 'Name of the audio bus' },
+            volumeDb: { type: 'number', description: 'Volume in decibels' },
+          },
+          required: ['busName', 'volumeDb'],
+        },
+      },
+      {
+        name: 'get_physics_bodies',
+        description: 'List all physics bodies in the running game scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'set_gravity_scale',
+        description: 'Set gravity_scale on a RigidBody in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to RigidBody node' },
+            gravityScale: { type: 'number', description: 'Gravity scale multiplier' },
+          },
+          required: ['nodePath', 'gravityScale'],
+        },
+      },
+      {
+        name: 'get_animation_player_list',
+        description: 'List all AnimationPlayers and their animations in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'node_set_modulate',
+        description: 'Set the modulate color of a CanvasItem in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to CanvasItem node' },
+            r: { type: 'number', description: 'Red component 0-1' },
+            g: { type: 'number', description: 'Green component 0-1' },
+            b: { type: 'number', description: 'Blue component 0-1' },
+            a: { type: 'number', description: 'Alpha component 0-1 (default 1.0)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'node_set_z_index',
+        description: 'Set the z_index of a Node2D in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to Node2D node' },
+            zIndex: { type: 'integer', description: 'Z-index value to set' },
+          },
+          required: ['nodePath', 'zIndex'],
+        },
+      },
+      {
+        name: 'emit_signal_on_node',
+        description: 'Emit a signal on a node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the node' },
+            signalName: { type: 'string', description: 'Name of the signal to emit' },
+            args: { type: 'array', description: 'Optional arguments for the signal' },
+          },
+          required: ['nodePath', 'signalName'],
+        },
+      },
       ],
     }));
 
@@ -6845,6 +7037,40 @@ class GodotServer {
           return await this.handleListProjectScenes(request.params.arguments);
         case 'list_project_scripts':
           return await this.handleListProjectScripts(request.params.arguments);
+        case 'get_tilemap_info':
+          return await this.handleGetTilemapInfo(request.params.arguments);
+        case 'animation_tree_get_state':
+          return await this.handleAnimationTreeGetState(request.params.arguments);
+        case 'animation_tree_set_param':
+          return await this.handleAnimationTreeSetParam(request.params.arguments);
+        case 'progress_bar_set_value':
+          return await this.handleProgressBarSetValue(request.params.arguments);
+        case 'slider_set_value':
+          return await this.handleSliderSetValue(request.params.arguments);
+        case 'line_edit_set_text':
+          return await this.handleLineEditSetText(request.params.arguments);
+        case 'texture_rect_set_texture':
+          return await this.handleTextureRectSetTexture(request.params.arguments);
+        case 'get_viewport_size':
+          return await this.handleGetViewportSize(request.params.arguments);
+        case 'get_render_info':
+          return await this.handleGetRenderInfo(request.params.arguments);
+        case 'get_audio_bus_list':
+          return await this.handleGetAudioBusList(request.params.arguments);
+        case 'set_audio_bus_volume':
+          return await this.handleSetAudioBusVolume(request.params.arguments);
+        case 'get_physics_bodies':
+          return await this.handleGetPhysicsBodies(request.params.arguments);
+        case 'set_gravity_scale':
+          return await this.handleSetGravityScale(request.params.arguments);
+        case 'get_animation_player_list':
+          return await this.handleGetAnimationPlayerList(request.params.arguments);
+        case 'node_set_modulate':
+          return await this.handleNodeSetModulate(request.params.arguments);
+        case 'node_set_z_index':
+          return await this.handleNodeSetZIndex(request.params.arguments);
+        case 'emit_signal_on_node':
+          return await this.handleEmitSignalOnNode(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -13536,6 +13762,106 @@ class GodotServer {
     const scripts = this.collectFiles(searchDir, ['.gd']);
     const list = scripts.map(s => s.replace(args.projectPath + '/', '')).sort();
     return { content: [{ type: 'text', text: JSON.stringify({ count: list.length, scripts: list }, null, 2) }] };
+  }
+
+  private async handleGetTilemapInfo(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_tilemap_info', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleAnimationTreeGetState(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('animation_tree_get_state', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleAnimationTreeSetParam(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.paramPath) return createErrorResponse('paramPath is required.');
+    return this.gameCommand('animation_tree_set_param', args, a => ({ node_path: a.nodePath, param_path: a.paramPath, value: a.value }));
+  }
+
+  private async handleProgressBarSetValue(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (args.value === undefined) return createErrorResponse('value is required.');
+    return this.gameCommand('progress_bar_set_value', args, a => ({ node_path: a.nodePath, value: a.value }));
+  }
+
+  private async handleSliderSetValue(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (args.value === undefined) return createErrorResponse('value is required.');
+    return this.gameCommand('slider_set_value', args, a => ({ node_path: a.nodePath, value: a.value }));
+  }
+
+  private async handleLineEditSetText(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('line_edit_set_text', args, a => ({ node_path: a.nodePath, text: a.text ?? '' }));
+  }
+
+  private async handleTextureRectSetTexture(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.texturePath) return createErrorResponse('texturePath is required.');
+    return this.gameCommand('texture_rect_set_texture', args, a => ({ node_path: a.nodePath, texture_path: a.texturePath }));
+  }
+
+  private async handleGetViewportSize(_args: any) {
+    return this.gameCommand('get_viewport_size', {}, _a => ({}));
+  }
+
+  private async handleGetRenderInfo(_args: any) {
+    return this.gameCommand('get_render_info', {}, _a => ({}));
+  }
+
+  private async handleGetAudioBusList(_args: any) {
+    return this.gameCommand('get_audio_bus_list', {}, _a => ({}));
+  }
+
+  private async handleSetAudioBusVolume(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.busName) return createErrorResponse('busName is required.');
+    if (args.volumeDb === undefined) return createErrorResponse('volumeDb is required.');
+    return this.gameCommand('set_audio_bus_volume', args, a => ({ bus_name: a.busName, volume_db: a.volumeDb }));
+  }
+
+  private async handleGetPhysicsBodies(_args: any) {
+    return this.gameCommand('get_physics_bodies', {}, _a => ({}));
+  }
+
+  private async handleSetGravityScale(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (args.gravityScale === undefined) return createErrorResponse('gravityScale is required.');
+    return this.gameCommand('set_gravity_scale', args, a => ({ node_path: a.nodePath, gravity_scale: a.gravityScale }));
+  }
+
+  private async handleGetAnimationPlayerList(_args: any) {
+    return this.gameCommand('get_animation_player_list', {}, _a => ({}));
+  }
+
+  private async handleNodeSetModulate(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('node_set_modulate', args, a => ({ node_path: a.nodePath, r: a.r ?? 1, g: a.g ?? 1, b: a.b ?? 1, a: a.a ?? 1 }));
+  }
+
+  private async handleNodeSetZIndex(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (args.zIndex === undefined) return createErrorResponse('zIndex is required.');
+    return this.gameCommand('node_set_z_index', args, a => ({ node_path: a.nodePath, z_index: a.zIndex }));
+  }
+
+  private async handleEmitSignalOnNode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.signalName) return createErrorResponse('signalName is required.');
+    return this.gameCommand('emit_signal_on_node', args, a => ({ node_path: a.nodePath, signal_name: a.signalName, args: a.args ?? [] }));
   }
 
 }
