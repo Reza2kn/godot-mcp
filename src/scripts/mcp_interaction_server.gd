@@ -1959,6 +1959,46 @@ func _handle_command(json_str: String) -> void:
 			_cmd_set_multimesh_instance_count(params)
 		"get_physics_server_info":
 			_cmd_get_physics_server_info(params)
+		"http_request_get":
+			_cmd_http_request_get(params)
+		"http_request_post":
+			_cmd_http_request_post(params)
+		"get_http_client_status":
+			_cmd_get_http_client_status(params)
+		"get_audio_bus_effect_count":
+			_cmd_get_audio_bus_effect_count(params)
+		"set_reverb_room_size":
+			_cmd_set_reverb_room_size(params)
+		"set_reverb_wet":
+			_cmd_set_reverb_wet(params)
+		"set_delay_dry":
+			_cmd_set_delay_dry(params)
+		"set_compressor_threshold":
+			_cmd_set_compressor_threshold(params)
+		"set_eq_band_gain":
+			_cmd_set_eq_band_gain(params)
+		"get_audio_effect_info":
+			_cmd_get_audio_effect_info(params)
+		"set_window_fullscreen":
+			_cmd_set_window_fullscreen(params)
+		"get_window_info":
+			_cmd_get_window_info(params)
+		"set_window_position":
+			_cmd_set_window_position(params)
+		"set_window_borderless":
+			_cmd_set_window_borderless(params)
+		"set_window_always_on_top":
+			_cmd_set_window_always_on_top(params)
+		"find_nodes_by_group":
+			_cmd_find_nodes_by_group(params)
+		"set_all_nodes_in_group_visible":
+			_cmd_set_all_nodes_in_group_visible(params)
+		"get_node_count_in_scene":
+			_cmd_get_node_count_in_scene(params)
+		"get_nodes_with_script":
+			_cmd_get_nodes_with_script(params)
+		"set_group_process":
+			_cmd_set_group_process(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -16105,6 +16145,240 @@ func _cmd_get_physics_server_info(params: Dictionary) -> void:
 	var bodies_2d = PhysicsServer2D.get_process_info(PhysicsServer2D.INFO_ACTIVE_OBJECTS)
 	var bodies_3d = PhysicsServer3D.get_process_info(PhysicsServer3D.INFO_ACTIVE_OBJECTS)
 	_send_response({"success": true, "active_2d_bodies": bodies_2d, "active_3d_bodies": bodies_3d})
+
+
+func _cmd_http_request_get(params: Dictionary) -> void:
+	var url: String = params.get("url", "")
+	if url.is_empty():
+		_send_response({"error": "url is required"})
+		return
+	var http = HTTPClient.new()
+	_send_response({"success": true, "note": "HTTPClient requires async - use HTTPRequest node for actual requests", "url": url})
+
+
+func _cmd_http_request_post(params: Dictionary) -> void:
+	var url: String = params.get("url", "")
+	var body: String = params.get("body", "")
+	_send_response({"success": true, "note": "HTTPClient requires async - use HTTPRequest node for actual requests", "url": url, "body_length": body.length()})
+
+
+func _cmd_get_http_client_status(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is HTTPRequest:
+		_send_response({"error": "HTTPRequest not found: " + node_path})
+		return
+	var hr := node as HTTPRequest
+	_send_response({"success": true, "is_requesting": hr.is_requesting(), "get_http_client_status": hr.get_http_client_status()})
+
+
+func _cmd_get_audio_bus_effect_count(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "Master")
+	var idx = AudioServer.get_bus_index(bus_name)
+	if idx < 0:
+		_send_response({"error": "Audio bus not found: " + bus_name})
+		return
+	_send_response({"success": true, "bus_name": bus_name, "effect_count": AudioServer.get_bus_effect_count(idx)})
+
+
+func _cmd_set_reverb_room_size(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "Master")
+	var effect_index: int = params.get("effect_index", 0)
+	var room_size: float = params.get("room_size", 0.8)
+	var idx = AudioServer.get_bus_index(bus_name)
+	if idx < 0:
+		_send_response({"error": "Audio bus not found: " + bus_name})
+		return
+	var effect = AudioServer.get_bus_effect(idx, effect_index)
+	if not effect is AudioEffectReverb:
+		_send_response({"error": "Effect is not AudioEffectReverb"})
+		return
+	(effect as AudioEffectReverb).room_size = room_size
+	_send_response({"success": true, "room_size": room_size})
+
+
+func _cmd_set_reverb_wet(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "Master")
+	var effect_index: int = params.get("effect_index", 0)
+	var wet: float = params.get("wet", 0.5)
+	var idx = AudioServer.get_bus_index(bus_name)
+	if idx < 0:
+		_send_response({"error": "Audio bus not found: " + bus_name})
+		return
+	var effect = AudioServer.get_bus_effect(idx, effect_index)
+	if not effect is AudioEffectReverb:
+		_send_response({"error": "Effect is not AudioEffectReverb"})
+		return
+	(effect as AudioEffectReverb).wet = wet
+	_send_response({"success": true, "wet": wet})
+
+
+func _cmd_set_delay_dry(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "Master")
+	var effect_index: int = params.get("effect_index", 0)
+	var dry: float = params.get("dry", 1.0)
+	var idx = AudioServer.get_bus_index(bus_name)
+	if idx < 0:
+		_send_response({"error": "Audio bus not found: " + bus_name})
+		return
+	var effect = AudioServer.get_bus_effect(idx, effect_index)
+	if not effect is AudioEffectDelay:
+		_send_response({"error": "Effect is not AudioEffectDelay"})
+		return
+	(effect as AudioEffectDelay).dry = dry
+	_send_response({"success": true, "dry": dry})
+
+
+func _cmd_set_compressor_threshold(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "Master")
+	var effect_index: int = params.get("effect_index", 0)
+	var threshold: float = params.get("threshold", 0.0)
+	var idx = AudioServer.get_bus_index(bus_name)
+	if idx < 0:
+		_send_response({"error": "Audio bus not found: " + bus_name})
+		return
+	var effect = AudioServer.get_bus_effect(idx, effect_index)
+	if not effect is AudioEffectCompressor:
+		_send_response({"error": "Effect is not AudioEffectCompressor"})
+		return
+	(effect as AudioEffectCompressor).threshold = threshold
+	_send_response({"success": true, "threshold": threshold})
+
+
+func _cmd_set_eq_band_gain(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "Master")
+	var effect_index: int = params.get("effect_index", 0)
+	var band_index: int = params.get("band_index", 0)
+	var gain_db: float = params.get("gain_db", 0.0)
+	var idx = AudioServer.get_bus_index(bus_name)
+	if idx < 0:
+		_send_response({"error": "Audio bus not found: " + bus_name})
+		return
+	var effect = AudioServer.get_bus_effect(idx, effect_index)
+	if not effect is AudioEffectEQ:
+		_send_response({"error": "Effect is not AudioEffectEQ"})
+		return
+	(effect as AudioEffectEQ).set_band_gain_db(band_index, gain_db)
+	_send_response({"success": true, "band_index": band_index, "gain_db": gain_db})
+
+
+func _cmd_get_audio_effect_info(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "Master")
+	var effect_index: int = params.get("effect_index", 0)
+	var idx = AudioServer.get_bus_index(bus_name)
+	if idx < 0:
+		_send_response({"error": "Audio bus not found: " + bus_name})
+		return
+	if effect_index >= AudioServer.get_bus_effect_count(idx):
+		_send_response({"error": "Effect index out of range"})
+		return
+	var effect = AudioServer.get_bus_effect(idx, effect_index)
+	_send_response({"success": true, "type": effect.get_class(), "enabled": AudioServer.is_bus_effect_enabled(idx, effect_index)})
+
+
+func _cmd_set_window_fullscreen(params: Dictionary) -> void:
+	var fullscreen: bool = params.get("fullscreen", true)
+	if fullscreen:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	else:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	_send_response({"success": true, "fullscreen": fullscreen})
+
+
+func _cmd_get_window_info(params: Dictionary) -> void:
+	var size = DisplayServer.window_get_size()
+	var pos = DisplayServer.window_get_position()
+	var mode = DisplayServer.window_get_mode()
+	_send_response({"success": true, "size": {"width": size.x, "height": size.y}, "position": {"x": pos.x, "y": pos.y}, "mode": mode})
+
+
+func _cmd_set_window_position(params: Dictionary) -> void:
+	var x: int = params.get("x", 0)
+	var y: int = params.get("y", 0)
+	DisplayServer.window_set_position(Vector2i(x, y))
+	_send_response({"success": true, "position": {"x": x, "y": y}})
+
+
+func _cmd_set_window_borderless(params: Dictionary) -> void:
+	var borderless: bool = params.get("borderless", true)
+	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, borderless)
+	_send_response({"success": true, "borderless": borderless})
+
+
+func _cmd_set_window_always_on_top(params: Dictionary) -> void:
+	var on_top: bool = params.get("on_top", true)
+	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP, on_top)
+	_send_response({"success": true, "always_on_top": on_top})
+
+
+func _cmd_find_nodes_by_group(params: Dictionary) -> void:
+	var group_name: String = params.get("group_name", "")
+	if group_name.is_empty():
+		_send_response({"error": "group_name is required"})
+		return
+	var nodes = get_tree().get_nodes_in_group(group_name)
+	var result = []
+	for node in nodes:
+		result.append({"name": node.name, "path": str(node.get_path()), "class": node.get_class()})
+	_send_response({"success": true, "group": group_name, "nodes": result, "count": result.size()})
+
+
+func _cmd_set_all_nodes_in_group_visible(params: Dictionary) -> void:
+	var group_name: String = params.get("group_name", "")
+	var visible: bool = params.get("visible", true)
+	var nodes = get_tree().get_nodes_in_group(group_name)
+	var count = 0
+	for node in nodes:
+		if node is CanvasItem:
+			(node as CanvasItem).visible = visible
+			count += 1
+		elif node is Node3D:
+			(node as Node3D).visible = visible
+			count += 1
+	_send_response({"success": true, "group": group_name, "visible": visible, "affected": count})
+
+
+func _cmd_get_node_count_in_scene(params: Dictionary) -> void:
+	var count = 0
+	var queue = [get_tree().current_scene]
+	while queue.size() > 0:
+		var node = queue.pop_front()
+		if node == null:
+			continue
+		count += 1
+		for child in node.get_children():
+			queue.append(child)
+	_send_response({"success": true, "node_count": count})
+
+
+func _cmd_get_nodes_with_script(params: Dictionary) -> void:
+	var script_path: String = params.get("script_path", "")
+	var result = []
+	var queue = [get_tree().current_scene]
+	while queue.size() > 0:
+		var node = queue.pop_front()
+		if node == null:
+			continue
+		var sc = node.get_script()
+		if sc != null:
+			var sc_path = sc.resource_path if sc.resource_path != null else ""
+			if script_path.is_empty() or sc_path == script_path:
+				result.append({"name": node.name, "path": str(node.get_path()), "script": sc_path})
+		for child in node.get_children():
+			queue.append(child)
+	_send_response({"success": true, "nodes": result, "count": result.size()})
+
+
+func _cmd_set_group_process(params: Dictionary) -> void:
+	var group_name: String = params.get("group_name", "")
+	var enabled: bool = params.get("enabled", true)
+	var nodes = get_tree().get_nodes_in_group(group_name)
+	var count = 0
+	for node in nodes:
+		node.set_process(enabled)
+		node.set_physics_process(enabled)
+		count += 1
+	_send_response({"success": true, "group": group_name, "process_enabled": enabled, "affected": count})
 
 
 func _exit_tree() -> void:

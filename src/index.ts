@@ -18303,6 +18303,43 @@ class GodotServer {
       { name: 'write_ai_follow_player_script', description: 'Write an AI that follows the player (2D).', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, speed: { type: 'number' }, stopDistance: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_game_manager_script', description: 'Write a main GameManager Autoload script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_debug_overlay_script', description: 'Write a debug HUD overlay for runtime info.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      // Batch 68 — Group A: HTTP client tools
+      { name: 'http_request_get', description: 'Make HTTP GET request from a running Godot game.', inputSchema: { type: 'object', properties: { url: { type: 'string' }, useSSL: { type: 'boolean' } }, required: ['url'] } },
+      { name: 'http_request_post', description: 'Make HTTP POST request from a running Godot game.', inputSchema: { type: 'object', properties: { url: { type: 'string' }, body: { type: 'string' }, contentType: { type: 'string' } }, required: ['url', 'body'] } },
+      { name: 'get_http_client_status', description: 'Get status of an HTTPClient node in the game.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'create_http_request_node', description: 'Add HTTPRequest node child to a parent node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, requestName: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_last_http_response', description: 'Get response from a named HTTPRequest node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'download_file_via_http', description: 'Download a file using HTTPRequest node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, url: { type: 'string' }, savePath: { type: 'string' } }, required: ['nodePath', 'url', 'savePath'] } },
+      // Batch 68 — Group B: Audio effect parameter setters
+      { name: 'get_audio_bus_effect_count', description: 'Get count of effects on an audio bus.', inputSchema: { type: 'object', properties: { busName: { type: 'string' } }, required: ['busName'] } },
+      { name: 'set_reverb_room_size', description: 'Set room_size on an AudioEffectReverb on a bus.', inputSchema: { type: 'object', properties: { busName: { type: 'string' }, effectIndex: { type: 'integer' }, roomSize: { type: 'number' } }, required: ['busName', 'effectIndex'] } },
+      { name: 'set_reverb_wet', description: 'Set wet (mix) on an AudioEffectReverb on a bus.', inputSchema: { type: 'object', properties: { busName: { type: 'string' }, effectIndex: { type: 'integer' }, wet: { type: 'number' } }, required: ['busName', 'effectIndex'] } },
+      { name: 'set_delay_dry', description: 'Set dry on an AudioEffectDelay on a bus.', inputSchema: { type: 'object', properties: { busName: { type: 'string' }, effectIndex: { type: 'integer' }, dry: { type: 'number' } }, required: ['busName', 'effectIndex'] } },
+      { name: 'set_compressor_threshold', description: 'Set threshold on an AudioEffectCompressor.', inputSchema: { type: 'object', properties: { busName: { type: 'string' }, effectIndex: { type: 'integer' }, threshold: { type: 'number' } }, required: ['busName', 'effectIndex'] } },
+      { name: 'set_eq_band_gain', description: 'Set a band gain on an AudioEffectEQ on a bus.', inputSchema: { type: 'object', properties: { busName: { type: 'string' }, effectIndex: { type: 'integer' }, bandIndex: { type: 'integer' }, gainDb: { type: 'number' } }, required: ['busName', 'effectIndex', 'bandIndex'] } },
+      { name: 'get_audio_effect_info', description: 'Get type and params of an audio bus effect.', inputSchema: { type: 'object', properties: { busName: { type: 'string' }, effectIndex: { type: 'integer' } }, required: ['busName', 'effectIndex'] } },
+      // Batch 68 — Group C: Window management tools
+      { name: 'set_window_fullscreen', description: 'Set window fullscreen mode at runtime.', inputSchema: { type: 'object', properties: { fullscreen: { type: 'boolean' } }, required: [] } },
+      { name: 'get_window_info', description: 'Get size, position, fullscreen state of window.', inputSchema: { type: 'object', properties: {}, required: [] } },
+      { name: 'set_window_position', description: 'Set window position on screen.', inputSchema: { type: 'object', properties: { x: { type: 'integer' }, y: { type: 'integer' } }, required: ['x', 'y'] } },
+      { name: 'set_window_borderless', description: 'Set borderless window mode at runtime.', inputSchema: { type: 'object', properties: { borderless: { type: 'boolean' } }, required: [] } },
+      { name: 'set_window_always_on_top', description: 'Set always-on-top mode for the game window.', inputSchema: { type: 'object', properties: { onTop: { type: 'boolean' } }, required: [] } },
+      // Batch 68 — Group D: Tree node batch operations
+      { name: 'find_nodes_by_group', description: 'Find all nodes in a group in the current scene.', inputSchema: { type: 'object', properties: { groupName: { type: 'string' } }, required: ['groupName'] } },
+      { name: 'set_all_nodes_in_group_visible', description: 'Show/hide all nodes in a group.', inputSchema: { type: 'object', properties: { groupName: { type: 'string' }, visible: { type: 'boolean' } }, required: ['groupName'] } },
+      { name: 'get_node_count_in_scene', description: 'Count total nodes in the current scene.', inputSchema: { type: 'object', properties: {}, required: [] } },
+      { name: 'get_nodes_with_script', description: 'Find nodes that have a script attached.', inputSchema: { type: 'object', properties: { scriptPath: { type: 'string' } }, required: [] } },
+      { name: 'set_group_process', description: 'Enable/disable processing for all nodes in group.', inputSchema: { type: 'object', properties: { groupName: { type: 'string' }, enabled: { type: 'boolean' } }, required: ['groupName'] } },
+      // Batch 68 — Group E: GDScript templates
+      { name: 'write_turn_based_battle_script', description: 'Write a turn-based battle manager script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_quest_system_script', description: 'Write a quest tracking system Autoload script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_skill_tree_script', description: 'Write a skill tree with unlock conditions.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_weather_system_script', description: 'Write a weather/environment controller script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_2d_lighting_controller', description: 'Write a 2D dynamic light controller script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, initialEnergy: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_footstep_system_script', description: 'Write a footstep sound system for CharacterBody.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_leaderboard_script', description: 'Write a local leaderboard save/load script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, maxEntries: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_vfx_manager_script', description: 'Write a VFX/particle effect manager Autoload.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_ui_animation_script', description: 'Write UI show/hide tween animation helpers.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
       ],
     }));
 
@@ -21371,6 +21408,75 @@ class GodotServer {
           return await this.handleWriteGameManagerScript(request.params.arguments);
         case 'write_debug_overlay_script':
           return await this.handleWriteDebugOverlayScript(request.params.arguments);
+        // Batch 68 — Group A: HTTP client tools
+        case 'http_request_get':
+          return await this.handleHttpRequestGet(request.params.arguments);
+        case 'http_request_post':
+          return await this.handleHttpRequestPost(request.params.arguments);
+        case 'get_http_client_status':
+          return await this.handleGetHttpClientStatus(request.params.arguments);
+        case 'create_http_request_node':
+          return await this.handleCreateHttpRequestNode(request.params.arguments);
+        case 'get_last_http_response':
+          return await this.handleGetLastHttpResponse(request.params.arguments);
+        case 'download_file_via_http':
+          return await this.handleDownloadFileViaHttp(request.params.arguments);
+        // Batch 68 — Group B: Audio effect parameter setters
+        case 'get_audio_bus_effect_count':
+          return await this.handleGetAudioBusEffectCount(request.params.arguments);
+        case 'set_reverb_room_size':
+          return await this.handleSetReverbRoomSize(request.params.arguments);
+        case 'set_reverb_wet':
+          return await this.handleSetReverbWet(request.params.arguments);
+        case 'set_delay_dry':
+          return await this.handleSetDelayDry(request.params.arguments);
+        case 'set_compressor_threshold':
+          return await this.handleSetCompressorThreshold(request.params.arguments);
+        case 'set_eq_band_gain':
+          return await this.handleSetEqBandGain(request.params.arguments);
+        case 'get_audio_effect_info':
+          return await this.handleGetAudioEffectInfo(request.params.arguments);
+        // Batch 68 — Group C: Window management tools
+        case 'set_window_fullscreen':
+          return await this.handleSetWindowFullscreen(request.params.arguments);
+        case 'get_window_info':
+          return await this.handleGetWindowInfo(request.params.arguments);
+        case 'set_window_position':
+          return await this.handleSetWindowPosition(request.params.arguments);
+        case 'set_window_borderless':
+          return await this.handleSetWindowBorderless(request.params.arguments);
+        case 'set_window_always_on_top':
+          return await this.handleSetWindowAlwaysOnTop(request.params.arguments);
+        // Batch 68 — Group D: Tree node batch operations
+        case 'find_nodes_by_group':
+          return await this.handleFindNodesByGroup(request.params.arguments);
+        case 'set_all_nodes_in_group_visible':
+          return await this.handleSetAllNodesInGroupVisible(request.params.arguments);
+        case 'get_node_count_in_scene':
+          return await this.handleGetNodeCountInScene(request.params.arguments);
+        case 'get_nodes_with_script':
+          return await this.handleGetNodesWithScript(request.params.arguments);
+        case 'set_group_process':
+          return await this.handleSetGroupProcess(request.params.arguments);
+        // Batch 68 — Group E: GDScript templates
+        case 'write_turn_based_battle_script':
+          return await this.handleWriteTurnBasedBattleScript(request.params.arguments);
+        case 'write_quest_system_script':
+          return await this.handleWriteQuestSystemScript(request.params.arguments);
+        case 'write_skill_tree_script':
+          return await this.handleWriteSkillTreeScript(request.params.arguments);
+        case 'write_weather_system_script':
+          return await this.handleWriteWeatherSystemScript(request.params.arguments);
+        case 'write_2d_lighting_controller':
+          return await this.handleWrite2dLightingController(request.params.arguments);
+        case 'write_footstep_system_script':
+          return await this.handleWriteFootstepSystemScript(request.params.arguments);
+        case 'write_leaderboard_script':
+          return await this.handleWriteLeaderboardScript(request.params.arguments);
+        case 'write_vfx_manager_script':
+          return await this.handleWriteVfxManagerScript(request.params.arguments);
+        case 'write_ui_animation_script':
+          return await this.handleWriteUiAnimationScript(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -41014,6 +41120,620 @@ func set_info(key: String, value) -> void:
 
 func clear_info(key: String) -> void:
     extra_lines.erase(key)
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  // ── Batch 68 — Group A: HTTP client tools ───────────────────────────────────
+
+  private async handleHttpRequestGet(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('http_request_get', args, a => ({ url: a.url ?? '', use_ssl: a.useSSL === true }));
+  }
+
+  private async handleHttpRequestPost(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('http_request_post', args, a => ({ url: a.url ?? '', body: a.body ?? '', content_type: a.contentType ?? 'application/json' }));
+  }
+
+  private async handleGetHttpClientStatus(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('get_http_client_status', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleCreateHttpRequestNode(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('create_http_request_node', args, a => ({ node_path: a.nodePath, request_name: a.requestName ?? 'HTTPRequest' }));
+  }
+
+  private async handleGetLastHttpResponse(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('get_last_http_response', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleDownloadFileViaHttp(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('download_file_via_http', args, a => ({ node_path: a.nodePath, url: a.url ?? '', save_path: a.savePath ?? '' }));
+  }
+
+  // ── Batch 68 — Group B: Audio effect parameter setters ──────────────────────
+
+  private async handleGetAudioBusEffectCount(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('get_audio_bus_effect_count', args, a => ({ bus_name: a.busName ?? 'Master' }));
+  }
+
+  private async handleSetReverbRoomSize(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('set_reverb_room_size', args, a => ({ bus_name: a.busName ?? 'Master', effect_index: a.effectIndex ?? 0, room_size: a.roomSize ?? 0.8 }));
+  }
+
+  private async handleSetReverbWet(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('set_reverb_wet', args, a => ({ bus_name: a.busName ?? 'Master', effect_index: a.effectIndex ?? 0, wet: a.wet ?? 0.5 }));
+  }
+
+  private async handleSetDelayDry(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('set_delay_dry', args, a => ({ bus_name: a.busName ?? 'Master', effect_index: a.effectIndex ?? 0, dry: a.dry ?? 1.0 }));
+  }
+
+  private async handleSetCompressorThreshold(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('set_compressor_threshold', args, a => ({ bus_name: a.busName ?? 'Master', effect_index: a.effectIndex ?? 0, threshold: a.threshold ?? 0.0 }));
+  }
+
+  private async handleSetEqBandGain(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('set_eq_band_gain', args, a => ({ bus_name: a.busName ?? 'Master', effect_index: a.effectIndex ?? 0, band_index: a.bandIndex ?? 0, gain_db: a.gainDb ?? 0.0 }));
+  }
+
+  private async handleGetAudioEffectInfo(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('get_audio_effect_info', args, a => ({ bus_name: a.busName ?? 'Master', effect_index: a.effectIndex ?? 0 }));
+  }
+
+  // ── Batch 68 — Group C: Window management tools ─────────────────────────────
+
+  private async handleSetWindowFullscreen(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('set_window_fullscreen', args, a => ({ fullscreen: a.fullscreen !== false }));
+  }
+
+  private async handleGetWindowInfo(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('get_window_info', args, _a => ({}));
+  }
+
+  private async handleSetWindowPosition(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('set_window_position', args, a => ({ x: a.x ?? 0, y: a.y ?? 0 }));
+  }
+
+  private async handleSetWindowBorderless(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('set_window_borderless', args, a => ({ borderless: a.borderless !== false }));
+  }
+
+  private async handleSetWindowAlwaysOnTop(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('set_window_always_on_top', args, a => ({ on_top: a.onTop !== false }));
+  }
+
+  // ── Batch 68 — Group D: Tree node batch operations ──────────────────────────
+
+  private async handleFindNodesByGroup(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('find_nodes_by_group', args, a => ({ group_name: a.groupName ?? '' }));
+  }
+
+  private async handleSetAllNodesInGroupVisible(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('set_all_nodes_in_group_visible', args, a => ({ group_name: a.groupName ?? '', visible: a.visible !== false }));
+  }
+
+  private async handleGetNodeCountInScene(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('get_node_count_in_scene', args, _a => ({}));
+  }
+
+  private async handleGetNodesWithScript(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('get_nodes_with_script', args, a => ({ script_path: a.scriptPath ?? '' }));
+  }
+
+  private async handleSetGroupProcess(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    return this.gameCommand('set_group_process', args, a => ({ group_name: a.groupName ?? '', enabled: a.enabled !== false }));
+  }
+
+  // ── Batch 68 — Group E: GDScript templates ──────────────────────────────────
+
+  private async handleWriteTurnBasedBattleScript(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    const content = `extends Node
+# Turn-based battle manager
+signal battle_started(enemies)
+signal turn_changed(actor)
+signal battle_ended(victory)
+
+enum BattleState { IDLE, PLAYER_TURN, ENEMY_TURN, WON, LOST }
+
+var state: BattleState = BattleState.IDLE
+var player_party: Array = []
+var enemy_party: Array = []
+var turn_order: Array = []
+var current_turn_index: int = 0
+
+func start_battle(players: Array, enemies: Array) -> void:
+    player_party = players
+    enemy_party = enemies
+    turn_order = players + enemies
+    turn_order.sort_custom(func(a, b): return a.speed > b.speed)
+    state = BattleState.PLAYER_TURN
+    current_turn_index = 0
+    emit_signal("battle_started", enemies)
+    _next_turn()
+
+func _next_turn() -> void:
+    if _check_victory():
+        return
+    var actor = turn_order[current_turn_index % turn_order.size()]
+    emit_signal("turn_changed", actor)
+    if actor in enemy_party:
+        state = BattleState.ENEMY_TURN
+        _enemy_action(actor)
+    else:
+        state = BattleState.PLAYER_TURN
+
+func player_attack(target: Node, damage: int) -> void:
+    if state != BattleState.PLAYER_TURN:
+        return
+    target.take_damage(damage)
+    _advance_turn()
+
+func _enemy_action(enemy: Node) -> void:
+    if player_party.size() > 0:
+        var target = player_party[randi() % player_party.size()]
+        target.take_damage(enemy.attack)
+    _advance_turn()
+
+func _advance_turn() -> void:
+    current_turn_index += 1
+    _next_turn()
+
+func _check_victory() -> bool:
+    if enemy_party.all(func(e): return e.hp <= 0):
+        state = BattleState.WON
+        emit_signal("battle_ended", true)
+        return true
+    if player_party.all(func(p): return p.hp <= 0):
+        state = BattleState.LOST
+        emit_signal("battle_ended", false)
+        return true
+    return false
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteQuestSystemScript(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    const content = `extends Node
+# Quest tracking system Autoload
+signal quest_started(quest_id)
+signal quest_updated(quest_id, objective)
+signal quest_completed(quest_id)
+
+var active_quests: Dictionary = {}
+var completed_quests: Array = []
+
+func start_quest(quest_id: String, data: Dictionary) -> void:
+    if quest_id in active_quests or quest_id in completed_quests:
+        return
+    active_quests[quest_id] = data.duplicate()
+    active_quests[quest_id]["progress"] = {}
+    emit_signal("quest_started", quest_id)
+
+func update_objective(quest_id: String, objective: String, value: int) -> void:
+    if not quest_id in active_quests:
+        return
+    active_quests[quest_id]["progress"][objective] = value
+    emit_signal("quest_updated", quest_id, objective)
+    _check_completion(quest_id)
+
+func _check_completion(quest_id: String) -> void:
+    var quest = active_quests[quest_id]
+    var objectives = quest.get("objectives", {})
+    for obj in objectives:
+        var required = objectives[obj]
+        var current = quest["progress"].get(obj, 0)
+        if current < required:
+            return
+    complete_quest(quest_id)
+
+func complete_quest(quest_id: String) -> void:
+    completed_quests.append(quest_id)
+    active_quests.erase(quest_id)
+    emit_signal("quest_completed", quest_id)
+
+func is_quest_complete(quest_id: String) -> bool:
+    return quest_id in completed_quests
+
+func get_quest_progress(quest_id: String) -> Dictionary:
+    return active_quests.get(quest_id, {}).get("progress", {})
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteSkillTreeScript(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    const content = `extends Node
+# Skill tree with unlock conditions
+signal skill_unlocked(skill_id)
+
+var unlocked_skills: Array = []
+var skill_tree: Dictionary = {}
+var skill_points: int = 0
+
+func define_skill(id: String, cost: int, requires: Array = []) -> void:
+    skill_tree[id] = { "cost": cost, "requires": requires }
+
+func add_skill_points(amount: int) -> void:
+    skill_points += amount
+
+func can_unlock(skill_id: String) -> bool:
+    if not skill_id in skill_tree:
+        return false
+    if skill_id in unlocked_skills:
+        return false
+    var skill = skill_tree[skill_id]
+    if skill_points < skill["cost"]:
+        return false
+    for req in skill["requires"]:
+        if not req in unlocked_skills:
+            return false
+    return true
+
+func unlock_skill(skill_id: String) -> bool:
+    if not can_unlock(skill_id):
+        return false
+    skill_points -= skill_tree[skill_id]["cost"]
+    unlocked_skills.append(skill_id)
+    emit_signal("skill_unlocked", skill_id)
+    return true
+
+func has_skill(skill_id: String) -> bool:
+    return skill_id in unlocked_skills
+
+func reset_tree() -> void:
+    for skill in unlocked_skills:
+        skill_points += skill_tree[skill]["cost"]
+    unlocked_skills.clear()
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteWeatherSystemScript(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    const content = `extends Node
+# Weather/environment controller
+signal weather_changed(new_weather)
+
+enum Weather { CLEAR, RAIN, STORM, SNOW, FOG }
+
+var current_weather: Weather = Weather.CLEAR
+var transition_time: float = 3.0
+
+@onready var env: Environment = $WorldEnvironment.environment if has_node("WorldEnvironment") else null
+
+func set_weather(w: Weather) -> void:
+    current_weather = w
+    emit_signal("weather_changed", Weather.keys()[w])
+    _apply_weather(w)
+
+func _apply_weather(w: Weather) -> void:
+    match w:
+        Weather.CLEAR:
+            _set_env_params(Color(0.5, 0.7, 1.0), 1.0, 0.0)
+        Weather.RAIN:
+            _set_env_params(Color(0.3, 0.3, 0.4), 0.6, 0.5)
+        Weather.STORM:
+            _set_env_params(Color(0.1, 0.1, 0.15), 0.3, 0.9)
+        Weather.SNOW:
+            _set_env_params(Color(0.8, 0.85, 0.95), 0.9, 0.2)
+        Weather.FOG:
+            _set_env_params(Color(0.6, 0.6, 0.65), 0.5, 0.8)
+
+func _set_env_params(sky_color: Color, brightness: float, fog_density: float) -> void:
+    if env == null:
+        return
+    env.background_color = sky_color
+    env.tonemap_exposure = brightness
+    env.fog_density = fog_density
+
+func cycle_weather() -> void:
+    var next = (current_weather + 1) % Weather.size()
+    set_weather(next as Weather)
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWrite2dLightingController(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    const initialEnergy: number = args.initialEnergy ?? 1.0;
+    const content = `extends PointLight2D
+# 2D dynamic light controller
+var base_energy: float = ${initialEnergy}
+var flicker_enabled: bool = false
+var flicker_speed: float = 5.0
+var flicker_amount: float = 0.1
+var _time: float = 0.0
+
+func _ready() -> void:
+    energy = base_energy
+
+func _process(delta: float) -> void:
+    if flicker_enabled:
+        _time += delta * flicker_speed
+        energy = base_energy + sin(_time) * flicker_amount
+
+func set_color_temp(kelvin: float) -> void:
+    var t = clamp((kelvin - 1000.0) / 9000.0, 0.0, 1.0)
+    color = Color(1.0, 0.4 + t * 0.6, t * t)
+
+func fade_to(target_energy: float, duration: float) -> void:
+    var tween = create_tween()
+    tween.tween_property(self, "energy", target_energy, duration)
+
+func enable_flicker(speed: float = 5.0, amount: float = 0.1) -> void:
+    flicker_enabled = true
+    flicker_speed = speed
+    flicker_amount = amount
+
+func disable_flicker() -> void:
+    flicker_enabled = false
+    energy = base_energy
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteFootstepSystemScript(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    const content = `extends CharacterBody2D
+# Footstep sound system
+@export var footstep_sounds: Array[AudioStream] = []
+@export var step_interval: float = 0.4
+@export var volume_db: float = 0.0
+
+var _step_timer: float = 0.0
+var _audio: AudioStreamPlayer
+
+func _ready() -> void:
+    _audio = AudioStreamPlayer.new()
+    _audio.volume_db = volume_db
+    add_child(_audio)
+
+func _physics_process(delta: float) -> void:
+    if is_on_floor() and velocity.length() > 10.0:
+        _step_timer -= delta
+        if _step_timer <= 0.0:
+            _play_footstep()
+            _step_timer = step_interval
+    else:
+        _step_timer = 0.0
+
+func _play_footstep() -> void:
+    if footstep_sounds.is_empty():
+        return
+    var stream = footstep_sounds[randi() % footstep_sounds.size()]
+    _audio.stream = stream
+    _audio.pitch_scale = randf_range(0.9, 1.1)
+    _audio.play()
+
+func set_surface(surface: String) -> void:
+    pass  # Override to swap footstep_sounds based on surface type
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteLeaderboardScript(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    const maxEntries: number = args.maxEntries ?? 10;
+    const content = `extends Node
+# Local leaderboard save/load
+const SAVE_PATH = "user://leaderboard.json"
+const MAX_ENTRIES = ${maxEntries}
+
+var entries: Array = []
+
+func _ready() -> void:
+    load_scores()
+
+func add_score(name: String, score: int) -> void:
+    entries.append({ "name": name, "score": score })
+    entries.sort_custom(func(a, b): return a["score"] > b["score"])
+    if entries.size() > MAX_ENTRIES:
+        entries.resize(MAX_ENTRIES)
+    save_scores()
+
+func get_rank(score: int) -> int:
+    for i in entries.size():
+        if score >= entries[i]["score"]:
+            return i + 1
+    return entries.size() + 1
+
+func save_scores() -> void:
+    var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+    if file:
+        file.store_string(JSON.stringify(entries))
+        file.close()
+
+func load_scores() -> void:
+    if not FileAccess.file_exists(SAVE_PATH):
+        return
+    var file = FileAccess.open(SAVE_PATH, FileAccess.READ)
+    if file:
+        var text = file.get_as_text()
+        file.close()
+        var result = JSON.parse_string(text)
+        if result is Array:
+            entries = result
+
+func clear_scores() -> void:
+    entries.clear()
+    if FileAccess.file_exists(SAVE_PATH):
+        DirAccess.remove_absolute(SAVE_PATH)
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteVfxManagerScript(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    const content = `extends Node
+# VFX/particle effect manager Autoload
+var _pool: Dictionary = {}
+
+func spawn(effect_scene: PackedScene, pos: Vector2, parent: Node = null) -> Node:
+    var node = effect_scene.instantiate()
+    var target = parent if parent else get_tree().current_scene
+    target.add_child(node)
+    node.global_position = pos
+    if node.has_method("restart"):
+        node.restart()
+    if node is GPUParticles2D or node is CPUParticles2D:
+        node.emitting = true
+        _auto_free(node)
+    return node
+
+func _auto_free(node: Node) -> void:
+    var lifetime = 2.0
+    if node.get("lifetime") != null:
+        lifetime = node.lifetime
+    await get_tree().create_timer(lifetime + 0.5).timeout
+    if is_instance_valid(node):
+        node.queue_free()
+
+func spawn_pooled(key: String, scene: PackedScene, pos: Vector2, parent: Node = null) -> Node:
+    if not key in _pool:
+        _pool[key] = []
+    var node: Node = null
+    for n in _pool[key]:
+        if is_instance_valid(n) and not n.visible:
+            node = n
+            break
+    if node == null:
+        node = spawn(scene, pos, parent)
+        _pool[key].append(node)
+    else:
+        node.global_position = pos
+        node.visible = true
+        if node.has_method("restart"):
+            node.restart()
+    return node
+
+func clear_pool(key: String) -> void:
+    if key in _pool:
+        for n in _pool[key]:
+            if is_instance_valid(n):
+                n.queue_free()
+        _pool.erase(key)
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteUiAnimationScript(rawArgs: any) {
+    const args = normalizeParameters(rawArgs || {});
+    const content = `extends Control
+# UI show/hide tween animation helpers
+@export var anim_duration: float = 0.25
+@export var slide_offset: Vector2 = Vector2(0, 30)
+
+var _tween: Tween
+
+func show_animated() -> void:
+    visible = true
+    modulate.a = 0.0
+    position += slide_offset
+    _play_tween(1.0, Vector2.ZERO)
+
+func hide_animated() -> void:
+    _play_tween(0.0, slide_offset, true)
+
+func _play_tween(target_alpha: float, target_offset: Vector2, hide_after: bool = false) -> void:
+    if _tween and _tween.is_valid():
+        _tween.kill()
+    _tween = create_tween().set_parallel(true)
+    _tween.tween_property(self, "modulate:a", target_alpha, anim_duration)
+    _tween.tween_property(self, "position", position + target_offset, anim_duration)
+    if hide_after:
+        _tween.chain().tween_callback(func(): visible = false)
+
+func pulse(times: int = 3, scale_amount: float = 1.1) -> void:
+    var t = create_tween().set_loops(times)
+    t.tween_property(self, "scale", Vector2.ONE * scale_amount, anim_duration * 0.5)
+    t.tween_property(self, "scale", Vector2.ONE, anim_duration * 0.5)
+
+func shake(duration: float = 0.3, strength: float = 5.0) -> void:
+    var origin = position
+    var t = create_tween()
+    var steps = int(duration / 0.05)
+    for i in steps:
+        t.tween_property(self, "position", origin + Vector2(randf_range(-strength, strength), randf_range(-strength, strength)), 0.05)
+    t.tween_property(self, "position", origin, 0.05)
 `;
     const absPath = require('path').join(args.projectPath, args.scriptPath);
     try {
