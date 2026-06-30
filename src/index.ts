@@ -10154,6 +10154,236 @@ class GodotServer {
           required: [],
         },
       },
+      {
+        name: 'add_joint_2d_pin_to_scene',
+        description: 'Add a PinJoint2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Relative path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Parent node path in scene.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_joint_2d_groove_to_scene',
+        description: 'Add a GrooveJoint2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Relative path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Parent node path in scene.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_joint_2d_damped_spring_to_scene',
+        description: 'Add a DampedSpringJoint2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Relative path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Parent node path in scene.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_character_body_3d_to_scene',
+        description: 'Add a CharacterBody3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Relative path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Parent node path in scene.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_camera_3d_to_scene',
+        description: 'Add a Camera3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Relative path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Parent node path in scene.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_camera_2d_to_scene',
+        description: 'Add a Camera2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Relative path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Parent node path in scene.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_rich_text_label_to_scene',
+        description: 'Add a RichTextLabel node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Relative path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Parent node path in scene.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_nine_patch_rect_to_scene',
+        description: 'Add a NinePatchRect node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Relative path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Parent node path in scene.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_color_rect_to_scene',
+        description: 'Add a ColorRect node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Relative path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Parent node path in scene.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_texture_rect_to_scene',
+        description: 'Add a TextureRect node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Relative path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Parent node path in scene.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'set_camera_fov',
+        description: 'Set the field of view on a Camera3D in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Camera3D node.' },
+            fov: { type: 'number', description: 'Field of view in degrees (e.g. 75.0).' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_camera_3d_current',
+        description: 'Make a Camera3D the current camera in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Camera3D node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_current_camera_3d',
+        description: 'Get the active Camera3D path in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'set_camera_2d_zoom',
+        description: 'Set the zoom level on a Camera2D in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Camera2D node.' },
+            zoomX: { type: 'number', description: 'Horizontal zoom factor.' },
+            zoomY: { type: 'number', description: 'Vertical zoom factor.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_camera_2d_limit',
+        description: 'Set a scroll limit on a Camera2D in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Camera2D node.' },
+            side: { type: 'string', description: 'Which limit: left, right, top, or bottom.' },
+            value: { type: 'number', description: 'Pixel value for the limit.' },
+          },
+          required: ['nodePath', 'side'],
+        },
+      },
+      {
+        name: 'set_viewport_size',
+        description: 'Set the viewport/window size in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            width: { type: 'number', description: 'Viewport width in pixels.' },
+            height: { type: 'number', description: 'Viewport height in pixels.' },
+          },
+          required: ['width', 'height'],
+        },
+      },
+      {
+        name: 'set_time_scale',
+        description: 'Set Engine.time_scale in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            timeScale: { type: 'number', description: 'Time scale (1.0 = normal, 0.5 = half speed).' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'get_scene_tree_paused',
+        description: 'Check if the SceneTree is paused in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
       ],
     }));
 
@@ -11605,6 +11835,42 @@ class GodotServer {
           return await this.handleGetTimeInGame(request.params.arguments);
         case 'get_engine_version_in_game':
           return await this.handleGetEngineVersionInGame(request.params.arguments);
+        case 'add_joint_2d_pin_to_scene':
+          return await this.handleAddJoint2dPinToScene(request.params.arguments);
+        case 'add_joint_2d_groove_to_scene':
+          return await this.handleAddJoint2dGrooveToScene(request.params.arguments);
+        case 'add_joint_2d_damped_spring_to_scene':
+          return await this.handleAddJoint2dDampedSpringToScene(request.params.arguments);
+        case 'add_character_body_3d_to_scene':
+          return await this.handleAddCharacterBody3dToScene(request.params.arguments);
+        case 'add_camera_3d_to_scene':
+          return await this.handleAddCamera3dToScene(request.params.arguments);
+        case 'add_camera_2d_to_scene':
+          return await this.handleAddCamera2dToScene(request.params.arguments);
+        case 'add_rich_text_label_to_scene':
+          return await this.handleAddRichTextLabelToScene(request.params.arguments);
+        case 'add_nine_patch_rect_to_scene':
+          return await this.handleAddNinePatchRectToScene(request.params.arguments);
+        case 'add_color_rect_to_scene':
+          return await this.handleAddColorRectToScene(request.params.arguments);
+        case 'add_texture_rect_to_scene':
+          return await this.handleAddTextureRectToScene(request.params.arguments);
+        case 'set_camera_fov':
+          return await this.handleSetCameraFov(request.params.arguments);
+        case 'set_camera_3d_current':
+          return await this.handleSetCamera3dCurrent(request.params.arguments);
+        case 'get_current_camera_3d':
+          return await this.handleGetCurrentCamera3d(request.params.arguments);
+        case 'set_camera_2d_zoom':
+          return await this.handleSetCamera2dZoom(request.params.arguments);
+        case 'set_camera_2d_limit':
+          return await this.handleSetCamera2dLimit(request.params.arguments);
+        case 'set_viewport_size':
+          return await this.handleSetViewportSize(request.params.arguments);
+        case 'set_time_scale':
+          return await this.handleSetTimeScale(request.params.arguments);
+        case 'get_scene_tree_paused':
+          return await this.handleGetSceneTreePaused(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -21719,6 +21985,151 @@ class GodotServer {
   private async handleGetEngineVersionInGame(args: any) {
     args = normalizeParameters(args || {});
     return this.gameCommand('get_engine_version_in_game', args, _a => ({}));
+  }
+
+  private async handleAddJoint2dPinToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'PinJoint2D', nodeType: 'PinJoint2D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddJoint2dGrooveToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'GrooveJoint2D', nodeType: 'GrooveJoint2D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddJoint2dDampedSpringToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'DampedSpringJoint2D', nodeType: 'DampedSpringJoint2D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddCharacterBody3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'CharacterBody3D', nodeType: 'CharacterBody3D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddCamera3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'Camera3D', nodeType: 'Camera3D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddCamera2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'Camera2D', nodeType: 'Camera2D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddRichTextLabelToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'RichTextLabel', nodeType: 'RichTextLabel', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddNinePatchRectToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'NinePatchRect', nodeType: 'NinePatchRect', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddColorRectToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'ColorRect', nodeType: 'ColorRect', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddTextureRectToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'TextureRect', nodeType: 'TextureRect', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleSetCameraFov(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_camera_fov', args, a => ({ node_path: a.nodePath, fov: a.fov ?? 75.0 }));
+  }
+
+  private async handleSetCamera3dCurrent(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_camera_3d_current', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetCurrentCamera3d(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_current_camera_3d', args, _a => ({}));
+  }
+
+  private async handleSetCamera2dZoom(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_camera_2d_zoom', args, a => ({ node_path: a.nodePath, zoom_x: a.zoomX ?? 1.0, zoom_y: a.zoomY ?? 1.0 }));
+  }
+
+  private async handleSetCamera2dLimit(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.side) return createErrorResponse('nodePath and side are required.');
+    return this.gameCommand('set_camera_2d_limit', args, a => ({ node_path: a.nodePath, side: a.side, value: a.value ?? 0 }));
+  }
+
+  private async handleSetViewportSize(args: any) {
+    args = normalizeParameters(args || {});
+    if (args.width === undefined || args.height === undefined) return createErrorResponse('width and height are required.');
+    return this.gameCommand('set_viewport_size_ingame', args, a => ({ width: a.width ?? 1280, height: a.height ?? 720 }));
+  }
+
+  private async handleSetTimeScale(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_time_scale', args, a => ({ time_scale: a.timeScale ?? 1.0 }));
+  }
+
+  private async handleGetSceneTreePaused(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_scene_tree_paused', args, _a => ({}));
   }
 
 }

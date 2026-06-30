@@ -759,6 +759,22 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_time_in_game(params)
 		"get_engine_version_in_game":
 			_cmd_get_engine_version_in_game(params)
+		"set_camera_fov":
+			_cmd_set_camera_fov(params)
+		"set_camera_3d_current":
+			_cmd_set_camera_3d_current(params)
+		"get_current_camera_3d":
+			_cmd_get_current_camera_3d(params)
+		"set_camera_2d_zoom":
+			_cmd_set_camera_2d_zoom(params)
+		"set_camera_2d_limit":
+			_cmd_set_camera_2d_limit(params)
+		"set_viewport_size_ingame":
+			_cmd_set_viewport_size_ingame(params)
+		"set_time_scale":
+			_cmd_set_time_scale(params)
+		"get_scene_tree_paused":
+			_cmd_get_scene_tree_paused(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -7837,6 +7853,75 @@ func _cmd_get_time_in_game(params: Dictionary) -> void:
 func _cmd_get_engine_version_in_game(params: Dictionary) -> void:
 	var version = Engine.get_version_info()
 	_send_response({"success": true, "major": version["major"], "minor": version["minor"], "patch": version["patch"], "status": version["status"], "build": version["build"], "string": version["string"]})
+
+func _cmd_set_camera_fov(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var fov: float = params.get("fov", 75.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Camera3D:
+		_send_response({"error": "Camera3D not found: " + node_path})
+		return
+	(node as Camera3D).fov = fov
+	_send_response({"success": true, "fov": fov})
+
+func _cmd_set_camera_3d_current(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Camera3D:
+		_send_response({"error": "Camera3D not found: " + node_path})
+		return
+	(node as Camera3D).make_current()
+	_send_response({"success": true, "current_camera": node_path})
+
+func _cmd_get_current_camera_3d(params: Dictionary) -> void:
+	var viewport = get_tree().root
+	var camera = viewport.get_camera_3d()
+	if camera == null:
+		_send_response({"success": true, "current_camera": null, "note": "No active Camera3D"})
+	else:
+		_send_response({"success": true, "current_camera": str(camera.get_path()), "fov": camera.fov, "near": camera.near, "far": camera.far, "projection": camera.projection})
+
+func _cmd_set_camera_2d_zoom(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var zoom_x: float = params.get("zoom_x", 1.0)
+	var zoom_y: float = params.get("zoom_y", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Camera2D:
+		_send_response({"error": "Camera2D not found: " + node_path})
+		return
+	(node as Camera2D).zoom = Vector2(zoom_x, zoom_y)
+	_send_response({"success": true, "zoom": {"x": zoom_x, "y": zoom_y}})
+
+func _cmd_set_camera_2d_limit(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var side: String = params.get("side", "left")
+	var value: int = params.get("value", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Camera2D:
+		_send_response({"error": "Camera2D not found: " + node_path})
+		return
+	var cam := node as Camera2D
+	match side:
+		"left": cam.limit_left = value
+		"right": cam.limit_right = value
+		"top": cam.limit_top = value
+		"bottom": cam.limit_bottom = value
+		_: _send_response({"error": "Invalid side: " + side}); return
+	_send_response({"success": true, "side": side, "value": value})
+
+func _cmd_set_viewport_size_ingame(params: Dictionary) -> void:
+	var width: int = params.get("width", 1280)
+	var height: int = params.get("height", 720)
+	DisplayServer.window_set_size(Vector2i(width, height))
+	_send_response({"success": true, "width": width, "height": height})
+
+func _cmd_set_time_scale(params: Dictionary) -> void:
+	var time_scale: float = params.get("time_scale", 1.0)
+	Engine.time_scale = time_scale
+	_send_response({"success": true, "time_scale": time_scale})
+
+func _cmd_get_scene_tree_paused(params: Dictionary) -> void:
+	_send_response({"success": true, "paused": get_tree().paused, "current_scene": str(get_tree().current_scene.get_path()) if get_tree().current_scene != null else null})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()
