@@ -18517,6 +18517,39 @@ class GodotServer {
       { name: 'write_screen_shake_2d_script', description: 'Write a 2D camera screen shake effect.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, maxShake: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_experience_level_script', description: 'Write an XP/level progression system.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, baseXp: { type: 'integer' }, xpMultiplier: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_notification_system_script', description: 'Write a toast notification UI system.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, displayTime: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      // Batch 74 — Group A: XR / VR / AR runtime tools
+      { name: 'get_xr_interface_list', description: 'List available XR interfaces in Godot.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'initialize_xr_interface', description: 'Initialize an XR interface by name.', inputSchema: { type: 'object', properties: { interfaceName: { type: 'string' } }, required: ['interfaceName'] } },
+      { name: 'get_xr_is_tracking', description: 'Check if XR tracking is active.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'get_xr_controller_input', description: 'Get XR controller axis and button input.', inputSchema: { type: 'object', properties: { controllerId: { type: 'integer', description: '1=left, 2=right' } }, required: ['controllerId'] } },
+      { name: 'get_xr_camera_transform', description: 'Get the XR camera world transform.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string', description: 'XRCamera3D node path' } }, required: ['nodePath'] } },
+      { name: 'set_xr_world_scale', description: 'Set the XR world scale factor.', inputSchema: { type: 'object', properties: { scale: { type: 'number' } }, required: ['scale'] } },
+      { name: 'get_xr_anchor_info', description: 'Get XRAnchor3D position and confidence.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string', description: 'XRAnchor3D node path' } }, required: ['nodePath'] } },
+      // Batch 74 — Group B: NavigationAgent3D / NavigationRegion3D
+      { name: 'get_navigation_agent_3d_info', description: 'Get NavigationAgent3D target, velocity info.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_navigation_agent_3d_next_path_pos', description: 'Get next path position from NavigationAgent3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'is_navigation_agent_3d_target_reachable', description: 'Check if NavigationAgent3D target is reachable.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_navigation_region_3d_enabled', description: 'Check if a NavigationRegion3D is enabled.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_navigation_region_3d_enabled', description: 'Enable or disable a NavigationRegion3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, enabled: { type: 'boolean' } }, required: ['nodePath', 'enabled'] } },
+      { name: 'bake_navigation_mesh_3d', description: 'Trigger NavigationRegion3D mesh bake.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      // Batch 74 — Group C: GPUParticles3D advanced controls
+      { name: 'get_gpu_particles_3d_info', description: 'Get GPUParticles3D emitting, amount, lifetime.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_gpu_particles_3d_amount', description: 'Set the particle amount on GPUParticles3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, amount: { type: 'integer' } }, required: ['nodePath', 'amount'] } },
+      { name: 'set_gpu_particles_3d_lifetime', description: 'Set particle lifetime on GPUParticles3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, lifetime: { type: 'number' } }, required: ['nodePath', 'lifetime'] } },
+      { name: 'restart_gpu_particles_3d', description: 'Restart GPUParticles3D emission.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_gpu_particles_3d_one_shot', description: 'Set GPUParticles3D one_shot mode.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, oneShot: { type: 'boolean' } }, required: ['nodePath', 'oneShot'] } },
+      { name: 'emit_gpu_particles_3d_subemitter', description: 'Emit subemitter particles on GPUParticles3D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      // Batch 74 — Group D: More editor plugin commands
+      { name: 'get_editor_undo_redo_history', description: 'Get the undo/redo history length in editor.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'get_editor_inspector_object', description: 'Get the object inspected in the editor.', inputSchema: { type: 'object', properties: {} } },
+      // Batch 74 — Group E: GDScript templates
+      { name: 'write_double_jump_script', description: 'Write a double-jump CharacterBody2D script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, jumpForce: { type: 'number' }, maxJumps: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_dash_ability_script', description: 'Write a dash ability for CharacterBody2D.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, dashForce: { type: 'number' }, dashDuration: { type: 'number' }, dashCooldown: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_wall_jump_script', description: 'Write a wall-jump CharacterBody2D script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, speed: { type: 'number' }, jumpForce: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_cutscene_trigger_script', description: 'Write a trigger zone for cutscene activation.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_interactable_object_script', description: 'Write an E-to-interact object script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, promptText: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_item_pickup_script', description: 'Write an item pickup Area2D script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, itemName: { type: 'string' }, itemValue: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_moving_platform_script', description: 'Write a moving platform between two points.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, speed: { type: 'number' }, waitTime: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
       ],
     }));
 
@@ -21986,6 +22019,67 @@ class GodotServer {
           return await this.handleWriteExperienceLevelScript(request.params.arguments);
         case 'write_notification_system_script':
           return await this.handleWriteNotificationSystemScript(request.params.arguments);
+        // Batch 74 — Group A: XR / VR / AR runtime tools
+        case 'get_xr_interface_list':
+          return await this.handleGetXrInterfaceList(request.params.arguments);
+        case 'initialize_xr_interface':
+          return await this.handleInitializeXrInterface(request.params.arguments);
+        case 'get_xr_is_tracking':
+          return await this.handleGetXrIsTracking(request.params.arguments);
+        case 'get_xr_controller_input':
+          return await this.handleGetXrControllerInput(request.params.arguments);
+        case 'get_xr_camera_transform':
+          return await this.handleGetXrCameraTransform(request.params.arguments);
+        case 'set_xr_world_scale':
+          return await this.handleSetXrWorldScale(request.params.arguments);
+        case 'get_xr_anchor_info':
+          return await this.handleGetXrAnchorInfo(request.params.arguments);
+        // Batch 74 — Group B: NavigationAgent3D / NavigationRegion3D
+        case 'get_navigation_agent_3d_info':
+          return await this.handleGetNavigationAgent3dInfo(request.params.arguments);
+        case 'get_navigation_agent_3d_next_path_pos':
+          return await this.handleGetNavigationAgent3dNextPathPos(request.params.arguments);
+        case 'is_navigation_agent_3d_target_reachable':
+          return await this.handleIsNavigationAgent3dTargetReachable(request.params.arguments);
+        case 'get_navigation_region_3d_enabled':
+          return await this.handleGetNavigationRegion3dEnabled(request.params.arguments);
+        case 'set_navigation_region_3d_enabled':
+          return await this.handleSetNavigationRegion3dEnabled(request.params.arguments);
+        case 'bake_navigation_mesh_3d':
+          return await this.handleBakeNavigationMesh3d(request.params.arguments);
+        // Batch 74 — Group C: GPUParticles3D advanced controls
+        case 'get_gpu_particles_3d_info':
+          return await this.handleGetGpuParticles3dInfo(request.params.arguments);
+        case 'set_gpu_particles_3d_amount':
+          return await this.handleSetGpuParticles3dAmount(request.params.arguments);
+        case 'set_gpu_particles_3d_lifetime':
+          return await this.handleSetGpuParticles3dLifetime(request.params.arguments);
+        case 'restart_gpu_particles_3d':
+          return await this.handleRestartGpuParticles3d(request.params.arguments);
+        case 'set_gpu_particles_3d_one_shot':
+          return await this.handleSetGpuParticles3dOneShot(request.params.arguments);
+        case 'emit_gpu_particles_3d_subemitter':
+          return await this.handleEmitGpuParticles3dSubemitter(request.params.arguments);
+        // Batch 74 — Group D: More editor plugin commands
+        case 'get_editor_undo_redo_history':
+          return await this.handleGetEditorUndoRedoHistory(request.params.arguments);
+        case 'get_editor_inspector_object':
+          return await this.handleGetEditorInspectorObject(request.params.arguments);
+        // Batch 74 — Group E: GDScript templates
+        case 'write_double_jump_script':
+          return await this.handleWriteDoubleJumpScript(request.params.arguments);
+        case 'write_dash_ability_script':
+          return await this.handleWriteDashAbilityScript(request.params.arguments);
+        case 'write_wall_jump_script':
+          return await this.handleWriteWallJumpScript(request.params.arguments);
+        case 'write_cutscene_trigger_script':
+          return await this.handleWriteCutsceneTriggerScript(request.params.arguments);
+        case 'write_interactable_object_script':
+          return await this.handleWriteInteractableObjectScript(request.params.arguments);
+        case 'write_item_pickup_script':
+          return await this.handleWriteItemPickupScript(request.params.arguments);
+        case 'write_moving_platform_script':
+          return await this.handleWriteMovingPlatformScript(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -44801,6 +44895,219 @@ func get_current_waypoint_index() -> int:
       const { projectPath, scriptPath, displayTime = 2.0 } = args;
       if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
       const content = `class_name NotificationSystem\nextends CanvasLayer\n\n@export var display_time: float = ${displayTime}\n@export var max_visible: int = 5\n@export var stack_offset: float = 48.0\n\nvar _active: Array[Node] = []\n\nfunc notify(message: String, color: Color = Color.WHITE) -> void:\n    if _active.size() >= max_visible:\n        var oldest = _active.pop_front()\n        if is_instance_valid(oldest): oldest.queue_free()\n    var toast = _create_toast(message, color)\n    _active.append(toast)\n    _reposition_toasts()\n\nfunc _create_toast(message: String, color: Color) -> Control:\n    var toast := Label.new()\n    toast.text = message\n    toast.modulate = color\n    add_child(toast)\n    get_tree().create_timer(display_time).timeout.connect(func(): _remove_toast(toast))\n    return toast\n\nfunc _remove_toast(toast: Node) -> void:\n    _active.erase(toast)\n    if is_instance_valid(toast): toast.queue_free()\n    _reposition_toasts()\n\nfunc _reposition_toasts() -> void:\n    for i in _active.size():\n        if is_instance_valid(_active[i]) and _active[i] is Control:\n            (_active[i] as Control).position.y = get_viewport().get_visible_rect().size.y - stack_offset * (i + 1)\n\nfunc clear_all() -> void:\n    for toast in _active:\n        if is_instance_valid(toast): toast.queue_free()\n    _active.clear()\n`;
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  // ── Batch 74 — Group A: XR / VR / AR runtime tools ──────────────────────────
+
+  private async handleGetXrInterfaceList(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_xr_interface_list', args, _a => ({}));
+  }
+
+  private async handleInitializeXrInterface(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('initialize_xr_interface', args, a => ({ interface_name: a.interfaceName ?? '' }));
+  }
+
+  private async handleGetXrIsTracking(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_xr_is_tracking', args, _a => ({}));
+  }
+
+  private async handleGetXrControllerInput(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_xr_controller_input', args, a => ({ controller_id: a.controllerId ?? 1 }));
+  }
+
+  private async handleGetXrCameraTransform(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_xr_camera_transform', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetXrWorldScale(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_xr_world_scale', args, a => ({ scale: a.scale ?? 1.0 }));
+  }
+
+  private async handleGetXrAnchorInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_xr_anchor_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  // ── Batch 74 — Group B: NavigationAgent3D / NavigationRegion3D ──────────────
+
+  private async handleGetNavigationAgent3dInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_navigation_agent_3d_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleGetNavigationAgent3dNextPathPos(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_navigation_agent_3d_next_path_pos', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleIsNavigationAgent3dTargetReachable(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('is_navigation_agent_3d_target_reachable', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleGetNavigationRegion3dEnabled(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_navigation_region_3d_enabled', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetNavigationRegion3dEnabled(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_navigation_region_3d_enabled', args, a => ({ node_path: a.nodePath ?? '', enabled: a.enabled ?? true }));
+  }
+
+  private async handleBakeNavigationMesh3d(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('bake_navigation_mesh_3d', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  // ── Batch 74 — Group C: GPUParticles3D advanced controls ────────────────────
+
+  private async handleGetGpuParticles3dInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_gpu_particles_3d_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetGpuParticles3dAmount(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_gpu_particles_3d_amount', args, a => ({ node_path: a.nodePath ?? '', amount: a.amount ?? 8 }));
+  }
+
+  private async handleSetGpuParticles3dLifetime(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_gpu_particles_3d_lifetime', args, a => ({ node_path: a.nodePath ?? '', lifetime: a.lifetime ?? 1.0 }));
+  }
+
+  private async handleRestartGpuParticles3d(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('restart_gpu_particles_3d', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetGpuParticles3dOneShot(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_gpu_particles_3d_one_shot', args, a => ({ node_path: a.nodePath ?? '', one_shot: a.oneShot ?? false }));
+  }
+
+  private async handleEmitGpuParticles3dSubemitter(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('emit_gpu_particles_3d_subemitter', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  // ── Batch 74 — Group D: More editor plugin commands ─────────────────────────
+
+  private async handleGetEditorUndoRedoHistory(args: any) {
+    args = normalizeParameters(args || {});
+    return this.editorCommand('get_editor_undo_redo_history', args, _a => ({}));
+  }
+
+  private async handleGetEditorInspectorObject(args: any) {
+    args = normalizeParameters(args || {});
+    return this.editorCommand('get_editor_inspector_object', args, _a => ({}));
+  }
+
+  // ── Batch 74 — Group E: GDScript templates ──────────────────────────────────
+
+  private async handleWriteDoubleJumpScript(args: any) {
+    try {
+      args = normalizeParameters(args || {});
+      const { projectPath, scriptPath, jumpForce = 400, maxJumps = 2 } = args;
+      if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+      const content = `extends CharacterBody2D\n\n@export var jump_force: float = ${jumpForce}\n@export var max_jumps: int = ${maxJumps}\n@export var gravity: float = 980.0\n@export var speed: float = 200.0\n\nvar jumps_remaining: int = 0\n\nfunc _ready() -> void:\n    jumps_remaining = max_jumps\n\nfunc _physics_process(delta: float) -> void:\n    if not is_on_floor():\n        velocity.y += gravity * delta\n    else:\n        jumps_remaining = max_jumps\n\n    if Input.is_action_just_pressed("ui_accept") and jumps_remaining > 0:\n        velocity.y = -jump_force\n        jumps_remaining -= 1\n\n    var direction := Input.get_axis("ui_left", "ui_right")\n    velocity.x = direction * speed\n    move_and_slide()\n`;
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteDashAbilityScript(args: any) {
+    try {
+      args = normalizeParameters(args || {});
+      const { projectPath, scriptPath, dashForce = 600, dashDuration = 0.15, dashCooldown = 0.8 } = args;
+      if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+      const content = `extends CharacterBody2D\n\n@export var speed: float = 200.0\n@export var gravity: float = 980.0\n@export var jump_force: float = 400.0\n@export var dash_force: float = ${dashForce}\n@export var dash_duration: float = ${dashDuration}\n@export var dash_cooldown: float = ${dashCooldown}\n\nvar _is_dashing: bool = false\nvar _dash_timer: float = 0.0\nvar _cooldown_timer: float = 0.0\nvar _dash_direction: float = 1.0\n\nfunc _physics_process(delta: float) -> void:\n    if _cooldown_timer > 0.0:\n        _cooldown_timer -= delta\n\n    if _is_dashing:\n        _dash_timer -= delta\n        velocity.x = _dash_direction * dash_force\n        if _dash_timer <= 0.0:\n            _is_dashing = false\n    else:\n        if not is_on_floor():\n            velocity.y += gravity * delta\n\n        if Input.is_action_just_pressed("ui_accept") and is_on_floor():\n            velocity.y = -jump_force\n\n        var direction := Input.get_axis("ui_left", "ui_right")\n        if direction != 0.0:\n            _dash_direction = direction\n        velocity.x = direction * speed\n\n        if Input.is_action_just_pressed("ui_focus_next") and _cooldown_timer <= 0.0:\n            _is_dashing = true\n            _dash_timer = dash_duration\n            _cooldown_timer = dash_cooldown\n            velocity.y = 0.0\n\n    move_and_slide()\n`;
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteWallJumpScript(args: any) {
+    try {
+      args = normalizeParameters(args || {});
+      const { projectPath, scriptPath, speed = 200, jumpForce = 400 } = args;
+      if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+      const content = `extends CharacterBody2D\n\n@export var speed: float = ${speed}\n@export var jump_force: float = ${jumpForce}\n@export var gravity: float = 980.0\n@export var wall_jump_force_x: float = ${speed * 1.2}\n\nfunc _physics_process(delta: float) -> void:\n    if not is_on_floor():\n        velocity.y += gravity * delta\n\n    if Input.is_action_just_pressed("ui_accept"):\n        if is_on_floor():\n            velocity.y = -jump_force\n        elif is_on_wall():\n            var wall_normal := get_wall_normal()\n            velocity.x = wall_normal.x * wall_jump_force_x\n            velocity.y = -jump_force\n\n    var direction := Input.get_axis("ui_left", "ui_right")\n    if is_on_floor() or not is_on_wall():\n        velocity.x = direction * speed\n\n    move_and_slide()\n`;
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteCutsceneTriggerScript(args: any) {
+    try {
+      args = normalizeParameters(args || {});
+      const { projectPath, scriptPath } = args;
+      if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+      const content = `class_name CutsceneTrigger\nextends Area2D\n\nsignal cutscene_started\nsignal cutscene_finished\n\n@export var trigger_once: bool = true\n@export var cutscene_name: String = ""\n\nvar _triggered: bool = false\n\nfunc _ready() -> void:\n    body_entered.connect(_on_body_entered)\n\nfunc _on_body_entered(body: Node2D) -> void:\n    if _triggered and trigger_once:\n        return\n    if not body.is_in_group("player"):\n        return\n    _triggered = true\n    cutscene_started.emit()\n    _play_cutscene()\n\nfunc _play_cutscene() -> void:\n    # Override or connect cutscene_finished when done.\n    await get_tree().create_timer(1.0).timeout\n    cutscene_finished.emit()\n\nfunc reset() -> void:\n    _triggered = false\n`;
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteInteractableObjectScript(args: any) {
+    try {
+      args = normalizeParameters(args || {});
+      const { projectPath, scriptPath, promptText = 'Press E to interact' } = args;
+      if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+      const content = `class_name InteractableObject\nextends Area2D\n\nsignal interacted(interactor: Node)\n\n@export var prompt_text: String = "${promptText}"\n@export var enabled: bool = true\n\nvar _player_in_range: bool = false\n\nfunc _ready() -> void:\n    body_entered.connect(_on_body_entered)\n    body_exited.connect(_on_body_exited)\n\nfunc _unhandled_input(event: InputEvent) -> void:\n    if not enabled or not _player_in_range:\n        return\n    if event.is_action_just_pressed("ui_accept"):\n        _interact()\n\nfunc _on_body_entered(body: Node) -> void:\n    if body.is_in_group("player"):\n        _player_in_range = true\n\nfunc _on_body_exited(body: Node) -> void:\n    if body.is_in_group("player"):\n        _player_in_range = false\n\nfunc _interact() -> void:\n    interacted.emit(get_overlapping_bodies().filter(func(b): return b.is_in_group("player")).front())\n`;
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteItemPickupScript(args: any) {
+    try {
+      args = normalizeParameters(args || {});
+      const { projectPath, scriptPath, itemName = 'Item', itemValue = 1 } = args;
+      if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+      const content = `class_name ItemPickup\nextends Area2D\n\nsignal picked_up(item_name: String, item_value: int)\n\n@export var item_name: String = "${itemName}"\n@export var item_value: int = ${itemValue}\n@export var auto_collect: bool = true\n\nfunc _ready() -> void:\n    if auto_collect:\n        body_entered.connect(_on_body_entered)\n\nfunc _on_body_entered(body: Node) -> void:\n    if body.is_in_group("player"):\n        collect(body)\n\nfunc collect(_collector: Node = null) -> void:\n    picked_up.emit(item_name, item_value)\n    queue_free()\n`;
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteMovingPlatformScript(args: any) {
+    try {
+      args = normalizeParameters(args || {});
+      const { projectPath, scriptPath, speed = 60, waitTime = 1.0 } = args;
+      if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+      const content = `class_name MovingPlatform\nextends AnimatableBody2D\n\n@export var point_a: Vector2 = Vector2.ZERO\n@export var point_b: Vector2 = Vector2(200, 0)\n@export var speed: float = ${speed}\n@export var wait_time: float = ${waitTime}\n\nvar _target: Vector2\nvar _waiting: bool = false\n\nfunc _ready() -> void:\n    position = point_a\n    _target = point_b\n\nfunc _physics_process(delta: float) -> void:\n    if _waiting:\n        return\n    var direction := (_target - position)\n    var dist := direction.length()\n    if dist <= speed * delta:\n        position = _target\n        _waiting = true\n        await get_tree().create_timer(wait_time).timeout\n        _target = point_a if _target == point_b else point_b\n        _waiting = false\n    else:\n        position += direction.normalized() * speed * delta\n`;
       const absPath = require('path').join(projectPath, scriptPath);
       const dir = require('path').dirname(absPath);
       if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });

@@ -2189,6 +2189,48 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_locale_info(params)
 		"get_environment_variable":
 			_cmd_get_environment_variable(params)
+		"get_xr_interface_list":
+			_cmd_get_xr_interface_list(params)
+		"initialize_xr_interface":
+			_cmd_initialize_xr_interface(params)
+		"get_xr_is_tracking":
+			_cmd_get_xr_is_tracking(params)
+		"get_xr_controller_input":
+			_cmd_get_xr_controller_input(params)
+		"get_xr_camera_transform":
+			_cmd_get_xr_camera_transform(params)
+		"set_xr_world_scale":
+			_cmd_set_xr_world_scale(params)
+		"get_xr_anchor_info":
+			_cmd_get_xr_anchor_info(params)
+		"get_navigation_agent_3d_info":
+			_cmd_get_navigation_agent_3d_info(params)
+		"get_navigation_agent_3d_next_path_pos":
+			_cmd_get_navigation_agent_3d_next_path_pos(params)
+		"is_navigation_agent_3d_target_reachable":
+			_cmd_is_navigation_agent_3d_target_reachable(params)
+		"get_navigation_region_3d_enabled":
+			_cmd_get_navigation_region_3d_enabled(params)
+		"set_navigation_region_3d_enabled":
+			_cmd_set_navigation_region_3d_enabled(params)
+		"bake_navigation_mesh_3d":
+			_cmd_bake_navigation_mesh_3d(params)
+		"get_gpu_particles_3d_info":
+			_cmd_get_gpu_particles_3d_info(params)
+		"set_gpu_particles_3d_amount":
+			_cmd_set_gpu_particles_3d_amount(params)
+		"set_gpu_particles_3d_lifetime":
+			_cmd_set_gpu_particles_3d_lifetime(params)
+		"restart_gpu_particles_3d":
+			_cmd_restart_gpu_particles_3d(params)
+		"set_gpu_particles_3d_one_shot":
+			_cmd_set_gpu_particles_3d_one_shot(params)
+		"emit_gpu_particles_3d_subemitter":
+			_cmd_emit_gpu_particles_3d_subemitter(params)
+		"get_performance_monitor_value":
+			_cmd_get_performance_monitor_value(params)
+		"get_all_performance_monitors":
+			_cmd_get_all_performance_monitors(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -17537,6 +17579,227 @@ func _cmd_get_environment_variable(params: Dictionary) -> void:
 		return
 	var value = OS.get_environment(var_name)
 	_send_response({"success": true, "var_name": var_name, "value": value, "found": not value.is_empty()})
+
+
+func _cmd_get_xr_interface_list(params: Dictionary) -> void:
+	var iface_count = XRServer.get_interface_count()
+	var interfaces = []
+	for i in range(iface_count):
+		var iface = XRServer.get_interface(i)
+		interfaces.append({"name": iface.get_name(), "is_initialized": iface.is_initialized()})
+	_send_response({"success": true, "interfaces": interfaces, "count": iface_count})
+
+
+func _cmd_initialize_xr_interface(params: Dictionary) -> void:
+	var interface_name: String = params.get("interface_name", "")
+	var iface = XRServer.find_interface(interface_name)
+	if iface == null:
+		_send_response({"error": "XR interface not found: " + interface_name})
+		return
+	var result = iface.initialize()
+	_send_response({"success": true, "interface_name": interface_name, "initialized": result})
+
+
+func _cmd_get_xr_is_tracking(params: Dictionary) -> void:
+	var primary = XRServer.primary_interface
+	if primary == null:
+		_send_response({"success": true, "tracking": false, "primary_interface": null})
+		return
+	_send_response({"success": true, "tracking": primary.is_initialized(), "primary_interface": primary.get_name()})
+
+
+func _cmd_get_xr_controller_input(params: Dictionary) -> void:
+	var controller_id: int = params.get("controller_id", 1)
+	var result = {"controller_id": controller_id}
+	for node in get_tree().root.find_children("*", "XRController3D", true):
+		if node is XRController3D and node.get_tracker_hand() == controller_id:
+			result["is_active"] = node.get_is_active()
+			result["position"] = {"x": node.global_position.x, "y": node.global_position.y, "z": node.global_position.z}
+			break
+	_send_response({"success": true, "data": result})
+
+
+func _cmd_get_xr_camera_transform(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is XRCamera3D:
+		_send_response({"error": "XRCamera3D not found: " + node_path})
+		return
+	var cam = node as XRCamera3D
+	var pos = cam.global_position
+	_send_response({"success": true, "position": {"x": pos.x, "y": pos.y, "z": pos.z}, "is_active": true})
+
+
+func _cmd_set_xr_world_scale(params: Dictionary) -> void:
+	var scale_val: float = params.get("scale", 1.0)
+	XRServer.world_scale = scale_val
+	_send_response({"success": true, "world_scale": scale_val})
+
+
+func _cmd_get_xr_anchor_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is XRAnchor3D:
+		_send_response({"error": "XRAnchor3D not found: " + node_path})
+		return
+	var anchor = node as XRAnchor3D
+	var pos = anchor.global_position
+	_send_response({"success": true, "position": {"x": pos.x, "y": pos.y, "z": pos.z}, "is_active": anchor.get_is_active()})
+
+
+func _cmd_get_navigation_agent_3d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is NavigationAgent3D:
+		_send_response({"error": "NavigationAgent3D not found: " + node_path})
+		return
+	var na = node as NavigationAgent3D
+	var tp = na.target_position
+	_send_response({"success": true, "target_position": {"x": tp.x, "y": tp.y, "z": tp.z}, "is_navigation_finished": na.is_navigation_finished(), "distance_to_target": na.distance_to_target(), "path_desired_distance": na.path_desired_distance})
+
+
+func _cmd_get_navigation_agent_3d_next_path_pos(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is NavigationAgent3D:
+		_send_response({"error": "NavigationAgent3D not found: " + node_path})
+		return
+	var next = (node as NavigationAgent3D).get_next_path_position()
+	_send_response({"success": true, "next_position": {"x": next.x, "y": next.y, "z": next.z}})
+
+
+func _cmd_is_navigation_agent_3d_target_reachable(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is NavigationAgent3D:
+		_send_response({"error": "NavigationAgent3D not found: " + node_path})
+		return
+	var na = node as NavigationAgent3D
+	_send_response({"success": true, "is_target_reachable": na.is_target_reachable(), "is_navigation_finished": na.is_navigation_finished()})
+
+
+func _cmd_get_navigation_region_3d_enabled(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is NavigationRegion3D:
+		_send_response({"error": "NavigationRegion3D not found: " + node_path})
+		return
+	_send_response({"success": true, "enabled": (node as NavigationRegion3D).enabled})
+
+
+func _cmd_set_navigation_region_3d_enabled(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var enabled: bool = params.get("enabled", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is NavigationRegion3D:
+		_send_response({"error": "NavigationRegion3D not found: " + node_path})
+		return
+	(node as NavigationRegion3D).enabled = enabled
+	_send_response({"success": true, "enabled": enabled})
+
+
+func _cmd_bake_navigation_mesh_3d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is NavigationRegion3D:
+		_send_response({"error": "NavigationRegion3D not found: " + node_path})
+		return
+	(node as NavigationRegion3D).bake_navigation_mesh()
+	_send_response({"success": true, "baking_started": true, "node_path": node_path})
+
+
+func _cmd_get_gpu_particles_3d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is GPUParticles3D:
+		_send_response({"error": "GPUParticles3D not found: " + node_path})
+		return
+	var gp = node as GPUParticles3D
+	_send_response({"success": true, "emitting": gp.emitting, "amount": gp.amount, "lifetime": gp.lifetime, "one_shot": gp.one_shot, "preprocess": gp.preprocess, "speed_scale": gp.speed_scale})
+
+
+func _cmd_set_gpu_particles_3d_amount(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var amount: int = params.get("amount", 8)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is GPUParticles3D:
+		_send_response({"error": "GPUParticles3D not found: " + node_path})
+		return
+	(node as GPUParticles3D).amount = amount
+	_send_response({"success": true, "amount": amount})
+
+
+func _cmd_set_gpu_particles_3d_lifetime(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var lifetime: float = params.get("lifetime", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is GPUParticles3D:
+		_send_response({"error": "GPUParticles3D not found: " + node_path})
+		return
+	(node as GPUParticles3D).lifetime = lifetime
+	_send_response({"success": true, "lifetime": lifetime})
+
+
+func _cmd_restart_gpu_particles_3d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is GPUParticles3D:
+		_send_response({"error": "GPUParticles3D not found: " + node_path})
+		return
+	(node as GPUParticles3D).restart()
+	_send_response({"success": true, "restarted": true})
+
+
+func _cmd_set_gpu_particles_3d_one_shot(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var one_shot: bool = params.get("one_shot", false)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is GPUParticles3D:
+		_send_response({"error": "GPUParticles3D not found: " + node_path})
+		return
+	(node as GPUParticles3D).one_shot = one_shot
+	_send_response({"success": true, "one_shot": one_shot})
+
+
+func _cmd_emit_gpu_particles_3d_subemitter(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is GPUParticles3D:
+		_send_response({"error": "GPUParticles3D not found: " + node_path})
+		return
+	(node as GPUParticles3D).emit_particle(Transform3D.IDENTITY, Vector3.ZERO, Color.WHITE, Color.WHITE, 0)
+	_send_response({"success": true, "emitted": true})
+
+
+func _cmd_get_performance_monitor_value(params: Dictionary) -> void:
+	var monitor_name: String = params.get("monitor_name", "TIME_FPS")
+	var monitor_map = {
+		"TIME_FPS": Performance.TIME_FPS,
+		"TIME_PROCESS": Performance.TIME_PROCESS,
+		"TIME_PHYSICS_PROCESS": Performance.TIME_PHYSICS_PROCESS,
+		"MEMORY_STATIC": Performance.MEMORY_STATIC,
+		"MEMORY_STATIC_MAX": Performance.MEMORY_STATIC_MAX,
+		"OBJECT_COUNT": Performance.OBJECT_COUNT,
+		"OBJECT_NODE_COUNT": Performance.OBJECT_NODE_COUNT,
+		"RENDER_TOTAL_DRAW_CALLS_IN_FRAME": Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME
+	}
+	if not monitor_name in monitor_map:
+		_send_response({"error": "Unknown monitor: " + monitor_name, "valid_monitors": Array(monitor_map.keys())})
+		return
+	_send_response({"success": true, "monitor": monitor_name, "value": Performance.get_monitor(monitor_map[monitor_name])})
+
+
+func _cmd_get_all_performance_monitors(params: Dictionary) -> void:
+	var monitors = {
+		"fps": Performance.get_monitor(Performance.TIME_FPS),
+		"process_ms": Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0,
+		"physics_ms": Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0,
+		"memory_static_mb": Performance.get_monitor(Performance.MEMORY_STATIC) / 1048576.0,
+		"object_count": Performance.get_monitor(Performance.OBJECT_COUNT),
+		"node_count": Performance.get_monitor(Performance.OBJECT_NODE_COUNT),
+		"draw_calls": Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)
+	}
+	_send_response({"success": true, "monitors": monitors})
 
 
 func _exit_tree() -> void:
