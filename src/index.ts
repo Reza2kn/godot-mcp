@@ -18375,6 +18375,45 @@ class GodotServer {
       { name: 'write_slide_puzzle_script', description: 'Write a slide puzzle game logic script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, gridSize: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_match_3_board_script', description: 'Write a match-3 game board logic script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, cols: { type: 'integer' }, rows: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_tower_defense_base_script', description: 'Write a tower defense tower base script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, range: { type: 'number' }, fireRate: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      // Batch 70 — Group A: Time / Date runtime tools
+      { name: 'get_unix_time', description: 'Get current Unix timestamp from the Godot engine.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'get_datetime_dict', description: 'Get current date and time as a dictionary.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'get_ticks_msec', description: 'Get engine ticks in milliseconds since start.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'get_ticks_usec', description: 'Get engine ticks in microseconds since start.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'unix_time_to_datetime', description: 'Convert Unix timestamp to a date/time dict.', inputSchema: { type: 'object', properties: { unixTime: { type: 'number' } }, required: ['unixTime'] } },
+      { name: 'datetime_to_unix_time', description: 'Convert a date/time dict to Unix timestamp.', inputSchema: { type: 'object', properties: { year: { type: 'integer' }, month: { type: 'integer' }, day: { type: 'integer' }, hour: { type: 'integer' }, minute: { type: 'integer' }, second: { type: 'integer' } }, required: ['year', 'month', 'day'] } },
+      // Batch 70 — Group B: Crypto / hashing tools
+      { name: 'hash_string_sha256', description: 'Compute SHA-256 hash of a string in Godot.', inputSchema: { type: 'object', properties: { text: { type: 'string' } }, required: ['text'] } },
+      { name: 'hash_string_md5', description: 'Compute MD5 hash of a string in Godot.', inputSchema: { type: 'object', properties: { text: { type: 'string' } }, required: ['text'] } },
+      { name: 'generate_uuid_v4', description: 'Generate a random UUID v4 string in Godot.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'base64_encode', description: "Base64 encode a string via Godot's Marshalls.", inputSchema: { type: 'object', properties: { text: { type: 'string' } }, required: ['text'] } },
+      { name: 'base64_decode', description: "Base64 decode a string via Godot's Marshalls.", inputSchema: { type: 'object', properties: { encoded: { type: 'string' } }, required: ['encoded'] } },
+      { name: 'get_random_int', description: 'Get a random integer in a range via Godot.', inputSchema: { type: 'object', properties: { min: { type: 'integer' }, max: { type: 'integer' } }, required: ['min', 'max'] } },
+      // Batch 70 — Group C: InputMap runtime tools
+      { name: 'get_input_map_actions', description: 'Get all registered InputMap action names.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'action_has_event', description: 'Check if an InputMap action has a key event.', inputSchema: { type: 'object', properties: { actionName: { type: 'string' } }, required: ['actionName'] } },
+      { name: 'erase_input_action', description: 'Remove an action from InputMap at runtime.', inputSchema: { type: 'object', properties: { actionName: { type: 'string' } }, required: ['actionName'] } },
+      { name: 'action_get_deadzone', description: 'Get deadzone value of an InputMap action.', inputSchema: { type: 'object', properties: { actionName: { type: 'string' } }, required: ['actionName'] } },
+      { name: 'get_actions_for_key', description: 'Get InputMap actions triggered by a keycode.', inputSchema: { type: 'object', properties: { keycode: { type: 'integer' } }, required: ['keycode'] } },
+      // Batch 70 — Group D: String / text manipulation
+      { name: 'gdscript_string_format', description: 'Run string formatting in Godot (% operator).', inputSchema: { type: 'object', properties: { template: { type: 'string' }, values: { type: 'array' } }, required: ['template', 'values'] } },
+      { name: 'json_stringify_in_godot', description: 'Serialize a value to JSON string in Godot.', inputSchema: { type: 'object', properties: { data: {} }, required: ['data'] } },
+      { name: 'json_parse_in_godot', description: 'Parse a JSON string to a Godot value.', inputSchema: { type: 'object', properties: { jsonString: { type: 'string' } }, required: ['jsonString'] } },
+      { name: 'evaluate_gdscript_expression', description: 'Evaluate a math expression string in Godot.', inputSchema: { type: 'object', properties: { expression: { type: 'string' } }, required: ['expression'] } },
+      { name: 'get_string_length', description: 'Get length and byte count of a string in Godot.', inputSchema: { type: 'object', properties: { text: { type: 'string' } }, required: ['text'] } },
+      // Batch 70 — Group E: GDScript templates
+      { name: 'write_top_down_shooter_script', description: 'Write a top-down shooter player script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, speed: { type: 'number' }, bulletScene: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_platformer_player_script', description: 'Write a full platformer player controller.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, speed: { type: 'number' }, jumpForce: { type: 'number' }, gravity: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_enemy_state_machine_script', description: 'Write an AI enemy with state machine.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_resource_class_script', description: 'Write a custom Resource class script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, className: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_singleton_with_events_script', description: 'Write an event bus singleton Autoload.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_data_persistence_script', description: 'Write a JSON-based data persistence system.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, saveFile: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_camera_shake_3d_script', description: 'Write a 3D camera shake effect script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, maxOffset: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_explosion_script', description: 'Write an explosion area damage script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, radius: { type: 'number' }, damage: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_ragdoll_setup_script', description: 'Write a ragdoll physics setup helper script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_climbing_system_script', description: 'Write a ledge climbing/wall-grab script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_grappling_hook_script', description: 'Write a grappling hook mechanic script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, maxLength: { type: 'number' }, speed: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_swimming_controller_script', description: 'Write an underwater swimming controller.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, swimSpeed: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
       ],
     }));
 
@@ -21581,6 +21620,79 @@ class GodotServer {
           return await this.handleWriteMatch3BoardScript(request.params.arguments);
         case 'write_tower_defense_base_script':
           return await this.handleWriteTowerDefenseBaseScript(request.params.arguments);
+        // Batch 70 — Group A: Time / Date runtime tools
+        case 'get_unix_time':
+          return await this.handleGetUnixTime(request.params.arguments);
+        case 'get_datetime_dict':
+          return await this.handleGetDatetimeDict(request.params.arguments);
+        case 'get_ticks_msec':
+          return await this.handleGetTicksMsec(request.params.arguments);
+        case 'get_ticks_usec':
+          return await this.handleGetTicksUsec(request.params.arguments);
+        case 'unix_time_to_datetime':
+          return await this.handleUnixTimeToDatetime(request.params.arguments);
+        case 'datetime_to_unix_time':
+          return await this.handleDatetimeToUnixTime(request.params.arguments);
+        // Batch 70 — Group B: Crypto / hashing tools
+        case 'hash_string_sha256':
+          return await this.handleHashStringSha256(request.params.arguments);
+        case 'hash_string_md5':
+          return await this.handleHashStringMd5(request.params.arguments);
+        case 'generate_uuid_v4':
+          return await this.handleGenerateUuidV4(request.params.arguments);
+        case 'base64_encode':
+          return await this.handleBase64Encode(request.params.arguments);
+        case 'base64_decode':
+          return await this.handleBase64Decode(request.params.arguments);
+        case 'get_random_int':
+          return await this.handleGetRandomInt(request.params.arguments);
+        // Batch 70 — Group C: InputMap runtime tools
+        case 'get_input_map_actions':
+          return await this.handleGetInputMapActions(request.params.arguments);
+        case 'action_has_event':
+          return await this.handleActionHasEvent(request.params.arguments);
+        case 'erase_input_action':
+          return await this.handleEraseInputAction(request.params.arguments);
+        case 'action_get_deadzone':
+          return await this.handleActionGetDeadzone(request.params.arguments);
+        case 'get_actions_for_key':
+          return await this.handleGetActionsForKey(request.params.arguments);
+        // Batch 70 — Group D: String / text manipulation
+        case 'gdscript_string_format':
+          return await this.handleGdscriptStringFormat(request.params.arguments);
+        case 'json_stringify_in_godot':
+          return await this.handleJsonStringifyInGodot(request.params.arguments);
+        case 'json_parse_in_godot':
+          return await this.handleJsonParseInGodot(request.params.arguments);
+        case 'evaluate_gdscript_expression':
+          return await this.handleEvaluateGdscriptExpression(request.params.arguments);
+        case 'get_string_length':
+          return await this.handleGetStringLength(request.params.arguments);
+        // Batch 70 — Group E: GDScript templates
+        case 'write_top_down_shooter_script':
+          return await this.handleWriteTopDownShooterScript(request.params.arguments);
+        case 'write_platformer_player_script':
+          return await this.handleWritePlatformerPlayerScript(request.params.arguments);
+        case 'write_enemy_state_machine_script':
+          return await this.handleWriteEnemyStateMachineScript(request.params.arguments);
+        case 'write_resource_class_script':
+          return await this.handleWriteResourceClassScript(request.params.arguments);
+        case 'write_singleton_with_events_script':
+          return await this.handleWriteSingletonWithEventsScript(request.params.arguments);
+        case 'write_data_persistence_script':
+          return await this.handleWriteDataPersistenceScript(request.params.arguments);
+        case 'write_camera_shake_3d_script':
+          return await this.handleWriteCameraShake3dScript(request.params.arguments);
+        case 'write_explosion_script':
+          return await this.handleWriteExplosionScript(request.params.arguments);
+        case 'write_ragdoll_setup_script':
+          return await this.handleWriteRagdollSetupScript(request.params.arguments);
+        case 'write_climbing_system_script':
+          return await this.handleWriteClimbingSystemScript(request.params.arguments);
+        case 'write_grappling_hook_script':
+          return await this.handleWriteGrapplingHookScript(request.params.arguments);
+        case 'write_swimming_controller_script':
+          return await this.handleWriteSwimmingControllerScript(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -42730,6 +42842,741 @@ func _fire() -> void:
       if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  // ── Batch 70 — Group A: Time / Date runtime tools ───────────────────────────
+
+  private async handleGetUnixTime(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_unix_time', args, _a => ({}));
+  }
+
+  private async handleGetDatetimeDict(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_datetime_dict', args, _a => ({}));
+  }
+
+  private async handleGetTicksMsec(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_ticks_msec', args, _a => ({}));
+  }
+
+  private async handleGetTicksUsec(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_ticks_usec', args, _a => ({}));
+  }
+
+  private async handleUnixTimeToDatetime(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('unix_time_to_datetime', args, a => ({ unix_time: a.unixTime ?? 0 }));
+  }
+
+  private async handleDatetimeToUnixTime(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('datetime_to_unix_time', args, a => ({
+      year: a.year ?? 2024,
+      month: a.month ?? 1,
+      day: a.day ?? 1,
+      hour: a.hour ?? 0,
+      minute: a.minute ?? 0,
+      second: a.second ?? 0,
+    }));
+  }
+
+  // ── Batch 70 — Group B: Crypto / hashing tools ───────────────────────────────
+
+  private async handleHashStringSha256(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('hash_string_sha256', args, a => ({ text: a.text ?? '' }));
+  }
+
+  private async handleHashStringMd5(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('hash_string_md5', args, a => ({ text: a.text ?? '' }));
+  }
+
+  private async handleGenerateUuidV4(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('generate_uuid_v4', args, _a => ({}));
+  }
+
+  private async handleBase64Encode(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('base64_encode', args, a => ({ text: a.text ?? '' }));
+  }
+
+  private async handleBase64Decode(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('base64_decode', args, a => ({ encoded: a.encoded ?? '' }));
+  }
+
+  private async handleGetRandomInt(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_random_int', args, a => ({ min: a.min ?? 0, max: a.max ?? 100 }));
+  }
+
+  // ── Batch 70 — Group C: InputMap runtime tools ───────────────────────────────
+
+  private async handleGetInputMapActions(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_input_map_actions', args, _a => ({}));
+  }
+
+  private async handleActionHasEvent(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('action_has_event', args, a => ({ action_name: a.actionName ?? '' }));
+  }
+
+  private async handleEraseInputAction(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('erase_input_action', args, a => ({ action_name: a.actionName ?? '' }));
+  }
+
+  private async handleActionGetDeadzone(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('action_get_deadzone', args, a => ({ action_name: a.actionName ?? '' }));
+  }
+
+  private async handleGetActionsForKey(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_actions_for_key', args, a => ({ keycode: a.keycode ?? 32 }));
+  }
+
+  // ── Batch 70 — Group D: String / text manipulation ───────────────────────────
+
+  private async handleGdscriptStringFormat(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('gdscript_string_format', args, a => ({ template: a.template ?? '', values: a.values ?? [] }));
+  }
+
+  private async handleJsonStringifyInGodot(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('json_stringify_in_godot', args, a => ({ data: a.data ?? {} }));
+  }
+
+  private async handleJsonParseInGodot(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('json_parse_in_godot', args, a => ({ json_string: a.jsonString ?? '{}' }));
+  }
+
+  private async handleEvaluateGdscriptExpression(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('evaluate_gdscript_expression', args, a => ({ expression: a.expression ?? '1 + 1' }));
+  }
+
+  private async handleGetStringLength(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_string_length', args, a => ({ text: a.text ?? '' }));
+  }
+
+  // ── Batch 70 — Group E: GDScript templates ────────────────────────────────────
+
+  private async handleWriteTopDownShooterScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const speed = args.speed ?? 150;
+      const bulletScene = args.bulletScene ?? 'res://scenes/bullet.tscn';
+      const content = `extends CharacterBody2D
+
+signal player_died
+
+@export var speed: float = ${speed}
+@export var bullet_scene: PackedScene = preload("${bulletScene}")
+
+var health: int = 100
+
+func _physics_process(delta: float) -> void:
+\tvar dir := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+\tvelocity = dir * speed
+\tmove_and_slide()
+\t_look_at_mouse()
+\tif Input.is_action_just_pressed("ui_accept"):
+\t\t_shoot()
+
+func _look_at_mouse() -> void:
+\tlook_at(get_global_mouse_position())
+
+func _shoot() -> void:
+\tif bullet_scene == null:
+\t\treturn
+\tvar b := bullet_scene.instantiate() as Node2D
+\tget_parent().add_child(b)
+\tb.global_position = global_position
+\tb.rotation = rotation
+
+func take_damage(amount: int) -> void:
+\thealth -= amount
+\tif health <= 0:
+\t\temit_signal("player_died")
+\t\tqueue_free()
+`;
+      const projectPath: string = args.projectPath ?? '';
+      const scriptPath: string = args.scriptPath ?? '';
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWritePlatformerPlayerScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const speed = args.speed ?? 200;
+      const jumpForce = args.jumpForce ?? 400;
+      const gravity = args.gravity ?? 980;
+      const content = `extends CharacterBody2D
+
+signal jumped
+signal landed
+
+@export var speed: float = ${speed}
+@export var jump_force: float = ${jumpForce}
+@export var gravity: float = ${gravity}
+
+var _was_on_floor: bool = false
+
+func _physics_process(delta: float) -> void:
+\tif not is_on_floor():
+\t\tvelocity.y += gravity * delta
+\tif Input.is_action_just_pressed("ui_up") and is_on_floor():
+\t\tvelocity.y = -jump_force
+\t\temit_signal("jumped")
+\tvar h := Input.get_axis("ui_left", "ui_right")
+\tvelocity.x = h * speed
+\tvar on_floor_now := is_on_floor()
+\tif on_floor_now and not _was_on_floor:
+\t\temit_signal("landed")
+\t_was_on_floor = on_floor_now
+\tmove_and_slide()
+`;
+      const projectPath: string = args.projectPath ?? '';
+      const scriptPath: string = args.scriptPath ?? '';
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteEnemyStateMachineScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const content = `extends CharacterBody2D
+
+signal state_changed(new_state)
+
+enum State { IDLE, PATROL, CHASE, ATTACK, DEAD }
+
+@export var speed: float = 80.0
+@export var attack_range: float = 50.0
+@export var detection_range: float = 200.0
+
+var current_state: State = State.IDLE
+var target: Node2D = null
+
+func _ready() -> void:
+\t_enter_state(State.IDLE)
+
+func _physics_process(delta: float) -> void:
+\tmatch current_state:
+\t\tState.IDLE:
+\t\t\t_state_idle(delta)
+\t\tState.PATROL:
+\t\t\t_state_patrol(delta)
+\t\tState.CHASE:
+\t\t\t_state_chase(delta)
+\t\tState.ATTACK:
+\t\t\t_state_attack(delta)
+
+func _enter_state(new_state: State) -> void:
+\tcurrent_state = new_state
+\temit_signal("state_changed", new_state)
+
+func _state_idle(_delta: float) -> void:
+\tif target and global_position.distance_to(target.global_position) < detection_range:
+\t\t_enter_state(State.CHASE)
+
+func _state_patrol(_delta: float) -> void:
+\tpass  # implement waypoint logic here
+
+func _state_chase(delta: float) -> void:
+\tif target == null:
+\t\t_enter_state(State.IDLE)
+\t\treturn
+\tvar dir := (target.global_position - global_position).normalized()
+\tvelocity = dir * speed
+\tmove_and_slide()
+\tif global_position.distance_to(target.global_position) <= attack_range:
+\t\t_enter_state(State.ATTACK)
+
+func _state_attack(_delta: float) -> void:
+\t# deal damage then return to chase
+\t_enter_state(State.CHASE)
+
+func die() -> void:
+\t_enter_state(State.DEAD)
+\tqueue_free()
+`;
+      const projectPath: string = args.projectPath ?? '';
+      const scriptPath: string = args.scriptPath ?? '';
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteResourceClassScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const className = args.className ?? 'GameResource';
+      const content = `extends Resource
+class_name ${className}
+
+@export var display_name: String = ""
+@export var description: String = ""
+@export var icon: Texture2D
+@export var value: int = 0
+@export var tags: Array[String] = []
+
+func is_tagged(tag: String) -> bool:
+\treturn tag in tags
+
+func add_tag(tag: String) -> void:
+\tif not is_tagged(tag):
+\t\ttags.append(tag)
+
+func remove_tag(tag: String) -> void:
+\ttags.erase(tag)
+
+func to_dict() -> Dictionary:
+\treturn {
+\t\t"display_name": display_name,
+\t\t"description": description,
+\t\t"value": value,
+\t\t"tags": tags,
+\t}
+`;
+      const projectPath: string = args.projectPath ?? '';
+      const scriptPath: string = args.scriptPath ?? '';
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteSingletonWithEventsScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const content = `extends Node
+# EventBus — add this as an Autoload named "EventBus"
+
+signal game_started
+signal game_paused(paused: bool)
+signal game_over(score: int)
+signal player_died
+signal player_scored(points: int)
+signal level_loaded(level_name: String)
+signal item_collected(item_name: String)
+signal enemy_killed(enemy_name: String)
+signal ui_requested(panel_name: String)
+
+func emit_game_started() -> void:
+\temit_signal("game_started")
+
+func emit_game_paused(paused: bool) -> void:
+\temit_signal("game_paused", paused)
+
+func emit_game_over(score: int) -> void:
+\temit_signal("game_over", score)
+
+func emit_player_died() -> void:
+\temit_signal("player_died")
+
+func emit_player_scored(points: int) -> void:
+\temit_signal("player_scored", points)
+
+func emit_level_loaded(level_name: String) -> void:
+\temit_signal("level_loaded", level_name)
+
+func emit_item_collected(item_name: String) -> void:
+\temit_signal("item_collected", item_name)
+
+func emit_enemy_killed(enemy_name: String) -> void:
+\temit_signal("enemy_killed", enemy_name)
+
+func emit_ui_requested(panel_name: String) -> void:
+\temit_signal("ui_requested", panel_name)
+`;
+      const projectPath: string = args.projectPath ?? '';
+      const scriptPath: string = args.scriptPath ?? '';
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteDataPersistenceScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const saveFile = args.saveFile ?? 'user://save.json';
+      const content = `extends Node
+# Data persistence — add as Autoload named "SaveManager"
+
+const SAVE_PATH: String = "${saveFile}"
+
+var data: Dictionary = {}
+
+func save() -> void:
+\tvar file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+\tif file == null:
+\t\tpush_error("Cannot open save file for writing: " + SAVE_PATH)
+\t\treturn
+\tfile.store_string(JSON.stringify(data, "\\t"))
+\tfile.close()
+
+func load_data() -> bool:
+\tif not FileAccess.file_exists(SAVE_PATH):
+\t\treturn false
+\tvar file := FileAccess.open(SAVE_PATH, FileAccess.READ)
+\tif file == null:
+\t\treturn false
+\tvar text := file.get_as_text()
+\tfile.close()
+\tvar parsed := JSON.parse_string(text)
+\tif parsed == null:
+\t\treturn false
+\tdata = parsed
+\treturn true
+
+func set_value(key: String, value) -> void:
+\tdata[key] = value
+
+func get_value(key: String, default_val = null):
+\treturn data.get(key, default_val)
+
+func delete_key(key: String) -> void:
+\tdata.erase(key)
+
+func clear_all() -> void:
+\tdata.clear()
+`;
+      const projectPath: string = args.projectPath ?? '';
+      const scriptPath: string = args.scriptPath ?? '';
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteCameraShake3dScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const maxOffset = args.maxOffset ?? 0.1;
+      const content = `extends Camera3D
+
+@export var max_offset: float = ${maxOffset}
+@export var decay: float = 0.8
+
+var trauma: float = 0.0
+
+func _process(delta: float) -> void:
+\tif trauma > 0.0:
+\t\ttrauma = max(trauma - decay * delta, 0.0)
+\t\t_apply_shake()
+\telse:
+\t\th_offset = 0.0
+\t\tv_offset = 0.0
+
+func _apply_shake() -> void:
+\tvar amount := pow(trauma, 2.0)
+\th_offset = max_offset * amount * randf_range(-1.0, 1.0)
+\tv_offset = max_offset * amount * randf_range(-1.0, 1.0)
+
+func add_trauma(amount: float) -> void:
+\ttrauma = min(trauma + amount, 1.0)
+
+func shake(amount: float = 0.5) -> void:
+\tadd_trauma(amount)
+`;
+      const projectPath: string = args.projectPath ?? '';
+      const scriptPath: string = args.scriptPath ?? '';
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteExplosionScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const radius = args.radius ?? 100;
+      const damage = args.damage ?? 50;
+      const content = `extends Area2D
+
+signal exploded(position: Vector2)
+
+@export var explosion_radius: float = ${radius}
+@export var explosion_damage: int = ${damage}
+@export var lifetime: float = 0.3
+
+func _ready() -> void:
+\tvar shape := CircleShape2D.new()
+\tshape.radius = explosion_radius
+\tvar col := CollisionShape2D.new()
+\tcol.shape = shape
+\tadd_child(col)
+\tbody_entered.connect(_on_body_entered)
+\temit_signal("exploded", global_position)
+\tget_tree().create_timer(lifetime).timeout.connect(queue_free)
+
+func _on_body_entered(body: Node) -> void:
+\tif body.has_method("take_damage"):
+\t\tbody.take_damage(explosion_damage)
+
+func explode_at(pos: Vector2) -> void:
+\tglobal_position = pos
+`;
+      const projectPath: string = args.projectPath ?? '';
+      const scriptPath: string = args.scriptPath ?? '';
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteRagdollSetupScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const content = `extends Node3D
+# Attach to a skeleton-based character to enable ragdoll on death.
+
+@export var skeleton_path: NodePath = NodePath("Skeleton3D")
+@export var ragdoll_force: float = 10.0
+
+var _ragdoll_active: bool = false
+var _bodies: Array[PhysicalBone3D] = []
+
+func _ready() -> void:
+\tvar skel := get_node_or_null(skeleton_path) as Skeleton3D
+\tif skel:
+\t\tfor child in skel.get_children():
+\t\t\tif child is PhysicalBone3D:
+\t\t\t\t_bodies.append(child)
+
+func activate_ragdoll(impulse: Vector3 = Vector3.ZERO) -> void:
+\tif _ragdoll_active:
+\t\treturn
+\t_ragdoll_active = true
+\tvar skel := get_node_or_null(skeleton_path) as Skeleton3D
+\tif skel:
+\t\tskel.physical_bones_start_simulation()
+\tfor body in _bodies:
+\t\tbody.apply_central_impulse(impulse + Vector3(
+\t\t\trandf_range(-1, 1), randf_range(0, 1), randf_range(-1, 1)
+\t\t) * ragdoll_force)
+
+func deactivate_ragdoll() -> void:
+\t_ragdoll_active = false
+\tvar skel := get_node_or_null(skeleton_path) as Skeleton3D
+\tif skel:
+\t\tskel.physical_bones_stop_simulation()
+`;
+      const projectPath: string = args.projectPath ?? '';
+      const scriptPath: string = args.scriptPath ?? '';
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteClimbingSystemScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const content = `extends CharacterBody2D
+
+signal started_climbing
+signal stopped_climbing
+
+@export var climb_speed: float = 120.0
+@export var wall_detection_distance: float = 8.0
+
+var is_climbing: bool = false
+var _wall_normal: Vector2 = Vector2.ZERO
+
+func _physics_process(delta: float) -> void:
+\tif is_climbing:
+\t\t_climbing_state(delta)
+\telse:
+\t\t_normal_state(delta)
+
+func _normal_state(_delta: float) -> void:
+\t# Detect wall to grab
+\tvar space := get_world_2d().direct_space_state
+\tvar query := PhysicsRayQueryParameters2D.create(
+\t\tglobal_position,
+\t\tglobal_position + Vector2(wall_detection_distance, 0),
+\t\tcollision_mask
+\t)
+\tvar result := space.intersect_ray(query)
+\tif result and Input.is_action_pressed("ui_right"):
+\t\t_start_climb(result.normal)
+\t\treturn
+\tquery.to = global_position + Vector2(-wall_detection_distance, 0)
+\tresult = space.intersect_ray(query)
+\tif result and Input.is_action_pressed("ui_left"):
+\t\t_start_climb(result.normal)
+
+func _climbing_state(delta: float) -> void:
+\tvar v := Input.get_axis("ui_up", "ui_down")
+\tvelocity = Vector2(0, v * climb_speed)
+\tmove_and_slide()
+\tif Input.is_action_just_pressed("ui_accept"):
+\t\t_stop_climb()
+
+func _start_climb(normal: Vector2) -> void:
+\tis_climbing = true
+\t_wall_normal = normal
+\temit_signal("started_climbing")
+
+func _stop_climb() -> void:
+\tis_climbing = false
+\temit_signal("stopped_climbing")
+`;
+      const projectPath: string = args.projectPath ?? '';
+      const scriptPath: string = args.scriptPath ?? '';
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteGrapplingHookScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const maxLength = args.maxLength ?? 300;
+      const speed = args.speed ?? 400;
+      const content = `extends CharacterBody2D
+
+signal hooked(point: Vector2)
+signal released
+
+@export var max_length: float = ${maxLength}
+@export var pull_speed: float = ${speed}
+@export var gravity: float = 980.0
+
+var is_hooked: bool = false
+var hook_point: Vector2 = Vector2.ZERO
+var _rope_length: float = 0.0
+
+func _physics_process(delta: float) -> void:
+\tif not is_hooked:
+\t\tvelocity.y += gravity * delta
+\t\tmove_and_slide()
+\telse:
+\t\t_apply_grapple(delta)
+\tif Input.is_action_just_pressed("ui_accept"):
+\t\t_try_shoot()
+\tif Input.is_action_just_released("ui_accept"):
+\t\trelease()
+
+func _try_shoot() -> void:
+\tvar target := get_global_mouse_position()
+\tvar dist := global_position.distance_to(target)
+\tif dist > max_length:
+\t\treturn
+\thook_point = target
+\t_rope_length = dist
+\tis_hooked = true
+\temit_signal("hooked", hook_point)
+
+func _apply_grapple(delta: float) -> void:
+\tvar dir := (hook_point - global_position).normalized()
+\tvelocity = dir * pull_speed
+\tmove_and_slide()
+\tif global_position.distance_to(hook_point) < 10.0:
+\t\tvelocity = Vector2.ZERO
+
+func release() -> void:
+\tis_hooked = false
+\temit_signal("released")
+`;
+      const projectPath: string = args.projectPath ?? '';
+      const scriptPath: string = args.scriptPath ?? '';
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteSwimmingControllerScript(args: any) {
+    args = normalizeParameters(args || {});
+    try {
+      const swimSpeed = args.swimSpeed ?? 80;
+      const content = `extends CharacterBody2D
+
+signal entered_water
+signal exited_water
+
+@export var swim_speed: float = ${swimSpeed}
+@export var water_gravity: float = 50.0
+@export var air_gravity: float = 980.0
+@export var bob_amplitude: float = 2.0
+@export var bob_frequency: float = 2.0
+
+var in_water: bool = false
+var _time: float = 0.0
+
+func _physics_process(delta: float) -> void:
+\t_time += delta
+\tvar grav := water_gravity if in_water else air_gravity
+\tif not is_on_floor():
+\t\tvelocity.y += grav * delta
+\tif in_water:
+\t\tvar dir := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+\t\tvelocity = dir * swim_speed
+\t\tvelocity.y += sin(_time * bob_frequency) * bob_amplitude
+\telse:
+\t\tvar h := Input.get_axis("ui_left", "ui_right")
+\t\tvelocity.x = h * swim_speed
+\tmove_and_slide()
+
+func enter_water() -> void:
+\tin_water = true
+\temit_signal("entered_water")
+
+func exit_water() -> void:
+\tin_water = false
+\temit_signal("exited_water")
+`;
+      const projectPath: string = args.projectPath ?? '';
+      const scriptPath: string = args.scriptPath ?? '';
+      const absPath = require('path').join(projectPath, scriptPath);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
   }
 

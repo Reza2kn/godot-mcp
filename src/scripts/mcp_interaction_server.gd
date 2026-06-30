@@ -2025,6 +2025,52 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_scene_instanced_count(params)
 		"get_animation_player_animations":
 			_cmd_get_animation_player_animations(params)
+		"get_unix_time":
+			_cmd_get_unix_time(params)
+		"get_datetime_dict":
+			_cmd_get_datetime_dict(params)
+		"get_ticks_msec":
+			_cmd_get_ticks_msec(params)
+		"get_ticks_usec":
+			_cmd_get_ticks_usec(params)
+		"unix_time_to_datetime":
+			_cmd_unix_time_to_datetime(params)
+		"datetime_to_unix_time":
+			_cmd_datetime_to_unix_time(params)
+		"hash_string_sha256":
+			_cmd_hash_string_sha256(params)
+		"hash_string_md5":
+			_cmd_hash_string_md5(params)
+		"generate_uuid_v4":
+			_cmd_generate_uuid_v4(params)
+		"base64_encode":
+			_cmd_base64_encode(params)
+		"base64_decode":
+			_cmd_base64_decode(params)
+		"get_random_int":
+			_cmd_get_random_int(params)
+		"get_input_map_actions":
+			_cmd_get_input_map_actions(params)
+		"action_has_event":
+			_cmd_action_has_event(params)
+		"add_input_action":
+			_cmd_add_input_action(params)
+		"erase_input_action":
+			_cmd_erase_input_action(params)
+		"action_get_deadzone":
+			_cmd_action_get_deadzone(params)
+		"get_actions_for_key":
+			_cmd_get_actions_for_key(params)
+		"gdscript_string_format":
+			_cmd_gdscript_string_format(params)
+		"json_stringify_in_godot":
+			_cmd_json_stringify_in_godot(params)
+		"json_parse_in_godot":
+			_cmd_json_parse_in_godot(params)
+		"evaluate_gdscript_expression":
+			_cmd_evaluate_gdscript_expression(params)
+		"get_string_length":
+			_cmd_get_string_length(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -16580,6 +16626,187 @@ func _cmd_get_animation_player_animations(params: Dictionary) -> void:
 		return
 	var anim_list = (node as AnimationPlayer).get_animation_list()
 	_send_response({"success": true, "animations": Array(anim_list), "count": anim_list.size()})
+
+
+func _cmd_get_unix_time(params: Dictionary) -> void:
+	_send_response({"success": true, "unix_time": Time.get_unix_time_from_system()})
+
+
+func _cmd_get_datetime_dict(params: Dictionary) -> void:
+	var dt = Time.get_datetime_dict_from_system()
+	_send_response({"success": true, "datetime": dt})
+
+
+func _cmd_get_ticks_msec(params: Dictionary) -> void:
+	_send_response({"success": true, "ticks_msec": Time.get_ticks_msec()})
+
+
+func _cmd_get_ticks_usec(params: Dictionary) -> void:
+	_send_response({"success": true, "ticks_usec": Time.get_ticks_usec()})
+
+
+func _cmd_unix_time_to_datetime(params: Dictionary) -> void:
+	var unix_time: float = params.get("unix_time", 0.0)
+	var dt = Time.get_datetime_dict_from_unix_time(int(unix_time))
+	_send_response({"success": true, "datetime": dt})
+
+
+func _cmd_datetime_to_unix_time(params: Dictionary) -> void:
+	var dt = {
+		"year": params.get("year", 2024),
+		"month": params.get("month", 1),
+		"day": params.get("day", 1),
+		"hour": params.get("hour", 0),
+		"minute": params.get("minute", 0),
+		"second": params.get("second", 0)
+	}
+	var unix_time = Time.get_unix_time_from_datetime_dict(dt)
+	_send_response({"success": true, "unix_time": unix_time})
+
+
+func _cmd_hash_string_sha256(params: Dictionary) -> void:
+	var text: String = params.get("text", "")
+	var ctx = HashingContext.new()
+	ctx.start(HashingContext.HASH_SHA256)
+	ctx.update(text.to_utf8_buffer())
+	var result = ctx.finish()
+	_send_response({"success": true, "sha256": result.hex_encode(), "input_length": text.length()})
+
+
+func _cmd_hash_string_md5(params: Dictionary) -> void:
+	var text: String = params.get("text", "")
+	var ctx = HashingContext.new()
+	ctx.start(HashingContext.HASH_MD5)
+	ctx.update(text.to_utf8_buffer())
+	var result = ctx.finish()
+	_send_response({"success": true, "md5": result.hex_encode(), "input_length": text.length()})
+
+
+func _cmd_generate_uuid_v4(params: Dictionary) -> void:
+	var b = PackedByteArray()
+	b.resize(16)
+	for i in range(16):
+		b[i] = randi() % 256
+	b[6] = (b[6] & 0x0f) | 0x40
+	b[8] = (b[8] & 0x3f) | 0x80
+	var hex = b.hex_encode()
+	var uuid = "%s-%s-%s-%s-%s" % [hex.substr(0,8), hex.substr(8,4), hex.substr(12,4), hex.substr(16,4), hex.substr(20,12)]
+	_send_response({"success": true, "uuid": uuid})
+
+
+func _cmd_base64_encode(params: Dictionary) -> void:
+	var text: String = params.get("text", "")
+	var encoded = Marshalls.utf8_to_base64(text)
+	_send_response({"success": true, "encoded": encoded})
+
+
+func _cmd_base64_decode(params: Dictionary) -> void:
+	var encoded: String = params.get("encoded", "")
+	var decoded = Marshalls.base64_to_utf8(encoded)
+	_send_response({"success": true, "decoded": decoded})
+
+
+func _cmd_get_random_int(params: Dictionary) -> void:
+	var min_val: int = params.get("min", 0)
+	var max_val: int = params.get("max", 100)
+	var result = randi_range(min_val, max_val)
+	_send_response({"success": true, "value": result, "min": min_val, "max": max_val})
+
+
+func _cmd_get_input_map_actions(params: Dictionary) -> void:
+	var actions = InputMap.get_actions()
+	_send_response({"success": true, "actions": Array(actions), "count": actions.size()})
+
+
+func _cmd_action_has_event(params: Dictionary) -> void:
+	var action_name: String = params.get("action_name", "")
+	if not InputMap.has_action(action_name):
+		_send_response({"error": "Action not found: " + action_name})
+		return
+	var events = InputMap.action_get_events(action_name)
+	_send_response({"success": true, "action_name": action_name, "event_count": events.size(), "has_events": events.size() > 0})
+
+
+func _cmd_add_input_action(params: Dictionary) -> void:
+	var action_name: String = params.get("action_name", "")
+	var deadzone: float = params.get("deadzone", 0.5)
+	if action_name.is_empty():
+		_send_response({"error": "action_name is required"})
+		return
+	if InputMap.has_action(action_name):
+		_send_response({"success": true, "note": "Action already exists", "action_name": action_name})
+		return
+	InputMap.add_action(action_name, deadzone)
+	_send_response({"success": true, "added": action_name, "deadzone": deadzone})
+
+
+func _cmd_erase_input_action(params: Dictionary) -> void:
+	var action_name: String = params.get("action_name", "")
+	if not InputMap.has_action(action_name):
+		_send_response({"error": "Action not found: " + action_name})
+		return
+	InputMap.erase_action(action_name)
+	_send_response({"success": true, "erased": action_name})
+
+
+func _cmd_action_get_deadzone(params: Dictionary) -> void:
+	var action_name: String = params.get("action_name", "")
+	if not InputMap.has_action(action_name):
+		_send_response({"error": "Action not found: " + action_name})
+		return
+	_send_response({"success": true, "action_name": action_name, "deadzone": InputMap.action_get_deadzone(action_name)})
+
+
+func _cmd_get_actions_for_key(params: Dictionary) -> void:
+	var keycode: int = params.get("keycode", 32)
+	var result = []
+	for action in InputMap.get_actions():
+		for event in InputMap.action_get_events(action):
+			if event is InputEventKey and event.keycode == keycode:
+				result.append(str(action))
+				break
+	_send_response({"success": true, "keycode": keycode, "actions": result, "count": result.size()})
+
+
+func _cmd_gdscript_string_format(params: Dictionary) -> void:
+	var template: String = params.get("template", "")
+	var values = params.get("values", [])
+	var result = template % values
+	_send_response({"success": true, "result": result})
+
+
+func _cmd_json_stringify_in_godot(params: Dictionary) -> void:
+	var data = params.get("data", {})
+	var result = JSON.stringify(data)
+	_send_response({"success": true, "json": result, "length": result.length()})
+
+
+func _cmd_json_parse_in_godot(params: Dictionary) -> void:
+	var json_string: String = params.get("json_string", "{}")
+	var result = JSON.parse_string(json_string)
+	if result == null:
+		_send_response({"error": "Failed to parse JSON"})
+		return
+	_send_response({"success": true, "data": result})
+
+
+func _cmd_evaluate_gdscript_expression(params: Dictionary) -> void:
+	var expression_str: String = params.get("expression", "1 + 1")
+	var expr = Expression.new()
+	var err = expr.parse(expression_str)
+	if err != OK:
+		_send_response({"error": "Parse error: " + expr.get_error_text()})
+		return
+	var result = expr.execute([], null, true)
+	if expr.has_execute_failed():
+		_send_response({"error": "Execution failed"})
+		return
+	_send_response({"success": true, "expression": expression_str, "result": result})
+
+
+func _cmd_get_string_length(params: Dictionary) -> void:
+	var text: String = params.get("text", "")
+	_send_response({"success": true, "length": text.length(), "byte_count": text.to_utf8_buffer().size()})
 
 
 func _exit_tree() -> void:
