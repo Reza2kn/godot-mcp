@@ -18717,8 +18717,6 @@ class GodotServer {
       { name: 'write_tooltip_system_script', description: 'Write a hover tooltip system script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, showDelay: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_drag_drop_slot_script', description: 'Write a drag-and-drop item slot UI script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
       // Batch 77 — Group K: Extra UI gameCommand tools (compensating for skipped)
-      { name: 'get_theme_color', description: 'Get a Color from a Control theme override.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, colorName: { type: 'string' } }, required: ['nodePath', 'colorName'] } },
-      { name: 'get_theme_font_size', description: 'Get a font size from a Control theme override.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, sizeName: { type: 'string' } }, required: ['nodePath', 'sizeName'] } },
       { name: 'get_control_focus_owner', description: 'Get the currently focused Control in viewport.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
       { name: 'set_control_focus_owner', description: 'Give keyboard focus to a Control node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
       { name: 'get_button_group', description: 'Get the ButtonGroup resource of a Button.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
@@ -18726,7 +18724,6 @@ class GodotServer {
       { name: 'get_scroll_container_scroll', description: 'Get scroll position of a ScrollContainer.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
       { name: 'set_scroll_container_scroll', description: 'Set scroll position of a ScrollContainer.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, scrollH: { type: 'integer' }, scrollV: { type: 'integer' } }, required: ['nodePath', 'scrollH', 'scrollV'] } },
       { name: 'get_nine_patch_rect_info', description: 'Get NinePatchRect patch margins and texture.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
-      { name: 'set_nine_patch_rect_patch_margin', description: 'Set a NinePatchRect margin on one side.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, side: { type: 'integer' }, value: { type: 'integer' } }, required: ['nodePath', 'side', 'value'] } },
       { name: 'godot_start_here', description: 'START HERE: Overview and how to use this MCP server with 1969 tools.', inputSchema: { type: 'object', properties: {} } },
       { name: 'godot_call', description: 'Call any Godot tool by name. Discover names via search_tools first.', inputSchema: { type: 'object', properties: { name: { type: 'string', description: 'Exact tool name (e.g. "set_node_position_2d")' }, args: { type: 'object', description: 'Arguments for the tool (same as calling it directly)' } }, required: ['name'] } },
       { name: 'godot_suggest', description: 'Get tool suggestions for a natural language task description.', inputSchema: { type: 'object', properties: { task: { type: 'string', description: 'What you want to do (e.g. "make a character jump")' } }, required: ['task'] } },
@@ -22567,10 +22564,6 @@ class GodotServer {
         case 'write_drag_drop_slot_script':
           return await this.handleWriteDragDropSlotScript(args);
         // Batch 77 — Group K: Extra UI gameCommand tools
-        case 'get_theme_color':
-          return await this.handleGetThemeColor(args);
-        case 'get_theme_font_size':
-          return await this.handleGetThemeFontSize(args);
         case 'get_control_focus_owner':
           return await this.handleGetControlFocusOwner(args);
         case 'set_control_focus_owner':
@@ -22585,8 +22578,6 @@ class GodotServer {
           return await this.handleSetScrollContainerScroll(args);
         case 'get_nine_patch_rect_info':
           return await this.handleGetNinePatchRectInfo(args);
-        case 'set_nine_patch_rect_patch_margin':
-          return await this.handleSetNinePatchRectPatchMargin(args);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(args);
         case 'godot_start_here':
@@ -48783,16 +48774,6 @@ func _get_drag_data(_pos: Vector2) -> Variant:
 
   // ── Batch 77 — Group K: Extra UI gameCommand handlers ──────────────────────
 
-  private async handleGetThemeColor(args: any) {
-    args = normalizeParameters(args || {});
-    return this.gameCommand('get_theme_color', args, a => ({ node_path: a.nodePath ?? '', color_name: a.colorName ?? '' }));
-  }
-
-  private async handleGetThemeFontSize(args: any) {
-    args = normalizeParameters(args || {});
-    return this.gameCommand('get_theme_font_size', args, a => ({ node_path: a.nodePath ?? '', size_name: a.sizeName ?? '' }));
-  }
-
   private async handleGetControlFocusOwner(args: any) {
     args = normalizeParameters(args || {});
     return this.gameCommand('get_control_focus_owner', args, a => ({ node_path: a.nodePath ?? '' }));
@@ -48826,11 +48807,6 @@ func _get_drag_data(_pos: Vector2) -> Variant:
   private async handleGetNinePatchRectInfo(args: any) {
     args = normalizeParameters(args || {});
     return this.gameCommand('get_nine_patch_rect_info', args, a => ({ node_path: a.nodePath ?? '' }));
-  }
-
-  private async handleSetNinePatchRectPatchMargin(args: any) {
-    args = normalizeParameters(args || {});
-    return this.gameCommand('set_nine_patch_rect_patch_margin', args, a => ({ node_path: a.nodePath ?? '', side: a.side ?? 0, value: a.value ?? 0 }));
   }
 
   private async handleGodotStartHere(_args: any) {
