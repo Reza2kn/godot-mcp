@@ -861,6 +861,44 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_children_count(params)
 		"find_node_by_name":
 			_cmd_find_node_by_name(params)
+		"get_scene_tree_snapshot":
+			_cmd_get_scene_tree_snapshot(params)
+		"get_node_at_position_2d":
+			_cmd_get_node_at_position_2d(params)
+		"raycast_3d":
+			_cmd_raycast_3d(params)
+		"overlap_sphere_3d":
+			_cmd_overlap_sphere_3d(params)
+		"get_physics_bodies_in_area":
+			_cmd_get_physics_bodies_in_area(params)
+		"set_linear_velocity":
+			_cmd_set_linear_velocity(params)
+		"set_angular_velocity":
+			_cmd_set_angular_velocity(params)
+		"get_distance_3d":
+			_cmd_get_distance_3d(params)
+		"move_toward_3d":
+			_cmd_move_toward_3d(params)
+		"get_navigation_path_3d":
+			_cmd_get_navigation_path_3d(params)
+		"get_resource_usage":
+			_cmd_get_resource_usage(params)
+		"force_garbage_collect":
+			_cmd_force_garbage_collect(params)
+		"set_physics_fps":
+			_cmd_set_physics_fps(params)
+		"get_node_count_in_tree":
+			_cmd_get_node_count_in_tree(params)
+		"print_to_godot_console":
+			_cmd_print_to_godot_console(params)
+		"get_scene_change_history":
+			_cmd_get_scene_change_history(params)
+		"get_signal_list":
+			_cmd_get_signal_list(params)
+		"wait_for_signal":
+			_cmd_wait_for_signal(params)
+		"get_theme_color":
+			_cmd_get_theme_color(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -8525,6 +8563,208 @@ func _cmd_find_node_by_name(params: Dictionary) -> void:
 		for child in current.get_children():
 			queue.append(child)
 	_send_response({"success": true, "search_name": search_name, "count": found.size(), "paths": found})
+
+func _build_snapshot_node(node: Node, depth: int) -> Dictionary:
+	var d: Dictionary = {"name": node.name, "class": node.get_class(), "path": str(node.get_path())}
+	if depth > 0:
+		var children: Array = []
+		for child in node.get_children():
+			children.append(_build_snapshot_node(child, depth - 1))
+		d["children"] = children
+	return d
+
+func _cmd_get_scene_tree_snapshot(params: Dictionary) -> void:
+	var max_depth: int = params.get("max_depth", 10)
+	_send_response({"success": true, "tree": _build_snapshot_node(get_tree().root, max_depth)})
+
+func _cmd_get_node_at_position_2d(params: Dictionary) -> void:
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var pos = Vector2(x, y)
+	var viewport = get_tree().root
+	var canvas_items = []
+	for child in viewport.get_children():
+		if child is CanvasItem:
+			canvas_items.append({"name": child.name, "class": child.get_class(), "path": str(child.get_path())})
+	_send_response({"success": true, "position": {"x": x, "y": y}, "note": "Top-level canvas items checked", "items": canvas_items})
+
+func _cmd_raycast_3d(params: Dictionary) -> void:
+	var from = Vector3(params.get("from_x", 0.0), params.get("from_y", 0.0), params.get("from_z", 0.0))
+	var to = Vector3(params.get("to_x", 0.0), params.get("to_y", 0.0), params.get("to_z", 0.0))
+	var space_state = get_tree().root.get_world_3d().direct_space_state
+	var query = PhysicsRayQueryParameters3D.create(from, to)
+	var result = space_state.intersect_ray(query)
+	if result.is_empty():
+		_send_response({"success": true, "hit": false})
+	else:
+		_send_response({"success": true, "hit": true, "position": {"x": result["position"].x, "y": result["position"].y, "z": result["position"].z}, "normal": {"x": result["normal"].x, "y": result["normal"].y, "z": result["normal"].z}, "collider": str(result["collider"].get_path()) if result.has("collider") and result["collider"] != null else null})
+
+func _cmd_overlap_sphere_3d(params: Dictionary) -> void:
+	var center = Vector3(params.get("x", 0.0), params.get("y", 0.0), params.get("z", 0.0))
+	var radius: float = params.get("radius", 1.0)
+	var space_state = get_tree().root.get_world_3d().direct_space_state
+	var shape = SphereShape3D.new()
+	shape.radius = radius
+	var query = PhysicsShapeQueryParameters3D.new()
+	query.shape = shape
+	query.transform = Transform3D(Basis(), center)
+	var results = space_state.intersect_shape(query)
+	var bodies: Array = []
+	for r in results:
+		if r.has("collider") and r["collider"] != null:
+			bodies.append(str(r["collider"].get_path()))
+	_send_response({"success": true, "center": {"x": center.x, "y": center.y, "z": center.z}, "radius": radius, "count": bodies.size(), "bodies": bodies})
+
+func _cmd_get_physics_bodies_in_area(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Area3D:
+		_send_response({"error": "Area3D not found: " + node_path})
+		return
+	var area := node as Area3D
+	var bodies: Array = []
+	for body in area.get_overlapping_bodies():
+		bodies.append({"path": str(body.get_path()), "class": body.get_class()})
+	_send_response({"success": true, "count": bodies.size(), "bodies": bodies})
+
+func _cmd_set_linear_velocity(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node is RigidBody3D:
+		(node as RigidBody3D).linear_velocity = Vector3(x, y, z)
+		_send_response({"success": true, "linear_velocity": {"x": x, "y": y, "z": z}})
+	elif node is RigidBody2D:
+		(node as RigidBody2D).linear_velocity = Vector2(x, y)
+		_send_response({"success": true, "linear_velocity": {"x": x, "y": y}})
+	else:
+		_send_response({"error": "Not a RigidBody: " + (node.get_class() if node != null else "null")})
+
+func _cmd_set_angular_velocity(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node is RigidBody3D:
+		(node as RigidBody3D).angular_velocity = Vector3(x, y, z)
+		_send_response({"success": true, "angular_velocity": {"x": x, "y": y, "z": z}})
+	elif node is RigidBody2D:
+		(node as RigidBody2D).angular_velocity = x
+		_send_response({"success": true, "angular_velocity": x})
+	else:
+		_send_response({"error": "Not a RigidBody: " + (node.get_class() if node != null else "null")})
+
+func _cmd_get_distance_3d(params: Dictionary) -> void:
+	var path_a: String = params.get("node_path_a", "")
+	var path_b: String = params.get("node_path_b", "")
+	var a = get_tree().root.get_node_or_null(NodePath(path_a))
+	var b = get_tree().root.get_node_or_null(NodePath(path_b))
+	if a == null or not a is Node3D:
+		_send_response({"error": "Node3D A not found: " + path_a})
+		return
+	if b == null or not b is Node3D:
+		_send_response({"error": "Node3D B not found: " + path_b})
+		return
+	var dist = (a as Node3D).global_position.distance_to((b as Node3D).global_position)
+	_send_response({"success": true, "distance": dist, "node_a": path_a, "node_b": path_b})
+
+func _cmd_move_toward_3d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var target = Vector3(params.get("target_x", 0.0), params.get("target_y", 0.0), params.get("target_z", 0.0))
+	var step: float = params.get("step", 0.1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node3D:
+		_send_response({"error": "Node3D not found: " + node_path})
+		return
+	var n3d := node as Node3D
+	n3d.global_position = n3d.global_position.move_toward(target, step)
+	_send_response({"success": true, "new_position": {"x": n3d.global_position.x, "y": n3d.global_position.y, "z": n3d.global_position.z}})
+
+func _cmd_get_navigation_path_3d(params: Dictionary) -> void:
+	var from = Vector3(params.get("from_x", 0.0), params.get("from_y", 0.0), params.get("from_z", 0.0))
+	var to = Vector3(params.get("to_x", 0.0), params.get("to_y", 0.0), params.get("to_z", 0.0))
+	var path = NavigationServer3D.map_get_path(NavigationServer3D.get_maps()[0] if NavigationServer3D.get_maps().size() > 0 else RID(), from, to, true)
+	var points: Array = []
+	for p in path:
+		points.append({"x": p.x, "y": p.y, "z": p.z})
+	_send_response({"success": true, "point_count": points.size(), "path": points})
+
+func _cmd_get_resource_usage(params: Dictionary) -> void:
+	_send_response({"success": true, "static_memory": Performance.get_monitor(Performance.MEMORY_STATIC), "static_memory_max": Performance.get_monitor(Performance.MEMORY_STATIC_MAX), "message_buffer": Performance.get_monitor(Performance.OBJECT_MESSAGE_BUFFER_SIZE), "object_count": Performance.get_monitor(Performance.OBJECT_COUNT), "resource_count": Performance.get_monitor(Performance.OBJECT_RESOURCE_COUNT), "node_count": Performance.get_monitor(Performance.OBJECT_NODE_COUNT)})
+
+func _cmd_force_garbage_collect(params: Dictionary) -> void:
+	var before = Performance.get_monitor(Performance.OBJECT_COUNT)
+	Engine.get_main_loop().call_deferred("notification", 0)
+	_send_response({"success": true, "objects_before": before})
+
+func _cmd_set_physics_fps(params: Dictionary) -> void:
+	var fps: int = params.get("fps", 60)
+	Engine.physics_ticks_per_second = fps
+	_send_response({"success": true, "physics_ticks_per_second": fps})
+
+func _cmd_get_node_count_in_tree(params: Dictionary) -> void:
+	var count = Performance.get_monitor(Performance.OBJECT_NODE_COUNT)
+	var orphan_count = Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)
+	_send_response({"success": true, "node_count": count, "orphan_count": orphan_count})
+
+func _cmd_print_to_godot_console(params: Dictionary) -> void:
+	var message: String = params.get("message", "")
+	var level: String = params.get("level", "print")
+	match level:
+		"warn": push_warning("[MCP] " + message)
+		"error": push_error("[MCP] " + message)
+		_: print("[MCP] " + message)
+	_send_response({"success": true, "message": message, "level": level})
+
+func _cmd_get_scene_change_history(params: Dictionary) -> void:
+	_send_response({"success": true, "current_scene": str(get_tree().current_scene.get_path()) if get_tree().current_scene != null else null, "note": "Scene change history not tracked by default; use custom autoload to track"})
+
+func _cmd_get_signal_list(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var signals: Array = []
+	for sig in node.get_signal_list():
+		signals.append({"name": sig["name"], "args": sig["args"].size()})
+	_send_response({"success": true, "count": signals.size(), "signals": signals})
+
+func _cmd_wait_for_signal(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var signal_name: String = params.get("signal_name", "")
+	var timeout_ms: int = params.get("timeout_ms", 5000)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if not node.has_signal(signal_name):
+		_send_response({"error": "Signal not found: " + signal_name})
+		return
+	# Non-blocking: register listener, immediately respond with pending status
+	var fired = false
+	var listener = func(): fired = true
+	node.connect(signal_name, listener, CONNECT_ONE_SHOT)
+	_send_response({"success": true, "registered": true, "node_path": node_path, "signal": signal_name, "note": "Listener registered (one-shot). Check connection list to verify when fired."})
+
+func _cmd_get_theme_color(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var color_name: String = params.get("color_name", "")
+	var theme_type: String = params.get("theme_type", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control node not found: " + node_path})
+		return
+	var ctrl := node as Control
+	var color: Color
+	if theme_type.is_empty():
+		color = ctrl.get_theme_color(color_name)
+	else:
+		color = ctrl.get_theme_color(color_name, theme_type)
+	_send_response({"success": true, "color_name": color_name, "color": {"r": color.r, "g": color.g, "b": color.b, "a": color.a}, "html": color.to_html()})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()

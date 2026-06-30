@@ -11356,6 +11356,228 @@ class GodotServer {
           required: ['searchName'],
         },
       },
+      {
+        name: 'get_scene_tree_snapshot',
+        description: 'Get a full JSON snapshot of the running scene tree.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            maxDepth: { type: 'integer', description: 'Max depth of the tree to traverse (default 10).' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'get_node_at_position_2d',
+        description: 'Get the topmost node at a 2D screen position in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            x: { type: 'number', description: '2D screen X coordinate.' },
+            y: { type: 'number', description: '2D screen Y coordinate.' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'raycast_3d',
+        description: 'Perform a 3D physics raycast in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            fromX: { type: 'number', description: 'Ray origin X.' },
+            fromY: { type: 'number', description: 'Ray origin Y.' },
+            fromZ: { type: 'number', description: 'Ray origin Z.' },
+            toX: { type: 'number', description: 'Ray end X.' },
+            toY: { type: 'number', description: 'Ray end Y.' },
+            toZ: { type: 'number', description: 'Ray end Z.' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'overlap_sphere_3d',
+        description: 'Find all bodies in a sphere area in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            x: { type: 'number', description: 'Sphere center X.' },
+            y: { type: 'number', description: 'Sphere center Y.' },
+            z: { type: 'number', description: 'Sphere center Z.' },
+            radius: { type: 'number', description: 'Sphere radius (default 1.0).' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'get_physics_bodies_in_area',
+        description: 'Get overlapping bodies in an Area3D in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Area3D node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_linear_velocity',
+        description: 'Set linear_velocity on a RigidBody in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to RigidBody node.' },
+            x: { type: 'number', description: 'Linear velocity X.' },
+            y: { type: 'number', description: 'Linear velocity Y.' },
+            z: { type: 'number', description: 'Linear velocity Z (default 0).' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_angular_velocity',
+        description: 'Set angular_velocity on a RigidBody in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to RigidBody node.' },
+            x: { type: 'number', description: 'Angular velocity X.' },
+            y: { type: 'number', description: 'Angular velocity Y.' },
+            z: { type: 'number', description: 'Angular velocity Z (default 0).' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_distance_3d',
+        description: 'Get the distance between two Node3D nodes in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePathA: { type: 'string', description: 'Path to the first Node3D.' },
+            nodePathB: { type: 'string', description: 'Path to the second Node3D.' },
+          },
+          required: ['nodePathA', 'nodePathB'],
+        },
+      },
+      {
+        name: 'move_toward_3d',
+        description: 'Move a Node3D toward a target position in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Node3D to move.' },
+            targetX: { type: 'number', description: 'Target X coordinate.' },
+            targetY: { type: 'number', description: 'Target Y coordinate.' },
+            targetZ: { type: 'number', description: 'Target Z coordinate.' },
+            step: { type: 'number', description: 'Step distance per call (default 0.1).' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_navigation_path',
+        description: 'Get a nav path between two 3D points in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            fromX: { type: 'number', description: 'Start X.' },
+            fromY: { type: 'number', description: 'Start Y.' },
+            fromZ: { type: 'number', description: 'Start Z.' },
+            toX: { type: 'number', description: 'End X.' },
+            toY: { type: 'number', description: 'End Y.' },
+            toZ: { type: 'number', description: 'End Z.' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'force_garbage_collect',
+        description: 'Force GDScript garbage collection in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'set_physics_fps',
+        description: 'Set physics ticks per second in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            fps: { type: 'integer', description: 'Physics ticks per second (default 60).' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'get_node_count_in_tree',
+        description: 'Get total node count in the running scene tree.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'print_to_godot_console',
+        description: 'Print a message to the Godot output console in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            message: { type: 'string', description: 'Message to print.' },
+            level: { type: 'string', description: 'Log level: print, warn, or error (default print).' },
+          },
+          required: ['message'],
+        },
+      },
+      {
+        name: 'get_scene_change_history',
+        description: 'Get scene change history from the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'get_signal_list',
+        description: 'Get all signals defined on a node in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'wait_for_signal',
+        description: 'Wait for a signal from a node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the node.' },
+            signalName: { type: 'string', description: 'Name of the signal to wait for.' },
+            timeoutMs: { type: 'integer', description: 'Timeout in milliseconds (default 5000).' },
+          },
+          required: ['nodePath', 'signalName'],
+        },
+      },
+      {
+        name: 'get_editor_theme_color',
+        description: 'Get a theme color from a Control node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Control node.' },
+            colorName: { type: 'string', description: 'Name of the theme color.' },
+            themeType: { type: 'string', description: 'Theme type override (default empty string).' },
+          },
+          required: ['nodePath', 'colorName'],
+        },
+      },
       ],
     }));
 
@@ -12995,6 +13217,42 @@ class GodotServer {
           return await this.handleGetChildrenCount(request.params.arguments);
         case 'find_node_by_name':
           return await this.handleFindNodeByName(request.params.arguments);
+        case 'get_scene_tree_snapshot':
+          return await this.handleGetSceneTreeSnapshot(request.params.arguments);
+        case 'get_node_at_position_2d':
+          return await this.handleGetNodeAtPosition2d(request.params.arguments);
+        case 'raycast_3d':
+          return await this.handleRaycast3d(request.params.arguments);
+        case 'overlap_sphere_3d':
+          return await this.handleOverlapSphere3d(request.params.arguments);
+        case 'get_physics_bodies_in_area':
+          return await this.handleGetPhysicsBodiesInArea(request.params.arguments);
+        case 'set_linear_velocity':
+          return await this.handleSetLinearVelocity(request.params.arguments);
+        case 'set_angular_velocity':
+          return await this.handleSetAngularVelocity(request.params.arguments);
+        case 'get_distance_3d':
+          return await this.handleGetDistance3d(request.params.arguments);
+        case 'move_toward_3d':
+          return await this.handleMoveToward3d(request.params.arguments);
+        case 'get_navigation_path':
+          return await this.handleGetNavigationPath(request.params.arguments);
+        case 'force_garbage_collect':
+          return await this.handleForceGarbageCollect(request.params.arguments);
+        case 'set_physics_fps':
+          return await this.handleSetPhysicsFps(request.params.arguments);
+        case 'get_node_count_in_tree':
+          return await this.handleGetNodeCountInTree(request.params.arguments);
+        case 'print_to_godot_console':
+          return await this.handlePrintToGodotConsole(request.params.arguments);
+        case 'get_scene_change_history':
+          return await this.handleGetSceneChangeHistory(request.params.arguments);
+        case 'get_signal_list':
+          return await this.handleGetSignalList(request.params.arguments);
+        case 'wait_for_signal':
+          return await this.handleWaitForSignal(request.params.arguments);
+        case 'get_editor_theme_color':
+          return await this.handleGetEditorThemeColor(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -23853,6 +24111,102 @@ class GodotServer {
     args = normalizeParameters(args || {});
     if (!args.searchName) return createErrorResponse('searchName is required.');
     return this.gameCommand('find_node_by_name', args, a => ({ search_name: a.searchName, root_path: a.rootPath || '/root' }));
+  }
+
+  private async handleGetSceneTreeSnapshot(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_scene_tree_snapshot', args, a => ({ max_depth: a.maxDepth ?? 10 }));
+  }
+
+  private async handleGetNodeAtPosition2d(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_node_at_position_2d', args, a => ({ x: a.x ?? 0, y: a.y ?? 0 }));
+  }
+
+  private async handleRaycast3d(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('raycast_3d', args, a => ({ from_x: a.fromX ?? 0, from_y: a.fromY ?? 0, from_z: a.fromZ ?? 0, to_x: a.toX ?? 0, to_y: a.toY ?? 0, to_z: a.toZ ?? 0 }));
+  }
+
+  private async handleOverlapSphere3d(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('overlap_sphere_3d', args, a => ({ x: a.x ?? 0, y: a.y ?? 0, z: a.z ?? 0, radius: a.radius ?? 1.0 }));
+  }
+
+  private async handleGetPhysicsBodiesInArea(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_physics_bodies_in_area', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetLinearVelocity(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_linear_velocity', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0, z: a.z ?? 0 }));
+  }
+
+  private async handleSetAngularVelocity(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_angular_velocity', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0, z: a.z ?? 0 }));
+  }
+
+  private async handleGetDistance3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePathA || !args.nodePathB) return createErrorResponse('nodePathA and nodePathB are required.');
+    return this.gameCommand('get_distance_3d', args, a => ({ node_path_a: a.nodePathA, node_path_b: a.nodePathB }));
+  }
+
+  private async handleMoveToward3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('move_toward_3d', args, a => ({ node_path: a.nodePath, target_x: a.targetX ?? 0, target_y: a.targetY ?? 0, target_z: a.targetZ ?? 0, step: a.step ?? 0.1 }));
+  }
+
+  private async handleGetNavigationPath(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_navigation_path_3d', args, a => ({ from_x: a.fromX ?? 0, from_y: a.fromY ?? 0, from_z: a.fromZ ?? 0, to_x: a.toX ?? 0, to_y: a.toY ?? 0, to_z: a.toZ ?? 0 }));
+  }
+
+  private async handleForceGarbageCollect(_args: any) {
+    return this.gameCommand('force_garbage_collect', {}, _a => ({}));
+  }
+
+  private async handleSetPhysicsFps(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_physics_fps', args, a => ({ fps: a.fps ?? 60 }));
+  }
+
+  private async handleGetNodeCountInTree(_args: any) {
+    return this.gameCommand('get_node_count_in_tree', {}, _a => ({}));
+  }
+
+  private async handlePrintToGodotConsole(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.message) return createErrorResponse('message is required.');
+    return this.gameCommand('print_to_godot_console', args, a => ({ message: a.message, level: a.level || 'print' }));
+  }
+
+  private async handleGetSceneChangeHistory(_args: any) {
+    return this.gameCommand('get_scene_change_history', {}, _a => ({}));
+  }
+
+  private async handleGetSignalList(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_signal_list', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleWaitForSignal(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.signalName) return createErrorResponse('nodePath and signalName are required.');
+    return this.gameCommand('wait_for_signal', args, a => ({ node_path: a.nodePath, signal_name: a.signalName, timeout_ms: a.timeoutMs ?? 5000 }));
+  }
+
+  private async handleGetEditorThemeColor(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.colorName) return createErrorResponse('nodePath and colorName are required.');
+    return this.gameCommand('get_theme_color', args, a => ({ node_path: a.nodePath, color_name: a.colorName, theme_type: a.themeType || '' }));
   }
 
 }
