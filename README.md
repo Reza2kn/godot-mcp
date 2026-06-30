@@ -1,5 +1,3 @@
-<img width="2752" height="1536" alt="godot_mcp_header" src="https://github.com/user-attachments/assets/ed7ac605-8fb5-4a5f-adf8-4b6912cbc18c" />
-
 # 🎮 Godot MCP — 1,969 Tools. Full Editor Parity. AI-Native Game Dev.
 
 [![MCP Server](https://badge.mcpx.dev?type=server)](https://modelcontextprotocol.io/introduction)
