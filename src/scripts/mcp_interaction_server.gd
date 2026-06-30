@@ -795,6 +795,26 @@ func _handle_command(json_str: String) -> void:
 			_cmd_set_tab_container_current(params)
 		"get_color_picker_value":
 			_cmd_get_color_picker_value(params)
+		"set_color_picker_color":
+			_cmd_set_color_picker_color(params)
+		"show_popup_menu":
+			_cmd_show_popup_menu(params)
+		"add_popup_menu_item":
+			_cmd_add_popup_menu_item(params)
+		"clear_popup_menu":
+			_cmd_clear_popup_menu(params)
+		"show_dialog":
+			_cmd_show_dialog(params)
+		"hide_node_in_game":
+			_cmd_hide_node_in_game(params)
+		"show_node_in_game":
+			_cmd_show_node_in_game(params)
+		"toggle_node_visibility":
+			_cmd_toggle_node_visibility(params)
+		"get_node_visibility":
+			_cmd_get_node_visibility(params)
+		"duplicate_node_in_game":
+			_cmd_duplicate_node_in_game(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -8054,6 +8074,133 @@ func _cmd_get_color_picker_value(params: Dictionary) -> void:
 	var cp := node as ColorPicker
 	var color = cp.color
 	_send_response({"success": true, "color": {"r": color.r, "g": color.g, "b": color.b, "a": color.a}, "html": color.to_html()})
+
+func _cmd_set_color_picker_color(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var r: float = params.get("r", 1.0)
+	var g: float = params.get("g", 1.0)
+	var b: float = params.get("b", 1.0)
+	var a: float = params.get("a", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is ColorPicker:
+		_send_response({"error": "ColorPicker not found: " + node_path})
+		return
+	(node as ColorPicker).color = Color(r, g, b, a)
+	_send_response({"success": true, "color": {"r": r, "g": g, "b": b, "a": a}})
+
+func _cmd_show_popup_menu(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: int = params.get("x", 0)
+	var y: int = params.get("y", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is PopupMenu:
+		_send_response({"error": "PopupMenu not found: " + node_path})
+		return
+	(node as PopupMenu).popup(Rect2i(x, y, 0, 0))
+	_send_response({"success": true, "position": {"x": x, "y": y}})
+
+func _cmd_add_popup_menu_item(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var label: String = params.get("label", "")
+	var id: int = params.get("id", -1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is PopupMenu:
+		_send_response({"error": "PopupMenu not found: " + node_path})
+		return
+	var pm := node as PopupMenu
+	if id >= 0:
+		pm.add_item(label, id)
+	else:
+		pm.add_item(label)
+	_send_response({"success": true, "label": label, "item_count": pm.item_count})
+
+func _cmd_clear_popup_menu(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is PopupMenu:
+		_send_response({"error": "PopupMenu not found: " + node_path})
+		return
+	(node as PopupMenu).clear()
+	_send_response({"success": true, "cleared": true})
+
+func _cmd_show_dialog(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var title: String = params.get("title", "")
+	var text: String = params.get("text", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AcceptDialog:
+		_send_response({"error": "AcceptDialog (or subclass) not found: " + node_path})
+		return
+	var dlg := node as AcceptDialog
+	if not title.is_empty():
+		dlg.title = title
+	if not text.is_empty():
+		dlg.dialog_text = text
+	dlg.popup_centered()
+	_send_response({"success": true, "title": dlg.title})
+
+func _cmd_hide_node_in_game(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node.has_method("hide"):
+		node.hide()
+		_send_response({"success": true, "visible": false})
+	else:
+		_send_response({"error": "Node does not support hide(): " + node.get_class()})
+
+func _cmd_show_node_in_game(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node.has_method("show"):
+		node.show()
+		_send_response({"success": true, "visible": true})
+	else:
+		_send_response({"error": "Node does not support show(): " + node.get_class()})
+
+func _cmd_toggle_node_visibility(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var visible_val = node.get("visible")
+	if visible_val == null:
+		_send_response({"error": "Node does not have visible property: " + node.get_class()})
+		return
+	node.set("visible", not bool(visible_val))
+	_send_response({"success": true, "visible": not bool(visible_val)})
+
+func _cmd_get_node_visibility(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var visible_val = node.get("visible")
+	if visible_val == null:
+		_send_response({"error": "Node does not have visible property: " + node.get_class()})
+		return
+	_send_response({"success": true, "visible": bool(visible_val), "class": node.get_class()})
+
+func _cmd_duplicate_node_in_game(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var new_name: String = params.get("new_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var dup = node.duplicate()
+	if not new_name.is_empty():
+		dup.name = new_name
+	node.get_parent().add_child(dup)
+	dup.owner = get_tree().root
+	_send_response({"success": true, "original_path": node_path, "duplicate_path": str(dup.get_path()), "name": dup.name})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()

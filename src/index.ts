@@ -10644,6 +10644,267 @@ class GodotServer {
           required: ['nodePath'],
         },
       },
+      {
+        name: 'add_popup_menu_to_scene',
+        description: 'Add a PopupMenu node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Path of the parent node.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_popup_panel_to_scene',
+        description: 'Add a PopupPanel node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Path of the parent node.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_file_dialog_to_scene',
+        description: 'Add a FileDialog node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Path of the parent node.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_confirmation_dialog_to_scene',
+        description: 'Add a ConfirmationDialog node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Path of the parent node.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_accept_dialog_to_scene',
+        description: 'Add an AcceptDialog node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Path of the parent node.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_color_picker_button_to_scene',
+        description: 'Add a ColorPickerButton node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Path of the parent node.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_link_button_to_scene',
+        description: 'Add a LinkButton node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Path of the parent node.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_texture_button_to_scene',
+        description: 'Add a TextureButton node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Path of the parent node.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_texture_progress_bar_to_scene',
+        description: 'Add a TextureProgressBar node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Path of the parent node.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_aspect_ratio_container_to_scene',
+        description: 'Add an AspectRatioContainer node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Path of the parent node.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'set_color_picker_color',
+        description: 'Set the color on a ColorPicker node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the ColorPicker node.' },
+            r: { type: 'number', description: 'Red component (0-1).' },
+            g: { type: 'number', description: 'Green component (0-1).' },
+            b: { type: 'number', description: 'Blue component (0-1).' },
+            a: { type: 'number', description: 'Alpha component (0-1).' },
+          },
+          required: ['nodePath', 'r', 'g', 'b'],
+        },
+      },
+      {
+        name: 'show_popup_menu',
+        description: 'Show a PopupMenu at a position in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the PopupMenu node.' },
+            x: { type: 'integer', description: 'X position to show at.' },
+            y: { type: 'integer', description: 'Y position to show at.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'add_popup_menu_item',
+        description: 'Add an item to a PopupMenu in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the PopupMenu node.' },
+            label: { type: 'string', description: 'Label text for the item.' },
+            id: { type: 'integer', description: 'Optional item ID.' },
+          },
+          required: ['nodePath', 'label'],
+        },
+      },
+      {
+        name: 'clear_popup_menu',
+        description: 'Clear all items from a PopupMenu in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the PopupMenu node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'show_dialog',
+        description: 'Show a dialog node (AcceptDialog/etc.) in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the dialog node.' },
+            title: { type: 'string', description: 'Optional dialog title.' },
+            text: { type: 'string', description: 'Optional dialog text.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'hide_node',
+        description: 'Hide a node (visible=false) in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the node to hide.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'show_node',
+        description: 'Show a node (visible=true) in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the node to show.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'toggle_node_visibility',
+        description: 'Toggle visibility on a node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_node_visibility',
+        description: 'Get the visible state of a node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'duplicate_node_in_game',
+        description: 'Duplicate a node at runtime in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the node to duplicate.' },
+            newName: { type: 'string', description: 'Optional name for the duplicate.' },
+          },
+          required: ['nodePath'],
+        },
+      },
       ],
     }));
 
@@ -12171,6 +12432,46 @@ class GodotServer {
           return await this.handleSetTabContainerCurrent(request.params.arguments);
         case 'get_color_picker_value':
           return await this.handleGetColorPickerValue(request.params.arguments);
+        case 'add_popup_menu_to_scene':
+          return await this.handleAddPopupMenuToScene(request.params.arguments);
+        case 'add_popup_panel_to_scene':
+          return await this.handleAddPopupPanelToScene(request.params.arguments);
+        case 'add_file_dialog_to_scene':
+          return await this.handleAddFileDialogToScene(request.params.arguments);
+        case 'add_confirmation_dialog_to_scene':
+          return await this.handleAddConfirmationDialogToScene(request.params.arguments);
+        case 'add_accept_dialog_to_scene':
+          return await this.handleAddAcceptDialogToScene(request.params.arguments);
+        case 'add_color_picker_button_to_scene':
+          return await this.handleAddColorPickerButtonToScene(request.params.arguments);
+        case 'add_link_button_to_scene':
+          return await this.handleAddLinkButtonToScene(request.params.arguments);
+        case 'add_texture_button_to_scene':
+          return await this.handleAddTextureButtonToScene(request.params.arguments);
+        case 'add_texture_progress_bar_to_scene':
+          return await this.handleAddTextureProgressBarToScene(request.params.arguments);
+        case 'add_aspect_ratio_container_to_scene':
+          return await this.handleAddAspectRatioContainerToScene(request.params.arguments);
+        case 'set_color_picker_color':
+          return await this.handleSetColorPickerColor(request.params.arguments);
+        case 'show_popup_menu':
+          return await this.handleShowPopupMenu(request.params.arguments);
+        case 'add_popup_menu_item':
+          return await this.handleAddPopupMenuItem(request.params.arguments);
+        case 'clear_popup_menu':
+          return await this.handleClearPopupMenu(request.params.arguments);
+        case 'show_dialog':
+          return await this.handleShowDialog(request.params.arguments);
+        case 'hide_node':
+          return await this.handleHideNode(request.params.arguments);
+        case 'show_node':
+          return await this.handleShowNode(request.params.arguments);
+        case 'toggle_node_visibility':
+          return await this.handleToggleNodeVisibility(request.params.arguments);
+        case 'get_node_visibility':
+          return await this.handleGetNodeVisibility(request.params.arguments);
+        case 'duplicate_node_in_game':
+          return await this.handleDuplicateNodeInGame(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -22590,6 +22891,166 @@ class GodotServer {
     args = normalizeParameters(args || {});
     if (!args.nodePath) return createErrorResponse('nodePath is required.');
     return this.gameCommand('get_color_picker_value', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleAddPopupMenuToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'PopupMenu', nodeType: 'PopupMenu', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddPopupPanelToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'PopupPanel', nodeType: 'PopupPanel', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddFileDialogToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'FileDialog', nodeType: 'FileDialog', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddConfirmationDialogToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'ConfirmationDialog', nodeType: 'ConfirmationDialog', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddAcceptDialogToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'AcceptDialog', nodeType: 'AcceptDialog', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddColorPickerButtonToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'ColorPickerButton', nodeType: 'ColorPickerButton', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddLinkButtonToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'LinkButton', nodeType: 'LinkButton', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddTextureButtonToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'TextureButton', nodeType: 'TextureButton', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddTextureProgressBarToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'TextureProgressBar', nodeType: 'TextureProgressBar', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddAspectRatioContainerToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'AspectRatioContainer', nodeType: 'AspectRatioContainer', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleSetColorPickerColor(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_color_picker_color', args, a => ({ node_path: a.nodePath, r: a.r ?? 1, g: a.g ?? 1, b: a.b ?? 1, a: a.a ?? 1 }));
+  }
+
+  private async handleShowPopupMenu(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('show_popup_menu', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0 }));
+  }
+
+  private async handleAddPopupMenuItem(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.label) return createErrorResponse('nodePath and label are required.');
+    return this.gameCommand('add_popup_menu_item', args, a => ({ node_path: a.nodePath, label: a.label, id: a.id ?? -1 }));
+  }
+
+  private async handleClearPopupMenu(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('clear_popup_menu', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleShowDialog(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('show_dialog', args, a => ({ node_path: a.nodePath, title: a.title || '', text: a.text || '' }));
+  }
+
+  private async handleHideNode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('hide_node_in_game', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleShowNode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('show_node_in_game', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleToggleNodeVisibility(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('toggle_node_visibility', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetNodeVisibility(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_visibility', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleDuplicateNodeInGame(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('duplicate_node_in_game', args, a => ({ node_path: a.nodePath, new_name: a.newName || '' }));
   }
 
 }
