@@ -1225,6 +1225,70 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_game_screen_size(params)
 		"get_game_mouse_position":
 			_cmd_get_game_mouse_position(params)
+		"get_node_z_index":
+			_cmd_get_node_z_index(params)
+		"get_node_modulate":
+			_cmd_get_node_modulate(params)
+		"set_node_modulate":
+			_cmd_set_node_modulate(params)
+		"get_node_self_modulate":
+			_cmd_get_node_self_modulate(params)
+		"set_node_self_modulate":
+			_cmd_set_node_self_modulate(params)
+		"get_node_process_mode":
+			_cmd_get_node_process_mode(params)
+		"set_node_process_mode":
+			_cmd_set_node_process_mode(params)
+		"get_node_name":
+			_cmd_get_node_name(params)
+		"set_node_name":
+			_cmd_set_node_name(params)
+		"get_node_child_count":
+			_cmd_get_node_child_count(params)
+		"get_node_child_names":
+			_cmd_get_node_child_names(params)
+		"move_node_child_to_front":
+			_cmd_move_node_child_to_front(params)
+		"move_node_child_to_back":
+			_cmd_move_node_child_to_back(params)
+		"is_node_inside_tree":
+			_cmd_is_node_inside_tree(params)
+		"start_timer":
+			_cmd_start_timer(params)
+		"stop_timer":
+			_cmd_stop_timer(params)
+		"is_timer_stopped":
+			_cmd_is_timer_stopped(params)
+		"get_timer_time_left":
+			_cmd_get_timer_time_left(params)
+		"get_timer_wait_time":
+			_cmd_get_timer_wait_time(params)
+		"set_timer_wait_time":
+			_cmd_set_timer_wait_time(params)
+		"get_timer_one_shot":
+			_cmd_get_timer_one_shot(params)
+		"set_timer_one_shot":
+			_cmd_set_timer_one_shot(params)
+		"get_animation_list":
+			_cmd_get_animation_list(params)
+		"get_current_animation":
+			_cmd_get_current_animation(params)
+		"is_animation_playing":
+			_cmd_is_animation_playing(params)
+		"play_animation_from_position":
+			_cmd_play_animation_from_position(params)
+		"set_animation_blend_time":
+			_cmd_set_animation_blend_time(params)
+		"queue_animation":
+			_cmd_queue_animation(params)
+		"get_performance_monitor":
+			_cmd_get_performance_monitor(params)
+		"get_physics_info":
+			_cmd_get_physics_info(params)
+		"set_max_fps":
+			_cmd_set_max_fps(params)
+		"get_max_fps":
+			_cmd_get_max_fps(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -10829,6 +10893,348 @@ func _cmd_get_game_screen_size(params: Dictionary) -> void:
 func _cmd_get_game_mouse_position(params: Dictionary) -> void:
 	var pos = get_viewport().get_mouse_position()
 	_send_response({"success": true, "x": pos.x, "y": pos.y})
+
+func _cmd_get_node_z_index(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CanvasItem:
+		_send_response({"error": "CanvasItem not found: " + node_path})
+		return
+	_send_response({"success": true, "z_index": (node as CanvasItem).z_index})
+
+
+func _cmd_get_node_modulate(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CanvasItem:
+		_send_response({"error": "CanvasItem not found: " + node_path})
+		return
+	var c: Color = (node as CanvasItem).modulate
+	_send_response({"success": true, "r": c.r, "g": c.g, "b": c.b, "a": c.a, "html": c.to_html()})
+
+
+func _cmd_set_node_modulate(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var r: float = params.get("r", 1.0)
+	var g: float = params.get("g", 1.0)
+	var b: float = params.get("b", 1.0)
+	var a: float = params.get("a", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CanvasItem:
+		_send_response({"error": "CanvasItem not found: " + node_path})
+		return
+	(node as CanvasItem).modulate = Color(r, g, b, a)
+	_send_response({"success": true})
+
+
+func _cmd_get_node_self_modulate(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CanvasItem:
+		_send_response({"error": "CanvasItem not found: " + node_path})
+		return
+	var c: Color = (node as CanvasItem).self_modulate
+	_send_response({"success": true, "r": c.r, "g": c.g, "b": c.b, "a": c.a, "html": c.to_html()})
+
+
+func _cmd_set_node_self_modulate(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var r: float = params.get("r", 1.0)
+	var g: float = params.get("g", 1.0)
+	var b: float = params.get("b", 1.0)
+	var a: float = params.get("a", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CanvasItem:
+		_send_response({"error": "CanvasItem not found: " + node_path})
+		return
+	(node as CanvasItem).self_modulate = Color(r, g, b, a)
+	_send_response({"success": true})
+
+
+func _cmd_get_node_process_mode(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var mode_names = ["inherit", "always", "pausable", "when_paused", "disabled"]
+	var mode_int: int = node.process_mode
+	var mode_str: String = mode_names[mode_int] if mode_int < mode_names.size() else str(mode_int)
+	_send_response({"success": true, "process_mode": mode_str, "process_mode_int": mode_int})
+
+
+func _cmd_set_node_process_mode(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var mode_str: String = params.get("mode", "inherit")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var mode_map = {"inherit": 0, "always": 1, "pausable": 2, "when_paused": 3, "disabled": 4}
+	if not mode_map.has(mode_str):
+		_send_response({"error": "Invalid mode: " + mode_str + ". Use: inherit, always, pausable, when_paused, disabled"})
+		return
+	node.process_mode = mode_map[mode_str]
+	_send_response({"success": true, "process_mode": mode_str})
+
+
+func _cmd_get_node_name(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	_send_response({"success": true, "name": node.name})
+
+
+func _cmd_set_node_name(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var new_name: String = params.get("new_name", "")
+	if new_name.is_empty():
+		_send_response({"error": "new_name is required"})
+		return
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	node.name = new_name
+	_send_response({"success": true, "new_name": node.name})
+
+
+func _cmd_get_node_child_count(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	_send_response({"success": true, "child_count": node.get_child_count()})
+
+
+func _cmd_get_node_child_names(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var names: Array = []
+	for child in node.get_children():
+		names.append({"name": child.name, "class": child.get_class()})
+	_send_response({"success": true, "children": names, "count": names.size()})
+
+
+func _cmd_move_node_child_to_front(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or node.get_parent() == null:
+		_send_response({"error": "Node not found or has no parent: " + node_path})
+		return
+	node.get_parent().move_child(node, node.get_parent().get_child_count() - 1)
+	_send_response({"success": true})
+
+
+func _cmd_move_node_child_to_back(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or node.get_parent() == null:
+		_send_response({"error": "Node not found or has no parent: " + node_path})
+		return
+	node.get_parent().move_child(node, 0)
+	_send_response({"success": true})
+
+
+func _cmd_is_node_inside_tree(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	_send_response({"success": true, "exists": node != null, "node_path": node_path})
+
+
+func _cmd_start_timer(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var wait_time: float = params.get("wait_time", -1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Timer:
+		_send_response({"error": "Timer not found: " + node_path})
+		return
+	var timer := node as Timer
+	if wait_time > 0:
+		timer.wait_time = wait_time
+	timer.start()
+	_send_response({"success": true, "wait_time": timer.wait_time})
+
+
+func _cmd_stop_timer(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Timer:
+		_send_response({"error": "Timer not found: " + node_path})
+		return
+	(node as Timer).stop()
+	_send_response({"success": true})
+
+
+func _cmd_is_timer_stopped(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Timer:
+		_send_response({"error": "Timer not found: " + node_path})
+		return
+	_send_response({"success": true, "stopped": (node as Timer).is_stopped()})
+
+
+func _cmd_get_timer_time_left(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Timer:
+		_send_response({"error": "Timer not found: " + node_path})
+		return
+	_send_response({"success": true, "time_left": (node as Timer).time_left})
+
+
+func _cmd_get_timer_wait_time(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Timer:
+		_send_response({"error": "Timer not found: " + node_path})
+		return
+	_send_response({"success": true, "wait_time": (node as Timer).wait_time})
+
+
+func _cmd_set_timer_wait_time(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var wait_time: float = params.get("wait_time", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Timer:
+		_send_response({"error": "Timer not found: " + node_path})
+		return
+	(node as Timer).wait_time = wait_time
+	_send_response({"success": true, "wait_time": wait_time})
+
+
+func _cmd_get_timer_one_shot(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Timer:
+		_send_response({"error": "Timer not found: " + node_path})
+		return
+	_send_response({"success": true, "one_shot": (node as Timer).one_shot})
+
+
+func _cmd_set_timer_one_shot(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var one_shot: bool = params.get("one_shot", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Timer:
+		_send_response({"error": "Timer not found: " + node_path})
+		return
+	(node as Timer).one_shot = one_shot
+	_send_response({"success": true, "one_shot": one_shot})
+
+
+func _cmd_get_animation_list(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	_send_response({"success": true, "animations": Array((node as AnimationPlayer).get_animation_list())})
+
+
+func _cmd_get_current_animation(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	_send_response({"success": true, "current_animation": (node as AnimationPlayer).current_animation, "is_playing": (node as AnimationPlayer).is_playing()})
+
+
+func _cmd_is_animation_playing(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	_send_response({"success": true, "is_playing": (node as AnimationPlayer).is_playing(), "current_animation": (node as AnimationPlayer).current_animation})
+
+
+func _cmd_play_animation_from_position(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var animation_name: String = params.get("animation_name", "")
+	var from_position: float = params.get("from_position", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	var player := node as AnimationPlayer
+	player.play(animation_name)
+	player.seek(from_position, true)
+	_send_response({"success": true, "animation": animation_name, "from_position": from_position})
+
+
+func _cmd_set_animation_blend_time(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var from_anim: String = params.get("from_anim", "")
+	var to_anim: String = params.get("to_anim", "")
+	var blend_time: float = params.get("blend_time", 0.5)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	(node as AnimationPlayer).set_blend_time(from_anim, to_anim, blend_time)
+	_send_response({"success": true, "from": from_anim, "to": to_anim, "blend_time": blend_time})
+
+
+func _cmd_queue_animation(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var animation_name: String = params.get("animation_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	(node as AnimationPlayer).queue(animation_name)
+	_send_response({"success": true, "queued": animation_name})
+
+
+func _cmd_get_performance_monitor(params: Dictionary) -> void:
+	var monitor_name: String = params.get("monitor", "render/fps")
+	var monitor_map = {
+		"render/fps": Performance.RENDER_FPS,
+		"render/total_draw_calls": Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME,
+		"render/total_objects": Performance.RENDER_TOTAL_OBJECTS_IN_FRAME,
+		"render/total_vertices": Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME,
+		"memory/static": Performance.MEMORY_STATIC,
+		"memory/peak": Performance.MEMORY_STATIC_MAX,
+		"physics/2d/active_objects": Performance.PHYSICS_2D_ACTIVE_OBJECTS,
+		"physics/3d/active_objects": Performance.PHYSICS_3D_ACTIVE_OBJECTS,
+		"object/count": Performance.OBJECT_COUNT,
+		"object/resource_count": Performance.OBJECT_RESOURCE_COUNT,
+	}
+	if not monitor_map.has(monitor_name):
+		_send_response({"error": "Unknown monitor: " + monitor_name, "available": monitor_map.keys()})
+		return
+	var value = Performance.get_monitor(monitor_map[monitor_name])
+	_send_response({"success": true, "monitor": monitor_name, "value": value})
+
+
+func _cmd_get_physics_info(params: Dictionary) -> void:
+	_send_response({
+		"success": true,
+		"active_2d_objects": Performance.get_monitor(Performance.PHYSICS_2D_ACTIVE_OBJECTS),
+		"collision_2d_pairs": Performance.get_monitor(Performance.PHYSICS_2D_COLLISION_PAIRS),
+		"active_3d_objects": Performance.get_monitor(Performance.PHYSICS_3D_ACTIVE_OBJECTS),
+		"collision_3d_pairs": Performance.get_monitor(Performance.PHYSICS_3D_COLLISION_PAIRS),
+	})
+
+
+func _cmd_set_max_fps(params: Dictionary) -> void:
+	var max_fps: int = params.get("max_fps", 60)
+	Engine.max_fps = max_fps
+	_send_response({"success": true, "max_fps": Engine.max_fps})
+
+
+func _cmd_get_max_fps(params: Dictionary) -> void:
+	_send_response({"success": true, "max_fps": Engine.max_fps})
+
 
 func _exit_tree() -> void:
 	_clear_debug_draw()

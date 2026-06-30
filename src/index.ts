@@ -14436,6 +14436,354 @@ class GodotServer {
           description: 'Get current mouse position in the game viewport.',
           inputSchema: { type: 'object', properties: {} },
         },
+        // Batch 47 tool definitions
+        {
+          name: 'get_node_z_index',
+          description: 'Get the Z-index of a CanvasItem node in the game.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_node_modulate',
+          description: 'Get the modulate color (RGBA) of a CanvasItem node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_node_modulate',
+          description: 'Set the modulate color (RGBA) of a CanvasItem node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node' },
+              r: { type: 'number', description: 'Red (0-1)' },
+              g: { type: 'number', description: 'Green (0-1)' },
+              b: { type: 'number', description: 'Blue (0-1)' },
+              a: { type: 'number', description: 'Alpha (0-1)' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_node_self_modulate',
+          description: 'Get self_modulate color of a CanvasItem node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_node_self_modulate',
+          description: 'Set self_modulate color of a CanvasItem node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node' },
+              r: { type: 'number', description: 'Red (0-1)' },
+              g: { type: 'number', description: 'Green (0-1)' },
+              b: { type: 'number', description: 'Blue (0-1)' },
+              a: { type: 'number', description: 'Alpha (0-1)' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_node_process_mode',
+          description: 'Get the process_mode of a Node in the running game.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_node_process_mode',
+          description: 'Set process_mode of a Node (inherit/always/pausable/etc).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node' },
+              mode: { type: 'string', description: 'Mode: inherit/always/pausable/when_paused/disabled' },
+            },
+            required: ['nodePath', 'mode'],
+          },
+        },
+        {
+          name: 'get_node_name',
+          description: 'Get the name of a node in the running game.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_node_child_count',
+          description: 'Get the number of children a node has in the game.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_node_child_names',
+          description: 'Get the names of all children of a node in the game.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'move_node_child_to_front',
+          description: 'Move a child node to the front of its parent draw order.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'move_node_child_to_back',
+          description: 'Move a child node to the back of its parent draw order.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'is_node_inside_tree',
+          description: 'Check if a node path exists in the running game tree.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the node' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'start_timer',
+          description: 'Start a Timer node in the running game.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the Timer node' },
+              waitTime: { type: 'number', description: 'Wait time in seconds (-1 = keep current)' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'stop_timer',
+          description: 'Stop a Timer node in the running game.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the Timer node' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'is_timer_stopped',
+          description: 'Check if a Timer node is stopped.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the Timer node' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_timer_time_left',
+          description: 'Get remaining time on a Timer node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the Timer node' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_timer_wait_time',
+          description: 'Get the wait_time of a Timer node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the Timer node' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_timer_wait_time',
+          description: 'Set the wait_time of a Timer node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the Timer node' },
+              waitTime: { type: 'number', description: 'Wait time in seconds' },
+            },
+            required: ['nodePath', 'waitTime'],
+          },
+        },
+        {
+          name: 'get_timer_one_shot',
+          description: 'Get whether a Timer fires once or repeats.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the Timer node' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_timer_one_shot',
+          description: 'Set whether a Timer fires once (true) or repeats (false).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the Timer node' },
+              oneShot: { type: 'boolean', description: 'True = one shot, false = repeating' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_animation_list',
+          description: 'Get list of all animations in an AnimationPlayer node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the AnimationPlayer node' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_current_animation',
+          description: 'Get name of currently playing animation.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the AnimationPlayer node' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'is_animation_playing',
+          description: 'Check if an AnimationPlayer is currently playing.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the AnimationPlayer node' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'play_animation_from_position',
+          description: 'Play an animation from a specific time position.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the AnimationPlayer node' },
+              animationName: { type: 'string', description: 'Name of the animation' },
+              fromPosition: { type: 'number', description: 'Start position in seconds' },
+            },
+            required: ['nodePath', 'animationName'],
+          },
+        },
+        {
+          name: 'set_animation_blend_time',
+          description: 'Set blend time between animations in AnimationPlayer.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the AnimationPlayer node' },
+              fromAnim: { type: 'string', description: 'Source animation name' },
+              toAnim: { type: 'string', description: 'Target animation name' },
+              blendTime: { type: 'number', description: 'Blend time in seconds' },
+            },
+            required: ['nodePath', 'fromAnim', 'toAnim'],
+          },
+        },
+        {
+          name: 'queue_animation',
+          description: 'Queue an animation to play after current one ends.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string', description: 'Path to the AnimationPlayer node' },
+              animationName: { type: 'string', description: 'Name of the animation to queue' },
+            },
+            required: ['nodePath', 'animationName'],
+          },
+        },
+        {
+          name: 'get_performance_monitor',
+          description: 'Get a performance metric by name (e.g. render/fps).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              monitor: { type: 'string', description: 'Monitor name, e.g. render/fps, memory/static' },
+            },
+            required: ['monitor'],
+          },
+        },
+        {
+          name: 'get_physics_info',
+          description: 'Get physics info: active bodies, collision pairs.',
+          inputSchema: { type: 'object', properties: {} },
+        },
+        {
+          name: 'set_max_fps',
+          description: 'Set the maximum FPS cap for the running game.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              maxFps: { type: 'number', description: 'Maximum FPS cap' },
+            },
+            required: ['maxFps'],
+          },
+        },
+        {
+          name: 'get_max_fps',
+          description: 'Get the current maximum FPS cap.',
+          inputSchema: { type: 'object', properties: {} },
+        },
       ],
     }));
 
@@ -16515,6 +16863,69 @@ class GodotServer {
           return await this.handleGetWorkflow(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
+        // Batch 47 switch cases
+        case 'get_node_z_index':
+          return await this.handleGetNodeZIndex(request.params.arguments);
+        case 'get_node_modulate':
+          return await this.handleGetNodeModulate(request.params.arguments);
+        case 'set_node_modulate':
+          return await this.handleSetNodeModulate(request.params.arguments);
+        case 'get_node_self_modulate':
+          return await this.handleGetNodeSelfModulate(request.params.arguments);
+        case 'set_node_self_modulate':
+          return await this.handleSetNodeSelfModulate(request.params.arguments);
+        case 'get_node_process_mode':
+          return await this.handleGetNodeProcessMode(request.params.arguments);
+        case 'set_node_process_mode':
+          return await this.handleSetNodeProcessMode(request.params.arguments);
+        case 'get_node_name':
+          return await this.handleGetNodeName(request.params.arguments);
+        case 'get_node_child_count':
+          return await this.handleGetNodeChildCount(request.params.arguments);
+        case 'get_node_child_names':
+          return await this.handleGetNodeChildNames(request.params.arguments);
+        case 'move_node_child_to_front':
+          return await this.handleMoveNodeChildToFront(request.params.arguments);
+        case 'move_node_child_to_back':
+          return await this.handleMoveNodeChildToBack(request.params.arguments);
+        case 'is_node_inside_tree':
+          return await this.handleIsNodeInsideTree(request.params.arguments);
+        case 'start_timer':
+          return await this.handleStartTimer(request.params.arguments);
+        case 'stop_timer':
+          return await this.handleStopTimer(request.params.arguments);
+        case 'is_timer_stopped':
+          return await this.handleIsTimerStopped(request.params.arguments);
+        case 'get_timer_time_left':
+          return await this.handleGetTimerTimeLeft(request.params.arguments);
+        case 'get_timer_wait_time':
+          return await this.handleGetTimerWaitTime(request.params.arguments);
+        case 'set_timer_wait_time':
+          return await this.handleSetTimerWaitTime(request.params.arguments);
+        case 'get_timer_one_shot':
+          return await this.handleGetTimerOneShot(request.params.arguments);
+        case 'set_timer_one_shot':
+          return await this.handleSetTimerOneShot(request.params.arguments);
+        case 'get_animation_list':
+          return await this.handleGetAnimationList(request.params.arguments);
+        case 'get_current_animation':
+          return await this.handleGetCurrentAnimation(request.params.arguments);
+        case 'is_animation_playing':
+          return await this.handleIsAnimationPlaying(request.params.arguments);
+        case 'play_animation_from_position':
+          return await this.handlePlayAnimationFromPosition(request.params.arguments);
+        case 'set_animation_blend_time':
+          return await this.handleSetAnimationBlendTime(request.params.arguments);
+        case 'queue_animation':
+          return await this.handleQueueAnimation(request.params.arguments);
+        case 'get_performance_monitor':
+          return await this.handleGetPerformanceMonitor(request.params.arguments);
+        case 'get_physics_info':
+          return await this.handleGetPhysicsInfo(request.params.arguments);
+        case 'set_max_fps':
+          return await this.handleSetMaxFps(request.params.arguments);
+        case 'get_max_fps':
+          return await this.handleGetMaxFps(request.params.arguments);
         // Batch 46 switch cases
         case 'add_animatable_body_2d_to_scene':
           return await this.handleAddAnimatableBody2dToScene(request.params.arguments);
@@ -29429,6 +29840,196 @@ class GodotServer {
 
   private async handleGetGameMousePosition(_args: any) {
     return this.gameCommand('get_game_mouse_position', {}, _a => ({}));
+  }
+
+  // ── Batch 47 handlers ────────────────────────────────────────────────────────
+
+  private async handleGetNodeZIndex(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_z_index', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetNodeModulate(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_modulate', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetNodeModulate(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_node_modulate', args, a => ({ node_path: a.nodePath, r: a.r ?? 1, g: a.g ?? 1, b: a.b ?? 1, a: a.a ?? 1 }));
+  }
+
+  private async handleGetNodeSelfModulate(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_self_modulate', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetNodeSelfModulate(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_node_self_modulate', args, a => ({ node_path: a.nodePath, r: a.r ?? 1, g: a.g ?? 1, b: a.b ?? 1, a: a.a ?? 1 }));
+  }
+
+  private async handleGetNodeProcessMode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_process_mode', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetNodeProcessMode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.mode) return createErrorResponse('mode is required.');
+    return this.gameCommand('set_node_process_mode', args, a => ({ node_path: a.nodePath, mode: a.mode ?? 'inherit' }));
+  }
+
+  private async handleGetNodeName(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_name', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetNodeChildCount(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_child_count', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetNodeChildNames(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_child_names', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleMoveNodeChildToFront(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('move_node_child_to_front', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleMoveNodeChildToBack(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('move_node_child_to_back', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleIsNodeInsideTree(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('is_node_inside_tree', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleStartTimer(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('start_timer', args, a => ({ node_path: a.nodePath, wait_time: a.waitTime ?? -1 }));
+  }
+
+  private async handleStopTimer(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('stop_timer', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleIsTimerStopped(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('is_timer_stopped', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetTimerTimeLeft(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_timer_time_left', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetTimerWaitTime(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_timer_wait_time', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetTimerWaitTime(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (args.waitTime == null) return createErrorResponse('waitTime is required.');
+    return this.gameCommand('set_timer_wait_time', args, a => ({ node_path: a.nodePath, wait_time: a.waitTime ?? 1.0 }));
+  }
+
+  private async handleGetTimerOneShot(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_timer_one_shot', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetTimerOneShot(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_timer_one_shot', args, a => ({ node_path: a.nodePath, one_shot: a.oneShot ?? true }));
+  }
+
+  private async handleGetAnimationList(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_animation_list', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetCurrentAnimation(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_current_animation', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleIsAnimationPlaying(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('is_animation_playing', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handlePlayAnimationFromPosition(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.animationName) return createErrorResponse('animationName is required.');
+    return this.gameCommand('play_animation_from_position', args, a => ({ node_path: a.nodePath, animation_name: a.animationName ?? '', from_position: a.fromPosition ?? 0.0 }));
+  }
+
+  private async handleSetAnimationBlendTime(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.fromAnim) return createErrorResponse('fromAnim is required.');
+    if (!args.toAnim) return createErrorResponse('toAnim is required.');
+    return this.gameCommand('set_animation_blend_time', args, a => ({ node_path: a.nodePath, from_anim: a.fromAnim ?? '', to_anim: a.toAnim ?? '', blend_time: a.blendTime ?? 0.5 }));
+  }
+
+  private async handleQueueAnimation(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.animationName) return createErrorResponse('animationName is required.');
+    return this.gameCommand('queue_animation', args, a => ({ node_path: a.nodePath, animation_name: a.animationName ?? '' }));
+  }
+
+  private async handleGetPerformanceMonitor(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.monitor) return createErrorResponse('monitor is required.');
+    return this.gameCommand('get_performance_monitor', args, a => ({ monitor: a.monitor ?? 'render/fps' }));
+  }
+
+  private async handleGetPhysicsInfo(_args: any) {
+    return this.gameCommand('get_physics_info', {}, _a => ({}));
+  }
+
+  private async handleSetMaxFps(args: any) {
+    args = normalizeParameters(args || {});
+    if (args.maxFps == null) return createErrorResponse('maxFps is required.');
+    return this.gameCommand('set_max_fps', args, a => ({ max_fps: a.maxFps ?? 60 }));
+  }
+
+  private async handleGetMaxFps(_args: any) {
+    return this.gameCommand('get_max_fps', {}, _a => ({}));
   }
 
   // ── Navigation / Discovery helpers ──────────────────────────────────────────
