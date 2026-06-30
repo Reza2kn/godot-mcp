@@ -4469,6 +4469,284 @@ class GodotServer {
           required: ['projectPath', 'scenePath'],
         },
       },
+      // ── Node Metadata (static) ─────────────────────────────────────────
+      {
+        name: 'node_get_meta',
+        description: 'Get metadata entries from a node in a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'Scene path (res:// or absolute)' },
+            nodeName: { type: 'string', description: 'Name of the node' },
+            metaKey: { type: 'string', description: 'Metadata key (omit for all)' },
+          },
+          required: ['projectPath', 'scenePath', 'nodeName'],
+        },
+      },
+      {
+        name: 'node_set_meta',
+        description: 'Set a metadata entry on a node in a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'Scene path (res:// or absolute)' },
+            nodeName: { type: 'string', description: 'Name of the node' },
+            metaKey: { type: 'string', description: 'Metadata key to set' },
+            metaValue: { description: 'Value to set (will be stringified)' },
+          },
+          required: ['projectPath', 'scenePath', 'nodeName', 'metaKey', 'metaValue'],
+        },
+      },
+      {
+        name: 'node_remove_meta',
+        description: 'Remove a metadata entry from a node in a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'Scene path (res:// or absolute)' },
+            nodeName: { type: 'string', description: 'Name of the node' },
+            metaKey: { type: 'string', description: 'Metadata key to remove' },
+          },
+          required: ['projectPath', 'scenePath', 'nodeName', 'metaKey'],
+        },
+      },
+      // ── Node Properties (static) ───────────────────────────────────────
+      {
+        name: 'get_node_property_raw',
+        description: 'Get the raw text value of a property from a .tscn node.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'Scene path (res:// or absolute)' },
+            nodeName: { type: 'string', description: 'Name of the node' },
+            propertyName: { type: 'string', description: 'Property name to read' },
+          },
+          required: ['projectPath', 'scenePath', 'nodeName', 'propertyName'],
+        },
+      },
+      {
+        name: 'set_node_property',
+        description: 'Set any property on a scene node in the .tscn file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'Scene path (res:// or absolute)' },
+            nodeName: { type: 'string', description: 'Name of the node' },
+            propertyName: { type: 'string', description: 'Property name to set' },
+            propertyValue: { type: 'string', description: 'Raw Godot value (e.g. "42", "Vector2(1,2)")' },
+          },
+          required: ['projectPath', 'scenePath', 'nodeName', 'propertyName', 'propertyValue'],
+        },
+      },
+      // ── Project Settings ───────────────────────────────────────────────
+      {
+        name: 'get_project_settings_by_category',
+        description: 'Get all project settings in a specific config section.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            category: { type: 'string', description: 'Section name (e.g. "rendering", "audio")' },
+          },
+          required: ['projectPath', 'category'],
+        },
+      },
+      // ── Script Analysis ────────────────────────────────────────────────
+      {
+        name: 'find_orphan_scripts',
+        description: 'Find GDScript files not attached to any scene node.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      // ── Scene Utilities ────────────────────────────────────────────────
+      {
+        name: 'duplicate_scene',
+        description: 'Copy a scene file to a new path.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            sourcePath: { type: 'string', description: 'Source scene (res:// or absolute)' },
+            destPath: { type: 'string', description: 'Destination path (res:// or absolute)' },
+            overwrite: { type: 'boolean', description: 'Overwrite if destination exists' },
+          },
+          required: ['projectPath', 'sourcePath', 'destPath'],
+        },
+      },
+      // ── Resource Properties ────────────────────────────────────────────
+      {
+        name: 'resource_set_property',
+        description: 'Set a property value in a .tres resource file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            resourcePath: { type: 'string', description: 'Resource path (res:// or absolute)' },
+            propertyName: { type: 'string', description: 'Property name to set' },
+            propertyValue: { type: 'string', description: 'Raw Godot value representation' },
+          },
+          required: ['projectPath', 'resourcePath', 'propertyName', 'propertyValue'],
+        },
+      },
+      // ── Localisation ──────────────────────────────────────────────────
+      {
+        name: 'locale_list_tr_calls',
+        description: 'Scan GDScript files for tr() translation key calls.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      // ── Animation (runtime) ────────────────────────────────────────────
+      {
+        name: 'animation_add_keyframe',
+        description: 'Add a keyframe to an animation track in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to AnimationPlayer node' },
+            animationName: { type: 'string', description: 'Animation name' },
+            trackPath: { type: 'string', description: 'Track path (e.g. Node:property)' },
+            time: { type: 'number', description: 'Time position in seconds' },
+            value: { description: 'Keyframe value' },
+          },
+          required: ['nodePath', 'animationName', 'trackPath', 'time', 'value'],
+        },
+      },
+      {
+        name: 'animation_get_keyframes',
+        description: 'Get all keyframes in an animation track in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to AnimationPlayer node' },
+            animationName: { type: 'string', description: 'Animation name' },
+            trackPath: { type: 'string', description: 'Track path (e.g. Node:property)' },
+          },
+          required: ['nodePath', 'animationName', 'trackPath'],
+        },
+      },
+      {
+        name: 'animation_delete_keyframe',
+        description: 'Delete a keyframe from an animation track by index.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to AnimationPlayer node' },
+            animationName: { type: 'string', description: 'Animation name' },
+            trackPath: { type: 'string', description: 'Track path (e.g. Node:property)' },
+            keyIndex: { type: 'integer', description: 'Zero-based keyframe index' },
+          },
+          required: ['nodePath', 'animationName', 'trackPath', 'keyIndex'],
+        },
+      },
+      // ── UI / Control (runtime) ─────────────────────────────────────────
+      {
+        name: 'label_set_text',
+        description: 'Set the text of a Label or RichTextLabel in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to Label or RichTextLabel node' },
+            text: { type: 'string', description: 'Text to set' },
+          },
+          required: ['nodePath', 'text'],
+        },
+      },
+      {
+        name: 'control_set_size',
+        description: 'Set a Control node size and size flags in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to Control node' },
+            minSizeX: { type: 'number', description: 'Minimum width in pixels' },
+            minSizeY: { type: 'number', description: 'Minimum height in pixels' },
+            customMinimumSize: {
+              type: 'object',
+              description: 'Custom minimum size {x, y}',
+              properties: {
+                x: { type: 'number' },
+                y: { type: 'number' },
+              },
+            },
+          },
+          required: ['nodePath'],
+        },
+      },
+      // ── Scene Tree / Game (runtime) ────────────────────────────────────
+      {
+        name: 'get_tree_structure',
+        description: 'Get the full scene tree as nested JSON from the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            maxDepth: { type: 'number', description: 'Max recursion depth (default 10)' },
+            rootPath: { type: 'string', description: 'Root node path (default "/root")' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'node_get_meta_runtime',
+        description: 'Get metadata from a node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to node in the scene tree' },
+            metaKey: { type: 'string', description: 'Metadata key (omit for all)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'node_set_meta_runtime',
+        description: 'Set metadata on a node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to node in the scene tree' },
+            metaKey: { type: 'string', description: 'Metadata key to set' },
+            metaValue: { description: 'Value to store in the metadata entry' },
+          },
+          required: ['nodePath', 'metaKey', 'metaValue'],
+        },
+      },
+      {
+        name: 'game_quit',
+        description: 'Gracefully quit the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            exitCode: { type: 'number', description: 'Exit code (default 0)' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'set_window_title',
+        description: 'Set the game window title.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            title: { type: 'string', description: 'New window title string' },
+          },
+          required: ['title'],
+        },
+      },
       ],
     }));
 
@@ -5019,6 +5297,56 @@ class GodotServer {
           return await this.handleGetClassApi(request.params.arguments);
         case 'scene_node_count':
           return await this.handleSceneNodeCount(request.params.arguments);
+        // ── Node Metadata (static) ─────────────────────────────────────────
+        case 'node_get_meta':
+          return await this.handleNodeGetMeta(request.params.arguments);
+        case 'node_set_meta':
+          return await this.handleNodeSetMeta(request.params.arguments);
+        case 'node_remove_meta':
+          return await this.handleNodeRemoveMeta(request.params.arguments);
+        // ── Node Properties (static) ───────────────────────────────────────
+        case 'get_node_property_raw':
+          return await this.handleGetNodePropertyRaw(request.params.arguments);
+        case 'set_node_property':
+          return await this.handleSetNodeProperty(request.params.arguments);
+        // ── Project Settings ───────────────────────────────────────────────
+        case 'get_project_settings_by_category':
+          return await this.handleGetProjectSettingsByCategory(request.params.arguments);
+        // ── Script Analysis ────────────────────────────────────────────────
+        case 'find_orphan_scripts':
+          return await this.handleFindOrphanScripts(request.params.arguments);
+        // ── Scene Utilities ────────────────────────────────────────────────
+        case 'duplicate_scene':
+          return await this.handleDuplicateScene(request.params.arguments);
+        // ── Resource Properties ────────────────────────────────────────────
+        case 'resource_set_property':
+          return await this.handleResourceSetProperty(request.params.arguments);
+        // ── Localisation ──────────────────────────────────────────────────
+        case 'locale_list_tr_calls':
+          return await this.handleLocaleListTrCalls(request.params.arguments);
+        // ── Animation (runtime) ────────────────────────────────────────────
+        case 'animation_add_keyframe':
+          return await this.handleAnimationAddKeyframe(request.params.arguments);
+        case 'animation_get_keyframes':
+          return await this.handleAnimationGetKeyframes(request.params.arguments);
+        case 'animation_delete_keyframe':
+          return await this.handleAnimationDeleteKeyframe(request.params.arguments);
+        // ── UI / Control (runtime) ─────────────────────────────────────────
+        case 'label_set_text':
+          return await this.handleLabelSetText(request.params.arguments);
+        case 'control_set_size':
+          return await this.handleControlSetSize(request.params.arguments);
+        // ── Scene Tree / Game (runtime) ────────────────────────────────────
+        case 'get_tree_structure':
+          return await this.handleGetTreeStructure(request.params.arguments);
+        case 'node_get_meta_runtime':
+          return await this.handleNodeGetMetaRuntime(request.params.arguments);
+        case 'node_set_meta_runtime':
+          return await this.handleNodeSetMetaRuntime(request.params.arguments);
+        case 'game_quit':
+          return await this.handleGameQuit(request.params.arguments);
+        case 'set_window_title':
+          return await this.handleSetWindowTitle(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -9989,6 +10317,324 @@ class GodotServer {
     const count = (content.match(/^\[node /gm) || []).length;
     const connectionCount = (content.match(/^\[connection /gm) || []).length;
     return { content: [{ type: 'text', text: JSON.stringify({ nodeCount: count, connectionCount, scenePath: args.scenePath }, null, 2) }] };
+  }
+
+  // ── Node Metadata (static) ───────────────────────────────────────────────
+
+  private async handleNodeGetMeta(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.nodeName)
+      return createErrorResponse('projectPath, scenePath, and nodeName are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const nodes = this.parseTscnNodes(content);
+    const node = nodes.find(n => n.name === args.nodeName);
+    if (!node) return createErrorResponse(`Node "${args.nodeName}" not found.`);
+    const meta: Record<string, string> = {};
+    const metaMatches = node.body.matchAll(/^metadata\/([^\s=]+)\s*=\s*(.+)$/gm);
+    for (const m of metaMatches) meta[m[1]] = m[2].trim();
+    if (args.metaKey) {
+      if (!(args.metaKey in meta)) return createErrorResponse(`Metadata key "${args.metaKey}" not found.`);
+      return { content: [{ type: 'text', text: JSON.stringify({ [args.metaKey]: meta[args.metaKey] }) }] };
+    }
+    return { content: [{ type: 'text', text: JSON.stringify(meta, null, 2) }] };
+  }
+
+  private async handleNodeSetMeta(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.nodeName || args.metaKey === undefined || args.metaValue === undefined)
+      return createErrorResponse('projectPath, scenePath, nodeName, metaKey, and metaValue are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const nodeRegex = new RegExp(`(\\[node name="${args.nodeName}"[^\\]]*\\])([\\s\\S]*?)(?=\\[node |\\[connection |$)`);
+    const match = content.match(nodeRegex);
+    if (!match) return createErrorResponse(`Node "${args.nodeName}" not found.`);
+    let block = match[2];
+    const val = typeof args.metaValue === 'string' ? `"${args.metaValue}"` : String(args.metaValue);
+    const existingRegex = new RegExp(`^metadata\\/${args.metaKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*=.*$`, 'm');
+    if (existingRegex.test(block)) {
+      block = block.replace(existingRegex, `metadata/${args.metaKey} = ${val}`);
+    } else {
+      block = block.trimEnd() + `\nmetadata/${args.metaKey} = ${val}\n`;
+    }
+    const newContent = content.replace(nodeRegex, match[1] + block);
+    try { writeFileSync(absScene, newContent, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: `Set metadata/${args.metaKey} = ${val} on node "${args.nodeName}".` }] };
+  }
+
+  private async handleNodeRemoveMeta(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.nodeName || !args.metaKey)
+      return createErrorResponse('projectPath, scenePath, nodeName, and metaKey are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const existingRegex = new RegExp(`^metadata\\/${args.metaKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*=.*\\n?`, 'm');
+    const newContent = content.replace(existingRegex, '');
+    if (newContent === content) return createErrorResponse(`Metadata key "${args.metaKey}" not found.`);
+    try { writeFileSync(absScene, newContent, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: `Removed metadata/${args.metaKey} from node "${args.nodeName}".` }] };
+  }
+
+  // ── Node Properties (static) ─────────────────────────────────────────────
+
+  private async handleGetNodePropertyRaw(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.nodeName || !args.propertyName)
+      return createErrorResponse('projectPath, scenePath, nodeName, and propertyName are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const nodes = this.parseTscnNodes(content);
+    const node = nodes.find(n => n.name === args.nodeName);
+    if (!node) return createErrorResponse(`Node "${args.nodeName}" not found.`);
+    const propRegex = new RegExp(`^${args.propertyName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*=\\s*(.+)$`, 'm');
+    const match = node.body.match(propRegex);
+    if (!match) return createErrorResponse(`Property "${args.propertyName}" not found on node "${args.nodeName}".`);
+    return { content: [{ type: 'text', text: JSON.stringify({ property: args.propertyName, value: match[1].trim() }) }] };
+  }
+
+  private async handleSetNodeProperty(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.nodeName || !args.propertyName || args.propertyValue === undefined)
+      return createErrorResponse('projectPath, scenePath, nodeName, propertyName, and propertyValue are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const nodeRegex = new RegExp(`(\\[node name="${args.nodeName}"[^\\]]*\\])([\\s\\S]*?)(?=\\[node |\\[connection |$)`);
+    const match = content.match(nodeRegex);
+    if (!match) return createErrorResponse(`Node "${args.nodeName}" not found.`);
+    let block = match[2];
+    const val = String(args.propertyValue);
+    const escapedProp = args.propertyName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const existingRegex = new RegExp(`^${escapedProp}\\s*=.*$`, 'm');
+    if (existingRegex.test(block)) {
+      block = block.replace(existingRegex, `${args.propertyName} = ${val}`);
+    } else {
+      block = block.trimEnd() + `\n${args.propertyName} = ${val}\n`;
+    }
+    const newContent = content.replace(nodeRegex, match[1] + block);
+    try { writeFileSync(absScene, newContent, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: `Set ${args.propertyName} = ${val} on node "${args.nodeName}".` }] };
+  }
+
+  // ── Project Settings ─────────────────────────────────────────────────────
+
+  private async handleGetProjectSettingsByCategory(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.category) return createErrorResponse('projectPath and category are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const projectFile = join(args.projectPath, 'project.godot');
+    if (!existsSync(projectFile)) return createErrorResponse('project.godot not found.');
+    let content: string;
+    try { content = readFileSync(projectFile, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const sectionRegex = new RegExp(`\\[${args.category.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\]([\\s\\S]*?)(?=\\n\\[|$)`);
+    const match = content.match(sectionRegex);
+    if (!match) return { content: [{ type: 'text', text: JSON.stringify({ category: args.category, settings: {} }) }] };
+    const settings: Record<string, string> = {};
+    for (const line of match[1].split('\n')) {
+      const kv = line.trim().match(/^([^=;#]+)\s*=\s*(.*)$/);
+      if (kv) settings[kv[1].trim()] = kv[2].trim();
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ category: args.category, settings }, null, 2) }] };
+  }
+
+  // ── Script Analysis ──────────────────────────────────────────────────────
+
+  private async handleFindOrphanScripts(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const scripts = this.collectFiles(args.projectPath, ['.gd']);
+    const scenes = this.collectFiles(args.projectPath, ['.tscn']);
+    const referencedScripts = new Set<string>();
+    for (const scene of scenes) {
+      let content: string;
+      try { content = readFileSync(scene, 'utf8'); } catch { continue; }
+      const matches = content.matchAll(/script\s*=\s*ExtResource\("[^"]+"\)|path\s*=\s*"([^"]+\.gd)"/g);
+      for (const m of matches) { if (m[1]) referencedScripts.add(m[1]); }
+      const extResMatches = content.matchAll(/\[ext_resource.*?path="([^"]+\.gd)"/g);
+      for (const m of extResMatches) referencedScripts.add(m[1]);
+    }
+    const orphans = scripts.filter(s => {
+      const resPath = 'res://' + s.replace(args.projectPath, '').replace(/^\//, '');
+      return !referencedScripts.has(resPath) && !referencedScripts.has(s);
+    }).map(s => s.replace(args.projectPath + '/', ''));
+    return { content: [{ type: 'text', text: JSON.stringify({ orphanCount: orphans.length, orphans }, null, 2) }] };
+  }
+
+  // ── Scene Utilities ──────────────────────────────────────────────────────
+
+  private async handleDuplicateScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.sourcePath || !args.destPath) return createErrorResponse('projectPath, sourcePath, and destPath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absSrc = this.resolveResPath(args.projectPath, args.sourcePath);
+    const absDest = this.resolveResPath(args.projectPath, args.destPath);
+    if (!existsSync(absSrc)) return createErrorResponse(`Source scene not found: ${absSrc}`);
+    if (existsSync(absDest) && !args.overwrite) return createErrorResponse(`Destination already exists: ${absDest}. Set overwrite=true to replace.`);
+    let content: string;
+    try { content = readFileSync(absSrc, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    try { writeFileSync(absDest, content, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: `Scene duplicated: ${args.sourcePath} → ${args.destPath}` }] };
+  }
+
+  // ── Resource Properties ──────────────────────────────────────────────────
+
+  private async handleResourceSetProperty(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.resourcePath || !args.propertyName || args.propertyValue === undefined)
+      return createErrorResponse('projectPath, resourcePath, propertyName, and propertyValue are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absRes = this.resolveResPath(args.projectPath, args.resourcePath);
+    if (!existsSync(absRes)) return createErrorResponse(`Resource not found: ${absRes}`);
+    let content: string;
+    try { content = readFileSync(absRes, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    if (!content.includes('[resource]') && !content.includes('[gd_resource')) return createErrorResponse('Not a valid .tres file.');
+    const val = String(args.propertyValue);
+    const escapedProp = args.propertyName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const existingRegex = new RegExp(`^${escapedProp}\\s*=.*$`, 'm');
+    let newContent: string;
+    if (existingRegex.test(content)) {
+      newContent = content.replace(existingRegex, `${args.propertyName} = ${val}`);
+    } else {
+      newContent = content.trimEnd() + `\n${args.propertyName} = ${val}\n`;
+    }
+    try { writeFileSync(absRes, newContent, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: `Set ${args.propertyName} = ${val} in ${args.resourcePath}.` }] };
+  }
+
+  // ── Localisation ─────────────────────────────────────────────────────────
+
+  private async handleLocaleListTrCalls(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const scripts = this.collectFiles(args.projectPath, ['.gd']);
+    const keysByFile: Record<string, string[]> = {};
+    const allKeys = new Set<string>();
+    for (const script of scripts) {
+      let content: string;
+      try { content = readFileSync(script, 'utf8'); } catch { continue; }
+      const matches = [...content.matchAll(/\btr\s*\(\s*"([^"]+)"\s*\)/g)];
+      if (matches.length > 0) {
+        const relPath = script.replace(args.projectPath + '/', '');
+        keysByFile[relPath] = matches.map(m => m[1]);
+        for (const m of matches) allKeys.add(m[1]);
+      }
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ totalKeys: allKeys.size, allKeys: [...allKeys].sort(), keysByFile }, null, 2) }] };
+  }
+
+  // ── Animation (runtime) ──────────────────────────────────────────────────
+
+  private async handleAnimationAddKeyframe(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.animationName || !args.trackPath || args.time === undefined || args.value === undefined)
+      return createErrorResponse('nodePath, animationName, trackPath, time, and value are required.');
+    return this.gameCommand('animation_add_keyframe', args, a => ({
+      node_path: a.nodePath,
+      animation_name: a.animationName,
+      track_path: a.trackPath,
+      time: a.time,
+      value: a.value,
+    }));
+  }
+
+  private async handleAnimationGetKeyframes(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.animationName || !args.trackPath)
+      return createErrorResponse('nodePath, animationName, and trackPath are required.');
+    return this.gameCommand('animation_get_keyframes', args, a => ({
+      node_path: a.nodePath,
+      animation_name: a.animationName,
+      track_path: a.trackPath,
+    }));
+  }
+
+  private async handleAnimationDeleteKeyframe(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.animationName || !args.trackPath || args.keyIndex === undefined)
+      return createErrorResponse('nodePath, animationName, trackPath, and keyIndex are required.');
+    return this.gameCommand('animation_delete_keyframe', args, a => ({
+      node_path: a.nodePath,
+      animation_name: a.animationName,
+      track_path: a.trackPath,
+      key_index: a.keyIndex,
+    }));
+  }
+
+  // ── UI / Control (runtime) ───────────────────────────────────────────────
+
+  private async handleLabelSetText(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || args.text === undefined) return createErrorResponse('nodePath and text are required.');
+    return this.gameCommand('label_set_text', args, a => ({
+      node_path: a.nodePath,
+      text: a.text,
+    }));
+  }
+
+  private async handleControlSetSize(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('control_set_size', args, a => ({
+      node_path: a.nodePath,
+      custom_minimum_size: a.customMinimumSize || (a.minSizeX !== undefined ? { x: a.minSizeX, y: a.minSizeY ?? 0 } : undefined),
+    }));
+  }
+
+  // ── Scene Tree / Game (runtime) ──────────────────────────────────────────
+
+  private async handleGetTreeStructure(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_tree_structure', args, a => ({
+      max_depth: a.maxDepth ?? 10,
+      root_path: a.rootPath ?? '/root',
+    }));
+  }
+
+  private async handleNodeGetMetaRuntime(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('node_get_meta', args, a => ({
+      node_path: a.nodePath,
+      meta_key: a.metaKey,
+    }));
+  }
+
+  private async handleNodeSetMetaRuntime(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.metaKey || args.metaValue === undefined)
+      return createErrorResponse('nodePath, metaKey, and metaValue are required.');
+    return this.gameCommand('node_set_meta', args, a => ({
+      node_path: a.nodePath,
+      meta_key: a.metaKey,
+      meta_value: a.metaValue,
+    }));
+  }
+
+  private async handleGameQuit(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('game_quit', args, a => ({ exit_code: a.exitCode ?? 0 }));
+  }
+
+  private async handleSetWindowTitle(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.title) return createErrorResponse('title is required.');
+    return this.gameCommand('set_window_title', args, a => ({ title: a.title }));
   }
 
 }

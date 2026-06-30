@@ -398,6 +398,26 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_performance_counters(params)
 		"batch_set_properties":
 			_cmd_batch_set_properties(params)
+		"animation_add_keyframe":
+			_cmd_animation_add_keyframe(params)
+		"animation_get_keyframes":
+			_cmd_animation_get_keyframes(params)
+		"animation_delete_keyframe":
+			_cmd_animation_delete_keyframe(params)
+		"label_set_text":
+			_cmd_label_set_text(params)
+		"control_set_size":
+			_cmd_control_set_size(params)
+		"get_tree_structure":
+			_cmd_get_tree_structure(params)
+		"node_get_meta":
+			_cmd_node_get_meta(params)
+		"node_set_meta":
+			_cmd_node_set_meta(params)
+		"game_quit":
+			_cmd_game_quit(params)
+		"set_window_title":
+			_cmd_set_window_title(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -4977,6 +4997,207 @@ func _cmd_batch_set_properties(params: Dictionary) -> void:
 		node.set(property, value)
 		results.append({"node_path": node_path, "property": property, "success": true})
 	_send_response({"success": true, "results": results})
+
+
+func _cmd_animation_add_keyframe(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var anim_name: String = params.get("animation_name", "")
+	var track_path: String = params.get("track_path", "")
+	var time: float = params.get("time", 0.0)
+	var value = params.get("value", null)
+	var player = get_tree().root.get_node_or_null(NodePath(node_path))
+	if player == null or not player is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	var anim_player := player as AnimationPlayer
+	if not anim_player.has_animation(anim_name):
+		_send_response({"error": "Animation not found: " + anim_name})
+		return
+	var anim: Animation = anim_player.get_animation(anim_name)
+	var track_idx: int = -1
+	for i in range(anim.get_track_count()):
+		if str(anim.track_get_path(i)) == track_path:
+			track_idx = i
+			break
+	if track_idx < 0:
+		track_idx = anim.add_track(Animation.TYPE_VALUE)
+		anim.track_set_path(track_idx, NodePath(track_path))
+	var key_idx: int = anim.track_insert_key(track_idx, time, value)
+	_send_response({"success": true, "key_index": key_idx, "time": time})
+
+
+func _cmd_animation_get_keyframes(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var anim_name: String = params.get("animation_name", "")
+	var track_path: String = params.get("track_path", "")
+	var player = get_tree().root.get_node_or_null(NodePath(node_path))
+	if player == null or not player is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	var anim_player := player as AnimationPlayer
+	if not anim_player.has_animation(anim_name):
+		_send_response({"error": "Animation not found: " + anim_name})
+		return
+	var anim: Animation = anim_player.get_animation(anim_name)
+	var track_idx: int = -1
+	for i in range(anim.get_track_count()):
+		if str(anim.track_get_path(i)) == track_path:
+			track_idx = i
+			break
+	if track_idx < 0:
+		_send_response({"error": "Track not found: " + track_path})
+		return
+	var keyframes: Array = []
+	for i in range(anim.track_get_key_count(track_idx)):
+		keyframes.append({
+			"index": i,
+			"time": anim.track_get_key_time(track_idx, i),
+			"value": _to_serializable(anim.track_get_key_value(track_idx, i)),
+			"transition": anim.track_get_key_transition(track_idx, i)
+		})
+	_send_response({"success": true, "keyframes": keyframes, "track_path": track_path})
+
+
+func _cmd_animation_delete_keyframe(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var anim_name: String = params.get("animation_name", "")
+	var track_path: String = params.get("track_path", "")
+	var key_index: int = params.get("key_index", -1)
+	var player = get_tree().root.get_node_or_null(NodePath(node_path))
+	if player == null or not player is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	var anim_player := player as AnimationPlayer
+	if not anim_player.has_animation(anim_name):
+		_send_response({"error": "Animation not found: " + anim_name})
+		return
+	var anim: Animation = anim_player.get_animation(anim_name)
+	var track_idx: int = -1
+	for i in range(anim.get_track_count()):
+		if str(anim.track_get_path(i)) == track_path:
+			track_idx = i
+			break
+	if track_idx < 0:
+		_send_response({"error": "Track not found: " + track_path})
+		return
+	if key_index < 0 or key_index >= anim.track_get_key_count(track_idx):
+		_send_response({"error": "Key index out of range: " + str(key_index)})
+		return
+	anim.track_remove_key(track_idx, key_index)
+	_send_response({"success": true, "deleted_key_index": key_index})
+
+
+func _cmd_label_set_text(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var text: String = params.get("text", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is Label:
+		(node as Label).text = text
+		_send_response({"success": true, "node_path": node_path, "text": text})
+	elif node is RichTextLabel:
+		(node as RichTextLabel).text = text
+		_send_response({"success": true, "node_path": node_path, "text": text})
+	elif node is Button:
+		(node as Button).text = text
+		_send_response({"success": true, "node_path": node_path, "text": text})
+	elif node is LineEdit:
+		(node as LineEdit).text = text
+		_send_response({"success": true, "node_path": node_path, "text": text})
+	else:
+		_send_response({"error": "Node is not a text node: " + node.get_class()})
+
+
+func _cmd_control_set_size(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control node not found: " + node_path})
+		return
+	var ctrl := node as Control
+	var changed: Array = []
+	if params.has("custom_minimum_size"):
+		var cms = params.get("custom_minimum_size")
+		ctrl.custom_minimum_size = Vector2(cms.get("x", 0), cms.get("y", 0))
+		changed.append("custom_minimum_size")
+	if params.has("size"):
+		var s = params.get("size")
+		ctrl.size = Vector2(s.get("x", ctrl.size.x), s.get("y", ctrl.size.y))
+		changed.append("size")
+	_send_response({"success": true, "changed": changed, "node_path": node_path})
+
+
+func _cmd_get_tree_structure(params: Dictionary) -> void:
+	var max_depth: int = params.get("max_depth", 10)
+	var root_path: String = params.get("root_path", "/root")
+	var root_node = get_tree().root.get_node_or_null(NodePath(root_path))
+	if root_node == null:
+		_send_response({"error": "Root node not found: " + root_path})
+		return
+	_send_response({"success": true, "tree": _node_to_dict(root_node, 0, max_depth)})
+
+func _node_to_dict(node: Node, depth: int, max_depth: int) -> Dictionary:
+	var result: Dictionary = {
+		"name": node.name,
+		"class": node.get_class(),
+		"path": str(node.get_path()),
+		"children": []
+	}
+	if node.get_script() != null:
+		result["script"] = node.get_script().resource_path
+	if depth < max_depth:
+		for child in node.get_children():
+			result["children"].append(_node_to_dict(child, depth + 1, max_depth))
+	return result
+
+
+func _cmd_node_get_meta(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var meta_key: String = params.get("meta_key", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if meta_key.is_empty():
+		var meta: Dictionary = {}
+		for key in node.get_meta_list():
+			meta[key] = _to_serializable(node.get_meta(key))
+		_send_response({"success": true, "meta": meta})
+	else:
+		if not node.has_meta(meta_key):
+			_send_response({"error": "Meta key not found: " + meta_key})
+			return
+		_send_response({"success": true, "key": meta_key, "value": _to_serializable(node.get_meta(meta_key))})
+
+
+func _cmd_node_set_meta(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var meta_key: String = params.get("meta_key", "")
+	var meta_value = params.get("meta_value", null)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if meta_key.is_empty():
+		_send_response({"error": "meta_key is required"})
+		return
+	node.set_meta(meta_key, meta_value)
+	_send_response({"success": true, "key": meta_key, "value": _to_serializable(meta_value)})
+
+
+func _cmd_game_quit(params: Dictionary) -> void:
+	var exit_code: int = params.get("exit_code", 0)
+	_send_response({"success": true, "message": "Quitting game with exit code " + str(exit_code)})
+	await get_tree().process_frame
+	get_tree().quit(exit_code)
+
+
+func _cmd_set_window_title(params: Dictionary) -> void:
+	var title: String = params.get("title", "")
+	DisplayServer.window_set_title(title)
+	_send_response({"success": true, "title": title})
 
 
 func _exit_tree() -> void:
