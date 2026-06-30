@@ -2261,6 +2261,44 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_gdscript_class_hierarchy(params)
 		"get_script_exported_properties":
 			_cmd_get_script_exported_properties(params)
+		"get_texture_2d_size":
+			_cmd_get_texture_2d_size(params)
+		"get_image_info":
+			_cmd_get_image_info(params)
+		"set_texture_rect_stretch_mode":
+			_cmd_set_texture_rect_stretch_mode(params)
+		"get_atlas_texture_info":
+			_cmd_get_atlas_texture_info(params)
+		"create_viewport_texture":
+			_cmd_create_viewport_texture(params)
+		"get_texture_flags":
+			_cmd_get_texture_flags(params)
+		"get_sub_viewport_info":
+			_cmd_get_sub_viewport_info(params)
+		"get_viewport_texture_rid":
+			_cmd_get_viewport_texture_rid(params)
+		"set_viewport_clear_mode":
+			_cmd_set_viewport_clear_mode(params)
+		"get_viewport_canvas_transform":
+			_cmd_get_viewport_canvas_transform(params)
+		"get_label_3d_info":
+			_cmd_get_label_3d_info(params)
+		"set_label_3d_text":
+			_cmd_set_label_3d_text(params)
+		"set_label_3d_font_size":
+			_cmd_set_label_3d_font_size(params)
+		"set_label_3d_billboard":
+			_cmd_set_label_3d_billboard(params)
+		"get_text_mesh_info":
+			_cmd_get_text_mesh_info(params)
+		"get_soft_body_3d_info":
+			_cmd_get_soft_body_3d_info(params)
+		"set_soft_body_3d_simulation_precision":
+			_cmd_set_soft_body_3d_simulation_precision(params)
+		"pin_soft_body_3d_point":
+			_cmd_pin_soft_body_3d_point(params)
+		"unpin_soft_body_3d_point":
+			_cmd_unpin_soft_body_3d_point(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -17980,6 +18018,231 @@ func _cmd_get_gdscript_class_hierarchy(params: Dictionary) -> void:
 
 func _cmd_get_script_exported_properties(params: Dictionary) -> void:
 	_send_response({"success": true, "note": "Script exported properties require headless mode", "params": params})
+
+
+func _cmd_get_texture_2d_size(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var property_name: String = params.get("property_name", "texture")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var texture = node.get(property_name)
+	if texture == null or not texture is Texture2D:
+		_send_response({"error": "Texture2D not found at property: " + property_name})
+		return
+	_send_response({"success": true, "width": texture.get_width(), "height": texture.get_height()})
+
+
+func _cmd_get_image_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var property_name: String = params.get("property_name", "texture")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var texture = node.get(property_name)
+	if texture == null or not texture is Texture2D:
+		_send_response({"error": "Texture2D not found at property: " + property_name})
+		return
+	var img = texture.get_image()
+	if img == null:
+		_send_response({"error": "Could not get Image from texture"})
+		return
+	_send_response({"success": true, "width": img.get_width(), "height": img.get_height(), "format": img.get_format(), "has_mipmaps": img.has_mipmaps()})
+
+
+func _cmd_set_texture_rect_stretch_mode(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var stretch_mode: int = params.get("stretch_mode", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TextureRect:
+		_send_response({"error": "TextureRect not found: " + node_path})
+		return
+	(node as TextureRect).stretch_mode = stretch_mode
+	_send_response({"success": true, "stretch_mode": stretch_mode})
+
+
+func _cmd_get_atlas_texture_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var property_name: String = params.get("property_name", "texture")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var texture = node.get(property_name)
+	if texture == null or not texture is AtlasTexture:
+		_send_response({"error": "AtlasTexture not found at property: " + property_name})
+		return
+	var at = texture as AtlasTexture
+	var r = at.region
+	_send_response({"success": true, "region": {"x": r.position.x, "y": r.position.y, "w": r.size.x, "h": r.size.y}, "filter_clip": at.filter_clip})
+
+
+func _cmd_create_viewport_texture(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is SubViewport:
+		_send_response({"error": "SubViewport not found: " + node_path})
+		return
+	var vp = node as SubViewport
+	var tex = vp.get_texture()
+	_send_response({"success": true, "has_texture": tex != null, "size": {"x": vp.size.x, "y": vp.size.y}})
+
+
+func _cmd_get_texture_flags(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var property_name: String = params.get("property_name", "texture")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var texture = node.get(property_name)
+	if texture == null or not texture is Texture2D:
+		_send_response({"error": "Texture2D not found at property: " + property_name})
+		return
+	_send_response({"success": true, "width": texture.get_width(), "height": texture.get_height(), "class": texture.get_class()})
+
+
+func _cmd_get_sub_viewport_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is SubViewport:
+		_send_response({"error": "SubViewport not found: " + node_path})
+		return
+	var vp = node as SubViewport
+	_send_response({"success": true, "size": {"x": vp.size.x, "y": vp.size.y}, "render_target_update_mode": vp.render_target_update_mode, "transparent_bg": vp.transparent_bg, "use_hdr_2d": vp.use_hdr_2d})
+
+
+func _cmd_get_viewport_texture_rid(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Viewport:
+		_send_response({"error": "Viewport not found: " + node_path})
+		return
+	var tex = (node as Viewport).get_texture()
+	_send_response({"success": true, "has_texture": tex != null, "size": {"x": (node as Viewport).size.x, "y": (node as Viewport).size.y}})
+
+
+func _cmd_set_viewport_clear_mode(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var clear_mode: int = params.get("clear_mode", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is SubViewport:
+		_send_response({"error": "SubViewport not found: " + node_path})
+		return
+	(node as SubViewport).render_target_clear_mode = clear_mode
+	_send_response({"success": true, "clear_mode": clear_mode})
+
+
+func _cmd_get_viewport_canvas_transform(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Viewport:
+		_send_response({"error": "Viewport not found: " + node_path})
+		return
+	var t = (node as Viewport).canvas_transform
+	_send_response({"success": true, "origin": {"x": t.origin.x, "y": t.origin.y}, "scale": {"x": t.get_scale().x, "y": t.get_scale().y}})
+
+
+func _cmd_get_label_3d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Label3D:
+		_send_response({"error": "Label3D not found: " + node_path})
+		return
+	var lbl = node as Label3D
+	_send_response({"success": true, "text": lbl.text, "font_size": lbl.font_size, "billboard": lbl.billboard, "modulate": {"r": lbl.modulate.r, "g": lbl.modulate.g, "b": lbl.modulate.b, "a": lbl.modulate.a}})
+
+
+func _cmd_set_label_3d_text(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var text: String = params.get("text", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Label3D:
+		_send_response({"error": "Label3D not found: " + node_path})
+		return
+	(node as Label3D).text = text
+	_send_response({"success": true, "text": text})
+
+
+func _cmd_set_label_3d_font_size(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var font_size: int = params.get("font_size", 16)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Label3D:
+		_send_response({"error": "Label3D not found: " + node_path})
+		return
+	(node as Label3D).font_size = font_size
+	_send_response({"success": true, "font_size": font_size})
+
+
+func _cmd_set_label_3d_billboard(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var billboard_mode: int = params.get("billboard_mode", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Label3D:
+		_send_response({"error": "Label3D not found: " + node_path})
+		return
+	(node as Label3D).billboard = billboard_mode
+	_send_response({"success": true, "billboard_mode": billboard_mode})
+
+
+func _cmd_get_text_mesh_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var mesh_inst = node as MeshInstance3D
+	if mesh_inst == null or not mesh_inst.mesh is TextMesh:
+		_send_response({"error": "Node does not have a TextMesh: " + node_path})
+		return
+	var tm = mesh_inst.mesh as TextMesh
+	_send_response({"success": true, "text": tm.text, "font_size": tm.font_size, "depth": tm.depth, "pixel_size": tm.pixel_size})
+
+
+func _cmd_get_soft_body_3d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is SoftBody3D:
+		_send_response({"error": "SoftBody3D not found: " + node_path})
+		return
+	var sb = node as SoftBody3D
+	_send_response({"success": true, "simulation_precision": sb.simulation_precision, "total_mass": sb.total_mass, "linear_stiffness": sb.linear_stiffness, "damping_coefficient": sb.damping_coefficient})
+
+
+func _cmd_set_soft_body_3d_simulation_precision(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var precision: int = params.get("precision", 5)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is SoftBody3D:
+		_send_response({"error": "SoftBody3D not found: " + node_path})
+		return
+	(node as SoftBody3D).simulation_precision = precision
+	_send_response({"success": true, "simulation_precision": precision})
+
+
+func _cmd_pin_soft_body_3d_point(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var point_index: int = params.get("point_index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is SoftBody3D:
+		_send_response({"error": "SoftBody3D not found: " + node_path})
+		return
+	(node as SoftBody3D).set_point_pinned(point_index, true)
+	_send_response({"success": true, "pinned_point": point_index})
+
+
+func _cmd_unpin_soft_body_3d_point(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var point_index: int = params.get("point_index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is SoftBody3D:
+		_send_response({"error": "SoftBody3D not found: " + node_path})
+		return
+	(node as SoftBody3D).set_point_pinned(point_index, false)
+	_send_response({"success": true, "unpinned_point": point_index})
 
 
 func _exit_tree() -> void:

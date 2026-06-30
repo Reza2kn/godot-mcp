@@ -18584,6 +18584,42 @@ class GodotServer {
       { name: 'write_grid_snap_script', description: 'Write a grid-snap drag-and-drop script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, gridSize: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_card_game_base_script', description: 'Write a base card game hand/deck script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_turn_based_combat_script', description: 'Write a turn-based combat manager script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      // Batch 76 — Group A: Texture2D / ImageTexture
+      { name: 'get_texture_2d_size', description: 'Get width and height of a Texture2D resource.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, propertyName: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_image_info', description: 'Get width, height, format of an Image resource.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, propertyName: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_texture_rect_stretch_mode', description: 'Set TextureRect stretch mode (0-6).', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, stretchMode: { type: 'integer' } }, required: ['nodePath', 'stretchMode'] } },
+      { name: 'get_atlas_texture_info', description: 'Get AtlasTexture region and atlas resource.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, propertyName: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'create_viewport_texture', description: 'Get viewport texture RID from a SubViewport.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_texture_flags', description: 'Get filter and repeat flags of a Texture2D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, propertyName: { type: 'string' } }, required: ['nodePath'] } },
+      // Batch 76 — Group B: SubViewport / Viewport
+      { name: 'get_sub_viewport_info', description: 'Get SubViewport size, mode, and update mode.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_viewport_texture_rid', description: 'Get the Viewport texture RID for rendering.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_viewport_clear_mode', description: 'Set the clear mode of a Viewport node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, clearMode: { type: 'integer' } }, required: ['nodePath', 'clearMode'] } },
+      { name: 'get_viewport_canvas_transform', description: 'Get the canvas transform of a Viewport.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      // Batch 76 — Group C: Label3D / TextMesh
+      { name: 'get_label_3d_info', description: 'Get Label3D text, font size, and billboard mode.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_label_3d_text', description: 'Set the text content of a Label3D node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, text: { type: 'string' } }, required: ['nodePath', 'text'] } },
+      { name: 'set_label_3d_font_size', description: 'Set the font size of a Label3D node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, fontSize: { type: 'integer' } }, required: ['nodePath', 'fontSize'] } },
+      { name: 'set_label_3d_billboard', description: 'Set Label3D billboard mode (0=disabled, 1=enabled).', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, billboardMode: { type: 'integer' } }, required: ['nodePath', 'billboardMode'] } },
+      { name: 'get_text_mesh_info', description: 'Get TextMesh text, font size, and depth.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      // Batch 76 — Group D: SoftBody3D
+      { name: 'get_soft_body_3d_info', description: 'Get SoftBody3D simulation precision and damping.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_soft_body_3d_simulation_precision', description: 'Set SoftBody3D simulation precision.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, precision: { type: 'integer' } }, required: ['nodePath', 'precision'] } },
+      { name: 'pin_soft_body_3d_point', description: 'Pin a SoftBody3D vertex to fix it in place.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, pointIndex: { type: 'integer' } }, required: ['nodePath', 'pointIndex'] } },
+      { name: 'unpin_soft_body_3d_point', description: 'Unpin a previously pinned SoftBody3D vertex.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, pointIndex: { type: 'integer' } }, required: ['nodePath', 'pointIndex'] } },
+      // Batch 76 — Group E: GDScript templates
+      { name: 'write_save_load_system_script', description: 'Write a save/load system with JSON.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, saveFile: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_loading_screen_script', description: 'Write a threaded loading screen script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_gamepad_rumble_script', description: 'Write a gamepad haptic rumble helper.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_localization_helper_script', description: 'Write a tr() wrapper localization helper.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_console_command_script', description: 'Write an in-game debug console command system.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_signal_bus_script', description: 'Write a global signal bus Autoload node.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_resource_loader_script', description: 'Write an async resource preloader script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_scene_manager_script', description: 'Write a named scene manager singleton.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_audio_manager_script', description: 'Write a singleton audio manager script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_global_events_script', description: 'Write typed global events with data payloads.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_procedural_dungeon_script', description: 'Write a simple procedural dungeon generator.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, width: { type: 'integer' }, height: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_chunk_loading_script', description: 'Write a chunk-based world loading system.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, chunkSize: { type: 'integer' }, viewDistance: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
       ],
     }));
 
@@ -22173,6 +22209,73 @@ class GodotServer {
           return await this.handleWriteCardGameBaseScript(request.params.arguments);
         case 'write_turn_based_combat_script':
           return await this.handleWriteTurnBasedCombatScript(request.params.arguments);
+        // Batch 76 — Group A: Texture2D / ImageTexture
+        case 'get_texture_2d_size':
+          return await this.handleGetTexture2dSize(request.params.arguments);
+        case 'get_image_info':
+          return await this.handleGetImageInfo(request.params.arguments);
+        case 'set_texture_rect_stretch_mode':
+          return await this.handleSetTextureRectStretchMode(request.params.arguments);
+        case 'get_atlas_texture_info':
+          return await this.handleGetAtlasTextureInfo(request.params.arguments);
+        case 'create_viewport_texture':
+          return await this.handleCreateViewportTexture(request.params.arguments);
+        case 'get_texture_flags':
+          return await this.handleGetTextureFlags(request.params.arguments);
+        // Batch 76 — Group B: SubViewport / Viewport
+        case 'get_sub_viewport_info':
+          return await this.handleGetSubViewportInfo(request.params.arguments);
+        case 'get_viewport_texture_rid':
+          return await this.handleGetViewportTextureRid(request.params.arguments);
+        case 'set_viewport_clear_mode':
+          return await this.handleSetViewportClearMode(request.params.arguments);
+        case 'get_viewport_canvas_transform':
+          return await this.handleGetViewportCanvasTransform(request.params.arguments);
+        // Batch 76 — Group C: Label3D / TextMesh
+        case 'get_label_3d_info':
+          return await this.handleGetLabel3dInfo(request.params.arguments);
+        case 'set_label_3d_text':
+          return await this.handleSetLabel3dText(request.params.arguments);
+        case 'set_label_3d_font_size':
+          return await this.handleSetLabel3dFontSize(request.params.arguments);
+        case 'set_label_3d_billboard':
+          return await this.handleSetLabel3dBillboard(request.params.arguments);
+        case 'get_text_mesh_info':
+          return await this.handleGetTextMeshInfo(request.params.arguments);
+        // Batch 76 — Group D: SoftBody3D
+        case 'get_soft_body_3d_info':
+          return await this.handleGetSoftBody3dInfo(request.params.arguments);
+        case 'set_soft_body_3d_simulation_precision':
+          return await this.handleSetSoftBody3dSimulationPrecision(request.params.arguments);
+        case 'pin_soft_body_3d_point':
+          return await this.handlePinSoftBody3dPoint(request.params.arguments);
+        case 'unpin_soft_body_3d_point':
+          return await this.handleUnpinSoftBody3dPoint(request.params.arguments);
+        // Batch 76 — Group E: GDScript templates
+        case 'write_save_load_system_script':
+          return await this.handleWriteSaveLoadSystemScript(request.params.arguments);
+        case 'write_loading_screen_script':
+          return await this.handleWriteLoadingScreenScript(request.params.arguments);
+        case 'write_gamepad_rumble_script':
+          return await this.handleWriteGamepadRumbleScript(request.params.arguments);
+        case 'write_localization_helper_script':
+          return await this.handleWriteLocalizationHelperScript(request.params.arguments);
+        case 'write_console_command_script':
+          return await this.handleWriteConsoleCommandScript(request.params.arguments);
+        case 'write_signal_bus_script':
+          return await this.handleWriteSignalBusScript(request.params.arguments);
+        case 'write_resource_loader_script':
+          return await this.handleWriteResourceLoaderScript(request.params.arguments);
+        case 'write_scene_manager_script':
+          return await this.handleWriteSceneManagerScript(request.params.arguments);
+        case 'write_audio_manager_script':
+          return await this.handleWriteAudioManagerScript(request.params.arguments);
+        case 'write_global_events_script':
+          return await this.handleWriteGlobalEventsScript(request.params.arguments);
+        case 'write_procedural_dungeon_script':
+          return await this.handleWriteProceduralDungeonScript(request.params.arguments);
+        case 'write_chunk_loading_script':
+          return await this.handleWriteChunkLoadingScript(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -45730,6 +45833,726 @@ func _check_victory() -> bool:
 func get_current_combatant() -> Dictionary:
 \treturn combatants[_current_index] if _active else {}
 `;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  // ── Batch 76 — Group A: Texture2D / ImageTexture ────────────────────────────
+
+  private async handleGetTexture2dSize(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_texture_2d_size', args, a => ({ node_path: a.nodePath ?? '', property_name: a.propertyName ?? 'texture' }));
+  }
+
+  private async handleGetImageInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_image_info', args, a => ({ node_path: a.nodePath ?? '', property_name: a.propertyName ?? 'texture' }));
+  }
+
+  private async handleSetTextureRectStretchMode(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_texture_rect_stretch_mode', args, a => ({ node_path: a.nodePath ?? '', stretch_mode: a.stretchMode ?? 0 }));
+  }
+
+  private async handleGetAtlasTextureInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_atlas_texture_info', args, a => ({ node_path: a.nodePath ?? '', property_name: a.propertyName ?? 'texture' }));
+  }
+
+  private async handleCreateViewportTexture(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('create_viewport_texture', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleGetTextureFlags(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_texture_flags', args, a => ({ node_path: a.nodePath ?? '', property_name: a.propertyName ?? 'texture' }));
+  }
+
+  // ── Batch 76 — Group B: SubViewport / Viewport ──────────────────────────────
+
+  private async handleGetSubViewportInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_sub_viewport_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleGetViewportTextureRid(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_viewport_texture_rid', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetViewportClearMode(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_viewport_clear_mode', args, a => ({ node_path: a.nodePath ?? '', clear_mode: a.clearMode ?? 0 }));
+  }
+
+  private async handleGetViewportCanvasTransform(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_viewport_canvas_transform', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  // ── Batch 76 — Group C: Label3D / TextMesh ──────────────────────────────────
+
+  private async handleGetLabel3dInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_label_3d_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetLabel3dText(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_label_3d_text', args, a => ({ node_path: a.nodePath ?? '', text: a.text ?? '' }));
+  }
+
+  private async handleSetLabel3dFontSize(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_label_3d_font_size', args, a => ({ node_path: a.nodePath ?? '', font_size: a.fontSize ?? 16 }));
+  }
+
+  private async handleSetLabel3dBillboard(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_label_3d_billboard', args, a => ({ node_path: a.nodePath ?? '', billboard_mode: a.billboardMode ?? 0 }));
+  }
+
+  private async handleGetTextMeshInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_text_mesh_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  // ── Batch 76 — Group D: SoftBody3D ──────────────────────────────────────────
+
+  private async handleGetSoftBody3dInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_soft_body_3d_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetSoftBody3dSimulationPrecision(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_soft_body_3d_simulation_precision', args, a => ({ node_path: a.nodePath ?? '', precision: a.precision ?? 5 }));
+  }
+
+  private async handlePinSoftBody3dPoint(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('pin_soft_body_3d_point', args, a => ({ node_path: a.nodePath ?? '', point_index: a.pointIndex ?? 0 }));
+  }
+
+  private async handleUnpinSoftBody3dPoint(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('unpin_soft_body_3d_point', args, a => ({ node_path: a.nodePath ?? '', point_index: a.pointIndex ?? 0 }));
+  }
+
+  // ── Batch 76 — Group E: GDScript templates ──────────────────────────────────
+
+  private async handleWriteSaveLoadSystemScript(args: any) {
+    args = normalizeParameters(args || {});
+    const saveFile = args.saveFile ?? 'user://save.json';
+    const content = `extends Node
+
+@export var save_file: String = "${saveFile}"
+
+signal game_saved
+signal game_loaded(data: Dictionary)
+
+var save_data: Dictionary = {}
+
+func save() -> void:
+\tvar file = FileAccess.open(save_file, FileAccess.WRITE)
+\tif file == null:
+\t\tpush_error("Cannot open save file: " + save_file)
+\t\treturn
+\tfile.store_string(JSON.stringify(save_data))
+\tgame_saved.emit()
+
+func load_game() -> bool:
+\tif not FileAccess.file_exists(save_file): return false
+\tvar file = FileAccess.open(save_file, FileAccess.READ)
+\tif file == null: return false
+\tvar json = JSON.new()
+\tif json.parse(file.get_as_text()) != OK: return false
+\tsave_data = json.get_data()
+\tgame_loaded.emit(save_data)
+\treturn true
+
+func set_value(key: String, value) -> void:
+\tsave_data[key] = value
+
+func get_value(key: String, default = null):
+\treturn save_data.get(key, default)
+
+func delete_save() -> void:
+\tif FileAccess.file_exists(save_file):
+\t\tDirAccess.remove_absolute(save_file)
+\tsave_data = {}
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteLoadingScreenScript(args: any) {
+    args = normalizeParameters(args || {});
+    const content = `extends CanvasLayer
+
+signal loading_done
+
+@export var scene_to_load: String = ""
+
+@onready var progress_bar: ProgressBar = $ProgressBar
+@onready var label: Label = $Label
+
+var _loading_status: int = 0
+
+func _ready() -> void:
+\tif scene_to_load != "":
+\t\tResourceLoader.load_threaded_request(scene_to_load)
+
+func load_scene(path: String) -> void:
+\tscene_to_load = path
+\tResourceLoader.load_threaded_request(path)
+\tset_process(true)
+
+func _process(_delta: float) -> void:
+\tif scene_to_load == "": return
+\tvar progress: Array = []
+\t_loading_status = ResourceLoader.load_threaded_get_status(scene_to_load, progress)
+\tif progress.size() > 0:
+\t\tprogress_bar.value = progress[0] * 100.0
+\t\tlabel.text = "Loading... %d%%" % int(progress[0] * 100)
+\tif _loading_status == ResourceLoader.THREAD_LOAD_LOADED:
+\t\tset_process(false)
+\t\tvar packed: PackedScene = ResourceLoader.load_threaded_get(scene_to_load)
+\t\tloading_done.emit()
+\t\tget_tree().change_scene_to_packed(packed)
+\telif _loading_status == ResourceLoader.THREAD_LOAD_FAILED:
+\t\tpush_error("Failed to load: " + scene_to_load)
+\t\tset_process(false)
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteGamepadRumbleScript(args: any) {
+    args = normalizeParameters(args || {});
+    const content = `extends Node
+
+## Gamepad haptic rumble helper. Call rumble() from any script.
+
+signal rumble_started(device: int)
+signal rumble_stopped(device: int)
+
+@export var default_weak_magnitude: float = 0.3
+@export var default_strong_magnitude: float = 0.6
+@export var default_duration: float = 0.2
+
+func rumble(weak: float = -1.0, strong: float = -1.0, duration: float = -1.0, device: int = 0) -> void:
+\tvar w: float = weak if weak >= 0.0 else default_weak_magnitude
+\tvar s: float = strong if strong >= 0.0 else default_strong_magnitude
+\tvar d: float = duration if duration >= 0.0 else default_duration
+\tInput.start_joy_vibration(device, w, s, d)
+\trumble_started.emit(device)
+\tif d > 0.0:
+\t\tawait get_tree().create_timer(d).timeout
+\t\tInput.stop_joy_vibration(device)
+\t\trumble_stopped.emit(device)
+
+func stop(device: int = 0) -> void:
+\tInput.stop_joy_vibration(device)
+\trumble_stopped.emit(device)
+
+func light_tap(device: int = 0) -> void:
+\trumble(0.1, 0.0, 0.05, device)
+
+func heavy_hit(device: int = 0) -> void:
+\trumble(0.5, 1.0, 0.4, device)
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteLocalizationHelperScript(args: any) {
+    args = normalizeParameters(args || {});
+    const content = `extends Node
+
+## Localization helper — thin wrapper around tr() with fallbacks.
+
+signal locale_changed(new_locale: String)
+
+var _current_locale: String = ""
+
+func _ready() -> void:
+\t_current_locale = TranslationServer.get_locale()
+
+func set_locale(locale: String) -> void:
+\tTranslationServer.set_locale(locale)
+\t_current_locale = locale
+\tlocale_changed.emit(locale)
+
+func get_locale() -> String:
+\treturn TranslationServer.get_locale()
+
+func t(key: String, context: String = "") -> String:
+\treturn tr(key, context)
+
+func t_plural(key: String, plural_key: String, n: int) -> String:
+\treturn tr_n(key, plural_key, n)
+
+func t_format(key: String, values: Dictionary) -> String:
+\tvar text: String = tr(key)
+\tfor k in values:
+\t\ttext = text.replace("{" + str(k) + "}", str(values[k]))
+\treturn text
+
+func get_available_locales() -> Array:
+\treturn TranslationServer.get_loaded_locales()
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteConsoleCommandScript(args: any) {
+    args = normalizeParameters(args || {});
+    const content = `extends Node
+
+## In-game debug console. Register commands and parse them at runtime.
+
+signal command_executed(cmd: String, result: String)
+signal unknown_command(cmd: String)
+
+var _commands: Dictionary = {}
+
+func _ready() -> void:
+\tregister("help", _cmd_help, "List all commands")
+\tregister("clear", _cmd_clear, "Clear console output")
+
+func register(name: String, callable: Callable, description: String = "") -> void:
+\t_commands[name] = { "callable": callable, "desc": description }
+
+func unregister(name: String) -> void:
+\t_commands.erase(name)
+
+func execute(input: String) -> String:
+\tvar parts: Array = input.strip_edges().split(" ", false)
+\tif parts.is_empty(): return ""
+\tvar cmd: String = parts[0].to_lower()
+\tvar cmd_args: Array = parts.slice(1)
+\tif cmd in _commands:
+\t\tvar result: String = _commands[cmd]["callable"].call(cmd_args)
+\t\tcommand_executed.emit(cmd, result)
+\t\treturn result
+\tunknown_command.emit(cmd)
+\treturn "Unknown command: " + cmd
+
+func _cmd_help(_args: Array) -> String:
+\tvar lines: Array = ["Available commands:"]
+\tfor name in _commands:
+\t\tlines.append("  %s — %s" % [name, _commands[name]["desc"]])
+\treturn "\\n".join(lines)
+
+func _cmd_clear(_args: Array) -> String:
+\treturn "__CLEAR__"
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteSignalBusScript(args: any) {
+    args = normalizeParameters(args || {});
+    const content = `extends Node
+
+# Global event bus — connect signals here and emit from anywhere
+
+signal player_died
+signal player_respawned(position: Vector2)
+signal score_changed(new_score: int)
+signal health_changed(current: int, max_health: int)
+signal game_paused(is_paused: bool)
+signal level_completed(level_number: int)
+signal item_collected(item_name: String, item_data: Dictionary)
+signal enemy_defeated(enemy_name: String, position: Vector2)
+signal quest_updated(quest_id: String, progress: int)
+signal dialogue_triggered(dialogue_id: String)
+signal achievement_unlocked_signal(achievement_id: String)
+signal scene_transition_requested(scene_path: String)
+signal save_requested
+signal load_requested
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteResourceLoaderScript(args: any) {
+    args = normalizeParameters(args || {});
+    const content = `extends Node
+
+## Async resource preloader — queue resources and get notified when ready.
+
+signal all_loaded
+signal resource_loaded(path: String, resource: Resource)
+signal load_progress(ratio: float)
+
+var _queue: Array[String] = []
+var _loaded: Dictionary = {}
+var _total: int = 0
+
+func preload_resources(paths: Array[String]) -> void:
+\tfor path in paths:
+\t\tif path not in _loaded:
+\t\t\t_queue.append(path)
+\t\t\tResourceLoader.load_threaded_request(path)
+\t_total = _queue.size()
+\tif _total > 0:
+\t\tset_process(true)
+
+func get_resource(path: String) -> Resource:
+\treturn _loaded.get(path, null)
+
+func _process(_delta: float) -> void:
+\tvar done: int = 0
+\tfor path in _queue:
+\t\tvar status: int = ResourceLoader.load_threaded_get_status(path)
+\t\tif status == ResourceLoader.THREAD_LOAD_LOADED:
+\t\t\t_loaded[path] = ResourceLoader.load_threaded_get(path)
+\t\t\tresource_loaded.emit(path, _loaded[path])
+\t\t\tdone += 1
+\tload_progress.emit(float(_loaded.size()) / float(max(_total, 1)))
+\t_queue = _queue.filter(func(p): return p not in _loaded)
+\tif _queue.is_empty():
+\t\tset_process(false)
+\t\tall_loaded.emit()
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteSceneManagerScript(args: any) {
+    args = normalizeParameters(args || {});
+    const content = `extends Node
+
+## Named scene manager — register scenes by name and switch between them.
+
+signal scene_changed(scene_name: String)
+signal scene_added(scene_name: String)
+
+var _registry: Dictionary = {}
+
+func register_scene(name: String, path: String) -> void:
+\t_registry[name] = path
+\tscene_added.emit(name)
+
+func unregister_scene(name: String) -> void:
+\t_registry.erase(name)
+
+func change_to(name: String) -> Error:
+\tif name not in _registry:
+\t\tpush_error("Scene not registered: " + name)
+\t\treturn ERR_DOES_NOT_EXIST
+\tvar err: Error = get_tree().change_scene_to_file(_registry[name])
+\tif err == OK: scene_changed.emit(name)
+\treturn err
+
+func change_to_path(path: String) -> Error:
+\treturn get_tree().change_scene_to_file(path)
+
+func reload_current() -> Error:
+\treturn get_tree().reload_current_scene()
+
+func get_path(name: String) -> String:
+\treturn _registry.get(name, "")
+
+func is_registered(name: String) -> bool:
+\treturn name in _registry
+
+func get_registered_scenes() -> Array:
+\treturn _registry.keys()
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteAudioManagerScript(args: any) {
+    args = normalizeParameters(args || {});
+    const content = `extends Node
+
+var _music_player: AudioStreamPlayer
+var _sfx_players: Array[AudioStreamPlayer] = []
+var _sfx_pool_size: int = 8
+var music_volume: float = 1.0 : set = set_music_volume
+var sfx_volume: float = 1.0 : set = set_sfx_volume
+
+func _ready() -> void:
+\t_music_player = AudioStreamPlayer.new()
+\t_music_player.bus = "Music"
+\tadd_child(_music_player)
+\tfor i in range(_sfx_pool_size):
+\t\tvar p = AudioStreamPlayer.new()
+\t\tp.bus = "SFX"
+\t\tadd_child(p)
+\t\t_sfx_players.append(p)
+
+func play_music(stream: AudioStream, fade_in: float = 0.0) -> void:
+\t_music_player.stream = stream
+\t_music_player.play()
+
+func play_sfx(stream: AudioStream) -> void:
+\tfor p in _sfx_players:
+\t\tif not p.playing:
+\t\t\tp.stream = stream
+\t\t\tp.play()
+\t\t\treturn
+
+func stop_music() -> void:
+\t_music_player.stop()
+
+func set_music_volume(value: float) -> void:
+\tmusic_volume = clamp(value, 0.0, 1.0)
+\t_music_player.volume_db = linear_to_db(music_volume)
+
+func set_sfx_volume(value: float) -> void:
+\tsfx_volume = clamp(value, 0.0, 1.0)
+\tfor p in _sfx_players:
+\t\tp.volume_db = linear_to_db(sfx_volume)
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteGlobalEventsScript(args: any) {
+    args = normalizeParameters(args || {});
+    const content = `extends Node
+
+## Typed global events with structured data payloads.
+
+class_name GlobalEvents
+
+# Player events
+signal player_health_changed(current: int, maximum: int, delta: int)
+signal player_died(position: Vector3)
+signal player_respawned(position: Vector3, checkpoint_id: String)
+signal player_level_up(new_level: int, old_level: int)
+signal player_xp_gained(amount: int, source: String)
+
+# Inventory events
+signal item_picked_up(item_id: String, quantity: int, position: Vector3)
+signal item_dropped(item_id: String, quantity: int)
+signal item_used(item_id: String, target: Node)
+signal inventory_full(item_id: String)
+
+# World events
+signal enemy_spawned(enemy: Node, position: Vector3)
+signal enemy_died(enemy: Node, killer: Node, position: Vector3)
+signal boss_phase_changed(boss: Node, new_phase: int)
+signal objective_completed(objective_id: String, bonus: Dictionary)
+
+# UI / system events
+signal notification_requested(text: String, duration: float, category: String)
+signal cutscene_started(cutscene_id: String)
+signal cutscene_ended(cutscene_id: String)
+signal settings_changed(setting_key: String, new_value: Variant)
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteProceduralDungeonScript(args: any) {
+    args = normalizeParameters(args || {});
+    const w = args.width ?? 20;
+    const h = args.height ?? 20;
+    const content = `extends Node
+
+## Simple procedural dungeon generator using BSP rooms.
+
+signal dungeon_generated(rooms: Array)
+
+@export var map_width: int = ${w}
+@export var map_height: int = ${h}
+@export var min_room_size: int = 4
+@export var max_room_size: int = 8
+@export var room_count: int = 10
+
+var grid: Array = []
+var rooms: Array = []
+
+const TILE_WALL: int = 0
+const TILE_FLOOR: int = 1
+const TILE_DOOR: int = 2
+
+func generate() -> Array:
+\tgrid = []
+\trooms = []
+\tfor y in range(map_height):
+\t\tvar row: Array = []
+\t\tfor x in range(map_width):
+\t\t\trow.append(TILE_WALL)
+\t\tgrid.append(row)
+\tfor i in range(room_count):
+\t\t_try_place_room()
+\tfor i in range(rooms.size() - 1):
+\t\t_connect_rooms(rooms[i], rooms[i + 1])
+\tdungeon_generated.emit(rooms)
+\treturn grid
+
+func _try_place_room() -> void:
+\tvar rw: int = randi_range(min_room_size, max_room_size)
+\tvar rh: int = randi_range(min_room_size, max_room_size)
+\tvar rx: int = randi_range(1, map_width - rw - 1)
+\tvar ry: int = randi_range(1, map_height - rh - 1)
+\tfor room in rooms:
+\t\tif _rooms_overlap(rx, ry, rw, rh, room): return
+\tfor y in range(ry, ry + rh):
+\t\tfor x in range(rx, rx + rw):
+\t\t\tgrid[y][x] = TILE_FLOOR
+\trooms.append({ "x": rx, "y": ry, "w": rw, "h": rh })
+
+func _rooms_overlap(x1: int, y1: int, w1: int, h1: int, r2: Dictionary) -> bool:
+\treturn x1 < r2.x + r2.w + 1 and x1 + w1 + 1 > r2.x and y1 < r2.y + r2.h + 1 and y1 + h1 + 1 > r2.y
+
+func _connect_rooms(a: Dictionary, b: Dictionary) -> void:
+\tvar ax: int = a.x + a.w / 2
+\tvar ay: int = a.y + a.h / 2
+\tvar bx: int = b.x + b.w / 2
+\tvar by_: int = b.y + b.h / 2
+\twhile ax != bx:
+\t\tgrid[ay][ax] = TILE_FLOOR
+\t\tax += sign(bx - ax)
+\twhile ay != by_:
+\t\tgrid[ay][ax] = TILE_FLOOR
+\t\tay += sign(by_ - ay)
+
+func get_random_floor_position() -> Vector2i:
+\tif rooms.is_empty(): return Vector2i.ZERO
+\tvar r: Dictionary = rooms[randi() % rooms.size()]
+\treturn Vector2i(r.x + r.w / 2, r.y + r.h / 2)
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteChunkLoadingScript(args: any) {
+    args = normalizeParameters(args || {});
+    const chunkSize = args.chunkSize ?? 16;
+    const viewDist = args.viewDistance ?? 2;
+    const content = `extends Node
+
+## Chunk-based world loading system.
+
+signal chunk_loaded(chunk_pos: Vector2i)
+signal chunk_unloaded(chunk_pos: Vector2i)
+
+@export var chunk_size: int = ${chunkSize}
+@export var view_distance: int = ${viewDist}
+
+var _loaded_chunks: Dictionary = {}
+var _player_chunk: Vector2i = Vector2i.ZERO
+
+func _ready() -> void:
+\tset_process(true)
+
+func _process(_delta: float) -> void:
+\tvar player: Node = get_tree().get_first_node_in_group("player")
+\tif player == null: return
+\tvar pos: Vector2 = Vector2.ZERO
+\tif player.has_method("get_position"):
+\t\tpos = player.get_position() if player.get_position() is Vector2 else Vector2(player.global_position.x, player.global_position.z)
+\telse:
+\t\treturn
+\tvar new_chunk: Vector2i = world_to_chunk(pos)
+\tif new_chunk != _player_chunk:
+\t\t_player_chunk = new_chunk
+\t\t_update_chunks()
+
+func world_to_chunk(pos: Vector2) -> Vector2i:
+\treturn Vector2i(int(floor(pos.x / chunk_size)), int(floor(pos.y / chunk_size)))
+
+func chunk_to_world(chunk: Vector2i) -> Vector2:
+\treturn Vector2(chunk.x * chunk_size, chunk.y * chunk_size)
+
+func _update_chunks() -> void:
+\tvar needed: Array[Vector2i] = []
+\tfor dx in range(-view_distance, view_distance + 1):
+\t\tfor dy in range(-view_distance, view_distance + 1):
+\t\t\tneeded.append(_player_chunk + Vector2i(dx, dy))
+\tfor chunk in needed:
+\t\tif chunk not in _loaded_chunks:
+\t\t\t_load_chunk(chunk)
+\tvar to_unload: Array = []
+\tfor chunk in _loaded_chunks:
+\t\tif chunk not in needed:
+\t\t\tto_unload.append(chunk)
+\tfor chunk in to_unload:
+\t\t_unload_chunk(chunk)
+
+func _load_chunk(chunk: Vector2i) -> void:
+\t_loaded_chunks[chunk] = true
+\tchunk_loaded.emit(chunk)
+
+func _unload_chunk(chunk: Vector2i) -> void:
+\t_loaded_chunks.erase(chunk)
+\tchunk_unloaded.emit(chunk)
+
+func is_chunk_loaded(chunk: Vector2i) -> bool:
+\treturn chunk in _loaded_chunks
+
+func get_loaded_chunks() -> Array:
+\treturn _loaded_chunks.keys()
+`;
+    const absPath = require('path').join(args.projectPath, args.scriptPath);
     try {
       const dir = require('path').dirname(absPath);
       if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
