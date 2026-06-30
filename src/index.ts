@@ -6954,6 +6954,241 @@ class GodotServer {
           required: ['nodePath'],
         },
       },
+      {
+        name: 'add_spring_arm_3d',
+        description: 'Add a SpringArm3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to the .tscn file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: SpringArm3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path inside scene (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_vehicle_body_3d',
+        description: 'Add a VehicleBody3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to the .tscn file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: VehicleBody3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path inside scene (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_vehicle_wheel_3d',
+        description: 'Add a VehicleWheel3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to the .tscn file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: VehicleWheel3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path inside scene (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_skeleton_3d',
+        description: 'Add a Skeleton3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to the .tscn file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: Skeleton3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path inside scene (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_bone_attachment_3d',
+        description: 'Add a BoneAttachment3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to the .tscn file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: BoneAttachment3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path inside scene (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_world_environment',
+        description: 'Add a WorldEnvironment node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to the .tscn file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: WorldEnvironment)' },
+            parentNodePath: { type: 'string', description: 'Parent node path inside scene (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_decal_3d',
+        description: 'Add a Decal node to a 3D scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to the .tscn file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: Decal)' },
+            parentNodePath: { type: 'string', description: 'Parent node path inside scene (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_fog_volume',
+        description: 'Add a FogVolume node to a 3D scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to the .tscn file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: FogVolume)' },
+            parentNodePath: { type: 'string', description: 'Parent node path inside scene (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_gpu_particles_3d',
+        description: 'Add a GPUParticles3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to the .tscn file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: GPUParticles3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path inside scene (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_gpu_particles_2d',
+        description: 'Add a GPUParticles2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to the .tscn file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: GPUParticles2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path inside scene (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'get_animation_names',
+        description: 'Get all animations from an AnimationPlayer in a scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to the .tscn file' },
+            nodePath: { type: 'string', description: 'Node path of the AnimationPlayer (default: AnimationPlayer)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'get_node_owner',
+        description: 'Get the owner of a node in a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to the .tscn file' },
+            nodeName: { type: 'string', description: 'Name of the node to query' },
+          },
+          required: ['projectPath', 'scenePath', 'nodeName'],
+        },
+      },
+      {
+        name: 'count_script_lines',
+        description: 'Count lines of code across all GDScript files.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_scene_external_resources',
+        description: 'List all ext_resource entries in a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to the .tscn file' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'game_reload_scene',
+        description: 'Reload the current scene in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'set_node_process',
+        description: 'Set process or physics_process on a node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path of the node' },
+            processMode: { type: 'string', description: 'process, physics, or both (default: process)' },
+            enabled: { type: 'boolean', description: 'Enable or disable processing (default: true)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_object_id',
+        description: 'Get the Object instance_id of a node in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path of the node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'call_method_on_node',
+        description: 'Call a method on a node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path of the node' },
+            methodName: { type: 'string', description: 'Name of the method to call' },
+            args: { type: 'array', description: 'Arguments to pass to the method (optional)', items: {} },
+          },
+          required: ['nodePath', 'methodName'],
+        },
+      },
       ],
     }));
 
@@ -7903,6 +8138,42 @@ class GodotServer {
           return await this.handleFreeNodeRuntime(request.params.arguments);
         case 'duplicate_node_runtime':
           return await this.handleDuplicateNodeRuntime(request.params.arguments);
+        case 'add_spring_arm_3d':
+          return await this.handleAddSpringArm3d(request.params.arguments);
+        case 'add_vehicle_body_3d':
+          return await this.handleAddVehicleBody3d(request.params.arguments);
+        case 'add_vehicle_wheel_3d':
+          return await this.handleAddVehicleWheel3d(request.params.arguments);
+        case 'add_skeleton_3d':
+          return await this.handleAddSkeleton3d(request.params.arguments);
+        case 'add_bone_attachment_3d':
+          return await this.handleAddBoneAttachment3d(request.params.arguments);
+        case 'add_world_environment':
+          return await this.handleAddWorldEnvironment(request.params.arguments);
+        case 'add_decal_3d':
+          return await this.handleAddDecal3d(request.params.arguments);
+        case 'add_fog_volume':
+          return await this.handleAddFogVolume(request.params.arguments);
+        case 'add_gpu_particles_3d':
+          return await this.handleAddGpuParticles3d(request.params.arguments);
+        case 'add_gpu_particles_2d':
+          return await this.handleAddGpuParticles2d(request.params.arguments);
+        case 'get_animation_names':
+          return await this.handleGetAnimationNames(request.params.arguments);
+        case 'get_node_owner':
+          return await this.handleGetNodeOwner(request.params.arguments);
+        case 'count_script_lines':
+          return await this.handleCountScriptLines(request.params.arguments);
+        case 'get_scene_external_resources':
+          return await this.handleGetSceneExternalResources(request.params.arguments);
+        case 'game_reload_scene':
+          return await this.handleGameReloadScene(request.params.arguments);
+        case 'set_node_process':
+          return await this.handleSetNodeProcess(request.params.arguments);
+        case 'get_object_id':
+          return await this.handleGetObjectId(request.params.arguments);
+        case 'call_method_on_node':
+          return await this.handleCallMethodOnNode(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -15366,6 +15637,200 @@ class GodotServer {
     args = normalizeParameters(args || {});
     if (!args.nodePath) return createErrorResponse('nodePath is required.');
     return this.gameCommand('duplicate_node_runtime', args, a => ({ node_path: a.nodePath, new_name: a.newName || '' }));
+  }
+
+  private async handleAddSpringArm3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'SpringArm3D', nodeType: 'SpringArm3D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddVehicleBody3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'VehicleBody3D', nodeType: 'VehicleBody3D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddVehicleWheel3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'VehicleWheel3D', nodeType: 'VehicleWheel3D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddSkeleton3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'Skeleton3D', nodeType: 'Skeleton3D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddBoneAttachment3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'BoneAttachment3D', nodeType: 'BoneAttachment3D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddWorldEnvironment(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'WorldEnvironment', nodeType: 'WorldEnvironment', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddDecal3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'Decal', nodeType: 'Decal', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddFogVolume(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'FogVolume', nodeType: 'FogVolume', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddGpuParticles3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'GPUParticles3D', nodeType: 'GPUParticles3D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddGpuParticles2d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'GPUParticles2D', nodeType: 'GPUParticles2D', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleGetAnimationNames(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('get_animation_names', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodePath: a.nodePath || 'AnimationPlayer' },
+    }));
+  }
+
+  private async handleGetNodeOwner(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.nodeName) return createErrorResponse('projectPath, scenePath, and nodeName are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absPath)) return createErrorResponse(`Scene not found: ${absPath}`);
+    let content: string;
+    try { content = readFileSync(absPath, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const nodes = this.parseTscnNodes(content);
+    const node = nodes.find(n => n.name === args.nodeName);
+    if (!node) return createErrorResponse(`Node "${args.nodeName}" not found.`);
+    const ownerMatch = node.header.match(/\bowner="([^"]+)"/);
+    return { content: [{ type: 'text', text: JSON.stringify({ nodeName: args.nodeName, owner: ownerMatch?.[1] || 'scene_root', parent: node.parent }) }] };
+  }
+
+  private async handleCountScriptLines(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const scripts = this.collectFiles(args.projectPath, ['.gd']);
+    let totalLines = 0;
+    let codeLines = 0;
+    let commentLines = 0;
+    let blankLines = 0;
+    const fileCounts: Array<{ file: string; total: number; code: number }> = [];
+    for (const script of scripts) {
+      let content: string;
+      try { content = readFileSync(script, 'utf8'); } catch { continue; }
+      const lines = content.split('\n');
+      let fileTotal = 0, fileCode = 0;
+      for (const line of lines) {
+        const trimmed = line.trim();
+        totalLines++;
+        fileTotal++;
+        if (trimmed === '') blankLines++;
+        else if (trimmed.startsWith('#')) commentLines++;
+        else { codeLines++; fileCode++; }
+      }
+      fileCounts.push({ file: script.replace(args.projectPath + '/', ''), total: fileTotal, code: fileCode });
+    }
+    fileCounts.sort((a, b) => b.code - a.code);
+    return { content: [{ type: 'text', text: JSON.stringify({ scriptCount: scripts.length, totalLines, codeLines, commentLines, blankLines, topFiles: fileCounts.slice(0, 10) }, null, 2) }] };
+  }
+
+  private async handleGetSceneExternalResources(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absPath)) return createErrorResponse(`Scene not found: ${absPath}`);
+    let content: string;
+    try { content = readFileSync(absPath, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const resources: Array<{ id: string; type: string; path: string }> = [];
+    const matches = content.matchAll(/\[ext_resource[^\]]*?type="([^"]+)"[^\]]*?path="([^"]+)"[^\]]*?id="([^"]+)"/g);
+    for (const m of matches) {
+      resources.push({ id: m[3], type: m[1], path: m[2] });
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ scenePath: args.scenePath, count: resources.length, resources }, null, 2) }] };
+  }
+
+  private async handleGameReloadScene(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('game_reload_scene', args, _a => ({}));
+  }
+
+  private async handleSetNodeProcess(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_node_process', args, a => ({ node_path: a.nodePath, process_mode: a.processMode || 'process', enabled: a.enabled ?? true }));
+  }
+
+  private async handleGetObjectId(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_object_id', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleCallMethodOnNode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.methodName) return createErrorResponse('methodName is required.');
+    return this.gameCommand('call_method_on_node', args, a => ({ node_path: a.nodePath, method_name: a.methodName, args: a.args ?? [] }));
   }
 
 }

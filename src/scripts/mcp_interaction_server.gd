@@ -571,6 +571,14 @@ func _handle_command(json_str: String) -> void:
 			_cmd_free_node_runtime(params)
 		"duplicate_node_runtime":
 			_cmd_duplicate_node_runtime(params)
+		"game_reload_scene":
+			_cmd_game_reload_scene(params)
+		"set_node_process":
+			_cmd_set_node_process(params)
+		"get_object_id":
+			_cmd_get_object_id(params)
+		"call_method_on_node":
+			_cmd_call_method_on_node(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -6496,6 +6504,52 @@ func _cmd_duplicate_node_runtime(params: Dictionary) -> void:
 	node.get_parent().add_child(dup)
 	dup.owner = get_tree().root
 	_send_response({"success": true, "original_path": node_path, "new_path": str(dup.get_path()), "new_name": dup.name})
+
+func _cmd_game_reload_scene(_params: Dictionary) -> void:
+	var current = get_tree().current_scene.scene_file_path if get_tree().current_scene != null else ""
+	_send_response({"success": true, "reloading": current})
+	await get_tree().create_timer(0.05).timeout
+	get_tree().reload_current_scene()
+
+func _cmd_set_node_process(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var process_mode: String = params.get("process_mode", "process")
+	var enabled: bool = params.get("enabled", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	match process_mode:
+		"physics":
+			node.set_physics_process(enabled)
+		"both":
+			node.set_process(enabled)
+			node.set_physics_process(enabled)
+		_:
+			node.set_process(enabled)
+	_send_response({"success": true, "process_mode": process_mode, "enabled": enabled})
+
+func _cmd_get_object_id(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	_send_response({"success": true, "node_path": node_path, "instance_id": node.get_instance_id(), "class": node.get_class()})
+
+func _cmd_call_method_on_node(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var method_name: String = params.get("method_name", "")
+	var call_args: Array = params.get("args", [])
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if not node.has_method(method_name):
+		_send_response({"error": "Method not found: " + method_name})
+		return
+	var result = node.callv(method_name, call_args)
+	_send_response({"success": true, "method": method_name, "result": _to_serializable(result)})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()
