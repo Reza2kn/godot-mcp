@@ -1885,6 +1885,40 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_navigation_agent_2d_target(params)
 		"get_navigation_region_3d_baked":
 			_cmd_get_navigation_region_3d_baked(params)
+		"get_sprite_frame_info":
+			_cmd_get_sprite_frame_info(params)
+		"set_sprite_hframes":
+			_cmd_set_sprite_hframes(params)
+		"set_sprite_vframes":
+			_cmd_set_sprite_vframes(params)
+		"set_sprite_region_rect":
+			_cmd_set_sprite_region_rect(params)
+		"set_sprite_region_enabled":
+			_cmd_set_sprite_region_enabled(params)
+		"set_texture_rect_stretch":
+			_cmd_set_texture_rect_stretch(params)
+		"set_texture_rect_flip":
+			_cmd_set_texture_rect_flip(params)
+		"get_texture_rect_info":
+			_cmd_get_texture_rect_info(params)
+		"set_nine_patch_margins":
+			_cmd_set_nine_patch_margins(params)
+		"set_nine_patch_draw_center":
+			_cmd_set_nine_patch_draw_center(params)
+		"get_nine_patch_info":
+			_cmd_get_nine_patch_info(params)
+		"set_camera_2d_limits":
+			_cmd_set_camera_2d_limits(params)
+		"set_camera_2d_drag_margins":
+			_cmd_set_camera_2d_drag_margins(params)
+		"reset_camera_2d":
+			_cmd_reset_camera_2d(params)
+		"set_camera_2d_process_callback":
+			_cmd_set_camera_2d_process_callback(params)
+		"get_camera_2d_screen_center":
+			_cmd_get_camera_2d_screen_center(params)
+		"shake_camera_2d":
+			_cmd_shake_camera_2d(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -15515,6 +15549,239 @@ func _cmd_get_navigation_region_3d_baked(params: Dictionary) -> void:
 		return
 	var nr := node as NavigationRegion3D
 	_send_response({"success": true, "enabled": nr.enabled, "has_navmesh": nr.navigation_mesh != null})
+
+
+func _cmd_get_sprite_frame_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Sprite2D:
+		_send_response({"error": "Sprite2D not found: " + node_path})
+		return
+	var s := node as Sprite2D
+	_send_response({"success": true, "frame": s.frame, "hframes": s.hframes, "vframes": s.vframes, "frame_coords": {"x": s.frame_coords.x, "y": s.frame_coords.y}})
+
+
+func _cmd_set_sprite_hframes(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var hframes: int = params.get("hframes", 1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Sprite2D:
+		_send_response({"error": "Sprite2D not found: " + node_path})
+		return
+	(node as Sprite2D).hframes = hframes
+	_send_response({"success": true, "hframes": hframes})
+
+
+func _cmd_set_sprite_vframes(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var vframes: int = params.get("vframes", 1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Sprite2D:
+		_send_response({"error": "Sprite2D not found: " + node_path})
+		return
+	(node as Sprite2D).vframes = vframes
+	_send_response({"success": true, "vframes": vframes})
+
+
+func _cmd_set_sprite_region_rect(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var width: float = params.get("width", 64.0)
+	var height: float = params.get("height", 64.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Sprite2D:
+		_send_response({"error": "Sprite2D not found: " + node_path})
+		return
+	(node as Sprite2D).region_rect = Rect2(x, y, width, height)
+	_send_response({"success": true, "region_rect": {"x": x, "y": y, "width": width, "height": height}})
+
+
+func _cmd_set_sprite_region_enabled(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var enabled: bool = params.get("enabled", false)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Sprite2D:
+		_send_response({"error": "Sprite2D not found: " + node_path})
+		return
+	(node as Sprite2D).region_enabled = enabled
+	_send_response({"success": true, "region_enabled": enabled})
+
+
+func _cmd_set_texture_rect_stretch(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var mode_str: String = params.get("mode", "keep_aspect_centered")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TextureRect:
+		_send_response({"error": "TextureRect not found: " + node_path})
+		return
+	var mode: TextureRect.StretchMode
+	match mode_str:
+		"scale": mode = TextureRect.STRETCH_SCALE
+		"tile": mode = TextureRect.STRETCH_TILE
+		"keep": mode = TextureRect.STRETCH_KEEP
+		"keep_centered": mode = TextureRect.STRETCH_KEEP_CENTERED
+		"keep_aspect": mode = TextureRect.STRETCH_KEEP_ASPECT
+		"keep_aspect_centered": mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		"keep_aspect_covered": mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		_: mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	(node as TextureRect).stretch_mode = mode
+	_send_response({"success": true, "stretch_mode": mode_str})
+
+
+func _cmd_set_texture_rect_flip(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var flip_h: bool = params.get("flip_h", false)
+	var flip_v: bool = params.get("flip_v", false)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TextureRect:
+		_send_response({"error": "TextureRect not found: " + node_path})
+		return
+	(node as TextureRect).flip_h = flip_h
+	(node as TextureRect).flip_v = flip_v
+	_send_response({"success": true, "flip_h": flip_h, "flip_v": flip_v})
+
+
+func _cmd_get_texture_rect_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TextureRect:
+		_send_response({"error": "TextureRect not found: " + node_path})
+		return
+	var tr := node as TextureRect
+	_send_response({"success": true, "stretch_mode": tr.stretch_mode, "flip_h": tr.flip_h, "flip_v": tr.flip_v, "size": {"x": tr.size.x, "y": tr.size.y}})
+
+
+func _cmd_set_nine_patch_margins(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var left: int = params.get("left", 4)
+	var top: int = params.get("top", 4)
+	var right: int = params.get("right", 4)
+	var bottom: int = params.get("bottom", 4)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is NinePatchRect:
+		_send_response({"error": "NinePatchRect not found: " + node_path})
+		return
+	var npr := node as NinePatchRect
+	npr.patch_margin_left = left
+	npr.patch_margin_top = top
+	npr.patch_margin_right = right
+	npr.patch_margin_bottom = bottom
+	_send_response({"success": true, "margins": {"left": left, "top": top, "right": right, "bottom": bottom}})
+
+
+func _cmd_set_nine_patch_draw_center(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var draw_center: bool = params.get("draw_center", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is NinePatchRect:
+		_send_response({"error": "NinePatchRect not found: " + node_path})
+		return
+	(node as NinePatchRect).draw_center = draw_center
+	_send_response({"success": true, "draw_center": draw_center})
+
+
+func _cmd_get_nine_patch_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is NinePatchRect:
+		_send_response({"error": "NinePatchRect not found: " + node_path})
+		return
+	var npr := node as NinePatchRect
+	_send_response({"success": true, "left": npr.patch_margin_left, "top": npr.patch_margin_top, "right": npr.patch_margin_right, "bottom": npr.patch_margin_bottom, "draw_center": npr.draw_center})
+
+
+func _cmd_set_camera_2d_limits(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var left: int = params.get("left", -10000000)
+	var top: int = params.get("top", -10000000)
+	var right: int = params.get("right", 10000000)
+	var bottom: int = params.get("bottom", 10000000)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Camera2D:
+		_send_response({"error": "Camera2D not found: " + node_path})
+		return
+	var cam := node as Camera2D
+	cam.limit_left = left
+	cam.limit_top = top
+	cam.limit_right = right
+	cam.limit_bottom = bottom
+	_send_response({"success": true, "limits": {"left": left, "top": top, "right": right, "bottom": bottom}})
+
+
+func _cmd_set_camera_2d_drag_margins(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var left: float = params.get("left", 0.2)
+	var top: float = params.get("top", 0.2)
+	var right: float = params.get("right", 0.2)
+	var bottom: float = params.get("bottom", 0.2)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Camera2D:
+		_send_response({"error": "Camera2D not found: " + node_path})
+		return
+	var cam := node as Camera2D
+	cam.drag_horizontal_enabled = true
+	cam.drag_vertical_enabled = true
+	cam.drag_left_margin = left
+	cam.drag_top_margin = top
+	cam.drag_right_margin = right
+	cam.drag_bottom_margin = bottom
+	_send_response({"success": true, "drag_margins": {"left": left, "top": top, "right": right, "bottom": bottom}})
+
+
+func _cmd_reset_camera_2d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Camera2D:
+		_send_response({"error": "Camera2D not found: " + node_path})
+		return
+	(node as Camera2D).reset_smoothing()
+	_send_response({"success": true, "reset": node_path})
+
+
+func _cmd_set_camera_2d_process_callback(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var callback_str: String = params.get("callback", "idle")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Camera2D:
+		_send_response({"error": "Camera2D not found: " + node_path})
+		return
+	var mode: Camera2D.Camera2DProcessCallback
+	match callback_str:
+		"idle": mode = Camera2D.CAMERA2D_PROCESS_IDLE
+		"physics": mode = Camera2D.CAMERA2D_PROCESS_PHYSICS
+		_: mode = Camera2D.CAMERA2D_PROCESS_IDLE
+	(node as Camera2D).process_callback = mode
+	_send_response({"success": true, "process_callback": callback_str})
+
+
+func _cmd_get_camera_2d_screen_center(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Camera2D:
+		_send_response({"error": "Camera2D not found: " + node_path})
+		return
+	var center = (node as Camera2D).get_screen_center_position()
+	_send_response({"success": true, "center": {"x": center.x, "y": center.y}})
+
+
+func _cmd_shake_camera_2d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var intensity: float = params.get("intensity", 10.0)
+	var duration: float = params.get("duration", 0.3)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Camera2D:
+		_send_response({"error": "Camera2D not found: " + node_path})
+		return
+	var cam := node as Camera2D
+	var original_offset = cam.offset
+	var tween = get_tree().create_tween()
+	var steps = int(duration / 0.05)
+	for i in range(steps):
+		var shake_offset = Vector2(randf_range(-intensity, intensity), randf_range(-intensity, intensity))
+		tween.tween_property(cam, "offset", shake_offset, 0.05)
+	tween.tween_property(cam, "offset", original_offset, 0.05)
+	_send_response({"success": true, "intensity": intensity, "duration": duration})
 
 
 func _exit_tree() -> void:

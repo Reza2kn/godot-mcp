@@ -18226,6 +18226,45 @@ class GodotServer {
       { name: 'write_floating_text_script', description: 'Write a floating damage/score text script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, duration: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_camera_2d_smooth_script', description: 'Write a smooth-follow Camera2D script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, smoothing: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_consumable_item_script', description: 'Write a consumable pickup item script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, healAmount: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      // Batch 66 — Group A: Sprite2D animation frame control
+      { name: 'get_sprite_frame_info', description: 'Get frame, hframes, vframes from a Sprite2D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_sprite_hframes', description: 'Set horizontal frame count on a Sprite2D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, hframes: { type: 'integer' } }, required: ['nodePath'] } },
+      { name: 'set_sprite_vframes', description: 'Set vertical frame count on a Sprite2D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, vframes: { type: 'integer' } }, required: ['nodePath'] } },
+      { name: 'set_sprite_region_rect', description: 'Set texture region rect on a Sprite2D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, x: { type: 'number' }, y: { type: 'number' }, width: { type: 'number' }, height: { type: 'number' } }, required: ['nodePath'] } },
+      { name: 'set_sprite_region_enabled', description: 'Enable/disable texture region on a Sprite2D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, enabled: { type: 'boolean' } }, required: ['nodePath'] } },
+      // Batch 66 — Group B: TextureRect / NinePatchRect
+      { name: 'set_texture_rect_stretch', description: 'Set stretch mode on a TextureRect node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, mode: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_texture_rect_flip', description: 'Flip TextureRect horizontally/vertically.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, flipH: { type: 'boolean' }, flipV: { type: 'boolean' } }, required: ['nodePath'] } },
+      { name: 'get_texture_rect_info', description: 'Get TextureRect stretch mode, flip, and size.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_nine_patch_margins', description: 'Set margins on a NinePatchRect node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, left: { type: 'integer' }, top: { type: 'integer' }, right: { type: 'integer' }, bottom: { type: 'integer' } }, required: ['nodePath'] } },
+      { name: 'set_nine_patch_draw_center', description: 'Set draw_center on a NinePatchRect node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, drawCenter: { type: 'boolean' } }, required: ['nodePath'] } },
+      { name: 'get_nine_patch_info', description: 'Get margins and draw_center from NinePatchRect.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      // Batch 66 — Group C: Camera2D advanced controls
+      { name: 'set_camera_2d_limits', description: 'Set boundary limits on a Camera2D node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, left: { type: 'integer' }, top: { type: 'integer' }, right: { type: 'integer' }, bottom: { type: 'integer' } }, required: ['nodePath'] } },
+      { name: 'set_camera_2d_drag_margins', description: 'Set drag margins on a Camera2D node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, left: { type: 'number' }, top: { type: 'number' }, right: { type: 'number' }, bottom: { type: 'number' } }, required: ['nodePath'] } },
+      { name: 'reset_camera_2d', description: 'Reset Camera2D smoothing and snap to target.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_camera_2d_process_callback', description: 'Set Camera2D process callback (idle/physics).', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, callback: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_camera_2d_screen_center', description: 'Get the screen center position of Camera2D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'shake_camera_2d', description: 'Apply a shake effect to a Camera2D node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, intensity: { type: 'number' }, duration: { type: 'number' } }, required: ['nodePath'] } },
+      // Batch 66 — Group D: JSON / config file tools
+      { name: 'read_json_file', description: 'Read and parse a JSON file from the project.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, filePath: { type: 'string' } }, required: ['projectPath', 'filePath'] } },
+      { name: 'write_json_file', description: 'Write data as a JSON file into the project.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, filePath: { type: 'string' }, data: { type: 'object' } }, required: ['projectPath', 'filePath'] } },
+      { name: 'merge_json_file', description: 'Merge data into an existing JSON file (shallow).', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, filePath: { type: 'string' }, data: { type: 'object' } }, required: ['projectPath', 'filePath', 'data'] } },
+      { name: 'list_project_files_by_extension', description: 'List project files with a given extension.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, extension: { type: 'string' } }, required: ['projectPath', 'extension'] } },
+      { name: 'get_file_stats', description: 'Get file size, modification time for a project file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, filePath: { type: 'string' } }, required: ['projectPath', 'filePath'] } },
+      { name: 'delete_project_file', description: 'Delete a file from a Godot project directory.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, filePath: { type: 'string' } }, required: ['projectPath', 'filePath'] } },
+      { name: 'copy_project_file', description: 'Copy a file within a Godot project directory.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, sourcePath: { type: 'string' }, destPath: { type: 'string' } }, required: ['projectPath', 'sourcePath', 'destPath'] } },
+      // Batch 66 — Group E: GDScript templates
+      { name: 'write_hit_flash_script', description: 'Write a hit flash visual feedback script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_parallax_layer_script', description: 'Write a parallax scrolling background script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, scrollFactor: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_trigger_zone_script', description: 'Write a trigger zone (Area2D) activation script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, triggerGroup: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_loot_drop_script', description: 'Write a random loot drop spawner script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_combo_system_script', description: 'Write a combo counter system script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, comboTimeout: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_status_effect_script', description: 'Write a status effect (burn/freeze/stun) script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_xp_level_system_script', description: 'Write an XP/level progression system script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_grid_movement_script', description: 'Write a grid-based movement controller script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, cellSize: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_shop_system_script', description: 'Write a basic shop/purchase system script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_input_remapping_script', description: 'Write an input remapping UI helper script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
       ],
     }));
 
@@ -21150,6 +21189,79 @@ class GodotServer {
           return await this.handleWriteCamera2dSmoothScript(request.params.arguments);
         case 'write_consumable_item_script':
           return await this.handleWriteConsumableItemScript(request.params.arguments);
+        // Batch 66 — Group A: Sprite2D animation frame control
+        case 'get_sprite_frame_info':
+          return await this.handleGetSpriteFrameInfo(request.params.arguments);
+        case 'set_sprite_hframes':
+          return await this.handleSetSpriteHframes(request.params.arguments);
+        case 'set_sprite_vframes':
+          return await this.handleSetSpriteVframes(request.params.arguments);
+        case 'set_sprite_region_rect':
+          return await this.handleSetSpriteRegionRect(request.params.arguments);
+        case 'set_sprite_region_enabled':
+          return await this.handleSetSpriteRegionEnabled(request.params.arguments);
+        // Batch 66 — Group B: TextureRect / NinePatchRect
+        case 'set_texture_rect_stretch':
+          return await this.handleSetTextureRectStretch(request.params.arguments);
+        case 'set_texture_rect_flip':
+          return await this.handleSetTextureRectFlip(request.params.arguments);
+        case 'get_texture_rect_info':
+          return await this.handleGetTextureRectInfo(request.params.arguments);
+        case 'set_nine_patch_margins':
+          return await this.handleSetNinePatchMargins(request.params.arguments);
+        case 'set_nine_patch_draw_center':
+          return await this.handleSetNinePatchDrawCenter(request.params.arguments);
+        case 'get_nine_patch_info':
+          return await this.handleGetNinePatchInfo(request.params.arguments);
+        // Batch 66 — Group C: Camera2D advanced controls
+        case 'set_camera_2d_limits':
+          return await this.handleSetCamera2dLimits(request.params.arguments);
+        case 'set_camera_2d_drag_margins':
+          return await this.handleSetCamera2dDragMargins(request.params.arguments);
+        case 'reset_camera_2d':
+          return await this.handleResetCamera2d(request.params.arguments);
+        case 'set_camera_2d_process_callback':
+          return await this.handleSetCamera2dProcessCallback(request.params.arguments);
+        case 'get_camera_2d_screen_center':
+          return await this.handleGetCamera2dScreenCenter(request.params.arguments);
+        case 'shake_camera_2d':
+          return await this.handleShakeCamera2d(request.params.arguments);
+        // Batch 66 — Group D: JSON / config file tools
+        case 'read_json_file':
+          return await this.handleReadJsonFile(request.params.arguments);
+        case 'write_json_file':
+          return await this.handleWriteJsonFile(request.params.arguments);
+        case 'merge_json_file':
+          return await this.handleMergeJsonFile(request.params.arguments);
+        case 'list_project_files_by_extension':
+          return await this.handleListProjectFilesByExtension(request.params.arguments);
+        case 'get_file_stats':
+          return await this.handleGetFileStats(request.params.arguments);
+        case 'delete_project_file':
+          return await this.handleDeleteProjectFile(request.params.arguments);
+        case 'copy_project_file':
+          return await this.handleCopyProjectFile(request.params.arguments);
+        // Batch 66 — Group E: GDScript templates
+        case 'write_hit_flash_script':
+          return await this.handleWriteHitFlashScript(request.params.arguments);
+        case 'write_parallax_layer_script':
+          return await this.handleWriteParallaxLayerScript(request.params.arguments);
+        case 'write_trigger_zone_script':
+          return await this.handleWriteTriggerZoneScript(request.params.arguments);
+        case 'write_loot_drop_script':
+          return await this.handleWriteLootDropScript(request.params.arguments);
+        case 'write_combo_system_script':
+          return await this.handleWriteComboSystemScript(request.params.arguments);
+        case 'write_status_effect_script':
+          return await this.handleWriteStatusEffectScript(request.params.arguments);
+        case 'write_xp_level_system_script':
+          return await this.handleWriteXpLevelSystemScript(request.params.arguments);
+        case 'write_grid_movement_script':
+          return await this.handleWriteGridMovementScript(request.params.arguments);
+        case 'write_shop_system_script':
+          return await this.handleWriteShopSystemScript(request.params.arguments);
+        case 'write_input_remapping_script':
+          return await this.handleWriteInputRemappingScript(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -39565,6 +39677,659 @@ func _on_body_entered(body: Node) -> void:
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, healAmount }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  // ── Batch 66 — Group A: Sprite2D animation frame control ────────────────────
+
+  private async handleGetSpriteFrameInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_sprite_frame_info', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetSpriteHframes(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_sprite_hframes', args, a => ({ node_path: a.nodePath, hframes: a.hframes ?? 1 }));
+  }
+
+  private async handleSetSpriteVframes(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_sprite_vframes', args, a => ({ node_path: a.nodePath, vframes: a.vframes ?? 1 }));
+  }
+
+  private async handleSetSpriteRegionRect(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_sprite_region_rect', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0, width: a.width ?? 64, height: a.height ?? 64 }));
+  }
+
+  private async handleSetSpriteRegionEnabled(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_sprite_region_enabled', args, a => ({ node_path: a.nodePath, enabled: a.enabled === true }));
+  }
+
+  // ── Batch 66 — Group B: TextureRect / NinePatchRect ─────────────────────────
+
+  private async handleSetTextureRectStretch(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_texture_rect_stretch', args, a => ({ node_path: a.nodePath, mode: a.mode ?? 'keep_aspect_centered' }));
+  }
+
+  private async handleSetTextureRectFlip(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_texture_rect_flip', args, a => ({ node_path: a.nodePath, flip_h: a.flipH === true, flip_v: a.flipV === true }));
+  }
+
+  private async handleGetTextureRectInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_texture_rect_info', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetNinePatchMargins(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_nine_patch_margins', args, a => ({ node_path: a.nodePath, left: a.left ?? 4, top: a.top ?? 4, right: a.right ?? 4, bottom: a.bottom ?? 4 }));
+  }
+
+  private async handleSetNinePatchDrawCenter(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_nine_patch_draw_center', args, a => ({ node_path: a.nodePath, draw_center: a.drawCenter !== false }));
+  }
+
+  private async handleGetNinePatchInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_nine_patch_info', args, a => ({ node_path: a.nodePath }));
+  }
+
+  // ── Batch 66 — Group C: Camera2D advanced controls ──────────────────────────
+
+  private async handleSetCamera2dLimits(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_camera_2d_limits', args, a => ({ node_path: a.nodePath, left: a.left ?? -10000000, top: a.top ?? -10000000, right: a.right ?? 10000000, bottom: a.bottom ?? 10000000 }));
+  }
+
+  private async handleSetCamera2dDragMargins(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_camera_2d_drag_margins', args, a => ({ node_path: a.nodePath, left: a.left ?? 0.2, top: a.top ?? 0.2, right: a.right ?? 0.2, bottom: a.bottom ?? 0.2 }));
+  }
+
+  private async handleResetCamera2d(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('reset_camera_2d', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetCamera2dProcessCallback(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_camera_2d_process_callback', args, a => ({ node_path: a.nodePath, callback: a.callback ?? 'idle' }));
+  }
+
+  private async handleGetCamera2dScreenCenter(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_camera_2d_screen_center', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleShakeCamera2d(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('shake_camera_2d', args, a => ({ node_path: a.nodePath, intensity: a.intensity ?? 10, duration: a.duration ?? 0.3 }));
+  }
+
+  // ── Batch 66 — Group D: JSON / config file tools ────────────────────────────
+
+  private async handleReadJsonFile(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.filePath) return createErrorResponse('projectPath and filePath are required.');
+    const absPath = args.filePath.replace('res://', args.projectPath + '/');
+    if (!existsSync(absPath)) return createErrorResponse('File not found: ' + absPath);
+    try {
+      const content = readFileSync(absPath, 'utf8');
+      const data = JSON.parse(content);
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, data }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed to parse JSON: ${e.message}`); }
+  }
+
+  private async handleWriteJsonFile(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.filePath) return createErrorResponse('projectPath and filePath are required.');
+    const absPath = args.filePath.replace('res://', args.projectPath + '/');
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      const content = JSON.stringify(args.data ?? {}, null, 2);
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, filePath: args.filePath, bytes: content.length }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleMergeJsonFile(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.filePath || !args.data) return createErrorResponse('projectPath, filePath and data are required.');
+    const absPath = args.filePath.replace('res://', args.projectPath + '/');
+    try {
+      let existing: any = {};
+      if (existsSync(absPath)) {
+        try { existing = JSON.parse(readFileSync(absPath, 'utf8')); } catch (_) {}
+      }
+      const merged = { ...existing, ...args.data };
+      const content = JSON.stringify(merged, null, 2);
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, keys: Object.keys(merged).length }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleListProjectFilesByExtension(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.extension) return createErrorResponse('projectPath and extension are required.');
+    const ext = args.extension.replace(/^\./, '');
+    try {
+      const files: string[] = [];
+      const walk = (dir: string) => {
+        if (!existsSync(dir)) return;
+        const entries = readdirSync(dir, { withFileTypes: true });
+        for (const e of entries) {
+          if (e.isDirectory() && !e.name.startsWith('.')) walk(join(dir, e.name));
+          else if (e.isFile() && e.name.endsWith('.' + ext)) files.push(join(dir, e.name).replace(args.projectPath + '/', 'res://'));
+        }
+      };
+      walk(args.projectPath);
+      return { content: [{ type: 'text', text: JSON.stringify({ files, count: files.length, extension: ext }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleGetFileStats(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.filePath) return createErrorResponse('projectPath and filePath are required.');
+    const absPath = args.filePath.replace('res://', args.projectPath + '/');
+    if (!existsSync(absPath)) return createErrorResponse('File not found.');
+    const stat = statSync(absPath);
+    return { content: [{ type: 'text', text: JSON.stringify({ success: true, size: stat.size, modified: stat.mtime.toISOString(), isFile: stat.isFile() }) }] };
+  }
+
+  private async handleDeleteProjectFile(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.filePath) return createErrorResponse('projectPath and filePath are required.');
+    const absPath = args.filePath.replace('res://', args.projectPath + '/');
+    if (!existsSync(absPath)) return createErrorResponse('File not found: ' + absPath);
+    try {
+      unlinkSync(absPath);
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, deleted: args.filePath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleCopyProjectFile(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.sourcePath || !args.destPath) return createErrorResponse('projectPath, sourcePath and destPath are required.');
+    const absSrc = args.sourcePath.replace('res://', args.projectPath + '/');
+    const absDest = args.destPath.replace('res://', args.projectPath + '/');
+    if (!existsSync(absSrc)) return createErrorResponse('Source file not found.');
+    try {
+      const dir = require('path').dirname(absDest);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      copyFileSync(absSrc, absDest);
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, source: args.sourcePath, dest: args.destPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  // ── Batch 66 — Group E: GDScript templates ──────────────────────────────────
+
+  private async handleWriteHitFlashScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends CanvasItem
+
+signal flash_finished
+
+@export var default_flash_color: Color = Color(1, 1, 1, 1)
+
+func flash(color: Color = default_flash_color, duration: float = 0.15) -> void:
+\tvar tween := create_tween()
+\ttween.tween_property(self, "modulate", color, duration * 0.3)
+\ttween.tween_property(self, "modulate", Color(1, 1, 1, 1), duration * 0.7)
+\tawait tween.finished
+\tflash_finished.emit()
+
+func flash_and_shake(color: Color = default_flash_color, duration: float = 0.15, shake_amount: float = 4.0) -> void:
+\tvar original_pos := position
+\tflash(color, duration)
+\tvar tween := create_tween()
+\tfor i in 4:
+\t\ttween.tween_property(self, "position", original_pos + Vector2(randf_range(-shake_amount, shake_amount), randf_range(-shake_amount, shake_amount)), duration * 0.1)
+\ttween.tween_property(self, "position", original_pos, duration * 0.1)
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteParallaxLayerScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const scrollFactor: number = args.scrollFactor ?? 0.5;
+    const content = `extends Node2D
+
+@export var scroll_factor: float = ${scrollFactor}
+@export var auto_scroll_speed: Vector2 = Vector2.ZERO
+
+var _camera_last_pos: Vector2 = Vector2.ZERO
+var _offset: Vector2 = Vector2.ZERO
+
+func _ready() -> void:
+\tvar cam := get_viewport().get_camera_2d()
+\tif cam:
+\t\t_camera_last_pos = cam.global_position
+
+func _process(delta: float) -> void:
+\t_offset += auto_scroll_speed * delta
+\tvar cam := get_viewport().get_camera_2d()
+\tif cam:
+\t\tvar cam_delta := cam.global_position - _camera_last_pos
+\t\t_offset += cam_delta * scroll_factor
+\t\t_camera_last_pos = cam.global_position
+\tposition = _offset
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, scrollFactor }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteTriggerZoneScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const triggerGroup: string = args.triggerGroup ?? 'player';
+    const content = `extends Area2D
+
+signal zone_entered(body)
+signal zone_exited(body)
+
+@export var trigger_group: String = "${triggerGroup}"
+@export var one_shot: bool = false
+
+var _triggered: bool = false
+
+func _ready() -> void:
+\tbody_entered.connect(_on_body_entered)
+\tbody_exited.connect(_on_body_exited)
+
+func _on_body_entered(body: Node) -> void:
+\tif one_shot and _triggered:
+\t\treturn
+\tif trigger_group.is_empty() or body.is_in_group(trigger_group):
+\t\t_triggered = true
+\t\tzone_entered.emit(body)
+
+func _on_body_exited(body: Node) -> void:
+\tif trigger_group.is_empty() or body.is_in_group(trigger_group):
+\t\tzone_exited.emit(body)
+
+func reset() -> void:
+\t_triggered = false
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, triggerGroup }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteLootDropScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node2D
+
+signal loot_dropped(item_id)
+
+@export var loot_table: Array[Dictionary] = [
+\t{ "item_id": "coin", "weight": 70 },
+\t{ "item_id": "health_potion", "weight": 20 },
+\t{ "item_id": "rare_gem", "weight": 10 },
+]
+@export var drop_count_min: int = 1
+@export var drop_count_max: int = 3
+@export var scatter_radius: float = 32.0
+
+func drop_loot(drop_position: Vector2 = global_position) -> Array[String]:
+\tvar drops: Array[String] = []
+\tvar count := randi_range(drop_count_min, drop_count_max)
+\tfor i in count:
+\t\tvar item := _roll_loot()
+\t\tif item != "":
+\t\t\tdrops.append(item)
+\t\t\tloot_dropped.emit(item)
+\treturn drops
+
+func _roll_loot() -> String:
+\tvar total_weight := 0
+\tfor entry in loot_table:
+\t\ttotal_weight += entry.get("weight", 1)
+\tvar roll := randi_range(0, total_weight - 1)
+\tvar cumulative := 0
+\tfor entry in loot_table:
+\t\tcumulative += entry.get("weight", 1)
+\t\tif roll < cumulative:
+\t\t\treturn entry.get("item_id", "")
+\treturn ""
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteComboSystemScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const comboTimeout: number = args.comboTimeout ?? 2.0;
+    const content = `extends Node
+
+signal combo_updated(count)
+signal combo_broken
+signal combo_milestone(count)
+
+@export var combo_timeout: float = ${comboTimeout}
+@export var milestones: Array[int] = [5, 10, 20, 50]
+
+var combo_count: int = 0
+var _timer: SceneTreeTimer = null
+
+func register_hit() -> void:
+\tcombo_count += 1
+\tcombo_updated.emit(combo_count)
+\tif combo_count in milestones:
+\t\tcombo_milestone.emit(combo_count)
+\t_reset_timer()
+
+func _reset_timer() -> void:
+\tif _timer:
+\t\t_timer = null
+\t_timer = get_tree().create_timer(combo_timeout)
+\t_timer.timeout.connect(_on_timer_timeout)
+
+func _on_timer_timeout() -> void:
+\tif combo_count > 0:
+\t\tcombo_broken.emit()
+\tcombo_count = 0
+\t_timer = null
+
+func reset_combo() -> void:
+\tcombo_count = 0
+\t_timer = null
+\tcombo_broken.emit()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, comboTimeout }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteStatusEffectScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+
+signal effect_applied(effect_name)
+signal effect_expired(effect_name)
+signal effect_ticked(effect_name, value)
+
+enum EffectType { BURN, FREEZE, STUN, POISON }
+
+@export var tick_interval: float = 1.0
+
+var active_effects: Dictionary = {}
+
+func apply_effect(effect: EffectType, duration: float, value: float = 0.0) -> void:
+\tvar name := EffectType.keys()[effect]
+\tactive_effects[name] = { "duration": duration, "value": value, "elapsed": 0.0 }
+\teffect_applied.emit(name)
+
+func remove_effect(effect: EffectType) -> void:
+\tvar name := EffectType.keys()[effect]
+\tif active_effects.has(name):
+\t\tactive_effects.erase(name)
+\t\teffect_expired.emit(name)
+
+func has_effect(effect: EffectType) -> bool:
+\treturn active_effects.has(EffectType.keys()[effect])
+
+func _process(delta: float) -> void:
+\tvar expired: Array = []
+\tfor name in active_effects:
+\t\tvar data: Dictionary = active_effects[name]
+\t\tdata["elapsed"] += delta
+\t\tif data["elapsed"] >= tick_interval:
+\t\t\tdata["elapsed"] = 0.0
+\t\t\teffect_ticked.emit(name, data["value"])
+\t\tdata["duration"] -= delta
+\t\tif data["duration"] <= 0.0:
+\t\t\texpired.append(name)
+\tfor name in expired:
+\t\tactive_effects.erase(name)
+\t\teffect_expired.emit(name)
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteXpLevelSystemScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+
+signal xp_gained(amount, total)
+signal level_up(new_level)
+
+@export var base_xp_per_level: int = 100
+@export var level_scaling: float = 1.5
+
+var level: int = 1
+var current_xp: int = 0
+
+func xp_for_level(lvl: int) -> int:
+\treturn int(base_xp_per_level * pow(lvl, level_scaling))
+
+func gain_xp(amount: int) -> void:
+\tcurrent_xp += amount
+\txp_gained.emit(amount, current_xp)
+\t_check_level_up()
+
+func _check_level_up() -> void:
+\tvar needed := xp_for_level(level)
+\twhile current_xp >= needed:
+\t\tcurrent_xp -= needed
+\t\tlevel += 1
+\t\tlevel_up.emit(level)
+\t\tneeded = xp_for_level(level)
+
+func get_progress_ratio() -> float:
+\tvar needed := xp_for_level(level)
+\treturn float(current_xp) / float(needed) if needed > 0 else 0.0
+
+func reset() -> void:
+\tlevel = 1
+\tcurrent_xp = 0
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteGridMovementScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const cellSize: number = args.cellSize ?? 32;
+    const content = `extends CharacterBody2D
+
+@export var cell_size: int = ${cellSize}
+@export var move_speed: float = 8.0
+
+var _target_position: Vector2 = Vector2.ZERO
+var _moving: bool = false
+
+func _ready() -> void:
+\t_target_position = position
+
+func _process(delta: float) -> void:
+\tif not _moving:
+\t\t_handle_input()
+\tif _moving:
+\t\tposition = position.lerp(_target_position, move_speed * delta)
+\t\tif position.distance_to(_target_position) < 1.0:
+\t\t\tposition = _target_position
+\t\t\t_moving = false
+
+func _handle_input() -> void:
+\tvar dir := Vector2i.ZERO
+\tif Input.is_action_just_pressed("ui_right"):
+\t\tdir = Vector2i(1, 0)
+\telif Input.is_action_just_pressed("ui_left"):
+\t\tdir = Vector2i(-1, 0)
+\telif Input.is_action_just_pressed("ui_down"):
+\t\tdir = Vector2i(0, 1)
+\telif Input.is_action_just_pressed("ui_up"):
+\t\tdir = Vector2i(0, -1)
+\tif dir != Vector2i.ZERO:
+\t\t_target_position = position + Vector2(dir * cell_size)
+\t\t_moving = true
+
+func move_to_cell(cell: Vector2i) -> void:
+\t_target_position = Vector2(cell * cell_size)
+\t_moving = true
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, cellSize }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteShopSystemScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+
+signal item_purchased(item_id, price)
+signal purchase_failed(item_id, reason)
+signal currency_changed(new_amount)
+
+@export var currency: int = 0
+
+var catalog: Array[Dictionary] = []
+
+func add_item(item_id: String, name: String, price: int, description: String = "") -> void:
+\tcatalog.append({ "id": item_id, "name": name, "price": price, "description": description })
+
+func purchase(item_id: String) -> bool:
+\tfor item in catalog:
+\t\tif item["id"] == item_id:
+\t\t\tif currency >= item["price"]:
+\t\t\t\tcurrency -= item["price"]
+\t\t\t\tcurrency_changed.emit(currency)
+\t\t\t\titem_purchased.emit(item_id, item["price"])
+\t\t\t\treturn true
+\t\t\telse:
+\t\t\t\tpurchase_failed.emit(item_id, "insufficient_funds")
+\t\t\t\treturn false
+\tpurchase_failed.emit(item_id, "not_found")
+\treturn false
+
+func add_currency(amount: int) -> void:
+\tcurrency += amount
+\tcurrency_changed.emit(currency)
+
+func get_item(item_id: String) -> Dictionary:
+\tfor item in catalog:
+\t\tif item["id"] == item_id:
+\t\t\treturn item
+\treturn {}
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteInputRemappingScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+
+signal action_remapped(action, new_event)
+
+var _listening_action: String = ""
+var _original_bindings: Dictionary = {}
+
+func start_listening(action_name: String) -> void:
+\t_listening_action = action_name
+
+func stop_listening() -> void:
+\t_listening_action = ""
+
+func _input(event: InputEvent) -> void:
+\tif _listening_action.is_empty():
+\t\treturn
+\tif event is InputEventKey or event is InputEventJoypadButton or event is InputEventMouseButton:
+\t\tif event.is_pressed() and not event.is_echo():
+\t\t\t_apply_remap(_listening_action, event)
+\t\t\t_listening_action = ""
+\t\t\tget_viewport().set_input_as_handled()
+
+func _apply_remap(action: String, event: InputEvent) -> void:
+\tif not InputMap.has_action(action):
+\t\treturn
+\tif not _original_bindings.has(action):
+\t\t_original_bindings[action] = InputMap.action_get_events(action).duplicate()
+\tInputMap.action_erase_events(action)
+\tInputMap.action_add_event(action, event)
+\taction_remapped.emit(action, event)
+
+func restore_defaults(action: String) -> void:
+\tif _original_bindings.has(action):
+\t\tInputMap.action_erase_events(action)
+\t\tfor ev in _original_bindings[action]:
+\t\t\tInputMap.action_add_event(action, ev)
+\t\t_original_bindings.erase(action)
+
+func get_action_display(action: String) -> String:
+\tif InputMap.has_action(action):
+\t\tvar events := InputMap.action_get_events(action)
+\t\tif not events.is_empty():
+\t\t\treturn events[0].as_text()
+\treturn "Unbound"
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
   }
 
