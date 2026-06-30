@@ -777,18 +777,6 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_scene_tree_paused(params)
 		"set_rich_text_label_bbcode":
 			_cmd_set_rich_text_label_bbcode(params)
-		"set_progress_bar_value":
-			_cmd_set_progress_bar_value(params)
-		"set_slider_value":
-			_cmd_set_slider_value(params)
-		"get_spin_box_value":
-			_cmd_get_spin_box_value(params)
-		"set_spin_box_value":
-			_cmd_set_spin_box_value(params)
-		"set_option_button_selected":
-			_cmd_set_option_button_selected(params)
-		"get_option_button_selected":
-			_cmd_get_option_button_selected(params)
 		"add_option_button_item":
 			_cmd_add_option_button_item(params)
 		"set_tab_container_current":
@@ -825,10 +813,6 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_item_list_selected(params)
 		"set_check_box_pressed":
 			_cmd_set_check_box_pressed(params)
-		"get_line_edit_text":
-			_cmd_get_line_edit_text(params)
-		"set_line_edit_text":
-			_cmd_set_line_edit_text(params)
 		"get_text_edit_text":
 			_cmd_get_text_edit_text(params)
 		"set_text_edit_text":
@@ -1061,6 +1045,46 @@ func _handle_command(json_str: String) -> void:
 			_cmd_set_label_text(params)
 		"get_progress_bar_value":
 			_cmd_get_progress_bar_value(params)
+		"set_progress_bar_value":
+			_cmd_set_progress_bar_value(params)
+		"get_slider_value":
+			_cmd_get_slider_value(params)
+		"set_slider_value":
+			_cmd_set_slider_value(params)
+		"get_spin_box_value":
+			_cmd_get_spin_box_value(params)
+		"set_spin_box_value":
+			_cmd_set_spin_box_value(params)
+		"get_line_edit_text":
+			_cmd_get_line_edit_text(params)
+		"set_line_edit_text":
+			_cmd_set_line_edit_text(params)
+		"is_button_pressed":
+			_cmd_is_button_pressed(params)
+		"set_button_pressed":
+			_cmd_set_button_pressed(params)
+		"click_button":
+			_cmd_click_button(params)
+		"get_option_button_selected":
+			_cmd_get_option_button_selected(params)
+		"set_option_button_selected":
+			_cmd_set_option_button_selected(params)
+		"get_tab_container_tab":
+			_cmd_get_tab_container_tab(params)
+		"set_tab_container_tab":
+			_cmd_set_tab_container_tab(params)
+		"get_texture_rect_texture":
+			_cmd_get_texture_rect_texture(params)
+		"set_texture_rect_texture":
+			_cmd_set_texture_rect_texture(params)
+		"get_color_rect_color":
+			_cmd_get_color_rect_color(params)
+		"set_color_rect_color":
+			_cmd_set_color_rect_color(params)
+		"get_panel_stylebox":
+			_cmd_get_panel_stylebox(params)
+		"get_control_size":
+			_cmd_get_control_size(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -9854,6 +9878,127 @@ func _cmd_get_progress_bar_value(params: Dictionary) -> void:
 		return
 	var pb := node as ProgressBar
 	_send_response({"success": true, "value": pb.value, "min_value": pb.min_value, "max_value": pb.max_value, "ratio": pb.ratio})
+
+func _cmd_get_slider_value(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node is HSlider or node is VSlider:
+		var r = node as Range
+		_send_response({"success": true, "value": r.value, "min_value": r.min_value, "max_value": r.max_value, "step": r.step})
+	else:
+		_send_response({"error": "Not a Slider: " + (node.get_class() if node != null else "null")})
+
+func _cmd_is_button_pressed(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is BaseButton:
+		_send_response({"error": "Button not found: " + node_path})
+		return
+	var btn := node as BaseButton
+	_send_response({"success": true, "pressed": btn.button_pressed, "disabled": btn.disabled, "toggle_mode": btn.toggle_mode})
+
+func _cmd_set_button_pressed(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var pressed: bool = params.get("pressed", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is BaseButton:
+		_send_response({"error": "Button not found: " + node_path})
+		return
+	(node as BaseButton).button_pressed = pressed
+	_send_response({"success": true, "pressed": pressed})
+
+func _cmd_click_button(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is BaseButton:
+		_send_response({"error": "Button not found: " + node_path})
+		return
+	(node as BaseButton).emit_signal("pressed")
+	_send_response({"success": true, "node_path": node_path})
+
+func _cmd_get_tab_container_tab(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TabContainer:
+		_send_response({"error": "TabContainer not found: " + node_path})
+		return
+	var tc := node as TabContainer
+	_send_response({"success": true, "current_tab": tc.current_tab, "tab_count": tc.get_tab_count()})
+
+func _cmd_set_tab_container_tab(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var tab: int = params.get("tab", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TabContainer:
+		_send_response({"error": "TabContainer not found: " + node_path})
+		return
+	(node as TabContainer).current_tab = tab
+	_send_response({"success": true, "current_tab": tab})
+
+func _cmd_get_texture_rect_texture(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TextureRect:
+		_send_response({"error": "TextureRect not found: " + node_path})
+		return
+	var tr := node as TextureRect
+	var tex_path = tr.texture.resource_path if tr.texture != null else null
+	_send_response({"success": true, "texture_path": tex_path, "has_texture": tr.texture != null})
+
+func _cmd_set_texture_rect_texture(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var texture_path: String = params.get("texture_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TextureRect:
+		_send_response({"error": "TextureRect not found: " + node_path})
+		return
+	var tex = load(texture_path) as Texture2D
+	if tex == null:
+		_send_response({"error": "Cannot load Texture2D: " + texture_path})
+		return
+	(node as TextureRect).texture = tex
+	_send_response({"success": true, "texture_path": texture_path})
+
+func _cmd_get_color_rect_color(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is ColorRect:
+		_send_response({"error": "ColorRect not found: " + node_path})
+		return
+	var c = (node as ColorRect).color
+	_send_response({"success": true, "r": c.r, "g": c.g, "b": c.b, "a": c.a, "html": c.to_html()})
+
+func _cmd_set_color_rect_color(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var r: float = params.get("r", 1.0)
+	var g: float = params.get("g", 1.0)
+	var b: float = params.get("b", 1.0)
+	var a: float = params.get("a", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is ColorRect:
+		_send_response({"error": "ColorRect not found: " + node_path})
+		return
+	(node as ColorRect).color = Color(r, g, b, a)
+	_send_response({"success": true, "r": r, "g": g, "b": b, "a": a})
+
+func _cmd_get_panel_stylebox(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Panel:
+		_send_response({"error": "Panel not found: " + node_path})
+		return
+	var p := node as Panel
+	var sb = p.get_theme_stylebox("panel")
+	_send_response({"success": true, "stylebox_class": sb.get_class() if sb != null else null, "has_custom_stylebox": p.has_theme_stylebox_override("panel")})
+
+func _cmd_get_control_size(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control not found: " + node_path})
+		return
+	var c := node as Control
+	_send_response({"success": true, "width": c.size.x, "height": c.size.y, "global_position": {"x": c.global_position.x, "y": c.global_position.y}, "rect_min_size": {"x": c.custom_minimum_size.x, "y": c.custom_minimum_size.y}})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()

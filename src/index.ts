@@ -12858,6 +12858,145 @@ class GodotServer {
           required: ['nodePath'],
         },
       },
+      {
+        name: 'get_slider_value',
+        description: 'Get the value from a Slider node in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Slider node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'is_button_pressed',
+        description: 'Get the pressed state of a Button in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Button node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_button_pressed',
+        description: 'Set the pressed state of a Button in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Button node.' },
+            pressed: { type: 'boolean', description: 'Pressed state to set (default: true).' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'click_button',
+        description: 'Simulate a click on a Button node in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Button node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_tab_container_tab',
+        description: 'Get the current tab of a TabContainer in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the TabContainer node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_tab_container_tab',
+        description: 'Set the current tab on a TabContainer in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the TabContainer node.' },
+            tab: { type: 'integer', description: 'Tab index to select (default: 0).' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_texture_rect_texture',
+        description: 'Get the texture resource path of a TextureRect.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the TextureRect node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_texture_rect_texture',
+        description: 'Set the texture on a TextureRect in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the TextureRect node.' },
+            texturePath: { type: 'string', description: 'res:// path to the texture resource.' },
+          },
+          required: ['nodePath', 'texturePath'],
+        },
+      },
+      {
+        name: 'get_color_rect_color',
+        description: 'Get the color of a ColorRect in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the ColorRect node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_color_rect_color',
+        description: 'Set the color on a ColorRect in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the ColorRect node.' },
+            r: { type: 'number', description: 'Red channel (0-1, default: 1).' },
+            g: { type: 'number', description: 'Green channel (0-1, default: 1).' },
+            b: { type: 'number', description: 'Blue channel (0-1, default: 1).' },
+            a: { type: 'number', description: 'Alpha channel (0-1, default: 1).' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_panel_stylebox',
+        description: 'Get the stylebox name override on a Panel in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Panel node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_control_size',
+        description: 'Get the current size of a Control node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Control node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
       ],
     }));
 
@@ -14743,6 +14882,30 @@ class GodotServer {
           return await this.handleSetLabelText(request.params.arguments);
         case 'get_progress_bar_value':
           return await this.handleGetProgressBarValue(request.params.arguments);
+        case 'get_slider_value':
+          return await this.handleGetSliderValue(request.params.arguments);
+        case 'is_button_pressed':
+          return await this.handleIsButtonPressed(request.params.arguments);
+        case 'set_button_pressed':
+          return await this.handleSetButtonPressed(request.params.arguments);
+        case 'click_button':
+          return await this.handleClickButton(request.params.arguments);
+        case 'get_tab_container_tab':
+          return await this.handleGetTabContainerTab(request.params.arguments);
+        case 'set_tab_container_tab':
+          return await this.handleSetTabContainerTab(request.params.arguments);
+        case 'get_texture_rect_texture':
+          return await this.handleGetTextureRectTexture(request.params.arguments);
+        case 'set_texture_rect_texture':
+          return await this.handleSetTextureRectTexture(request.params.arguments);
+        case 'get_color_rect_color':
+          return await this.handleGetColorRectColor(request.params.arguments);
+        case 'set_color_rect_color':
+          return await this.handleSetColorRectColor(request.params.arguments);
+        case 'get_panel_stylebox':
+          return await this.handleGetPanelStylebox(request.params.arguments);
+        case 'get_control_size':
+          return await this.handleGetControlSize(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -26559,6 +26722,79 @@ class GodotServer {
     return this.gameCommand('get_progress_bar_value', args, a => ({
       node_path: a.nodePath,
     }));
+  }
+
+  private async handleGetSliderValue(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_slider_value', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleIsButtonPressed(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('is_button_pressed', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetButtonPressed(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_button_pressed', args, a => ({ node_path: a.nodePath, pressed: a.pressed ?? true }));
+  }
+
+  private async handleClickButton(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('click_button', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetTabContainerTab(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_tab_container_tab', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetTabContainerTab(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_tab_container_tab', args, a => ({ node_path: a.nodePath, tab: a.tab ?? 0 }));
+  }
+
+  private async handleGetTextureRectTexture(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_texture_rect_texture', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetTextureRectTexture(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.texturePath) return createErrorResponse('texturePath is required.');
+    return this.gameCommand('set_texture_rect_texture', args, a => ({ node_path: a.nodePath, texture_path: a.texturePath }));
+  }
+
+  private async handleGetColorRectColor(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_color_rect_color', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetColorRectColor(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_color_rect_color', args, a => ({ node_path: a.nodePath, r: a.r ?? 1, g: a.g ?? 1, b: a.b ?? 1, a: a.a ?? 1 }));
+  }
+
+  private async handleGetPanelStylebox(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_panel_stylebox', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetControlSize(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_control_size', args, a => ({ node_path: a.nodePath }));
   }
 
 }
