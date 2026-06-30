@@ -380,6 +380,24 @@ func _handle_command(json_str: String) -> void:
 			_cmd_animtree_remove_transition(params)
 		"animtree_get_structure":
 			_cmd_animtree_get_structure(params)
+		"tilemap_set_cell":
+			_cmd_tilemap_set_cell(params)
+		"tilemap_get_used_cells":
+			_cmd_tilemap_get_used_cells(params)
+		"tilemap_clear":
+			_cmd_tilemap_clear(params)
+		"audio_bus_list":
+			_cmd_audio_bus_list(params)
+		"audio_bus_create":
+			_cmd_audio_bus_create(params)
+		"audio_bus_set_volume":
+			_cmd_audio_bus_set_volume(params)
+		"audio_bus_add_effect":
+			_cmd_audio_bus_add_effect(params)
+		"get_performance_counters":
+			_cmd_get_performance_counters(params)
+		"batch_set_properties":
+			_cmd_batch_set_properties(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -4802,6 +4820,163 @@ func _cmd_animtree_get_structure(params: Dictionary) -> void:
 
 func _to_serializable(val: Variant) -> Variant:
 	return _variant_to_json(val)
+
+
+func _cmd_tilemap_set_cell(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var layer: int = params.get("layer", 0)
+	var x: int = params.get("x", 0)
+	var y: int = params.get("y", 0)
+	var source_id: int = params.get("source_id", 0)
+	var ax: int = params.get("atlas_coords_x", 0)
+	var ay: int = params.get("atlas_coords_y", 0)
+	var alt: int = params.get("alternative_tile", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TileMap:
+		_send_response({"error": "TileMap not found: " + node_path})
+		return
+	var tm := node as TileMap
+	tm.set_cell(layer, Vector2i(x, y), source_id, Vector2i(ax, ay), alt)
+	_send_response({"success": true, "cell": {"x": x, "y": y}, "layer": layer})
+
+
+func _cmd_tilemap_get_used_cells(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var layer: int = params.get("layer", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TileMap:
+		_send_response({"error": "TileMap not found: " + node_path})
+		return
+	var tm := node as TileMap
+	var cells: Array = []
+	for cell in tm.get_used_cells(layer):
+		cells.append({"x": cell.x, "y": cell.y})
+	_send_response({"success": true, "cells": cells, "count": cells.size()})
+
+
+func _cmd_tilemap_clear(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var layer: int = params.get("layer", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TileMap:
+		_send_response({"error": "TileMap not found: " + node_path})
+		return
+	var tm := node as TileMap
+	tm.clear_layer(layer)
+	_send_response({"success": true, "layer": layer})
+
+
+func _cmd_audio_bus_list(params: Dictionary) -> void:
+	var buses: Array = []
+	for i in range(AudioServer.get_bus_count()):
+		var effects: Array = []
+		for j in range(AudioServer.get_bus_effect_count(i)):
+			var fx = AudioServer.get_bus_effect(i, j)
+			effects.append({"type": fx.get_class(), "enabled": AudioServer.is_bus_effect_enabled(i, j)})
+		buses.append({
+			"name": AudioServer.get_bus_name(i),
+			"volume_db": AudioServer.get_bus_volume_db(i),
+			"muted": AudioServer.is_bus_mute(i),
+			"solo": AudioServer.is_bus_solo(i),
+			"effects": effects
+		})
+	_send_response({"success": true, "buses": buses})
+
+
+func _cmd_audio_bus_create(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "")
+	if bus_name.is_empty():
+		_send_response({"error": "bus_name is required"})
+		return
+	if AudioServer.get_bus_index(bus_name) >= 0:
+		_send_response({"error": "Bus already exists: " + bus_name})
+		return
+	AudioServer.add_bus()
+	var idx: int = AudioServer.get_bus_count() - 1
+	AudioServer.set_bus_name(idx, bus_name)
+	_send_response({"success": true, "bus_name": bus_name, "index": idx})
+
+
+func _cmd_audio_bus_set_volume(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "")
+	var volume_db: float = params.get("volume_db", 0.0)
+	var idx: int = AudioServer.get_bus_index(bus_name)
+	if idx < 0:
+		_send_response({"error": "Bus not found: " + bus_name})
+		return
+	AudioServer.set_bus_volume_db(idx, volume_db)
+	_send_response({"success": true, "bus_name": bus_name, "volume_db": volume_db})
+
+
+func _cmd_audio_bus_add_effect(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "")
+	var effect_type: String = params.get("effect_type", "AudioEffectReverb")
+	var idx: int = AudioServer.get_bus_index(bus_name)
+	if idx < 0:
+		_send_response({"error": "Bus not found: " + bus_name})
+		return
+	var effect = ClassDB.instantiate(effect_type)
+	if effect == null:
+		_send_response({"error": "Unknown effect type: " + effect_type})
+		return
+	var effect_params: Dictionary = params.get("effect_params", {})
+	for key in effect_params:
+		if effect.get(key) != null:
+			effect.set(key, effect_params[key])
+	AudioServer.add_bus_effect(idx, effect)
+	_send_response({"success": true, "bus_name": bus_name, "effect_type": effect_type})
+
+
+func _cmd_get_performance_counters(params: Dictionary) -> void:
+	var requested: Array = params.get("counter_names", [])
+	var ALL_COUNTERS = [
+		"time/fps", "time/process", "time/physics_process",
+		"memory/static", "memory/static_max", "memory/msg_buf_max",
+		"object/objects", "object/resources", "object/nodes",
+		"render/total_primitives_in_frame", "render/total_draw_calls_in_frame",
+		"render/video_mem_used", "render/texture_mem_used", "render/buffer_mem_used",
+		"physics_2d/active_objects", "physics_2d/collision_pairs", "physics_2d/island_count",
+		"physics_3d/active_objects", "physics_3d/collision_pairs", "physics_3d/island_count",
+	]
+	var counters_to_get = requested if not requested.is_empty() else ALL_COUNTERS
+	var results: Dictionary = {}
+	for name in counters_to_get:
+		var idx: int = Performance.MONITOR_NAMES.find(name) if "MONITOR_NAMES" in Performance else -1
+		if idx >= 0:
+			results[name] = Performance.get_monitor(idx)
+		else:
+			# try by Monitor enum
+			results[name] = Performance.get_monitor(Performance.TIME_FPS) if name == "time/fps" else null
+	# Simpler approach using known enums
+	results = {
+		"fps": Performance.get_monitor(Performance.TIME_FPS),
+		"process_ms": Performance.get_monitor(Performance.TIME_PROCESS) * 1000,
+		"physics_ms": Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000,
+		"objects": Performance.get_monitor(Performance.OBJECT_COUNT),
+		"nodes": Performance.get_monitor(Performance.OBJECT_NODE_COUNT),
+		"resources": Performance.get_monitor(Performance.OBJECT_RESOURCE_COUNT),
+		"video_mem_mb": Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED) / 1048576.0,
+		"draw_calls": Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
+		"physics_2d_objects": Performance.get_monitor(Performance.PHYSICS_2D_ACTIVE_OBJECTS),
+		"physics_3d_objects": Performance.get_monitor(Performance.PHYSICS_3D_ACTIVE_OBJECTS),
+	}
+	_send_response({"success": true, "counters": results})
+
+
+func _cmd_batch_set_properties(params: Dictionary) -> void:
+	var operations: Array = params.get("operations", [])
+	var results: Array = []
+	for op in operations:
+		var node_path: String = op.get("node_path", op.get("nodePath", ""))
+		var property: String = op.get("property", "")
+		var value = op.get("value", null)
+		var node = get_tree().root.get_node_or_null(NodePath(node_path))
+		if node == null:
+			results.append({"node_path": node_path, "property": property, "success": false, "error": "Node not found"})
+			continue
+		node.set(property, value)
+		results.append({"node_path": node_path, "property": property, "success": true})
+	_send_response({"success": true, "results": results})
 
 
 func _exit_tree() -> void:

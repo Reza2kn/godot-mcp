@@ -4130,6 +4130,345 @@ class GodotServer {
           required: ['projectPath'],
         },
       },
+      // ── Node Transform / Order ─────────────────────────────────────────────
+      {
+        name: 'reorder_node',
+        description: 'Move a node up or down among its siblings in a scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'Scene path (res:// or absolute)' },
+            nodeName: { type: 'string', description: 'Name of the node to reorder' },
+            direction: { type: 'string', enum: ['up', 'down'], description: "'up' or 'down'" },
+          },
+          required: ['projectPath', 'scenePath', 'nodeName', 'direction'],
+        },
+      },
+      {
+        name: 'get_node_transform',
+        description: 'Get position, rotation, and scale of a node in a scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'Scene path (res:// or absolute)' },
+            nodeName: { type: 'string', description: 'Name of the node' },
+          },
+          required: ['projectPath', 'scenePath', 'nodeName'],
+        },
+      },
+      {
+        name: 'set_node_transform',
+        description: 'Set position, rotation, or scale of a node in a scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'Scene path (res:// or absolute)' },
+            nodeName: { type: 'string', description: 'Name of the node' },
+            position: { type: 'object', description: '{x, y} or {x, y, z}' },
+            rotation: { type: 'number', description: 'Rotation in radians' },
+            scale: { type: 'object', description: '{x, y} or {x, y, z}' },
+          },
+          required: ['projectPath', 'scenePath', 'nodeName'],
+        },
+      },
+      // ── Groups ─────────────────────────────────────────────────────────────
+      {
+        name: 'list_all_groups',
+        description: 'List all node groups used across all scenes in the project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'add_node_to_group',
+        description: 'Add a node to a group in a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'Scene path (res:// or absolute)' },
+            nodeName: { type: 'string', description: 'Name of the node' },
+            groupName: { type: 'string', description: 'Group name to add' },
+          },
+          required: ['projectPath', 'scenePath', 'nodeName', 'groupName'],
+        },
+      },
+      {
+        name: 'remove_node_from_group',
+        description: 'Remove a node from a group in a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'Scene path (res:// or absolute)' },
+            nodeName: { type: 'string', description: 'Name of the node' },
+            groupName: { type: 'string', description: 'Group name to remove' },
+          },
+          required: ['projectPath', 'scenePath', 'nodeName', 'groupName'],
+        },
+      },
+      // ── Plugins ────────────────────────────────────────────────────────────
+      {
+        name: 'plugin_list',
+        description: 'List all plugins in the project and their enabled state.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'plugin_enable',
+        description: 'Enable a plugin in project.godot by its addons/ path.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            pluginPath: { type: 'string', description: 'e.g. res://addons/my_plugin/plugin.cfg' },
+          },
+          required: ['projectPath', 'pluginPath'],
+        },
+      },
+      {
+        name: 'plugin_disable',
+        description: 'Disable a plugin in project.godot by its addons/ path.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            pluginPath: { type: 'string', description: 'e.g. res://addons/my_plugin/plugin.cfg' },
+          },
+          required: ['projectPath', 'pluginPath'],
+        },
+      },
+      // ── Assets ─────────────────────────────────────────────────────────────
+      {
+        name: 'shader_create',
+        description: 'Create a new .gdshader file with a template for a shader type.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            shaderPath: { type: 'string', description: 'Output path (res:// or absolute)' },
+            shaderType: { type: 'string', enum: ['canvas_item', 'spatial', 'particles'], description: 'Shader type (default: canvas_item)' },
+            overwrite: { type: 'boolean', description: 'Overwrite if file exists' },
+          },
+          required: ['projectPath', 'shaderPath'],
+        },
+      },
+      {
+        name: 'material_create',
+        description: 'Create a new StandardMaterial3D or CanvasItemMaterial .tres file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            materialPath: { type: 'string', description: 'Output path (res:// or absolute)' },
+            materialType: { type: 'string', enum: ['StandardMaterial3D', 'CanvasItemMaterial', 'ShaderMaterial'], description: 'Material type (default: StandardMaterial3D)' },
+            overwrite: { type: 'boolean', description: 'Overwrite if file exists' },
+          },
+          required: ['projectPath', 'materialPath'],
+        },
+      },
+      {
+        name: 'script_template',
+        description: 'Generate a GDScript template file for a Godot base class.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scriptPath: { type: 'string', description: 'Output path (res:// or absolute)' },
+            baseClass: { type: 'string', description: 'Godot base class e.g. CharacterBody2D' },
+            className: { type: 'string', description: 'Optional class_name declaration' },
+            overwrite: { type: 'boolean', description: 'Overwrite if file exists' },
+          },
+          required: ['projectPath', 'scriptPath', 'baseClass'],
+        },
+      },
+      // ── Export ─────────────────────────────────────────────────────────────
+      {
+        name: 'export_list_presets',
+        description: 'List all export presets defined in export_presets.cfg.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'export_project',
+        description: 'Export the project using a named export preset.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            presetName: { type: 'string', description: 'Name of the export preset to use' },
+            outputPath: { type: 'string', description: 'Absolute path for the exported file' },
+            debug: { type: 'boolean', description: 'Use debug export (default: false)' },
+          },
+          required: ['projectPath', 'presetName', 'outputPath'],
+        },
+      },
+      // ── TileMap (runtime) ──────────────────────────────────────────────────
+      {
+        name: 'tilemap_set_cell',
+        description: 'Set a cell in a TileMap node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the TileMap node' },
+            layer: { type: 'number', description: 'TileMap layer index (default 0)' },
+            x: { type: 'number', description: 'Cell X coordinate' },
+            y: { type: 'number', description: 'Cell Y coordinate' },
+            sourceId: { type: 'number', description: 'Tile source ID' },
+            atlasCoordsX: { type: 'number', description: 'Atlas X coord (default 0)' },
+            atlasCoordsY: { type: 'number', description: 'Atlas Y coord (default 0)' },
+            alternativeTile: { type: 'number', description: 'Alternative tile index (default 0)' },
+          },
+          required: ['nodePath', 'x', 'y', 'sourceId'],
+        },
+      },
+      {
+        name: 'tilemap_get_used_cells',
+        description: 'Get all used cell coords in a TileMap layer in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the TileMap node' },
+            layer: { type: 'number', description: 'TileMap layer index (default 0)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'tilemap_clear',
+        description: 'Clear all cells in a TileMap layer in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the TileMap node' },
+            layer: { type: 'number', description: 'TileMap layer index (default 0)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      // ── Audio Bus (runtime) ────────────────────────────────────────────────
+      {
+        name: 'audio_bus_list',
+        description: 'List all audio buses with their volume and effects.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'audio_bus_create',
+        description: 'Create a new audio bus in the AudioServer.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            busName: { type: 'string', description: 'Name for the new audio bus' },
+          },
+          required: ['busName'],
+        },
+      },
+      {
+        name: 'audio_bus_set_volume',
+        description: 'Set the volume of an audio bus in dB.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            busName: { type: 'string', description: 'Name of the audio bus' },
+            volumeDb: { type: 'number', description: 'Volume in decibels' },
+          },
+          required: ['busName', 'volumeDb'],
+        },
+      },
+      {
+        name: 'audio_bus_add_effect',
+        description: 'Add an audio effect to a bus by effect type name.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            busName: { type: 'string', description: 'Name of the audio bus' },
+            effectType: { type: 'string', description: 'e.g. AudioEffectReverb' },
+            effectParams: { type: 'object', description: 'Optional effect parameters' },
+          },
+          required: ['busName', 'effectType'],
+        },
+      },
+      // ── Performance / Batch (runtime) ──────────────────────────────────────
+      {
+        name: 'get_performance_counters',
+        description: 'Get all performance monitor counter values from the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            counterNames: { type: 'array', items: { type: 'string' }, description: 'Optional list of specific counter names' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'batch_set_properties',
+        description: 'Set multiple properties on multiple nodes in one call.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            operations: {
+              type: 'array',
+              description: 'Array of {nodePath, property, value} operations',
+              items: {
+                type: 'object',
+                properties: {
+                  nodePath: { type: 'string' },
+                  property: { type: 'string' },
+                  value: {},
+                },
+                required: ['nodePath', 'property', 'value'],
+              },
+            },
+          },
+          required: ['operations'],
+        },
+      },
+      // ── Class API / Scene Info ─────────────────────────────────────────────
+      {
+        name: 'get_class_api',
+        description: 'Get methods, properties, and signals of a Godot class.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            className: { type: 'string', description: 'Godot class name e.g. Node2D' },
+          },
+          required: ['projectPath', 'className'],
+        },
+      },
+      {
+        name: 'scene_node_count',
+        description: 'Count the number of nodes in a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'Scene path (res:// or absolute)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
       ],
     }));
 
@@ -4621,6 +4960,65 @@ class GodotServer {
           return await this.handleOpenScene(request.params.arguments);
         case 'gdextension_list':
           return await this.handleGdextensionList(request.params.arguments);
+        // ── Node Transform / Order ───────────────────────────────────────────
+        case 'reorder_node':
+          return await this.handleReorderNode(request.params.arguments);
+        case 'get_node_transform':
+          return await this.handleGetNodeTransform(request.params.arguments);
+        case 'set_node_transform':
+          return await this.handleSetNodeTransform(request.params.arguments);
+        // ── Groups ───────────────────────────────────────────────────────────
+        case 'list_all_groups':
+          return await this.handleListAllGroups(request.params.arguments);
+        case 'add_node_to_group':
+          return await this.handleAddNodeToGroup(request.params.arguments);
+        case 'remove_node_from_group':
+          return await this.handleRemoveNodeFromGroup(request.params.arguments);
+        // ── Plugins ──────────────────────────────────────────────────────────
+        case 'plugin_list':
+          return await this.handlePluginList(request.params.arguments);
+        case 'plugin_enable':
+          return await this.handlePluginEnable(request.params.arguments);
+        case 'plugin_disable':
+          return await this.handlePluginDisable(request.params.arguments);
+        // ── Assets ───────────────────────────────────────────────────────────
+        case 'shader_create':
+          return await this.handleShaderCreate(request.params.arguments);
+        case 'material_create':
+          return await this.handleMaterialCreate(request.params.arguments);
+        case 'script_template':
+          return await this.handleScriptTemplate(request.params.arguments);
+        // ── Export ───────────────────────────────────────────────────────────
+        case 'export_list_presets':
+          return await this.handleExportListPresets(request.params.arguments);
+        case 'export_project':
+          return await this.handleExportProject(request.params.arguments);
+        // ── TileMap (runtime) ────────────────────────────────────────────────
+        case 'tilemap_set_cell':
+          return await this.handleTilemapSetCell(request.params.arguments);
+        case 'tilemap_get_used_cells':
+          return await this.handleTilemapGetUsedCells(request.params.arguments);
+        case 'tilemap_clear':
+          return await this.handleTilemapClear(request.params.arguments);
+        // ── Audio Bus (runtime) ──────────────────────────────────────────────
+        case 'audio_bus_list':
+          return await this.handleAudioBusList(request.params.arguments);
+        case 'audio_bus_create':
+          return await this.handleAudioBusCreate(request.params.arguments);
+        case 'audio_bus_set_volume':
+          return await this.handleAudioBusSetVolume(request.params.arguments);
+        case 'audio_bus_add_effect':
+          return await this.handleAudioBusAddEffect(request.params.arguments);
+        // ── Performance / Batch (runtime) ────────────────────────────────────
+        case 'get_performance_counters':
+          return await this.handleGetPerformanceCounters(request.params.arguments);
+        case 'batch_set_properties':
+          return await this.handleBatchSetProperties(request.params.arguments);
+        // ── Class API / Scene Info ───────────────────────────────────────────
+        case 'get_class_api':
+          return await this.handleGetClassApi(request.params.arguments);
+        case 'scene_node_count':
+          return await this.handleSceneNodeCount(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -9149,6 +9547,448 @@ class GodotServer {
       });
     }
     return { content: [{ type: 'text', text: JSON.stringify(results, null, 2) }] };
+  }
+
+  // ── Node Transform / Order ─────────────────────────────────────────────────
+
+  private async handleReorderNode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.nodeName || !args.direction)
+      return createErrorResponse('projectPath, scenePath, nodeName, and direction are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const headerEnd = content.indexOf('[node ');
+    const header = headerEnd > 0 ? content.slice(0, headerEnd) : '';
+    const blocks = content.slice(headerEnd >= 0 ? headerEnd : 0).split(/(?=\[node )/).filter(b => b.trim());
+    const idx = blocks.findIndex(b => {
+      const m = b.match(/\[node name="([^"]+)"/);
+      return m && m[1] === args.nodeName;
+    });
+    if (idx < 0) return createErrorResponse(`Node "${args.nodeName}" not found.`);
+    const targetParent = (blocks[idx].match(/parent="([^"]+)"/) || [])[1] ?? '.';
+    const siblingIndices = blocks.reduce<number[]>((acc, b, i) => {
+      const p = (b.match(/parent="([^"]+)"/) || [])[1] ?? '.';
+      if (p === targetParent) acc.push(i);
+      return acc;
+    }, []);
+    const posInSiblings = siblingIndices.indexOf(idx);
+    if (args.direction === 'up' && posInSiblings > 0) {
+      const swapIdx = siblingIndices[posInSiblings - 1];
+      [blocks[idx], blocks[swapIdx]] = [blocks[swapIdx], blocks[idx]];
+    } else if (args.direction === 'down' && posInSiblings < siblingIndices.length - 1) {
+      const swapIdx = siblingIndices[posInSiblings + 1];
+      [blocks[idx], blocks[swapIdx]] = [blocks[swapIdx], blocks[idx]];
+    } else {
+      return createErrorResponse(`Cannot move "${args.nodeName}" ${args.direction}: already at boundary.`);
+    }
+    try { writeFileSync(absScene, header + blocks.join(''), 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: `Node "${args.nodeName}" moved ${args.direction}.` }] };
+  }
+
+  private async handleGetNodeTransform(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.nodeName)
+      return createErrorResponse('projectPath, scenePath, and nodeName are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const nodes = this.parseTscnNodes(content);
+    const node = nodes.find(n => n.name === args.nodeName);
+    if (!node) return createErrorResponse(`Node "${args.nodeName}" not found.`);
+    const parseVec2 = (s: string | undefined) => {
+      if (!s) return null;
+      const m = s.match(/Vector2\(\s*([-\d.]+)\s*,\s*([-\d.]+)\s*\)/);
+      return m ? { x: parseFloat(m[1]), y: parseFloat(m[2]) } : null;
+    };
+    const parseVec3 = (s: string | undefined) => {
+      if (!s) return null;
+      const m = s.match(/Vector3\(\s*([-\d.]+)\s*,\s*([-\d.]+)\s*,\s*([-\d.]+)\s*\)/);
+      return m ? { x: parseFloat(m[1]), y: parseFloat(m[2]), z: parseFloat(m[3]) } : null;
+    };
+    const posMatch = node.body.match(/position\s*=\s*(Vector[23]\([^)]+\))/);
+    const rotMatch = node.body.match(/rotation(?:_degrees)?\s*=\s*([-\d.]+)/);
+    const scaleMatch = node.body.match(/scale\s*=\s*(Vector[23]\([^)]+\))/);
+    const result = {
+      nodeName: args.nodeName,
+      position: posMatch ? (parseVec3(posMatch[1]) || parseVec2(posMatch[1])) : null,
+      rotation: rotMatch ? parseFloat(rotMatch[1]) : null,
+      scale: scaleMatch ? (parseVec3(scaleMatch[1]) || parseVec2(scaleMatch[1])) : null,
+    };
+    return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+  }
+
+  private async handleSetNodeTransform(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.nodeName)
+      return createErrorResponse('projectPath, scenePath, and nodeName are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const nodeRegex = new RegExp(`(\\[node name="${args.nodeName}"[^\\]]*\\][\\s\\S]*?)(?=\\[node |\\[connection |$)`);
+    const match = content.match(nodeRegex);
+    if (!match) return createErrorResponse(`Node "${args.nodeName}" not found.`);
+    let block = match[1];
+    const changes: string[] = [];
+    if (args.position !== undefined) {
+      const p = args.position;
+      const vec = p.z !== undefined ? `Vector3(${p.x}, ${p.y}, ${p.z})` : `Vector2(${p.x}, ${p.y})`;
+      if (/\nposition\s*=/.test(block)) block = block.replace(/\nposition\s*=.*/, `\nposition = ${vec}`);
+      else block = block.replace(/\n$/, '') + `\nposition = ${vec}\n`;
+      changes.push(`position=${JSON.stringify(p)}`);
+    }
+    if (args.rotation !== undefined) {
+      const r = args.rotation as number;
+      if (/\nrotation\s*=/.test(block)) block = block.replace(/\nrotation\s*=.*/, `\nrotation = ${r}`);
+      else block = block.replace(/\n$/, '') + `\nrotation = ${r}\n`;
+      changes.push(`rotation=${r}`);
+    }
+    if (args.scale !== undefined) {
+      const s = args.scale;
+      const vec = s.z !== undefined ? `Vector3(${s.x}, ${s.y}, ${s.z})` : `Vector2(${s.x}, ${s.y})`;
+      if (/\nscale\s*=/.test(block)) block = block.replace(/\nscale\s*=.*/, `\nscale = ${vec}`);
+      else block = block.replace(/\n$/, '') + `\nscale = ${vec}\n`;
+      changes.push(`scale=${JSON.stringify(s)}`);
+    }
+    const newContent = content.replace(nodeRegex, block);
+    try { writeFileSync(absScene, newContent, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: `Updated ${changes.join(', ')} on node "${args.nodeName}".` }] };
+  }
+
+  // ── Groups ─────────────────────────────────────────────────────────────────
+
+  private async handleListAllGroups(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const scenes = this.collectFiles(args.projectPath, ['.tscn']);
+    const groups = new Set<string>();
+    const groupsByScene: Record<string, string[]> = {};
+    for (const scene of scenes) {
+      let content: string;
+      try { content = readFileSync(scene, 'utf8'); } catch { continue; }
+      const sceneGroups: string[] = [];
+      const matches = content.matchAll(/groups=\[(.*?)\]/g);
+      for (const m of matches) {
+        const groupNames = m[1].match(/"([^"]+)"/g)?.map(s => s.slice(1, -1)) || [];
+        for (const g of groupNames) { groups.add(g); sceneGroups.push(g); }
+      }
+      if (sceneGroups.length > 0) {
+        const relPath = scene.startsWith(args.projectPath) ? scene.slice(args.projectPath.length + 1) : scene;
+        groupsByScene[relPath] = [...new Set(sceneGroups)];
+      }
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ groups: [...groups].sort(), groupsByScene }, null, 2) }] };
+  }
+
+  private async handleAddNodeToGroup(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.nodeName || !args.groupName)
+      return createErrorResponse('projectPath, scenePath, nodeName, and groupName are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const nodeRegex = new RegExp(`(\\[node name="${args.nodeName}"[^\\]]*\\])([\\s\\S]*?)(?=\\[node |\\[connection |$)`);
+    const match = content.match(nodeRegex);
+    if (!match) return createErrorResponse(`Node "${args.nodeName}" not found.`);
+    let block = match[2];
+    if (block.includes('groups=[')) {
+      if (block.includes(`"${args.groupName}"`)) return { content: [{ type: 'text', text: `Node already in group "${args.groupName}".` }] };
+      block = block.replace(/groups=\[([^\]]*)\]/, (_, inner) => `groups=[${inner.trim() ? inner + ', "' + args.groupName + '"' : '"' + args.groupName + '"'}]`);
+    } else {
+      block = `\ngroups=["${args.groupName}"]` + block;
+    }
+    const newContent = content.replace(nodeRegex, match[1] + block);
+    try { writeFileSync(absScene, newContent, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: `Node "${args.nodeName}" added to group "${args.groupName}".` }] };
+  }
+
+  private async handleRemoveNodeFromGroup(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.nodeName || !args.groupName)
+      return createErrorResponse('projectPath, scenePath, nodeName, and groupName are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const nodeRegex = new RegExp(`(\\[node name="${args.nodeName}"[^\\]]*\\])([\\s\\S]*?)(?=\\[node |\\[connection |$)`);
+    const match = content.match(nodeRegex);
+    if (!match) return createErrorResponse(`Node "${args.nodeName}" not found.`);
+    let block = match[2];
+    if (!block.includes(`"${args.groupName}"`)) return createErrorResponse(`Node "${args.nodeName}" not in group "${args.groupName}".`);
+    block = block.replace(new RegExp(`,?\\s*"${args.groupName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"|"${args.groupName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"\\s*,?\\s*`, 'g'), '');
+    block = block.replace(/groups=\[\s*\]\n?/, '');
+    const newContent = content.replace(nodeRegex, match[1] + block);
+    try { writeFileSync(absScene, newContent, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: `Node "${args.nodeName}" removed from group "${args.groupName}".` }] };
+  }
+
+  // ── Plugins ────────────────────────────────────────────────────────────────
+
+  private async handlePluginList(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const addonsDir = join(args.projectPath, 'addons');
+    const projectFile = join(args.projectPath, 'project.godot');
+    const projectContent = existsSync(projectFile) ? readFileSync(projectFile, 'utf8') : '';
+    const enabledMatch = projectContent.match(/\[editor_plugins\]([\s\S]*?)(?=\n\[|$)/);
+    const enabledPlugins = new Set<string>();
+    if (enabledMatch) {
+      const pluginMatches = enabledMatch[1].matchAll(/"([^"]+)"\s*=\s*true/g);
+      for (const m of pluginMatches) enabledPlugins.add(m[1]);
+    }
+    const plugins: Array<{ name: string; path: string; enabled: boolean; version?: string }> = [];
+    if (existsSync(addonsDir)) {
+      const { readdirSync } = await import('node:fs');
+      for (const dir of readdirSync(addonsDir)) {
+        const pluginCfg = join(addonsDir, dir, 'plugin.cfg');
+        if (existsSync(pluginCfg)) {
+          const cfg = readFileSync(pluginCfg, 'utf8');
+          const nameMatch = cfg.match(/^name\s*=\s*"([^"]+)"/m);
+          const versionMatch = cfg.match(/^version\s*=\s*"([^"]+)"/m);
+          const pluginPath = `res://addons/${dir}/plugin.cfg`;
+          plugins.push({
+            name: nameMatch ? nameMatch[1] : dir,
+            path: `addons/${dir}`,
+            enabled: enabledPlugins.has(pluginPath),
+            version: versionMatch ? versionMatch[1] : undefined,
+          });
+        }
+      }
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ plugins, enabledCount: plugins.filter(p => p.enabled).length }, null, 2) }] };
+  }
+
+  private async handlePluginEnable(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.pluginPath) return createErrorResponse('projectPath and pluginPath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const projectFile = join(args.projectPath, 'project.godot');
+    if (!existsSync(projectFile)) return createErrorResponse(`Not a valid Godot project: ${args.projectPath}`);
+    let content = readFileSync(projectFile, 'utf8');
+    const entry = `"${args.pluginPath}"=true`;
+    if (content.includes(entry)) return { content: [{ type: 'text', text: `Plugin "${args.pluginPath}" is already enabled.` }] };
+    if (content.includes('[editor_plugins]')) {
+      content = content.replace('[editor_plugins]', `[editor_plugins]\n\n${entry}`);
+    } else {
+      content += `\n[editor_plugins]\n\n${entry}\n`;
+    }
+    writeFileSync(projectFile, content, 'utf8');
+    return { content: [{ type: 'text', text: `Plugin "${args.pluginPath}" enabled.` }] };
+  }
+
+  private async handlePluginDisable(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.pluginPath) return createErrorResponse('projectPath and pluginPath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const projectFile = join(args.projectPath, 'project.godot');
+    if (!existsSync(projectFile)) return createErrorResponse(`Not a valid Godot project: ${args.projectPath}`);
+    let content = readFileSync(projectFile, 'utf8');
+    const pattern = new RegExp(`\\n?"${args.pluginPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"=true\\n?`, 'g');
+    const newContent = content.replace(pattern, '\n');
+    if (newContent === content) return createErrorResponse(`Plugin "${args.pluginPath}" not found or not enabled.`);
+    writeFileSync(projectFile, newContent, 'utf8');
+    return { content: [{ type: 'text', text: `Plugin "${args.pluginPath}" disabled.` }] };
+  }
+
+  // ── Assets ─────────────────────────────────────────────────────────────────
+
+  private async handleShaderCreate(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.shaderPath) return createErrorResponse('projectPath and shaderPath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.shaderPath);
+    const templates: Record<string, string> = {
+      canvas_item: `shader_type canvas_item;\n\nvoid fragment() {\n\tCOLOR = texture(TEXTURE, UV);\n}\n`,
+      spatial: `shader_type spatial;\n\nvoid fragment() {\n\tALBEDO = vec3(1.0);\n}\n`,
+      particles: `shader_type particles;\n\nvoid process() {\n\t// particle logic here\n}\n`,
+    };
+    const type = args.shaderType || 'canvas_item';
+    const template = templates[type] || templates['canvas_item'];
+    if (existsSync(absPath) && !args.overwrite) return createErrorResponse(`File already exists: ${absPath}. Set overwrite=true to replace.`);
+    try { writeFileSync(absPath, template, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: `Created ${type} shader at ${args.shaderPath}.` }] };
+  }
+
+  private async handleMaterialCreate(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.materialPath) return createErrorResponse('projectPath and materialPath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.materialPath);
+    const type = args.materialType || 'StandardMaterial3D';
+    const templates: Record<string, string> = {
+      StandardMaterial3D: `[gd_resource type="StandardMaterial3D" format=3]\n\n[resource]\n`,
+      CanvasItemMaterial: `[gd_resource type="CanvasItemMaterial" format=3]\n\n[resource]\n`,
+      ShaderMaterial: `[gd_resource type="ShaderMaterial" format=3]\n\n[resource]\n`,
+    };
+    const content = templates[type] || templates['StandardMaterial3D'];
+    if (existsSync(absPath) && !args.overwrite) return createErrorResponse(`File already exists: ${absPath}. Set overwrite=true to replace.`);
+    try { writeFileSync(absPath, content, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: `Created ${type} material at ${args.materialPath}.` }] };
+  }
+
+  private async handleScriptTemplate(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath || !args.baseClass) return createErrorResponse('projectPath, scriptPath, and baseClass are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.scriptPath);
+    const cn = args.className ? `class_name ${args.className}\n` : '';
+    const templates: Record<string, string> = {
+      CharacterBody2D: `extends CharacterBody2D\n${cn}\nconst SPEED = 200.0\nconst JUMP_VELOCITY = -400.0\n\nfunc _physics_process(delta: float) -> void:\n\tif not is_on_floor():\n\t\tvelocity += get_gravity() * delta\n\tvar direction := Input.get_axis("ui_left", "ui_right")\n\tvelocity.x = direction * SPEED if direction else move_toward(velocity.x, 0, SPEED)\n\tmove_and_slide()\n`,
+      CharacterBody3D: `extends CharacterBody3D\n${cn}\nconst SPEED = 5.0\nconst JUMP_VELOCITY = 4.5\n\nfunc _physics_process(delta: float) -> void:\n\tif not is_on_floor():\n\t\tvelocity += get_gravity() * delta\n\tvar input_dir := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")\n\tvar direction := (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()\n\tvelocity.x = direction.x * SPEED if direction else move_toward(velocity.x, 0, SPEED)\n\tvelocity.z = direction.z * SPEED if direction else move_toward(velocity.z, 0, SPEED)\n\tmove_and_slide()\n`,
+      RigidBody2D: `extends RigidBody2D\n${cn}\nfunc _ready() -> void:\n\tpass\n\nfunc _physics_process(_delta: float) -> void:\n\tpass\n`,
+      Area2D: `extends Area2D\n${cn}\nfunc _ready() -> void:\n\tbody_entered.connect(_on_body_entered)\n\nfunc _on_body_entered(body: Node2D) -> void:\n\tpass\n`,
+      Node: `extends Node\n${cn}\nfunc _ready() -> void:\n\tpass\n\nfunc _process(_delta: float) -> void:\n\tpass\n`,
+    };
+    const baseKey = Object.keys(templates).find(k => k === args.baseClass) || 'Node';
+    const template = templates[baseKey] || `extends ${args.baseClass}\n${cn}\nfunc _ready() -> void:\n\tpass\n`;
+    if (existsSync(absPath) && !args.overwrite) return createErrorResponse(`File already exists: ${absPath}. Set overwrite=true to replace.`);
+    try { writeFileSync(absPath, template, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: `Script template for ${args.baseClass} created at ${args.scriptPath}.` }] };
+  }
+
+  // ── Export ─────────────────────────────────────────────────────────────────
+
+  private async handleExportListPresets(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const presetsFile = join(args.projectPath, 'export_presets.cfg');
+    if (!existsSync(presetsFile)) return { content: [{ type: 'text', text: JSON.stringify({ presets: [] }) }] };
+    let content: string;
+    try { content = readFileSync(presetsFile, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const presets: Array<{ name: string; platform: string; runnable: boolean }> = [];
+    const presetMatches = content.matchAll(/\[preset\.\d+\]([\s\S]*?)(?=\n\[preset\.|$)/g);
+    for (const m of presetMatches) {
+      const block = m[1];
+      const nameMatch = block.match(/^name\s*=\s*"([^"]+)"/m);
+      const platformMatch = block.match(/^platform\s*=\s*"([^"]+)"/m);
+      const runnableMatch = block.match(/^runnable\s*=\s*(true|false)/m);
+      if (nameMatch) presets.push({
+        name: nameMatch[1],
+        platform: platformMatch ? platformMatch[1] : 'unknown',
+        runnable: runnableMatch ? runnableMatch[1] === 'true' : false,
+      });
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ presets }, null, 2) }] };
+  }
+
+  // ── TileMap (runtime) ──────────────────────────────────────────────────────
+
+  private async handleTilemapSetCell(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('tilemap_set_cell', args, a => ({
+      node_path: a.nodePath,
+      layer: a.layer ?? 0,
+      x: a.x ?? 0,
+      y: a.y ?? 0,
+      source_id: a.sourceId ?? 0,
+      atlas_coords_x: a.atlasCoordsX ?? 0,
+      atlas_coords_y: a.atlasCoordsY ?? 0,
+      alternative_tile: a.alternativeTile ?? 0,
+    }));
+  }
+
+  private async handleTilemapGetUsedCells(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('tilemap_get_used_cells', args, a => ({
+      node_path: a.nodePath,
+      layer: a.layer ?? 0,
+    }));
+  }
+
+  private async handleTilemapClear(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('tilemap_clear', args, a => ({
+      node_path: a.nodePath,
+      layer: a.layer ?? 0,
+    }));
+  }
+
+  // ── Audio Bus (runtime) ────────────────────────────────────────────────────
+
+  private async handleAudioBusList(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('audio_bus_list', args, () => ({}));
+  }
+
+  private async handleAudioBusCreate(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.busName) return createErrorResponse('busName is required.');
+    return this.gameCommand('audio_bus_create', args, a => ({ bus_name: a.busName }));
+  }
+
+  private async handleAudioBusSetVolume(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.busName || args.volumeDb === undefined) return createErrorResponse('busName and volumeDb are required.');
+    return this.gameCommand('audio_bus_set_volume', args, a => ({
+      bus_name: a.busName,
+      volume_db: a.volumeDb,
+    }));
+  }
+
+  private async handleAudioBusAddEffect(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.busName || !args.effectType) return createErrorResponse('busName and effectType are required.');
+    return this.gameCommand('audio_bus_add_effect', args, a => ({
+      bus_name: a.busName,
+      effect_type: a.effectType,
+      effect_params: a.effectParams ?? {},
+    }));
+  }
+
+  // ── Performance / Batch (runtime) ──────────────────────────────────────────
+
+  private async handleGetPerformanceCounters(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_performance_counters', args, a => ({
+      counter_names: a.counterNames ?? [],
+    }));
+  }
+
+  private async handleBatchSetProperties(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.operations || !Array.isArray(args.operations) || args.operations.length === 0)
+      return createErrorResponse('operations array is required and must not be empty.');
+    return this.gameCommand('batch_set_properties', args, a => ({ operations: a.operations }));
+  }
+
+  // ── Class API / Scene Info ─────────────────────────────────────────────────
+
+  private async handleGetClassApi(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.className) return createErrorResponse('projectPath and className are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('get_class_api', args, a => ({
+      projectPath: a.projectPath,
+      params: { class_name: a.className },
+    }));
+  }
+
+  private async handleSceneNodeCount(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const count = (content.match(/^\[node /gm) || []).length;
+    const connectionCount = (content.match(/^\[connection /gm) || []).length;
+    return { content: [{ type: 'text', text: JSON.stringify({ nodeCount: count, connectionCount, scenePath: args.scenePath }, null, 2) }] };
   }
 
 }

@@ -113,6 +113,8 @@ func _init():
             gradient_create(params)
         "set_anchor_preset":
             set_anchor_preset(params)
+        "get_class_api":
+            get_class_api(params)
         _:
             log_error("Unknown operation: " + operation)
             quit(1)
@@ -2142,4 +2144,40 @@ func set_anchor_preset(params):
         root.queue_free()
         quit(1)
     print(JSON.stringify({"success": true, "preset": preset, "node": node_path_str}))
+
+
+func get_class_api(params):
+    var class_name_str = params.get("class_name", "")
+    if class_name_str.is_empty():
+        printerr("class_name is required")
+        quit(1)
+    if not ClassDB.class_exists(class_name_str):
+        printerr("Class does not exist: " + class_name_str)
+        quit(1)
+
+    var methods: Array = []
+    for method in ClassDB.class_get_method_list(class_name_str, true):
+        methods.append(method.name)
+    methods.sort()
+
+    var properties: Array = []
+    for prop in ClassDB.class_get_property_list(class_name_str, true):
+        if prop.usage & PROPERTY_USAGE_EDITOR:
+            properties.append({"name": prop.name, "type": type_string(prop.type)})
+
+    var signals_list: Array = []
+    for sig in ClassDB.class_get_signal_list(class_name_str, true):
+        signals_list.append(sig.name)
+    signals_list.sort()
+
+    var parent: String = ClassDB.get_parent_class(class_name_str)
+
+    print(JSON.stringify({
+        "class": class_name_str,
+        "parent": parent,
+        "methods": methods,
+        "properties": properties,
+        "signals": signals_list
+    }))
+    quit()
     root.queue_free()
