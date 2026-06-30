@@ -29,7 +29,7 @@ Whether you're using **Claude**, **GPT-4o**, **Gemini**, or a **local model runn
 
 ## ✨ Why This Exists
 
-The original [godot-mcp by Coding-Solo](https://github.com/Coding-Solo/godot-mcp) was an amazing foundation. It proved AI-controlled Godot was possible. But it had ~20 tools.
+The original [godot-mcp by Tugcan Topaloglu](https://github.com/tugcantopaloglu/godot-mcp) was an amazing foundation. It proved AI-controlled Godot was possible at scale. But it had ~150 tools.
 
 We built this from the ground up with **1,969 tools** — one for every meaningful thing you can do in the Godot editor. Not inflated. Not duplicated. All real, all useful.
 
@@ -493,7 +493,7 @@ build/
 
 ## 🙏 Acknowledgments
 
-This project extends [godot-mcp](https://github.com/Coding-Solo/godot-mcp) by [Solomon Elias (Coding-Solo)](https://github.com/Coding-Solo) — the original proof of concept that AI can control Godot. His foundational architecture (TypeScript MCP server + headless GDScript ops + TCP runtime bridge) made all of this possible. 🙌
+This project builds on [godot-mcp](https://github.com/tugcantopaloglu/godot-mcp) by [Tugcan Topaloglu](https://github.com/tugcantopaloglu) — the ~150-tool server whose architecture (TypeScript MCP server + headless GDScript ops + TCP runtime bridge) we took and pushed all the way to 1,969. The original spark for AI-controlled Godot came from [Solomon Elias (Coding-Solo)](https://github.com/Coding-Solo). Both deserve credit. 🙌
 
 ---
 

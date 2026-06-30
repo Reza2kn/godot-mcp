@@ -30,7 +30,7 @@
   "author": "Reza Sayar",
   "contributors": [
     "Tugcan Topaloglu (https://github.com/tugcantopaloglu)",
-    "Solomon Elias <solomon@sippy.ai> (https://github.com/Coding-Solo)"
+    "Solomon Elias (https://github.com/Coding-Solo)"
   ],
   "type": "module",
   "bin": {
