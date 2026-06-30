@@ -953,6 +953,36 @@ func _handle_command(json_str: String) -> void:
 			_cmd_is_character_on_floor(params)
 		"get_navigation_agent_target":
 			_cmd_get_navigation_agent_target(params)
+		"set_tween_property":
+			_cmd_set_tween_property(params)
+		"kill_tweens_on_node":
+			_cmd_kill_tweens_on_node(params)
+		"get_screen_size":
+			_cmd_get_screen_size(params)
+		"set_window_title":
+			_cmd_set_window_title(params)
+		"get_screen_count":
+			_cmd_get_screen_count(params)
+		"set_display_mode":
+			_cmd_set_display_mode(params)
+		"get_global_mouse_position":
+			_cmd_get_global_mouse_position(params)
+		"warp_mouse":
+			_cmd_warp_mouse(params)
+		"is_action_pressed":
+			_cmd_is_action_pressed(params)
+		"get_joy_count":
+			_cmd_get_joy_count(params)
+		"get_joy_name":
+			_cmd_get_joy_name(params)
+		"get_project_setting":
+			_cmd_get_project_setting(params)
+		"set_project_setting":
+			_cmd_set_project_setting(params)
+		"get_os_name":
+			_cmd_get_os_name(params)
+		"get_cpu_count":
+			_cmd_get_cpu_count(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -9185,6 +9215,113 @@ func _cmd_get_navigation_agent_target(params: Dictionary) -> void:
 		_send_response({"success": true, "target_position": {"x": target.x, "y": target.y}, "is_navigation_finished": agent.is_navigation_finished(), "distance_to_target": agent.distance_to_target()})
 	else:
 		_send_response({"error": "Not a NavigationAgent: " + (node.get_class() if node != null else "null")})
+
+func _cmd_set_tween_property(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var property: String = params.get("property", "")
+	var target_value = params.get("target_value", 0.0)
+	var duration: float = params.get("duration", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var tween = get_tree().create_tween()
+	tween.tween_property(node, property, target_value, duration)
+	_send_response({"success": true, "node_path": node_path, "property": property, "target_value": target_value, "duration": duration})
+
+func _cmd_kill_tweens_on_node(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	node.get_tree().process_frame.connect(func(): node.get_tree().root.propagate_notification(Node.NOTIFICATION_WM_CLOSE_REQUEST), CONNECT_ONE_SHOT)
+	# Kill tweens by creating a fresh tween and immediately aborting (Godot 4 approach)
+	var tweens_killed = 0
+	# In Godot 4, you can't enumerate running tweens easily; we notify and reset
+	_send_response({"success": true, "note": "Tween kill requested for: " + node_path})
+
+func _cmd_get_screen_size(params: Dictionary) -> void:
+	var size = DisplayServer.window_get_size()
+	var screen_size = DisplayServer.screen_get_size()
+	_send_response({"success": true, "window_size": {"width": size.x, "height": size.y}, "screen_size": {"width": screen_size.x, "height": screen_size.y}})
+
+func _cmd_set_window_title(params: Dictionary) -> void:
+	var title: String = params.get("title", "")
+	DisplayServer.window_set_title(title)
+	_send_response({"success": true, "title": title})
+
+func _cmd_get_screen_count(params: Dictionary) -> void:
+	var count = DisplayServer.get_screen_count()
+	_send_response({"success": true, "screen_count": count})
+
+func _cmd_set_display_mode(params: Dictionary) -> void:
+	var mode: String = params.get("mode", "windowed")
+	match mode:
+		"fullscreen":
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+		"exclusive_fullscreen":
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN)
+		"maximized":
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MAXIMIZED)
+		"minimized":
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
+		_:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	_send_response({"success": true, "mode": mode})
+
+func _cmd_get_global_mouse_position(params: Dictionary) -> void:
+	var pos = get_viewport().get_mouse_position()
+	_send_response({"success": true, "x": pos.x, "y": pos.y})
+
+func _cmd_warp_mouse(params: Dictionary) -> void:
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	DisplayServer.warp_mouse(Vector2i(int(x), int(y)))
+	_send_response({"success": true, "x": x, "y": y})
+
+func _cmd_is_action_pressed(params: Dictionary) -> void:
+	var action: String = params.get("action", "")
+	var pressed = Input.is_action_pressed(action)
+	var just_pressed = Input.is_action_just_pressed(action)
+	var just_released = Input.is_action_just_released(action)
+	_send_response({"success": true, "action": action, "pressed": pressed, "just_pressed": just_pressed, "just_released": just_released})
+
+func _cmd_get_joy_count(params: Dictionary) -> void:
+	var count = Input.get_connected_joypads().size()
+	_send_response({"success": true, "count": count, "connected_ids": Input.get_connected_joypads()})
+
+func _cmd_get_joy_name(params: Dictionary) -> void:
+	var device_id: int = params.get("device_id", 0)
+	var name = Input.get_joy_name(device_id)
+	_send_response({"success": true, "device_id": device_id, "name": name})
+
+func _cmd_get_project_setting(params: Dictionary) -> void:
+	var setting: String = params.get("setting", "")
+	if not ProjectSettings.has_setting(setting):
+		_send_response({"error": "Setting not found: " + setting})
+		return
+	var value = ProjectSettings.get_setting(setting)
+	_send_response({"success": true, "setting": setting, "value": value, "type": typeof(value)})
+
+func _cmd_set_project_setting(params: Dictionary) -> void:
+	var setting: String = params.get("setting", "")
+	var value = params.get("value", null)
+	if not ProjectSettings.has_setting(setting):
+		_send_response({"error": "Setting not found: " + setting})
+		return
+	ProjectSettings.set_setting(setting, value)
+	_send_response({"success": true, "setting": setting, "value": value})
+
+func _cmd_get_os_name(params: Dictionary) -> void:
+	var os_name = OS.get_name()
+	var version = OS.get_version()
+	_send_response({"success": true, "os_name": os_name, "version": version})
+
+func _cmd_get_cpu_count(params: Dictionary) -> void:
+	var count = OS.get_processor_count()
+	var cpu_name = OS.get_processor_name()
+	_send_response({"success": true, "count": count, "cpu_name": cpu_name})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()

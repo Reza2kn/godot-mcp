@@ -12066,6 +12066,149 @@ class GodotServer {
           required: ['nodePath'],
         },
       },
+      {
+        name: 'set_tween_property',
+        description: 'Tween a property on a node to a value in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the node.' },
+            property: { type: 'string', description: 'Property to tween (e.g. "position:x").' },
+            targetValue: { type: 'number', description: 'Target value to tween to.' },
+            duration: { type: 'number', description: 'Duration in seconds (default 1.0).' },
+          },
+          required: ['nodePath', 'property'],
+        },
+      },
+      {
+        name: 'kill_tweens_on_node',
+        description: 'Kill all active tweens on a node in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_screen_size',
+        description: 'Get the screen/window size in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'get_screen_count',
+        description: 'Get the number of displays available in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'set_display_mode',
+        description: 'Set the window display mode in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            mode: { type: 'string', description: 'Mode: windowed, fullscreen, maximized, minimized.' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'get_global_mouse_position',
+        description: 'Get the global mouse position in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'get_joy_count',
+        description: 'Get the number of joypads connected in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'get_joy_name',
+        description: 'Get the name of a joypad by device index in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            deviceId: { type: 'integer', description: 'Device index (default 0).' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'get_os_name',
+        description: 'Get the OS/platform name from the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'get_cpu_count',
+        description: 'Get the CPU core count from the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'add_sub_viewport_container_to_scene',
+        description: 'Add a SubViewportContainer to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Path to parent node (default ".").' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_sub_viewport_to_scene',
+        description: 'Add a SubViewport node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Path to parent node (default ".").' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_visible_on_screen_notifier_2d',
+        description: 'Add a VisibleOnScreenNotifier2D to a scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'Path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Path to parent node (default ".").' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
       ],
     }));
 
@@ -13819,6 +13962,32 @@ class GodotServer {
           return await this.handleIsCharacterOnFloor(request.params.arguments);
         case 'get_navigation_agent_target':
           return await this.handleGetNavigationAgentTarget(request.params.arguments);
+        case 'set_tween_property':
+          return await this.handleSetTweenProperty(request.params.arguments);
+        case 'kill_tweens_on_node':
+          return await this.handleKillTweensOnNode(request.params.arguments);
+        case 'get_screen_size':
+          return await this.handleGetScreenSize(request.params.arguments);
+        case 'get_screen_count':
+          return await this.handleGetScreenCount(request.params.arguments);
+        case 'set_display_mode':
+          return await this.handleSetDisplayMode(request.params.arguments);
+        case 'get_global_mouse_position':
+          return await this.handleGetGlobalMousePosition(request.params.arguments);
+        case 'get_joy_count':
+          return await this.handleGetJoyCount(request.params.arguments);
+        case 'get_joy_name':
+          return await this.handleGetJoyName(request.params.arguments);
+        case 'get_os_name':
+          return await this.handleGetOsName(request.params.arguments);
+        case 'get_cpu_count':
+          return await this.handleGetCpuCount(request.params.arguments);
+        case 'add_sub_viewport_container_to_scene':
+          return await this.handleAddSubViewportContainerToScene(request.params.arguments);
+        case 'add_sub_viewport_to_scene':
+          return await this.handleAddSubViewportToScene(request.params.arguments);
+        case 'add_visible_on_screen_notifier_2d':
+          return await this.handleAddVisibleOnScreenNotifier2d(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -25026,6 +25195,104 @@ class GodotServer {
     args = normalizeParameters(args || {});
     if (!args.nodePath) return createErrorResponse('nodePath is required.');
     return this.gameCommand('get_navigation_agent_target', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetTweenProperty(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.property) return createErrorResponse('property is required.');
+    return this.gameCommand('set_tween_property', args, a => ({ node_path: a.nodePath, property: a.property, target_value: a.targetValue, duration: a.duration ?? 1.0 }));
+  }
+
+  private async handleKillTweensOnNode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('kill_tweens_on_node', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetScreenSize(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_screen_size', args, a => ({}));
+  }
+
+  private async handleGetScreenCount(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_screen_count', args, a => ({}));
+  }
+
+  private async handleSetDisplayMode(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_display_mode', args, a => ({ mode: a.mode ?? 'windowed' }));
+  }
+
+  private async handleGetGlobalMousePosition(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_global_mouse_position', args, a => ({}));
+  }
+
+  private async handleGetJoyCount(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_joy_count', args, a => ({}));
+  }
+
+  private async handleGetJoyName(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_joy_name', args, a => ({ device_id: a.deviceId ?? 0 }));
+  }
+
+  private async handleGetOsName(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_os_name', args, a => ({}));
+  }
+
+  private async handleGetCpuCount(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_cpu_count', args, a => ({}));
+  }
+
+  private async handleAddSubViewportContainerToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'SubViewportContainer',
+        node_type: 'SubViewportContainer',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddSubViewportToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'SubViewport',
+        node_type: 'SubViewport',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddVisibleOnScreenNotifier2d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'VisibleOnScreenNotifier2D',
+        node_type: 'VisibleOnScreenNotifier2D',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
   }
 
 }
