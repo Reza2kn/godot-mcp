@@ -13721,6 +13721,299 @@ class GodotServer {
           required: ['nodePath'],
         },
       },
+      {
+        name: 'get_shader_global_parameter',
+        description: 'Get a global shader parameter in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            parameterName: { type: 'string', description: 'Name of the global shader parameter' },
+          },
+          required: ['parameterName'],
+        },
+      },
+      {
+        name: 'set_shader_global_parameter',
+        description: 'Set a global shader parameter in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            parameterName: { type: 'string', description: 'Name of the global shader parameter' },
+            value: { description: 'Value to set' },
+          },
+          required: ['parameterName'],
+        },
+      },
+      {
+        name: 'get_tilemap_used_rect',
+        description: 'Get the used cell rect of a TileMap in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the TileMap node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_tilemap_cell_at',
+        description: 'Get tile source info at a cell in a TileMap.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the TileMap node' },
+            x: { type: 'number', description: 'Cell X coordinate' },
+            y: { type: 'number', description: 'Cell Y coordinate' },
+            layer: { type: 'number', description: 'Layer index (default: 0)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_tilemap_cell',
+        description: 'Set a tile at a cell position in a TileMap.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the TileMap node' },
+            x: { type: 'number', description: 'Cell X coordinate' },
+            y: { type: 'number', description: 'Cell Y coordinate' },
+            sourceId: { type: 'number', description: 'Tile source ID (default: 0)' },
+            atlasX: { type: 'number', description: 'Atlas X coordinate (default: 0)' },
+            atlasY: { type: 'number', description: 'Atlas Y coordinate (default: 0)' },
+            layer: { type: 'number', description: 'Layer index (default: 0)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'clear_tilemap_layer',
+        description: 'Clear all tiles in a TileMap layer in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the TileMap node' },
+            layer: { type: 'number', description: 'Layer index (default: 0)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_tilemap_layer_count',
+        description: 'Get the number of layers in a TileMap in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the TileMap node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_tilemap_layer_enabled',
+        description: 'Enable or disable a TileMap layer in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the TileMap node' },
+            layer: { type: 'number', description: 'Layer index (default: 0)' },
+            enabled: { type: 'boolean', description: 'Enable or disable the layer (default: true)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'world_to_map',
+        description: 'Convert world position to TileMap cell coords.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the TileMap node' },
+            x: { type: 'number', description: 'World X position' },
+            y: { type: 'number', description: 'World Y position' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'map_to_world',
+        description: 'Convert TileMap cell coords to world position.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the TileMap node' },
+            cellX: { type: 'number', description: 'Cell X coordinate' },
+            cellY: { type: 'number', description: 'Cell Y coordinate' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_sprite_frame',
+        description: 'Get the current frame of a Sprite2D in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Sprite2D node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_sprite_frame',
+        description: 'Set the frame on a Sprite2D in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Sprite2D node' },
+            frame: { type: 'number', description: 'Frame index (default: 0)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_sprite_texture',
+        description: 'Get the texture path of a Sprite2D in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Sprite2D node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_sprite_texture',
+        description: 'Set the texture on a Sprite2D in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Sprite2D node' },
+            texturePath: { type: 'string', description: 'Resource path (res://) to the texture' },
+          },
+          required: ['nodePath', 'texturePath'],
+        },
+      },
+      {
+        name: 'flip_sprite',
+        description: 'Set flip_h/flip_v on a Sprite2D in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Sprite2D node' },
+            flipH: { type: 'boolean', description: 'Flip horizontally (default: false)' },
+            flipV: { type: 'boolean', description: 'Flip vertically (default: false)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_label_font_size',
+        description: 'Get the font size of a Label in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Label node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_label_font_size',
+        description: 'Set the font size of a Label in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Label node' },
+            fontSize: { type: 'number', description: 'Font size in pixels (default: 16)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_label_color',
+        description: 'Set the font color of a Label in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Label node' },
+            r: { type: 'number', description: 'Red channel 0-1' },
+            g: { type: 'number', description: 'Green channel 0-1' },
+            b: { type: 'number', description: 'Blue channel 0-1' },
+            a: { type: 'number', description: 'Alpha channel 0-1 (default: 1)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_button_text',
+        description: 'Get the text of a Button node in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Button node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_button_text',
+        description: 'Set the text on a Button node in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Button node' },
+            text: { type: 'string', description: 'Text to set on the button' },
+          },
+          required: ['nodePath'],
+        },
+      },
+        {
+          name: 'list_tool_categories',
+          description: 'List all categories to navigate 1000+ tools efficiently.',
+          inputSchema: { type: 'object', properties: {} },
+        },
+        {
+          name: 'search_tools',
+          description: 'Search tools by keyword in tool names.',
+          inputSchema: {
+            type: 'object',
+            properties: { query: { type: 'string', description: 'Keyword to search (e.g. camera, audio, 2d)' } },
+            required: ['query'],
+          },
+        },
+        {
+          name: 'list_tools_in_category',
+          description: 'List all tools in a category. Call list_tool_categories first.',
+          inputSchema: {
+            type: 'object',
+            properties: { category: { type: 'string', description: 'Category key from list_tool_categories' } },
+            required: ['category'],
+          },
+        },
+        {
+          name: 'get_beginner_guide',
+          description: 'Get a start-here guide covering common game dev workflows.',
+          inputSchema: { type: 'object', properties: {} },
+        },
+        {
+          name: 'get_workflow',
+          description: 'Get step-by-step tool sequence for a goal (e.g. platformer).',
+          inputSchema: {
+            type: 'object',
+            properties: { goal: { type: 'string', description: 'What you want to build: platformer, fps, audio, ui...' } },
+            required: ['goal'],
+          },
+        },
+        {
+          name: 'explain_godot_concept',
+          description: 'Explain a Godot concept: Area2D, signals, scenes, etc.',
+          inputSchema: {
+            type: 'object',
+            properties: { concept: { type: 'string', description: 'Concept name (e.g. Area2D, CharacterBody2D, signal)' } },
+            required: ['concept'],
+          },
+        },
       ],
     }));
 
@@ -15748,6 +16041,58 @@ class GodotServer {
           return await this.handleGetMaterialProperty(request.params.arguments);
         case 'create_material_override':
           return await this.handleCreateMaterialOverride(request.params.arguments);
+        case 'get_shader_global_parameter':
+          return await this.handleGetShaderGlobalParameter(request.params.arguments);
+        case 'set_shader_global_parameter':
+          return await this.handleSetShaderGlobalParameter(request.params.arguments);
+        case 'get_tilemap_used_rect':
+          return await this.handleGetTilemapUsedRect(request.params.arguments);
+        case 'get_tilemap_cell_at':
+          return await this.handleGetTilemapCellAt(request.params.arguments);
+        case 'set_tilemap_cell':
+          return await this.handleSetTilemapCell(request.params.arguments);
+        case 'clear_tilemap_layer':
+          return await this.handleClearTilemapLayer(request.params.arguments);
+        case 'get_tilemap_layer_count':
+          return await this.handleGetTilemapLayerCount(request.params.arguments);
+        case 'set_tilemap_layer_enabled':
+          return await this.handleSetTilemapLayerEnabled(request.params.arguments);
+        case 'world_to_map':
+          return await this.handleWorldToMap(request.params.arguments);
+        case 'map_to_world':
+          return await this.handleMapToWorld(request.params.arguments);
+        case 'get_sprite_frame':
+          return await this.handleGetSpriteFrame(request.params.arguments);
+        case 'set_sprite_frame':
+          return await this.handleSetSpriteFrame(request.params.arguments);
+        case 'get_sprite_texture':
+          return await this.handleGetSpriteTexture(request.params.arguments);
+        case 'set_sprite_texture':
+          return await this.handleSetSpriteTexture(request.params.arguments);
+        case 'flip_sprite':
+          return await this.handleFlipSprite(request.params.arguments);
+        case 'get_label_font_size':
+          return await this.handleGetLabelFontSize(request.params.arguments);
+        case 'set_label_font_size':
+          return await this.handleSetLabelFontSize(request.params.arguments);
+        case 'set_label_color':
+          return await this.handleSetLabelColor(request.params.arguments);
+        case 'get_button_text':
+          return await this.handleGetButtonText(request.params.arguments);
+        case 'set_button_text':
+          return await this.handleSetButtonText(request.params.arguments);
+        case 'list_tool_categories':
+          return await this.handleListToolCategories(request.params.arguments);
+        case 'search_tools':
+          return await this.handleSearchTools(request.params.arguments);
+        case 'list_tools_in_category':
+          return await this.handleListToolsInCategory(request.params.arguments);
+        case 'get_beginner_guide':
+          return await this.handleGetBeginnerGuide(request.params.arguments);
+        case 'get_workflow':
+          return await this.handleGetWorkflow(request.params.arguments);
+        case 'explain_godot_concept':
+          return await this.handleExplainGodotConcept(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -28194,6 +28539,431 @@ class GodotServer {
     args = normalizeParameters(args || {});
     if (!args.nodePath) return createErrorResponse('nodePath is required.');
     return this.gameCommand('create_material_override', args, a => ({ node_path: a.nodePath, surface_index: a.surfaceIndex ?? 0 }));
+  }
+
+  private async handleGetShaderGlobalParameter(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.parameterName) return createErrorResponse('parameterName is required.');
+    return this.gameCommand('get_shader_global_parameter', args, a => ({ parameter_name: a.parameterName }));
+  }
+
+  private async handleSetShaderGlobalParameter(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.parameterName) return createErrorResponse('parameterName is required.');
+    return this.gameCommand('set_shader_global_parameter', args, a => ({ parameter_name: a.parameterName, value: a.value }));
+  }
+
+  private async handleGetTilemapUsedRect(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_tilemap_used_rect', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetTilemapCellAt(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_tilemap_cell_at', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0, layer: a.layer ?? 0 }));
+  }
+
+  private async handleSetTilemapCell(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_tilemap_cell', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0, source_id: a.sourceId ?? 0, atlas_x: a.atlasX ?? 0, atlas_y: a.atlasY ?? 0, layer: a.layer ?? 0 }));
+  }
+
+  private async handleClearTilemapLayer(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('clear_tilemap_layer', args, a => ({ node_path: a.nodePath, layer: a.layer ?? 0 }));
+  }
+
+  private async handleGetTilemapLayerCount(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_tilemap_layer_count', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetTilemapLayerEnabled(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_tilemap_layer_enabled', args, a => ({ node_path: a.nodePath, layer: a.layer ?? 0, enabled: a.enabled ?? true }));
+  }
+
+  private async handleWorldToMap(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('world_to_map', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0 }));
+  }
+
+  private async handleMapToWorld(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('map_to_world', args, a => ({ node_path: a.nodePath, cell_x: a.cellX ?? 0, cell_y: a.cellY ?? 0 }));
+  }
+
+  private async handleGetSpriteFrame(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_sprite_frame', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetSpriteFrame(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_sprite_frame', args, a => ({ node_path: a.nodePath, frame: a.frame ?? 0 }));
+  }
+
+  private async handleGetSpriteTexture(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_sprite_texture', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetSpriteTexture(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.texturePath) return createErrorResponse('texturePath is required.');
+    return this.gameCommand('set_sprite_texture', args, a => ({ node_path: a.nodePath, texture_path: a.texturePath }));
+  }
+
+  private async handleFlipSprite(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('flip_sprite', args, a => ({ node_path: a.nodePath, flip_h: a.flipH ?? false, flip_v: a.flipV ?? false }));
+  }
+
+  private async handleGetLabelFontSize(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_label_font_size', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetLabelFontSize(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_label_font_size', args, a => ({ node_path: a.nodePath, font_size: a.fontSize ?? 16 }));
+  }
+
+  private async handleSetLabelColor(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_label_color', args, a => ({ node_path: a.nodePath, r: a.r ?? 1, g: a.g ?? 1, b: a.b ?? 1, a: a.a ?? 1 }));
+  }
+
+  private async handleGetButtonText(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_button_text', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetButtonText(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_button_text', args, a => ({ node_path: a.nodePath, text: a.text ?? '' }));
+  }
+
+  // ── Navigation / Discovery helpers ──────────────────────────────────────────
+
+  private _toolNamesCache: string[] | null = null;
+
+  private getToolNames(): string[] {
+    if (this._toolNamesCache) return this._toolNamesCache;
+    try {
+      const src = readFileSync(__filename, 'utf8');
+      const matches = [...src.matchAll(/case '([^']+)':/g)];
+      this._toolNamesCache = matches.map(m => m[1]).filter(n => n !== 'default');
+      return this._toolNamesCache;
+    } catch {
+      return [];
+    }
+  }
+
+  private categorizeToolName(name: string): string {
+    if (/^(list_tool_categories|search_tools|list_tools_in_category|get_beginner_guide|get_workflow|explain_godot_concept)$/.test(name)) return 'navigation';
+    if (/project|run_project|stop_project|list_projects|get_godot|export_preset|launch_editor|get_project_info|create_project|get_uid|get_project_setting|set_project_setting/.test(name)) return 'project';
+    if (/create_scene|open_scene|save_scene|get_scene_structure|list_scenes|instance_scene|instantiate_scene|list_nodes_in_scene|duplicate_node_in_scene|add_node_to_scene|rename_node_in_scene|delete_node_from_scene|move_node_in_scene|set_node_property_in_scene|get_node_property_from_scene|attach_script_to_node_in_scene|get_children_of_node|list_scene_nodes|get_node_info|find_node_by_name|count_nodes|batch_set|group/.test(name)) return 'scene_files';
+    if (/^add_.*_to_scene$/.test(name) && /audio_stream_player/.test(name)) return 'add_audio_nodes';
+    if (/^add_.*_to_scene$/.test(name) && /gpu_particle|cpu_particle/.test(name)) return 'add_vfx_nodes';
+    if (/^add_.*_to_scene$/.test(name) && /(button|label|panel|container|h_box|v_box|grid|margin|scroll|tab|check|line_edit|text_edit|code_edit|slider|progress|spin_box|option_button|item_list|popup|rich_text|nine_patch|texture_rect|texture_button|texture_progress|color_rect|color_picker|graph_edit|graph_node|separator|split|flow|aspect_ratio|center_container|link_button|menu_button|tree_widget|video_stream|sub_viewport|viewport_container|panel_container|window_node|spin_slider)/.test(name)) return 'add_ui_nodes';
+    if (/^add_.*_to_scene$/.test(name) && /(3d|mesh|omni|spot|directional_light_3|sky|world_env|area_3d|character_body_3d|rigid_body_3d|static_body_3d|animatable_body_3d|vehicle|skeleton_3d|spring_arm|navigation_agent_3d|navigation_region_3d|navigation_obstacle_3d|navigation_link_3d|path_3d|fog|decal|voxel|occluder|csg|multi_mesh|soft_body|visible_on_screen_3d|marker_3d|audio_listener_3d|physical_bone_3d|xr|openxr|gpu_particle_3d|cpu_particle_3d|label_3d|sprite_3d|node_3d|audio_stream_player_3d|camera_3d|collision_shape_3d|collision_polygon_3d|ray_cast_3d|shape_cast_3d|joint_3d|hinge_joint|slider_joint|cone_twist|generic_6dof|pin_joint_3d|importer_mesh|grid_map|navigation_mesh|visual_instance|bone_attachment)/.test(name)) return 'add_3d_nodes';
+    if (/^add_.*_to_scene$/.test(name)) return 'add_2d_nodes';
+    if (/set_audio|play_audio|stop_audio|pause_audio|get_audio|audio_bus|set_volume|set_pitch|resume_audio|audio_stream/.test(name)) return 'runtime_audio';
+    if (/camera/.test(name)) return 'camera';
+    if (/physics|impulse|force|torque|linear_velocity|angular_velocity|gravity|apply_|rigid_body/.test(name)) return 'physics';
+    if (/^editor_|install_editor_plugin/.test(name)) return 'editor';
+    if (/read_file|write_file|create_file|delete_file|copy_file|rename_file|append_file|list_files|list_dir|directory|file_exists|file_size|file_content|get_file|set_file|get_text|set_text|parse_json|read_csv|read_xml|zip/.test(name)) return 'file_io';
+    if (/script|gdscript|attach_script|read_script|write_script|create_script|list_signal|connect_signal|disconnect_signal|emit_signal|list_method|list_class|export_var/.test(name)) return 'scripts';
+    if (/sprite_frames|tile_set|animation_lib|material|shader|theme|style_box|font_resource|texture_resource|create_resource|get_resource|list_resource|save_resource/.test(name)) return 'resources';
+    if (/validate|check_|inspect|diagnose|describe|explain|find_nodes|missing|scene_error|scene_warning|is_valid|has_collision|has_script|count_node|scene_overview|node_description|get_node_type|suggest_node|get_common_prop/.test(name)) return 'diagnostics';
+    if (/setup_|create_complete|create_.*_template|add_.*_complete|_full_setup|_starter/.test(name)) return 'templates';
+    return 'runtime_control';
+  }
+
+  private async handleListToolCategories(_args: any) {
+    const CATEGORIES: Record<string, { label: string; detail: string; examples: string[] }> = {
+      navigation: { label: '🧭 Navigation (START HERE)', detail: 'Meta-tools for finding the right tool. Use search_tools, list_tools_in_category, or get_workflow first.', examples: ['search_tools', 'list_tools_in_category', 'get_workflow', 'get_beginner_guide', 'explain_godot_concept'] },
+      project: { label: '📁 Project Management', detail: 'Create, open, run, stop, list, configure, and export Godot projects. Start here for any new project.', examples: ['create_project', 'run_project', 'stop_project', 'get_project_info', 'list_projects'] },
+      scene_files: { label: '🎬 Scene File Editing (Offline)', detail: 'Create and edit .tscn scene files without running Godot. Add/delete/rename nodes, set properties, move nodes.', examples: ['create_scene', 'get_scene_structure', 'add_node_to_scene', 'set_node_property_in_scene', 'delete_node_from_scene'] },
+      add_2d_nodes: { label: '2️⃣  Add 2D Nodes to Scenes', detail: 'Add Sprite2D, Area2D, CharacterBody2D, Camera2D, TileMap, lights, shapes, and all other 2D node types to .tscn files.', examples: ['add_sprite_2d_to_scene', 'add_area_2d_to_scene', 'add_character_body_2d_to_scene', 'add_camera_2d_to_scene', 'add_tile_map_to_scene'] },
+      add_3d_nodes: { label: '3️⃣  Add 3D Nodes to Scenes', detail: 'Add MeshInstance3D, CharacterBody3D, OmniLight3D, Camera3D, CSG shapes, and all 3D node types to .tscn files.', examples: ['add_mesh_instance_3d_to_scene', 'add_character_body_3d_to_scene', 'add_omni_light_3d_to_scene', 'add_camera_3d_to_scene', 'add_world_environment_to_scene'] },
+      add_ui_nodes: { label: '🖼️  Add UI/Control Nodes', detail: 'Add Label, Button, Panel, VBoxContainer, ProgressBar, LineEdit, Slider and all UI/Control node types to .tscn files.', examples: ['add_label_to_scene', 'add_button_to_scene', 'add_v_box_container_to_scene', 'add_progress_bar_to_scene', 'add_line_edit_to_scene'] },
+      add_audio_nodes: { label: '🔉 Add Audio Nodes', detail: 'Add AudioStreamPlayer, AudioStreamPlayer2D, AudioStreamPlayer3D to scene files.', examples: ['add_audio_stream_player_to_scene', 'add_audio_stream_player_2d_to_scene', 'add_audio_stream_player_3d_to_scene'] },
+      add_vfx_nodes: { label: '✨ Add VFX/Particle Nodes', detail: 'Add GPUParticles2D/3D, CPUParticles2D/3D, and other visual effect nodes to scene files.', examples: ['add_gpu_particles_2d_to_scene', 'add_gpu_particles_3d_to_scene', 'add_cpu_particles_2d_to_scene'] },
+      runtime_control: { label: '🎮 Runtime Node Control', detail: 'Control live game nodes while the game runs. Set position, rotation, scale, visibility, properties. Requires run_project first.', examples: ['set_node_position_2d', 'set_node_rotation', 'set_node_visible', 'get_node_position', 'spawn_node'] },
+      runtime_audio: { label: '🔊 Runtime Audio Control', detail: 'Play, stop, pause audio at runtime. Set volume, pitch, bus. Requires run_project first.', examples: ['play_audio_stream', 'stop_audio_stream', 'set_audio_volume', 'set_audio_bus_volume'] },
+      camera: { label: '📷 Camera Control', detail: 'Control Camera2D/3D at runtime: FOV, zoom, position, current camera, offset, limits.', examples: ['set_camera_fov', 'set_camera_zoom', 'set_camera_position', 'get_current_camera'] },
+      physics: { label: '⚡ Physics Runtime', detail: 'Apply forces, impulses, set velocities, gravity, configure physics bodies at runtime.', examples: ['apply_impulse_to_rigid_body', 'set_linear_velocity', 'set_angular_velocity', 'apply_force_to_rigid_body'] },
+      scripts: { label: '📝 Scripts & Signals', detail: 'Read, write, create GDScript files. List, connect, disconnect signals. Inspect class methods and properties.', examples: ['read_script', 'write_script', 'create_script', 'connect_signal', 'list_signals'] },
+      file_io: { label: '💾 File & Directory I/O', detail: 'Read/write files, list directories, copy/move/delete files, parse JSON. Works on any project file.', examples: ['read_file', 'write_file', 'list_files_in_directory', 'copy_file', 'delete_file'] },
+      resources: { label: '🗂️  Resources', detail: 'Create and edit Godot resource files (.tres): TileSet, SpriteFrames, AnimationLibrary, Materials, Shaders.', examples: ['create_sprite_frames', 'get_resource_info', 'list_resources', 'create_tile_set'] },
+      diagnostics: { label: '🔍 Diagnostics & Validation', detail: 'Validate scene setups, check for common errors, describe node types, find missing scripts, inspect project state.', examples: ['validate_scene', 'check_node_has_collision', 'get_scene_overview', 'find_missing_scripts'] },
+      templates: { label: '⚡ Beginner Templates', detail: 'One-call setups for common game patterns. Ideal for beginners or rapid prototyping.', examples: ['setup_2d_platformer_character', 'setup_3d_fps_controller', 'create_2d_ground_platform', 'setup_ui_health_bar'] },
+      editor: { label: '🖥️  Editor Control', detail: 'Control Godot editor in real-time. Requires installing the editor plugin first via install_editor_plugin.', examples: ['install_editor_plugin', 'editor_add_node', 'editor_select_node', 'editor_set_property', 'editor_undo'] },
+    };
+
+    const names = this.getToolNames();
+    const result = Object.entries(CATEGORIES).map(([key, cat]) => {
+      const count = names.filter(n => this.categorizeToolName(n) === key).length;
+      return { category: key, label: cat.label, detail: cat.detail, tool_count: count, examples: cat.examples };
+    });
+
+    return { content: [{ type: 'text', text: JSON.stringify({ categories: result, total_tools: names.length, tip: 'Call list_tools_in_category with a category key to see all tools in that group. Call search_tools to find by keyword. Call get_workflow for step-by-step guidance.' }, null, 2) }] };
+  }
+
+  private async handleSearchTools(args: any) {
+    args = normalizeParameters(args || {});
+    const query = (args.query || '').toLowerCase().trim();
+    if (!query) return createErrorResponse('query is required. Example: search_tools with query="camera"');
+    const names = this.getToolNames();
+    const matches = names.filter(n => n.toLowerCase().includes(query));
+    const tooMany = matches.length > 50;
+    return { content: [{ type: 'text', text: JSON.stringify({ query, matches: tooMany ? matches.slice(0, 50) : matches, count: matches.length, truncated: tooMany, tip: tooMany ? 'Too many results — try a more specific query' : undefined }, null, 2) }] };
+  }
+
+  private async handleListToolsInCategory(args: any) {
+    args = normalizeParameters(args || {});
+    const category = (args.category || '').toLowerCase().replace(/[\s-]/g, '_');
+    if (!category) return createErrorResponse('category is required. Call list_tool_categories first to see valid categories.');
+    const names = this.getToolNames();
+    const tools = names.filter(n => this.categorizeToolName(n) === category);
+    if (tools.length === 0) return createErrorResponse(`Unknown category "${category}". Call list_tool_categories to see valid category keys.`);
+    return { content: [{ type: 'text', text: JSON.stringify({ category, tools, count: tools.length }, null, 2) }] };
+  }
+
+  private async handleGetBeginnerGuide(_args: any) {
+    const guide = `# Godot MCP — Beginner Guide
+
+## Quick Start (5 steps)
+1. create_project — create a new Godot project folder
+2. create_scene — create your first scene (e.g. root type Node2D)
+3. add_*_to_scene — add nodes (Sprite2D, CharacterBody2D, etc.)
+4. set_node_property_in_scene — configure node properties
+5. run_project — run and test your game
+
+## Finding the Right Tool
+- **By category**: list_tool_categories → list_tools_in_category
+- **By keyword**: search_tools with query="camera" / "physics" / "audio"
+- **Step-by-step**: get_workflow with goal="platformer" / "fps" / "audio"
+- **Explain a node**: explain_godot_concept with concept="Area2D"
+
+## Key Rule: Offline vs Runtime
+- Tools with _to_scene or _in_scene → OFFLINE, no running game needed
+- set_*/get_* runtime tools → REQUIRE run_project to be running first
+- editor_* tools → REQUIRE install_editor_plugin first
+
+## Common Workflows
+- 2D Platformer: get_workflow goal="2d platformer"
+- 3D FPS: get_workflow goal="3d fps"
+- Top-Down RPG: get_workflow goal="top down"
+- Add music/SFX: get_workflow goal="audio"
+- Game HUD/UI: get_workflow goal="ui hud"
+- Physics setup: get_workflow goal="physics"
+- Signals/events: get_workflow goal="signals"
+
+## Project Path
+Always use the folder containing project.godot as projectPath.
+Example: /Users/me/games/my_game (not the .godot file itself)`;
+
+    return { content: [{ type: 'text', text: guide }] };
+  }
+
+  private async handleGetWorkflow(args: any) {
+    args = normalizeParameters(args || {});
+    const goal = (args.goal || '').toLowerCase();
+
+    interface Workflow { keywords: string[]; title: string; steps: string[] }
+    const WORKFLOWS: Workflow[] = [
+      {
+        keywords: ['platformer', '2d platform', 'side scroll', 'jump'],
+        title: '2D Platformer Player',
+        steps: [
+          '1. create_project — create your Godot project',
+          '2. create_scene — create Player.tscn with rootNodeType=CharacterBody2D',
+          '3. add_collision_shape_2d_to_scene — add CapsuleShape2D child (REQUIRED for physics)',
+          '4. add_animated_sprite_2d_to_scene — add visuals',
+          '5. create_script — create player.gd with move_and_slide() movement',
+          '6. attach_script_to_node_in_scene — attach player.gd to CharacterBody2D',
+          '7. create_scene — create Level.tscn with rootNodeType=Node2D',
+          '8. add_static_body_2d_to_scene + add_collision_shape_2d_to_scene — ground platform',
+          '9. instance_scene — instance Player.tscn into Level.tscn',
+          '10. add_camera_2d_to_scene — follow camera (set drag_horizontal_enabled=true)',
+          '11. run_project — test the platformer',
+        ],
+      },
+      {
+        keywords: ['fps', 'first person', 'shooter', '3d player', '3d character'],
+        title: '3D FPS Controller',
+        steps: [
+          '1. create_project',
+          '2. create_scene — Player.tscn with rootNodeType=CharacterBody3D',
+          '3. add_collision_shape_3d_to_scene — CapsuleShape3D child',
+          '4. add_camera_3d_to_scene — Camera3D as child (set position y=1.5 for eye height)',
+          '5. create_script — fps_player.gd with mouse look + WASD movement + move_and_slide()',
+          '6. attach_script_to_node_in_scene',
+          '7. create_scene — World.tscn with rootNodeType=Node3D',
+          '8. add_mesh_instance_3d_to_scene + add_static_body_3d_to_scene — floor',
+          '9. add_directional_light_3d_to_scene + add_world_environment_to_scene — lighting',
+          '10. instance_scene — add Player into World',
+          '11. run_project',
+        ],
+      },
+      {
+        keywords: ['top down', 'rpg', 'overhead', 'bird eye', 'topdown'],
+        title: 'Top-Down Character',
+        steps: [
+          '1. create_project',
+          '2. create_scene — Player.tscn with rootNodeType=CharacterBody2D',
+          '3. add_animated_sprite_2d_to_scene — 4-direction sprites',
+          '4. add_collision_shape_2d_to_scene — CircleShape2D',
+          '5. create_script — top_down.gd with 8-directional Input.get_vector() movement',
+          '6. attach_script_to_node_in_scene',
+          '7. create_scene — World.tscn with TileMapLayer or StaticBody2D walls',
+          '8. add_camera_2d_to_scene — with position_smoothing_enabled=true',
+          '9. run_project',
+        ],
+      },
+      {
+        keywords: ['audio', 'music', 'sound', 'sfx', 'soundtrack'],
+        title: 'Add Audio to Your Game',
+        steps: [
+          '1. add_audio_stream_player_to_scene — add AudioStreamPlayer to main scene',
+          '2. set_node_property_in_scene — set stream=res://audio/music.ogg',
+          '3. set_node_property_in_scene — set autoplay=true for background music',
+          '4. run_project — music starts automatically',
+          'For SFX: add separate AudioStreamPlayer nodes per sound, then at runtime: play_audio_stream',
+          'Volume control: set_audio_bus_volume for Master/Music/SFX buses',
+          'Tip: name audio buses Music and SFX in Godot Audio panel for clean separation',
+        ],
+      },
+      {
+        keywords: ['ui', 'hud', 'health bar', 'score', 'menu', 'interface', 'gui'],
+        title: 'Game UI / HUD',
+        steps: [
+          '1. create_scene — HUD.tscn with rootNodeType=CanvasLayer',
+          '2. add_h_box_container_to_scene — top bar container',
+          '3. add_label_to_scene — Score label (child of HBoxContainer)',
+          '4. add_progress_bar_to_scene — Health bar (child of HBoxContainer)',
+          '5. set_node_property_in_scene — set anchor_right=1, anchor_bottom=0 for top stretch',
+          '6. instance_scene — add HUD.tscn into main game scene',
+          'At runtime: set_label_text for score updates, set_progress_bar_value for health',
+        ],
+      },
+      {
+        keywords: ['physics', 'collision', 'rigid', 'bounce', 'gravity', 'force'],
+        title: 'Physics Setup Guide',
+        steps: [
+          'Choose body type:',
+          '  CharacterBody2D/3D — player-controlled movement (you drive velocity manually)',
+          '  RigidBody2D/3D — fully simulated physics (falls, bounces, rolls)',
+          '  StaticBody2D/3D — fixed immovable walls/floors',
+          '  Area2D/3D — detects overlaps, does NOT simulate forces',
+          'ALWAYS add a CollisionShape child to any physics body — physics WON\'T work without it',
+          'Common shapes: CapsuleShape (characters), BoxShape (platforms), CircleShape/SphereShape (balls)',
+          'At runtime: apply_impulse_to_rigid_body for instant push, apply_force_to_rigid_body for sustained force',
+          'For CharacterBody: call move_and_slide() every _physics_process frame',
+        ],
+      },
+      {
+        keywords: ['signal', 'event', 'connect', 'emit', 'callback'],
+        title: 'Using Signals',
+        steps: [
+          '1. list_signals — see all signals a node type emits',
+          '2. connect_signal — connect node signal to a handler method',
+          '3. Or in GDScript: node.signal_name.connect(_on_signal_name)',
+          'Common signals: Area2D.body_entered (overlap), Button.pressed (click), Timer.timeout, AnimationPlayer.animation_finished',
+          'Custom signals: add "signal my_event(value)" to your script, then emit my_event.emit(value)',
+          'To disconnect: disconnect_signal or use a one-shot connection flag',
+        ],
+      },
+      {
+        keywords: ['animation', 'animate', 'sprite sheet', 'frame', 'animatedsprite'],
+        title: 'Sprite Animation',
+        steps: [
+          '1. add_animated_sprite_2d_to_scene — for frame-based sprite animation',
+          '2. Create a SpriteFrames resource (via Godot editor or create_sprite_frames)',
+          '3. set_node_property_in_scene — set sprite_frames property to your SpriteFrames resource',
+          '4. At runtime: play_animation with animation name like "walk", "idle", "jump"',
+          '5. For property animations (position, color, etc.): add_animation_player_to_scene instead',
+          '6. set_animation_speed_scale at runtime to slow/speed animations',
+        ],
+      },
+    ];
+
+    const match = WORKFLOWS.find(w => w.keywords.some(k => goal.includes(k)));
+    if (match) {
+      return { content: [{ type: 'text', text: JSON.stringify({ goal: args.goal, workflow: match.title, steps: match.steps }, null, 2) }] };
+    }
+
+    const available = WORKFLOWS.map(w => ({ title: w.title, keywords: w.keywords }));
+    return { content: [{ type: 'text', text: JSON.stringify({ message: `No workflow found for "${args.goal}". Try one of these:`, available, tip: 'Also try get_beginner_guide for an overview, or search_tools to find specific tools.' }, null, 2) }] };
+  }
+
+  private async handleExplainGodotConcept(args: any) {
+    args = normalizeParameters(args || {});
+    const raw = (args.concept || '').toLowerCase().trim();
+    const concept = raw.replace(/[^a-z0-9]/g, '');
+
+    const CONCEPTS: Record<string, string> = {
+      node: 'Nodes are the fundamental building blocks of Godot. Every object in your game — sprites, cameras, collision shapes, lights — is a Node. Nodes form a tree hierarchy (parent/child). Each scene has one root node. Common types: Node2D (2D transforms), Node3D (3D transforms), Control (UI elements), CharacterBody2D (player movement).',
+      scene: 'A Scene is a saved tree of nodes stored as a .tscn file. Scenes can be instanced inside other scenes (like Unity prefabs). Your project always has one main scene. Scenes are the primary unit of composition — a Player scene, Level scene, HUD scene get combined into the full game. Use create_scene to make one.',
+      signal: 'Signals are Godot\'s event/observer system. A node emits a signal when something happens (button clicked, body entered area, timer finished). You connect that signal to a method that runs in response. Example: area.body_entered.connect(_on_body_entered). No polling needed.',
+      area2d: 'Area2D detects when physics bodies or other Areas overlap it. Use for: pickups (detect player entering), damage zones, triggers, water. REQUIRES a CollisionShape2D child. Emits body_entered, body_exited, area_entered signals. Does NOT apply physics forces — use RigidBody for that.',
+      area3d: 'Area3D is the 3D version of Area2D. Detects overlaps in 3D space. Same rules: needs CollisionShape3D child, emits body_entered/exited signals. Use for: 3D trigger zones, volume-based effects (reverb, wind), region detection.',
+      characterbody2d: 'CharacterBody2D is for player/NPC controlled characters in 2D. You control its velocity manually in GDScript, then call move_and_slide() each physics frame to apply physics-aware movement with slope handling and collision. REQUIRES CollisionShape2D child.',
+      characterbody3d: 'CharacterBody3D is the 3D equivalent of CharacterBody2D. Player-controlled movement with move_and_slide(). You set velocity.y for gravity, velocity.x/z for horizontal movement. REQUIRES CollisionShape3D child.',
+      rigidbody2d: 'RigidBody2D simulates realistic physics — it falls under gravity, bounces off things, and responds to forces. Good for: thrown objects, debris, balls, destructible items. Use apply_impulse() for instant pushes, apply_force() for sustained forces. Needs CollisionShape2D child.',
+      rigidbody3d: 'RigidBody3D is the 3D physics body. Fully simulated: falls, bounces, rolls. Use for: physics props, ragdolls, vehicles. apply_impulse() / apply_force() to interact. Needs CollisionShape3D child.',
+      staticbody2d: 'StaticBody2D is a fixed, immovable physics body. Other physics bodies collide with it but cannot move it. Use for: floor tiles, walls, platforms. Needs CollisionShape2D to define its collision shape.',
+      staticbody3d: 'StaticBody3D is the 3D immovable ground/wall body. Needs CollisionShape3D child.',
+      collisionshape2d: 'CollisionShape2D defines the hitbox/collider for a physics body (Area2D, CharacterBody2D, RigidBody2D, StaticBody2D). REQUIRED — physics does nothing without it. Common shapes: CapsuleShape2D (humanoids), RectangleShape2D (platforms/walls), CircleShape2D (balls/coins).',
+      collisionshape3d: 'CollisionShape3D is the 3D version. Required for any 3D physics node. Common shapes: CapsuleShape3D (characters), BoxShape3D (walls/platforms), SphereShape3D (balls).',
+      tilemap: 'TileMap (or TileMapLayer in Godot 4.3+) lets you paint a level using a grid of tiles. Uses a TileSet resource defining tile visuals and collision. Essential for 2D platformers, top-down RPGs, strategy games. Tiles can have physics, navigation, and custom data.',
+      animationplayer: 'AnimationPlayer plays keyframe animations that can animate ANY property of ANY node over time. Use it for: cutscenes, UI transitions, boss attacks, any timed sequence. Also can call methods and emit signals on specific frames. play("animation_name") starts an animation.',
+      tween: 'Tween interpolates values over time — like a lightweight animator. Use for: smooth movement, UI transitions, fade in/out, any simple property animation. var tween = create_tween(); tween.tween_property(node, "position", target_pos, 0.5)',
+      canvaslayer: 'CanvasLayer renders children on a separate 2D layer, ignoring the game camera. Use for: HUD, UI overlays, pause menus. UI stays fixed on screen even when camera moves around the game world. Typical: CanvasLayer → Label (score) + ProgressBar (health).',
+      resource: 'Resources are Godot\'s data objects, saved as .tres or .res files. Examples: TileSet (tile definitions), SpriteFrames (animation frames), Material (visual properties), AudioStream (sound data). Resources are shared — multiple nodes can reference the same resource.',
+      autoload: 'Autoloads are singleton nodes that persist across all scene changes. Use for: game state manager, score tracker, save/load system, audio manager. Add via Project Settings → Autoload. Access from anywhere as GameManager.player_score etc.',
+      gdscript: 'GDScript is Godot\'s built-in scripting language (Python-like). Attach to nodes to add behavior. Key lifecycle: _ready() runs once on node enter, _process(delta) runs every frame, _physics_process(delta) runs at fixed rate for physics. extends NodeType at top inherits that node\'s methods.',
+      viewport: 'Viewport renders a scene. The root Viewport is the main game window. SubViewport lets you render to a texture (minimaps, picture-in-picture, security cameras). Camera2D/3D must be inside a Viewport to render to it.',
+      export: '@export in GDScript makes a variable visible and editable in the Inspector panel. Example: @export var speed: float = 200.0 — you can tweak speed in the editor without touching code. Great for game designers to tune values.',
+      shader: 'Shaders are GPU programs controlling how objects look. Godot uses a GLSL-like shader language. ShaderMaterial applies a custom shader to a sprite/mesh. Use for: outlines, glow, water ripple, heat distortion, dissolve effects, retro pixel effects.',
+      navigationagent: 'NavigationAgent2D/3D provides pathfinding for NPCs. Set a target_position, call get_next_path_position() each frame to get the next point to move toward. Requires a NavigationRegion with a NavigationMesh/Polygon2D baked.',
+      timer: 'Timer node fires a timeout signal after a set duration. Good for: cooldowns, spawning, delayed events. set_wait_time() to configure duration, start() to begin, one_shot=true for fire-once. Connect timeout signal to your handler.',
+      camera2d: 'Camera2D follows objects in 2D games. Set drag_horizontal_enabled / drag_vertical_enabled for smooth follow. Set limit_left/right/top/bottom to prevent camera leaving the level. Only one Camera2D can be current=true at a time.',
+      camera3d: 'Camera3D renders the 3D world. Set fov (field of view, default 75°) to adjust perspective. Attach to a SpringArm3D for third-person follow. Set current=true to activate.',
+    };
+
+    const entry = CONCEPTS[concept] || CONCEPTS[concept.replace('2d', '').replace('3d', '')] || CONCEPTS[concept + '2d'] || CONCEPTS[concept + '3d'];
+
+    if (entry) {
+      return { content: [{ type: 'text', text: JSON.stringify({ concept: args.concept, explanation: entry }, null, 2) }] };
+    }
+
+    return { content: [{ type: 'text', text: JSON.stringify({
+      message: `No explanation found for "${args.concept}".`,
+      available_concepts: Object.keys(CONCEPTS),
+      tip: 'Try concepts like: node, scene, signal, area2d, characterbody2d, rigidbody2d, staticbody2d, collisionshape2d, tilemap, animationplayer, tween, canvaslayer, resource, autoload, gdscript, viewport, export, shader, timer, camera2d, camera3d',
+    }, null, 2) }] };
   }
 
 }
