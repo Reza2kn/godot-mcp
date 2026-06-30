@@ -15213,6 +15213,411 @@ class GodotServer {
             required: ['projectPath', 'scenePath'],
           },
         },
+        // Batch 50 — Group A: Tween runtime tools
+        {
+          name: 'tween_property',
+          description: 'Tween a node property to a target value over duration.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              property: { type: 'string' },
+              targetValue: {},
+              duration: { type: 'number' },
+            },
+            required: ['nodePath', 'property'],
+          },
+        },
+        {
+          name: 'tween_position_2d',
+          description: 'Tween a Node2D position to target x/y over duration.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              x: { type: 'number' },
+              y: { type: 'number' },
+              duration: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'tween_rotation_2d',
+          description: 'Tween a Node2D rotation to target angle (radians).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              angle: { type: 'number' },
+              duration: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'tween_scale_2d',
+          description: 'Tween a Node2D scale to target x/y scale values.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              x: { type: 'number' },
+              y: { type: 'number' },
+              duration: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'tween_alpha',
+          description: 'Tween a CanvasItem modulate alpha to a target value.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              alpha: { type: 'number' },
+              duration: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'tween_color',
+          description: 'Tween a CanvasItem modulate to a target RGBA color.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              r: { type: 'number' },
+              g: { type: 'number' },
+              b: { type: 'number' },
+              a: { type: 'number' },
+              duration: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'flash_node',
+          description: 'Flash a node by tweening alpha 0→1 quickly (visual feedback).',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              duration: { type: 'number' },
+              color: { type: 'string' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'shake_node',
+          description: 'Shake a node\'s position by tweening it rapidly.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              intensity: { type: 'number' },
+              duration: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'fade_in_node',
+          description: 'Fade a node in by tweening alpha from 0 to 1.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              duration: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'fade_out_node',
+          description: 'Fade a node out by tweening alpha from 1 to 0.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              duration: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        // Batch 50 — Group B: Audio bus effect tools
+        {
+          name: 'get_audio_bus_names',
+          description: 'List names of all audio buses in the project.',
+          inputSchema: { type: 'object', properties: {} },
+        },
+        {
+          name: 'add_audio_bus',
+          description: 'Add a new audio bus with a given name.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              busName: { type: 'string' },
+            },
+          },
+        },
+        {
+          name: 'remove_audio_bus',
+          description: 'Remove an audio bus by name.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              busName: { type: 'string' },
+            },
+            required: ['busName'],
+          },
+        },
+        {
+          name: 'get_audio_bus_volume_db',
+          description: 'Get the dB volume level of an audio bus.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              busName: { type: 'string' },
+            },
+            required: ['busName'],
+          },
+        },
+        {
+          name: 'set_audio_bus_volume_db',
+          description: 'Set the dB volume level of an audio bus.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              busName: { type: 'string' },
+              volumeDb: { type: 'number' },
+            },
+            required: ['busName'],
+          },
+        },
+        {
+          name: 'get_audio_bus_muted',
+          description: 'Get mute state of an audio bus.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              busName: { type: 'string' },
+            },
+            required: ['busName'],
+          },
+        },
+        {
+          name: 'set_audio_bus_muted',
+          description: 'Set mute state of an audio bus.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              busName: { type: 'string' },
+              muted: { type: 'boolean' },
+            },
+            required: ['busName'],
+          },
+        },
+        {
+          name: 'get_audio_bus_solo',
+          description: 'Get solo state of an audio bus.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              busName: { type: 'string' },
+            },
+            required: ['busName'],
+          },
+        },
+        {
+          name: 'set_audio_bus_solo',
+          description: 'Set solo state of an audio bus.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              busName: { type: 'string' },
+              solo: { type: 'boolean' },
+            },
+            required: ['busName'],
+          },
+        },
+        {
+          name: 'set_audio_bus_send',
+          description: 'Set which bus an audio bus sends its output to.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              busName: { type: 'string' },
+              sendBus: { type: 'string' },
+            },
+            required: ['busName'],
+          },
+        },
+        // Batch 50 — Group C: Scene tree & node inspection tools
+        {
+          name: 'get_scene_tree_snapshot',
+          description: 'Get a snapshot of the full running scene tree.',
+          inputSchema: { type: 'object', properties: {} },
+        },
+        {
+          name: 'find_nodes_in_group',
+          description: 'Find all nodes belonging to a group in running game.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              groupName: { type: 'string' },
+            },
+            required: ['groupName'],
+          },
+        },
+        {
+          name: 'add_node_to_group_runtime',
+          description: 'Add a node to a group in the running game.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              groupName: { type: 'string' },
+            },
+            required: ['nodePath', 'groupName'],
+          },
+        },
+        {
+          name: 'remove_node_from_group_runtime',
+          description: 'Remove a node from a group in running game.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              groupName: { type: 'string' },
+            },
+            required: ['nodePath', 'groupName'],
+          },
+        },
+        {
+          name: 'get_nodes_of_class',
+          description: 'Get all nodes of a specific class in running scene.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              className: { type: 'string' },
+            },
+            required: ['className'],
+          },
+        },
+        {
+          name: 'get_node_owner_path',
+          description: 'Get the owner node path of a node in running game.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_node_unique_name',
+          description: 'Get the unique name (%) of a node in running game.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'call_node_method',
+          description: 'Call any method on a node in the running game.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              methodName: { type: 'string' },
+              args: { type: 'array' },
+            },
+            required: ['nodePath', 'methodName'],
+          },
+        },
+        // Batch 50 — Group D: 2D Physics at runtime tools
+        {
+          name: 'get_2d_collision_layers_names',
+          description: 'Get collision layer/mask names from project.',
+          inputSchema: { type: 'object', properties: {} },
+        },
+        {
+          name: 'set_physics_body_collision_layer',
+          description: 'Set collision layer of a physics body.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              layer: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_physics_body_collision_layer',
+          description: 'Get collision layer of a physics body.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_physics_body_collision_mask',
+          description: 'Set collision mask of a physics body.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              mask: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_physics_body_collision_mask',
+          description: 'Get collision mask of a physics body.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'enable_physics_body',
+          description: 'Enable/disable a physics body collision detection.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              enabled: { type: 'boolean' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_physics_body_state',
+          description: 'Get physics state of a body: position, velocity, sleeping.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+            },
+            required: ['nodePath'],
+          },
+        },
       ],
     }));
 
@@ -17292,6 +17697,66 @@ class GodotServer {
           return await this.handleGetWorkflow(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
+        // Batch 50 switch cases — Group A: Tween runtime tools
+        case 'tween_property':
+          return await this.handleTweenProperty(request.params.arguments);
+        case 'tween_position_2d':
+          return await this.handleTweenPosition2d(request.params.arguments);
+        case 'tween_rotation_2d':
+          return await this.handleTweenRotation2d(request.params.arguments);
+        case 'tween_scale_2d':
+          return await this.handleTweenScale2d(request.params.arguments);
+        case 'tween_alpha':
+          return await this.handleTweenAlpha(request.params.arguments);
+        case 'tween_color':
+          return await this.handleTweenColor(request.params.arguments);
+        case 'flash_node':
+          return await this.handleFlashNode(request.params.arguments);
+        case 'shake_node':
+          return await this.handleShakeNode(request.params.arguments);
+        case 'fade_in_node':
+          return await this.handleFadeInNode(request.params.arguments);
+        case 'fade_out_node':
+          return await this.handleFadeOutNode(request.params.arguments);
+        // Batch 50 switch cases — Group B: Audio bus effect tools
+        case 'get_audio_bus_names':
+          return await this.handleGetAudioBusNames(request.params.arguments);
+        case 'add_audio_bus':
+          return await this.handleAddAudioBus(request.params.arguments);
+        case 'remove_audio_bus':
+          return await this.handleRemoveAudioBus(request.params.arguments);
+        case 'get_audio_bus_muted':
+          return await this.handleGetAudioBusMuted(request.params.arguments);
+        case 'get_audio_bus_solo':
+          return await this.handleGetAudioBusSolo(request.params.arguments);
+        case 'set_audio_bus_solo':
+          return await this.handleSetAudioBusSolo(request.params.arguments);
+        case 'set_audio_bus_send':
+          return await this.handleSetAudioBusSend(request.params.arguments);
+        // Batch 50 switch cases — Group C: Scene tree & node inspection tools
+        case 'add_node_to_group_runtime':
+          return await this.handleAddNodeToGroupRuntime(request.params.arguments);
+        case 'remove_node_from_group_runtime':
+          return await this.handleRemoveNodeFromGroupRuntime(request.params.arguments);
+        case 'get_nodes_of_class':
+          return await this.handleGetNodesOfClass(request.params.arguments);
+        case 'get_node_owner_path':
+          return await this.handleGetNodeOwnerPath(request.params.arguments);
+        case 'get_node_unique_name':
+          return await this.handleGetNodeUniqueName(request.params.arguments);
+        // Batch 50 switch cases — Group D: 2D Physics at runtime tools
+        case 'get_2d_collision_layers_names':
+          return await this.handleGet2dCollisionLayersNames(request.params.arguments);
+        case 'set_physics_body_collision_layer':
+          return await this.handleSetPhysicsBodyCollisionLayer(request.params.arguments);
+        case 'get_physics_body_collision_layer':
+          return await this.handleGetPhysicsBodyCollisionLayer(request.params.arguments);
+        case 'set_physics_body_collision_mask':
+          return await this.handleSetPhysicsBodyCollisionMask(request.params.arguments);
+        case 'get_physics_body_collision_mask':
+          return await this.handleGetPhysicsBodyCollisionMask(request.params.arguments);
+        case 'enable_physics_body':
+          return await this.handleEnablePhysicsBody(request.params.arguments);
         // Batch 48 switch cases
         case 'get_control_position':
           return await this.handleGetControlPosition(request.params.arguments);
@@ -30828,6 +31293,154 @@ class GodotServer {
   private async handleAddSprite3dToScene(args: any) {
     args = normalizeParameters(args || {});
     return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName || 'Sprite3D', node_type: 'Sprite3D', parent_node_path: a.parentNodePath || '.' } }));
+  }
+
+  // ── Batch 50 handlers — Group A: Tween runtime tools ────────────────────────
+
+  private async handleTweenProperty(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('tween_property', args, a => ({ node_path: a.nodePath, property: a.property ?? '', target_value: a.targetValue ?? 0, duration: a.duration ?? 1.0 }));
+  }
+
+  private async handleTweenPosition2d(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('tween_position_2d', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0, duration: a.duration ?? 1.0 }));
+  }
+
+  private async handleTweenRotation2d(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('tween_rotation_2d', args, a => ({ node_path: a.nodePath, angle: a.angle ?? 0, duration: a.duration ?? 1.0 }));
+  }
+
+  private async handleTweenScale2d(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('tween_scale_2d', args, a => ({ node_path: a.nodePath, x: a.x ?? 1, y: a.y ?? 1, duration: a.duration ?? 1.0 }));
+  }
+
+  private async handleTweenAlpha(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('tween_alpha', args, a => ({ node_path: a.nodePath, alpha: a.alpha ?? 1, duration: a.duration ?? 1.0 }));
+  }
+
+  private async handleTweenColor(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('tween_color', args, a => ({ node_path: a.nodePath, r: a.r ?? 1, g: a.g ?? 1, b: a.b ?? 1, a: a.a ?? 1, duration: a.duration ?? 1.0 }));
+  }
+
+  private async handleFlashNode(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('flash_node', args, a => ({ node_path: a.nodePath, duration: a.duration ?? 0.3 }));
+  }
+
+  private async handleShakeNode(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('shake_node', args, a => ({ node_path: a.nodePath, intensity: a.intensity ?? 10, duration: a.duration ?? 0.3 }));
+  }
+
+  private async handleFadeInNode(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('fade_in_node', args, a => ({ node_path: a.nodePath, duration: a.duration ?? 0.5 }));
+  }
+
+  private async handleFadeOutNode(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('fade_out_node', args, a => ({ node_path: a.nodePath, duration: a.duration ?? 0.5 }));
+  }
+
+  // ── Batch 50 handlers — Group B: Audio bus effect tools ─────────────────────
+
+  private async handleGetAudioBusNames(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_audio_bus_names', args, _a => ({}));
+  }
+
+  private async handleAddAudioBus(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('add_audio_bus', args, a => ({ bus_name: a.busName ?? 'New Bus' }));
+  }
+
+  private async handleRemoveAudioBus(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('remove_audio_bus', args, a => ({ bus_name: a.busName ?? '' }));
+  }
+
+  private async handleGetAudioBusMuted(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_audio_bus_muted', args, a => ({ bus_name: a.busName ?? 'Master' }));
+  }
+
+  private async handleGetAudioBusSolo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_audio_bus_solo', args, a => ({ bus_name: a.busName ?? 'Master' }));
+  }
+
+  private async handleSetAudioBusSolo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_audio_bus_solo', args, a => ({ bus_name: a.busName ?? 'Master', solo: a.solo ?? true }));
+  }
+
+  private async handleSetAudioBusSend(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_audio_bus_send', args, a => ({ bus_name: a.busName ?? '', send_bus: a.sendBus ?? 'Master' }));
+  }
+
+  // ── Batch 50 handlers — Group C: Scene tree & node inspection tools ──────────
+
+  private async handleAddNodeToGroupRuntime(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('add_node_to_group_runtime', args, a => ({ node_path: a.nodePath, group_name: a.groupName ?? '' }));
+  }
+
+  private async handleRemoveNodeFromGroupRuntime(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('remove_node_from_group_runtime', args, a => ({ node_path: a.nodePath, group_name: a.groupName ?? '' }));
+  }
+
+  private async handleGetNodesOfClass(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_nodes_of_class', args, a => ({ class_name: a.className ?? '' }));
+  }
+
+  private async handleGetNodeOwnerPath(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_node_owner_path', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetNodeUniqueName(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_node_unique_name', args, a => ({ node_path: a.nodePath }));
+  }
+
+  // ── Batch 50 handlers — Group D: 2D Physics at runtime tools ────────────────
+
+  private async handleGet2dCollisionLayersNames(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_2d_collision_layers_names', args, _a => ({}));
+  }
+
+  private async handleSetPhysicsBodyCollisionLayer(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_physics_body_collision_layer', args, a => ({ node_path: a.nodePath, layer: a.layer ?? 1 }));
+  }
+
+  private async handleGetPhysicsBodyCollisionLayer(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_physics_body_collision_layer', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetPhysicsBodyCollisionMask(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_physics_body_collision_mask', args, a => ({ node_path: a.nodePath, mask: a.mask ?? 1 }));
+  }
+
+  private async handleGetPhysicsBodyCollisionMask(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_physics_body_collision_mask', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleEnablePhysicsBody(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('enable_physics_body', args, a => ({ node_path: a.nodePath, enabled: a.enabled ?? true }));
   }
 
   // ── Navigation / Discovery helpers ──────────────────────────────────────────

@@ -1337,6 +1337,62 @@ func _handle_command(json_str: String) -> void:
 			_cmd_rpc_call(params)
 		"broadcast_to_group":
 			_cmd_broadcast_to_group(params)
+		"tween_position_2d":
+			_cmd_tween_position_2d(params)
+		"tween_rotation_2d":
+			_cmd_tween_rotation_2d(params)
+		"tween_scale_2d":
+			_cmd_tween_scale_2d(params)
+		"tween_alpha":
+			_cmd_tween_alpha(params)
+		"tween_color":
+			_cmd_tween_color(params)
+		"flash_node":
+			_cmd_flash_node(params)
+		"shake_node":
+			_cmd_shake_node(params)
+		"fade_in_node":
+			_cmd_fade_in_node(params)
+		"fade_out_node":
+			_cmd_fade_out_node(params)
+		"get_audio_bus_names":
+			_cmd_get_audio_bus_names(params)
+		"add_audio_bus":
+			_cmd_add_audio_bus(params)
+		"remove_audio_bus":
+			_cmd_remove_audio_bus(params)
+		"get_audio_bus_muted":
+			_cmd_get_audio_bus_muted(params)
+		"get_audio_bus_solo":
+			_cmd_get_audio_bus_solo(params)
+		"set_audio_bus_solo":
+			_cmd_set_audio_bus_solo(params)
+		"set_audio_bus_send":
+			_cmd_set_audio_bus_send(params)
+		"find_nodes_in_group":
+			_cmd_find_nodes_in_group(params)
+		"add_node_to_group_runtime":
+			_cmd_add_node_to_group_runtime(params)
+		"remove_node_from_group_runtime":
+			_cmd_remove_node_from_group_runtime(params)
+		"get_nodes_of_class":
+			_cmd_get_nodes_of_class(params)
+		"get_node_owner_path":
+			_cmd_get_node_owner_path(params)
+		"get_node_unique_name":
+			_cmd_get_node_unique_name(params)
+		"get_2d_collision_layers_names":
+			_cmd_get_2d_collision_layers_names(params)
+		"set_physics_body_collision_layer":
+			_cmd_set_physics_body_collision_layer(params)
+		"get_physics_body_collision_layer":
+			_cmd_get_physics_body_collision_layer(params)
+		"set_physics_body_collision_mask":
+			_cmd_set_physics_body_collision_mask(params)
+		"get_physics_body_collision_mask":
+			_cmd_get_physics_body_collision_mask(params)
+		"enable_physics_body":
+			_cmd_enable_physics_body(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -11507,6 +11563,328 @@ func _cmd_broadcast_to_group(params: Dictionary) -> void:
 		return
 	get_tree().call_group(group_name, method_name)
 	_send_response({"success": true, "group": group_name, "method": method_name})
+
+
+func _cmd_tween_position_2d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var duration: float = params.get("duration", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node2D:
+		_send_response({"error": "Node2D not found: " + node_path})
+		return
+	var tween = get_tree().create_tween()
+	tween.tween_property(node, "position", Vector2(x, y), duration)
+	_send_response({"success": true, "target": {"x": x, "y": y}, "duration": duration})
+
+
+func _cmd_tween_rotation_2d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var angle: float = params.get("angle", 0.0)
+	var duration: float = params.get("duration", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node2D:
+		_send_response({"error": "Node2D not found: " + node_path})
+		return
+	var tween = get_tree().create_tween()
+	tween.tween_property(node, "rotation", angle, duration)
+	_send_response({"success": true, "angle": angle, "duration": duration})
+
+
+func _cmd_tween_scale_2d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 1.0)
+	var y: float = params.get("y", 1.0)
+	var duration: float = params.get("duration", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node2D:
+		_send_response({"error": "Node2D not found: " + node_path})
+		return
+	var tween = get_tree().create_tween()
+	tween.tween_property(node, "scale", Vector2(x, y), duration)
+	_send_response({"success": true, "scale": {"x": x, "y": y}, "duration": duration})
+
+
+func _cmd_tween_alpha(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var alpha: float = params.get("alpha", 1.0)
+	var duration: float = params.get("duration", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CanvasItem:
+		_send_response({"error": "CanvasItem not found: " + node_path})
+		return
+	var tween = get_tree().create_tween()
+	tween.tween_property(node, "modulate:a", alpha, duration)
+	_send_response({"success": true, "alpha": alpha, "duration": duration})
+
+
+func _cmd_tween_color(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var r: float = params.get("r", 1.0)
+	var g: float = params.get("g", 1.0)
+	var b: float = params.get("b", 1.0)
+	var a: float = params.get("a", 1.0)
+	var duration: float = params.get("duration", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CanvasItem:
+		_send_response({"error": "CanvasItem not found: " + node_path})
+		return
+	var tween = get_tree().create_tween()
+	tween.tween_property(node, "modulate", Color(r, g, b, a), duration)
+	_send_response({"success": true, "color": {"r": r, "g": g, "b": b, "a": a}, "duration": duration})
+
+
+func _cmd_flash_node(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var duration: float = params.get("duration", 0.3)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CanvasItem:
+		_send_response({"error": "CanvasItem not found: " + node_path})
+		return
+	var tween = get_tree().create_tween()
+	tween.tween_property(node, "modulate:a", 0.0, duration * 0.5)
+	tween.tween_property(node, "modulate:a", 1.0, duration * 0.5)
+	_send_response({"success": true, "duration": duration})
+
+
+func _cmd_shake_node(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var intensity: float = params.get("intensity", 10.0)
+	var duration: float = params.get("duration", 0.3)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node2D:
+		_send_response({"error": "Node2D not found: " + node_path})
+		return
+	var original_pos: Vector2 = (node as Node2D).position
+	var tween = get_tree().create_tween()
+	var steps: int = int(duration / 0.05)
+	for i in range(steps):
+		var offset = Vector2(randf_range(-intensity, intensity), randf_range(-intensity, intensity))
+		tween.tween_property(node, "position", original_pos + offset, 0.05)
+	tween.tween_property(node, "position", original_pos, 0.05)
+	_send_response({"success": true, "intensity": intensity, "duration": duration})
+
+
+func _cmd_fade_in_node(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var duration: float = params.get("duration", 0.5)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CanvasItem:
+		_send_response({"error": "CanvasItem not found: " + node_path})
+		return
+	var ci := node as CanvasItem
+	ci.modulate.a = 0.0
+	ci.visible = true
+	var tween = get_tree().create_tween()
+	tween.tween_property(ci, "modulate:a", 1.0, duration)
+	_send_response({"success": true, "duration": duration})
+
+
+func _cmd_fade_out_node(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var duration: float = params.get("duration", 0.5)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CanvasItem:
+		_send_response({"error": "CanvasItem not found: " + node_path})
+		return
+	var tween = get_tree().create_tween()
+	tween.tween_property(node as CanvasItem, "modulate:a", 0.0, duration)
+	_send_response({"success": true, "duration": duration})
+
+
+func _cmd_get_audio_bus_names(params: Dictionary) -> void:
+	var names: Array = []
+	for i in range(AudioServer.bus_count):
+		names.append(AudioServer.get_bus_name(i))
+	_send_response({"success": true, "buses": names, "count": names.size()})
+
+
+func _cmd_add_audio_bus(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "New Bus")
+	AudioServer.add_bus()
+	var idx: int = AudioServer.bus_count - 1
+	AudioServer.set_bus_name(idx, bus_name)
+	_send_response({"success": true, "bus_name": bus_name, "index": idx})
+
+
+func _cmd_remove_audio_bus(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "")
+	var idx: int = AudioServer.get_bus_index(bus_name)
+	if idx < 0:
+		_send_response({"error": "Bus not found: " + bus_name})
+		return
+	AudioServer.remove_bus(idx)
+	_send_response({"success": true, "removed": bus_name})
+
+
+func _cmd_get_audio_bus_muted(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "Master")
+	var idx: int = AudioServer.get_bus_index(bus_name)
+	if idx < 0:
+		_send_response({"error": "Bus not found: " + bus_name})
+		return
+	_send_response({"success": true, "bus": bus_name, "muted": AudioServer.is_bus_mute(idx)})
+
+
+func _cmd_get_audio_bus_solo(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "Master")
+	var idx: int = AudioServer.get_bus_index(bus_name)
+	if idx < 0:
+		_send_response({"error": "Bus not found: " + bus_name})
+		return
+	_send_response({"success": true, "bus": bus_name, "solo": AudioServer.is_bus_solo(idx)})
+
+
+func _cmd_set_audio_bus_solo(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "Master")
+	var solo: bool = params.get("solo", true)
+	var idx: int = AudioServer.get_bus_index(bus_name)
+	if idx < 0:
+		_send_response({"error": "Bus not found: " + bus_name})
+		return
+	AudioServer.set_bus_solo(idx, solo)
+	_send_response({"success": true, "bus": bus_name, "solo": solo})
+
+
+func _cmd_set_audio_bus_send(params: Dictionary) -> void:
+	var bus_name: String = params.get("bus_name", "")
+	var send_bus: String = params.get("send_bus", "Master")
+	var idx: int = AudioServer.get_bus_index(bus_name)
+	if idx < 0:
+		_send_response({"error": "Bus not found: " + bus_name})
+		return
+	AudioServer.set_bus_send(idx, send_bus)
+	_send_response({"success": true, "bus": bus_name, "sends_to": send_bus})
+
+
+func _cmd_find_nodes_in_group(params: Dictionary) -> void:
+	var group_name: String = params.get("group_name", "")
+	var nodes = get_tree().get_nodes_in_group(group_name)
+	var result: Array = []
+	for node in nodes:
+		result.append({"name": node.name, "path": str(node.get_path()), "class": node.get_class()})
+	_send_response({"success": true, "group": group_name, "nodes": result, "count": result.size()})
+
+
+func _cmd_add_node_to_group_runtime(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var group_name: String = params.get("group_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	node.add_to_group(group_name)
+	_send_response({"success": true, "node_path": node_path, "group": group_name})
+
+
+func _cmd_remove_node_from_group_runtime(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var group_name: String = params.get("group_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	node.remove_from_group(group_name)
+	_send_response({"success": true, "node_path": node_path, "group": group_name})
+
+
+func _cmd_get_nodes_of_class(params: Dictionary) -> void:
+	var class_name_str: String = params.get("class_name", "")
+	var result: Array = []
+	_find_nodes_by_class(get_tree().root, class_name_str, result)
+	_send_response({"success": true, "class": class_name_str, "nodes": result, "count": result.size()})
+
+
+func _find_nodes_by_class(node: Node, class_name_str: String, result: Array) -> void:
+	if node.get_class() == class_name_str or node.is_class(class_name_str):
+		result.append({"name": node.name, "path": str(node.get_path())})
+	for child in node.get_children():
+		_find_nodes_by_class(child, class_name_str, result)
+
+
+func _cmd_get_node_owner_path(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var owner_path: String = str(node.owner.get_path()) if node.owner != null else ""
+	_send_response({"success": true, "owner_path": owner_path})
+
+
+func _cmd_get_node_unique_name(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	_send_response({"success": true, "unique_name_in_owner": node.unique_name_in_owner, "name": node.name})
+
+
+func _cmd_get_2d_collision_layers_names(params: Dictionary) -> void:
+	var layers: Array = []
+	for i in range(32):
+		var name = ProjectSettings.get_setting("layer_names/2d_physics/layer_" + str(i + 1), "Layer " + str(i + 1))
+		layers.append({"index": i + 1, "name": str(name)})
+	_send_response({"success": true, "layers": layers})
+
+
+func _cmd_set_physics_body_collision_layer(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var layer: int = params.get("layer", 1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CollisionObject2D:
+		_send_response({"error": "CollisionObject2D not found: " + node_path})
+		return
+	(node as CollisionObject2D).collision_layer = layer
+	_send_response({"success": true, "collision_layer": layer})
+
+
+func _cmd_get_physics_body_collision_layer(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CollisionObject2D:
+		_send_response({"error": "CollisionObject2D not found: " + node_path})
+		return
+	_send_response({"success": true, "collision_layer": (node as CollisionObject2D).collision_layer})
+
+
+func _cmd_set_physics_body_collision_mask(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var mask: int = params.get("mask", 1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CollisionObject2D:
+		_send_response({"error": "CollisionObject2D not found: " + node_path})
+		return
+	(node as CollisionObject2D).collision_mask = mask
+	_send_response({"success": true, "collision_mask": mask})
+
+
+func _cmd_get_physics_body_collision_mask(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CollisionObject2D:
+		_send_response({"error": "CollisionObject2D not found: " + node_path})
+		return
+	_send_response({"success": true, "collision_mask": (node as CollisionObject2D).collision_mask})
+
+
+func _cmd_enable_physics_body(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var enabled: bool = params.get("enabled", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is CollisionObject2D:
+		(node as CollisionObject2D).set_deferred("disabled", not enabled)
+	elif node is CollisionObject3D:
+		(node as CollisionObject3D).set_deferred("disabled", not enabled)
+	else:
+		_send_response({"error": "Not a physics body: " + node_path})
+		return
+	_send_response({"success": true, "enabled": enabled})
 
 
 func _exit_tree() -> void:
