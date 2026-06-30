@@ -1745,6 +1745,30 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_astar2d_id_path(params)
 		"get_astar2d_point_path":
 			_cmd_get_astar2d_point_path(params)
+		"get_world_environment_info":
+			_cmd_get_world_environment_info(params)
+		"set_environment_ambient_light":
+			_cmd_set_environment_ambient_light(params)
+		"set_environment_bloom":
+			_cmd_set_environment_bloom(params)
+		"set_environment_tonemap":
+			_cmd_set_environment_tonemap(params)
+		"set_environment_sky_color":
+			_cmd_set_environment_sky_color(params)
+		"set_particles_lifetime":
+			_cmd_set_particles_lifetime(params)
+		"set_particles_explosiveness":
+			_cmd_set_particles_explosiveness(params)
+		"set_particles_one_shot":
+			_cmd_set_particles_one_shot(params)
+		"set_light_energy":
+			_cmd_set_light_energy(params)
+		"set_light_color":
+			_cmd_set_light_color(params)
+		"set_directional_light_shadow":
+			_cmd_set_directional_light_shadow(params)
+		"get_light_info":
+			_cmd_get_light_info(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -14431,6 +14455,205 @@ func _cmd_get_astar2d_point_path(params: Dictionary) -> void:
 	for p in path:
 		result.append({"x": p.x, "y": p.y})
 	_send_response({"success": true, "point_path": result, "count": result.size()})
+
+func _cmd_get_world_environment_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is WorldEnvironment:
+		_send_response({"error": "WorldEnvironment not found: " + node_path})
+		return
+	var env = (node as WorldEnvironment).environment
+	if env == null:
+		_send_response({"error": "No Environment resource assigned"})
+		return
+	_send_response({"success": true, "ambient_energy": env.ambient_light_energy, "fog_enabled": env.fog_enabled, "glow_enabled": env.glow_enabled, "tonemap_mode": env.tonemap_mode})
+
+func _cmd_set_environment_ambient_light(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var r: float = params.get("r", 0.1)
+	var g: float = params.get("g", 0.1)
+	var b: float = params.get("b", 0.1)
+	var a: float = params.get("a", 1.0)
+	var energy: float = params.get("energy", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is WorldEnvironment:
+		_send_response({"error": "WorldEnvironment not found: " + node_path})
+		return
+	var env = (node as WorldEnvironment).environment
+	if env == null:
+		_send_response({"error": "No Environment resource assigned"})
+		return
+	env.ambient_light_color = Color(r, g, b, a)
+	env.ambient_light_energy = energy
+	_send_response({"success": true, "ambient_color": {"r": r, "g": g, "b": b}, "energy": energy})
+
+func _cmd_set_environment_bloom(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var enabled: bool = params.get("enabled", true)
+	var threshold: float = params.get("threshold", 1.0)
+	var intensity: float = params.get("intensity", 0.8)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is WorldEnvironment:
+		_send_response({"error": "WorldEnvironment not found: " + node_path})
+		return
+	var env = (node as WorldEnvironment).environment
+	if env == null:
+		_send_response({"error": "No Environment resource assigned"})
+		return
+	env.glow_enabled = enabled
+	env.glow_bloom = threshold
+	env.glow_intensity = intensity
+	_send_response({"success": true, "bloom_enabled": enabled, "threshold": threshold, "intensity": intensity})
+
+func _cmd_set_environment_tonemap(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var mode_str: String = params.get("mode", "filmic")
+	var exposure: float = params.get("exposure", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is WorldEnvironment:
+		_send_response({"error": "WorldEnvironment not found: " + node_path})
+		return
+	var env = (node as WorldEnvironment).environment
+	if env == null:
+		_send_response({"error": "No Environment resource assigned"})
+		return
+	var mode: Environment.ToneMapper
+	match mode_str:
+		"linear": mode = Environment.TONE_MAPPER_LINEAR
+		"reinhard": mode = Environment.TONE_MAPPER_REINHARDT
+		"filmic": mode = Environment.TONE_MAPPER_FILMIC
+		"aces": mode = Environment.TONE_MAPPER_ACES
+		_: mode = Environment.TONE_MAPPER_FILMIC
+	env.tonemap_mode = mode
+	env.tonemap_exposure = exposure
+	_send_response({"success": true, "tonemap_mode": mode_str, "exposure": exposure})
+
+func _cmd_set_environment_sky_color(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var r: float = params.get("r", 0.4)
+	var g: float = params.get("g", 0.6)
+	var b: float = params.get("b", 0.9)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is WorldEnvironment:
+		_send_response({"error": "WorldEnvironment not found: " + node_path})
+		return
+	var env = (node as WorldEnvironment).environment
+	if env == null:
+		_send_response({"error": "No Environment resource assigned"})
+		return
+	env.background_mode = Environment.BG_COLOR
+	env.background_color = Color(r, g, b)
+	_send_response({"success": true, "background_color": {"r": r, "g": g, "b": b}})
+
+func _cmd_set_particles_lifetime(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var lifetime: float = params.get("lifetime", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is GPUParticles2D: (node as GPUParticles2D).lifetime = lifetime
+	elif node is CPUParticles2D: (node as CPUParticles2D).lifetime = lifetime
+	elif node is GPUParticles3D: (node as GPUParticles3D).lifetime = lifetime
+	elif node is CPUParticles3D: (node as CPUParticles3D).lifetime = lifetime
+	else:
+		_send_response({"error": "Not a particles node"})
+		return
+	_send_response({"success": true, "lifetime": lifetime})
+
+func _cmd_set_particles_explosiveness(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var explosiveness: float = params.get("explosiveness", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is GPUParticles2D: (node as GPUParticles2D).explosiveness = explosiveness
+	elif node is CPUParticles2D: (node as CPUParticles2D).explosiveness = explosiveness
+	elif node is GPUParticles3D: (node as GPUParticles3D).explosiveness = explosiveness
+	elif node is CPUParticles3D: (node as CPUParticles3D).explosiveness = explosiveness
+	else:
+		_send_response({"error": "Not a particles node"})
+		return
+	_send_response({"success": true, "explosiveness": explosiveness})
+
+func _cmd_set_particles_one_shot(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var one_shot: bool = params.get("one_shot", false)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is GPUParticles2D: (node as GPUParticles2D).one_shot = one_shot
+	elif node is CPUParticles2D: (node as CPUParticles2D).one_shot = one_shot
+	elif node is GPUParticles3D: (node as GPUParticles3D).one_shot = one_shot
+	elif node is CPUParticles3D: (node as CPUParticles3D).one_shot = one_shot
+	else:
+		_send_response({"error": "Not a particles node"})
+		return
+	_send_response({"success": true, "one_shot": one_shot})
+
+func _cmd_set_light_energy(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var energy: float = params.get("energy", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Light3D:
+		_send_response({"error": "Light3D not found: " + node_path})
+		return
+	(node as Light3D).light_energy = energy
+	_send_response({"success": true, "energy": energy})
+
+func _cmd_set_light_color(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var r: float = params.get("r", 1.0)
+	var g: float = params.get("g", 1.0)
+	var b: float = params.get("b", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Light3D:
+		_send_response({"error": "Light3D not found: " + node_path})
+		return
+	(node as Light3D).light_color = Color(r, g, b)
+	_send_response({"success": true, "color": {"r": r, "g": g, "b": b}})
+
+func _cmd_set_directional_light_shadow(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var mode_str: String = params.get("mode", "orthogonal")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is DirectionalLight3D:
+		_send_response({"error": "DirectionalLight3D not found: " + node_path})
+		return
+	var dl := node as DirectionalLight3D
+	match mode_str:
+		"disabled":
+			dl.shadow_enabled = false
+		"orthogonal":
+			dl.shadow_enabled = true
+			dl.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
+		"pssm_2_splits":
+			dl.shadow_enabled = true
+			dl.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
+		"pssm_4_splits":
+			dl.shadow_enabled = true
+			dl.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS
+	_send_response({"success": true, "shadow_mode": mode_str})
+
+func _cmd_get_light_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Light3D:
+		_send_response({"error": "Light3D not found: " + node_path})
+		return
+	var light := node as Light3D
+	var color = light.light_color
+	var info: Dictionary = {
+		"success": true,
+		"type": light.get_class(),
+		"energy": light.light_energy,
+		"color": {"r": color.r, "g": color.g, "b": color.b},
+		"shadow_enabled": light.shadow_enabled,
+		"visible": light.visible
+	}
+	_send_response(info)
 
 func _exit_tree() -> void:
 	_clear_debug_draw()

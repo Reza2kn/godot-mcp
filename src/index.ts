@@ -17824,6 +17824,131 @@ class GodotServer {
         description: 'Write a simple dialogue box display script.',
         inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
       },
+      // Batch 62 — Group A: Animation track editing via headlessOp
+      {
+        name: 'add_animation_track',
+        description: 'Add a new track to an Animation resource.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, animationPath: { type: 'string' }, trackType: { type: 'string' }, nodePath: { type: 'string' } }, required: ['projectPath', 'animationPath', 'trackType', 'nodePath'] },
+      },
+      {
+        name: 'set_animation_loop_mode',
+        description: 'Set loop mode on an Animation resource.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, animationPath: { type: 'string' }, loopMode: { type: 'string' } }, required: ['projectPath', 'animationPath'] },
+      },
+      {
+        name: 'add_animation_key_value',
+        description: 'Add a value key to an animation track.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, animationPath: { type: 'string' }, trackIndex: { type: 'number' }, time: { type: 'number' }, value: {} }, required: ['projectPath', 'animationPath', 'trackIndex', 'time', 'value'] },
+      },
+      {
+        name: 'get_animation_key_count',
+        description: 'Get number of keys on a track in an Animation.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, animationPath: { type: 'string' }, trackIndex: { type: 'number' } }, required: ['projectPath', 'animationPath', 'trackIndex'] },
+      },
+      // Batch 62 — Group B: Environment3D / WorldEnvironment tools
+      {
+        name: 'get_world_environment_info',
+        description: 'Get info from the WorldEnvironment node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_environment_ambient_light',
+        description: 'Set ambient light color on a WorldEnvironment.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, r: { type: 'number' }, g: { type: 'number' }, b: { type: 'number' }, a: { type: 'number' }, energy: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_environment_sky_color',
+        description: 'Set sky color on a WorldEnvironment background.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, r: { type: 'number' }, g: { type: 'number' }, b: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_environment_bloom',
+        description: 'Enable/configure bloom on a WorldEnvironment.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, enabled: { type: 'boolean' }, threshold: { type: 'number' }, intensity: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_environment_tonemap',
+        description: 'Set tonemapping mode on a WorldEnvironment.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, mode: { type: 'string' }, exposure: { type: 'number' } }, required: ['nodePath'] },
+      },
+      // Batch 62 — Group C: GPUParticles2D / CPUParticles2D runtime tools
+      {
+        name: 'set_particles_lifetime',
+        description: 'Set particle lifetime on a particles node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, lifetime: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_particles_explosiveness',
+        description: 'Set explosiveness on a particles node (0-1).',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, explosiveness: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_particles_one_shot',
+        description: 'Set one-shot mode on a particles node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, oneShot: { type: 'boolean' } }, required: ['nodePath'] },
+      },
+      // Batch 62 — Group D: Light3D tools
+      {
+        name: 'set_light_energy',
+        description: 'Set energy/brightness of a Light3D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, energy: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_light_color',
+        description: 'Set color of a Light3D node (r,g,b 0-1).',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, r: { type: 'number' }, g: { type: 'number' }, b: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_directional_light_shadow',
+        description: 'Set shadow mode on a DirectionalLight3D.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, mode: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_light_info',
+        description: 'Get current properties of a Light3D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      // Batch 62 — Group E: GDScript templates
+      {
+        name: 'write_timer_manager_script',
+        description: 'Write a reusable timer helper Autoload script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_screen_shake_script',
+        description: 'Write a screen shake camera effect script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, maxOffset: { type: 'number' }, duration: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_resource_preloader_script',
+        description: 'Write a resource preloading helper script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_tween_helper_script',
+        description: 'Write a tween animation helper script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_game_settings_script',
+        description: 'Write a game settings save/load Autoload.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_achievement_system_script',
+        description: 'Write a basic achievement tracker script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_notifications_ui_script',
+        description: 'Write a UI notification popup manager script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_minimap_script',
+        description: 'Write a simple minimap display script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
       ],
     }));
 
@@ -20534,6 +20659,59 @@ class GodotServer {
           return await this.handleWriteInventorySystemScript(request.params.arguments);
         case 'write_dialogue_system_script':
           return await this.handleWriteDialogueSystemScript(request.params.arguments);
+        // Batch 62 switch cases — Group A: Animation track editing
+        case 'add_animation_track':
+          return await this.handleAddAnimationTrack(request.params.arguments);
+        case 'set_animation_loop_mode':
+          return await this.handleSetAnimationLoopMode(request.params.arguments);
+        case 'add_animation_key_value':
+          return await this.handleAddAnimationKeyValue(request.params.arguments);
+        case 'get_animation_key_count':
+          return await this.handleGetAnimationKeyCount(request.params.arguments);
+        // Batch 62 switch cases — Group B: Environment3D tools
+        case 'get_world_environment_info':
+          return await this.handleGetWorldEnvironmentInfo(request.params.arguments);
+        case 'set_environment_ambient_light':
+          return await this.handleSetEnvironmentAmbientLight(request.params.arguments);
+        case 'set_environment_sky_color':
+          return await this.handleSetEnvironmentSkyColor(request.params.arguments);
+        case 'set_environment_bloom':
+          return await this.handleSetEnvironmentBloom(request.params.arguments);
+        case 'set_environment_tonemap':
+          return await this.handleSetEnvironmentTonemap(request.params.arguments);
+        // Batch 62 switch cases — Group C: Particles tools
+        case 'set_particles_lifetime':
+          return await this.handleSetParticlesLifetime(request.params.arguments);
+        case 'set_particles_explosiveness':
+          return await this.handleSetParticlesExplosiveness(request.params.arguments);
+        case 'set_particles_one_shot':
+          return await this.handleSetParticlesOneShot(request.params.arguments);
+        // Batch 62 switch cases — Group D: Light3D tools
+        case 'set_light_energy':
+          return await this.handleSetLightEnergy(request.params.arguments);
+        case 'set_light_color':
+          return await this.handleSetLightColor(request.params.arguments);
+        case 'set_directional_light_shadow':
+          return await this.handleSetDirectionalLightShadow(request.params.arguments);
+        case 'get_light_info':
+          return await this.handleGetLightInfo(request.params.arguments);
+        // Batch 62 switch cases — Group E: GDScript templates
+        case 'write_timer_manager_script':
+          return await this.handleWriteTimerManagerScript(request.params.arguments);
+        case 'write_screen_shake_script':
+          return await this.handleWriteScreenShakeScript(request.params.arguments);
+        case 'write_resource_preloader_script':
+          return await this.handleWriteResourcePreloaderScript(request.params.arguments);
+        case 'write_tween_helper_script':
+          return await this.handleWriteTweenHelperScript(request.params.arguments);
+        case 'write_game_settings_script':
+          return await this.handleWriteGameSettingsScript(request.params.arguments);
+        case 'write_achievement_system_script':
+          return await this.handleWriteAchievementSystemScript(request.params.arguments);
+        case 'write_notifications_ui_script':
+          return await this.handleWriteNotificationsUiScript(request.params.arguments);
+        case 'write_minimap_script':
+          return await this.handleWriteMinimapScript(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -37597,6 +37775,472 @@ func _input(event: InputEvent) -> void:
 \t\t\tdialogue_finished.emit()
 \t\telse:
 \t\t\t_display_line(_lines[_current_line])
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  // ── Batch 62 handlers ───────────────────────────────────────────────────────
+
+  // Group A: Animation track editing via headlessOp
+  private async handleAddAnimationTrack(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.animationPath || !args.trackType || !args.nodePath)
+      return createErrorResponse('projectPath, animationPath, trackType, and nodePath are required.');
+    return this.headlessOp('add_animation_track', args, a => ({
+      projectPath: a.projectPath,
+      params: { animation_path: a.animationPath, track_type: a.trackType ?? 'value', node_path: a.nodePath ?? '.' },
+    }));
+  }
+
+  private async handleSetAnimationLoopMode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.animationPath)
+      return createErrorResponse('projectPath and animationPath are required.');
+    return this.headlessOp('set_animation_loop_mode', args, a => ({
+      projectPath: a.projectPath,
+      params: { animation_path: a.animationPath, loop_mode: a.loopMode ?? 'none' },
+    }));
+  }
+
+  private async handleAddAnimationKeyValue(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.animationPath || args.trackIndex === undefined || args.time === undefined || args.value === undefined)
+      return createErrorResponse('projectPath, animationPath, trackIndex, time, and value are required.');
+    return this.headlessOp('add_animation_key_value', args, a => ({
+      projectPath: a.projectPath,
+      params: { animation_path: a.animationPath, track_index: a.trackIndex ?? 0, time: a.time ?? 0.0, value: a.value ?? 0 },
+    }));
+  }
+
+  private async handleGetAnimationKeyCount(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.animationPath || args.trackIndex === undefined)
+      return createErrorResponse('projectPath, animationPath, and trackIndex are required.');
+    return this.headlessOp('get_animation_key_count', args, a => ({
+      projectPath: a.projectPath,
+      params: { animation_path: a.animationPath, track_index: a.trackIndex ?? 0 },
+    }));
+  }
+
+  // Group B: Environment3D / WorldEnvironment tools
+  private async handleGetWorldEnvironmentInfo(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_world_environment_info', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetEnvironmentAmbientLight(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_environment_ambient_light', args, a => ({
+      node_path: a.nodePath, r: a.r ?? 0.1, g: a.g ?? 0.1, b: a.b ?? 0.1, a: a.a ?? 1.0, energy: a.energy ?? 1.0,
+    }));
+  }
+
+  private async handleSetEnvironmentSkyColor(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_environment_sky_color', args, a => ({
+      node_path: a.nodePath, r: a.r ?? 0.4, g: a.g ?? 0.6, b: a.b ?? 0.9,
+    }));
+  }
+
+  private async handleSetEnvironmentBloom(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_environment_bloom', args, a => ({
+      node_path: a.nodePath, enabled: a.enabled !== false, threshold: a.threshold ?? 1.0, intensity: a.intensity ?? 0.8,
+    }));
+  }
+
+  private async handleSetEnvironmentTonemap(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_environment_tonemap', args, a => ({
+      node_path: a.nodePath, mode: a.mode ?? 'filmic', exposure: a.exposure ?? 1.0,
+    }));
+  }
+
+  // Group C: Particles runtime tools
+  private async handleSetParticlesLifetime(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_particles_lifetime', args, a => ({
+      node_path: a.nodePath, lifetime: a.lifetime ?? 1.0,
+    }));
+  }
+
+  private async handleSetParticlesExplosiveness(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_particles_explosiveness', args, a => ({
+      node_path: a.nodePath, explosiveness: a.explosiveness ?? 0.0,
+    }));
+  }
+
+  private async handleSetParticlesOneShot(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_particles_one_shot', args, a => ({
+      node_path: a.nodePath, one_shot: a.oneShot === true,
+    }));
+  }
+
+  // Group D: Light3D tools
+  private async handleSetLightEnergy(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_light_energy', args, a => ({
+      node_path: a.nodePath, energy: a.energy ?? 1.0,
+    }));
+  }
+
+  private async handleSetLightColor(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_light_color', args, a => ({
+      node_path: a.nodePath, r: a.r ?? 1.0, g: a.g ?? 1.0, b: a.b ?? 1.0,
+    }));
+  }
+
+  private async handleSetDirectionalLightShadow(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_directional_light_shadow', args, a => ({
+      node_path: a.nodePath, mode: a.mode ?? 'orthogonal',
+    }));
+  }
+
+  private async handleGetLightInfo(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_light_info', args, a => ({ node_path: a.nodePath }));
+  }
+
+  // Group E: GDScript templates
+  private async handleWriteTimerManagerScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+## TimerManager — Autoload. Creates one-shot timers easily.
+
+signal timer_done(timer_id: String)
+
+func wait(seconds: float, timer_id: String = "") -> void:
+\tawait get_tree().create_timer(seconds).timeout
+\ttimer_done.emit(timer_id)
+
+func call_delayed(callable: Callable, seconds: float) -> void:
+\tawait get_tree().create_timer(seconds).timeout
+\tcallable.call()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteScreenShakeScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Camera2D
+## ScreenShake — call shake() to trigger.
+
+@export var max_offset: float = 10.0
+@export var shake_duration: float = 0.3
+
+var _time: float = 0.0
+var _shaking: bool = false
+
+func shake(intensity: float = 1.0, duration: float = -1.0) -> void:
+\tmax_offset = 10.0 * intensity
+\t_time = duration if duration > 0.0 else shake_duration
+\t_shaking = true
+
+func _process(delta: float) -> void:
+\tif not _shaking:
+\t\treturn
+\t_time -= delta
+\tif _time <= 0.0:
+\t\t_shaking = false
+\t\toffset = Vector2.ZERO
+\t\treturn
+\toffset = Vector2(randf_range(-max_offset, max_offset), randf_range(-max_offset, max_offset))
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteResourcePreloaderScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+## ResourcePreloader — preloads and caches resources by key.
+
+var _cache: Dictionary = {}
+
+func preload_resource(key: String, path: String) -> void:
+\tif _cache.has(key):
+\t\treturn
+\t_cache[key] = load(path)
+
+func get_resource(key: String) -> Resource:
+\treturn _cache.get(key, null)
+
+func has_resource(key: String) -> bool:
+\treturn _cache.has(key)
+
+func release_resource(key: String) -> void:
+\t_cache.erase(key)
+
+func preload_all(resources: Dictionary) -> void:
+\tfor key in resources:
+\t\tpreload_resource(key, resources[key])
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteTweenHelperScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+## TweenHelper — utility wrappers around Godot 4 Tween API.
+
+func fade_in(node: CanvasItem, duration: float = 0.3) -> Tween:
+\tnode.modulate.a = 0.0
+\tvar tween := create_tween()
+\ttween.tween_property(node, "modulate:a", 1.0, duration)
+\treturn tween
+
+func fade_out(node: CanvasItem, duration: float = 0.3) -> Tween:
+\tvar tween := create_tween()
+\ttween.tween_property(node, "modulate:a", 0.0, duration)
+\treturn tween
+
+func move_to(node: Node2D, target: Vector2, duration: float = 0.5) -> Tween:
+\tvar tween := create_tween()
+\ttween.tween_property(node, "position", target, duration).set_ease(Tween.EASE_IN_OUT)
+\treturn tween
+
+func scale_to(node: Node2D, target: Vector2, duration: float = 0.3) -> Tween:
+\tvar tween := create_tween()
+\ttween.tween_property(node, "scale", target, duration).set_ease(Tween.EASE_OUT)
+\treturn tween
+
+func bounce(node: Node2D, amount: float = 0.2, duration: float = 0.4) -> Tween:
+\tvar original := node.scale
+\tvar tween := create_tween()
+\ttween.tween_property(node, "scale", original * (1.0 + amount), duration * 0.5)
+\ttween.tween_property(node, "scale", original, duration * 0.5)
+\treturn tween
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteGameSettingsScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+## GameSettings — Autoload for saving/loading game settings.
+
+const SETTINGS_PATH := "user://settings.cfg"
+
+var _config := ConfigFile.new()
+
+@export var master_volume: float = 1.0
+@export var music_volume: float = 0.8
+@export var sfx_volume: float = 1.0
+@export var fullscreen: bool = false
+
+func _ready() -> void:
+\tload_settings()
+
+func save_settings() -> void:
+\t_config.set_value("audio", "master_volume", master_volume)
+\t_config.set_value("audio", "music_volume", music_volume)
+\t_config.set_value("audio", "sfx_volume", sfx_volume)
+\t_config.set_value("display", "fullscreen", fullscreen)
+\t_config.save(SETTINGS_PATH)
+
+func load_settings() -> void:
+\tif _config.load(SETTINGS_PATH) != OK:
+\t\treturn
+\tmaster_volume = _config.get_value("audio", "master_volume", 1.0)
+\tmusic_volume = _config.get_value("audio", "music_volume", 0.8)
+\tsfx_volume = _config.get_value("audio", "sfx_volume", 1.0)
+\tfullscreen = _config.get_value("display", "fullscreen", false)
+\t_apply_settings()
+
+func _apply_settings() -> void:
+\tAudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), linear_to_db(master_volume))
+\tif fullscreen:
+\t\tDisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+\telse:
+\t\tDisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteAchievementSystemScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+## AchievementSystem — tracks and unlocks achievements.
+
+const SAVE_PATH := "user://achievements.cfg"
+
+signal achievement_unlocked(id: String, title: String)
+
+var _unlocked: Dictionary = {}
+var _definitions: Dictionary = {}
+
+func define(id: String, title: String, description: String) -> void:
+\t_definitions[id] = { "title": title, "description": description }
+
+func unlock(id: String) -> bool:
+\tif _unlocked.get(id, false):
+\t\treturn false
+\t_unlocked[id] = true
+\tsave()
+\tvar def := _definitions.get(id, {})
+\tachievement_unlocked.emit(id, def.get("title", id))
+\treturn true
+
+func is_unlocked(id: String) -> bool:
+\treturn _unlocked.get(id, false)
+
+func get_all_unlocked() -> Array:
+\treturn _unlocked.keys().filter(func(k): return _unlocked[k])
+
+func save() -> void:
+\tvar cfg := ConfigFile.new()
+\tfor id in _unlocked:
+\t\tcfg.set_value("achievements", id, _unlocked[id])
+\tcfg.save(SAVE_PATH)
+
+func load_data() -> void:
+\tvar cfg := ConfigFile.new()
+\tif cfg.load(SAVE_PATH) != OK:
+\t\treturn
+\tfor id in cfg.get_section_keys("achievements"):
+\t\t_unlocked[id] = cfg.get_value("achievements", id, false)
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteNotificationsUiScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends CanvasLayer
+## NotificationsUI — shows timed popup notifications.
+## Add a VBoxContainer child named 'Container'.
+
+@export var notification_duration: float = 3.0
+@export var max_notifications: int = 5
+@onready var container: VBoxContainer = $Container
+
+func show_notification(message: String, color: Color = Color.WHITE) -> void:
+\tif container.get_child_count() >= max_notifications:
+\t\tcontainer.get_child(0).queue_free()
+\tvar label := Label.new()
+\tlabel.text = message
+\tlabel.modulate = color
+\tlabel.modulate.a = 0.0
+\tcontainer.add_child(label)
+\tvar tween := create_tween()
+\ttween.tween_property(label, "modulate:a", 1.0, 0.2)
+\ttween.tween_interval(notification_duration)
+\ttween.tween_property(label, "modulate:a", 0.0, 0.3)
+\ttween.tween_callback(label.queue_free)
+
+func show_info(message: String) -> void:
+\tshow_notification(message, Color.WHITE)
+
+func show_warning(message: String) -> void:
+\tshow_notification(message, Color.YELLOW)
+
+func show_error(message: String) -> void:
+\tshow_notification(message, Color.RED)
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteMinimapScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends SubViewportContainer
+## MinimapDisplay — renders a top-down minimap via SubViewport.
+## Requires a SubViewport child with a Camera2D inside.
+
+@export var tracked_node: NodePath = ""
+@export var zoom_level: float = 0.1
+@export_range(64, 512) var minimap_size: int = 128
+
+@onready var viewport: SubViewport = $SubViewport
+@onready var camera: Camera2D = $SubViewport/MinimapCamera
+
+var _target: Node2D = null
+
+func _ready() -> void:
+\tcustom_minimum_size = Vector2(minimap_size, minimap_size)
+\tcamera.zoom = Vector2(zoom_level, zoom_level)
+\tif tracked_node:
+\t\t_target = get_node(tracked_node)
+
+func _process(_delta: float) -> void:
+\tif _target:
+\t\tcamera.global_position = _target.global_position
+
+func set_tracked_node(node: Node2D) -> void:
+\t_target = node
+
+func set_zoom(zoom: float) -> void:
+\tzoom_level = zoom
+\tcamera.zoom = Vector2(zoom, zoom)
 `;
     try {
       const dir = require('path').dirname(absPath);
