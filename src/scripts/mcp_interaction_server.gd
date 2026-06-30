@@ -579,6 +579,16 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_object_id(params)
 		"call_method_on_node":
 			_cmd_call_method_on_node(params)
+		"get_particles_info":
+			_cmd_get_particles_info(params)
+		"set_particles_emitting":
+			_cmd_set_particles_emitting(params)
+		"get_navigation_agents":
+			_cmd_get_navigation_agents(params)
+		"navigation_agent_set_target":
+			_cmd_navigation_agent_set_target(params)
+		"get_world_environment":
+			_cmd_get_world_environment(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -6550,6 +6560,96 @@ func _cmd_call_method_on_node(params: Dictionary) -> void:
 		return
 	var result = node.callv(method_name, call_args)
 	_send_response({"success": true, "method": method_name, "result": _to_serializable(result)})
+
+func _cmd_get_particles_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is GPUParticles3D:
+		var p := node as GPUParticles3D
+		_send_response({"success": true, "type": "GPUParticles3D", "emitting": p.emitting, "amount": p.amount, "lifetime": p.lifetime, "one_shot": p.one_shot, "explosiveness": p.explosiveness})
+	elif node is GPUParticles2D:
+		var p := node as GPUParticles2D
+		_send_response({"success": true, "type": "GPUParticles2D", "emitting": p.emitting, "amount": p.amount, "lifetime": p.lifetime, "one_shot": p.one_shot, "explosiveness": p.explosiveness})
+	elif node is CPUParticles3D:
+		var p := node as CPUParticles3D
+		_send_response({"success": true, "type": "CPUParticles3D", "emitting": p.emitting, "amount": p.amount, "lifetime": p.lifetime, "one_shot": p.one_shot})
+	elif node is CPUParticles2D:
+		var p := node as CPUParticles2D
+		_send_response({"success": true, "type": "CPUParticles2D", "emitting": p.emitting, "amount": p.amount, "lifetime": p.lifetime, "one_shot": p.one_shot})
+	else:
+		_send_response({"error": "Node is not a particle emitter: " + node.get_class()})
+
+func _cmd_set_particles_emitting(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var emitting: bool = params.get("emitting", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is GPUParticles3D:
+		(node as GPUParticles3D).emitting = emitting
+	elif node is GPUParticles2D:
+		(node as GPUParticles2D).emitting = emitting
+	elif node is CPUParticles3D:
+		(node as CPUParticles3D).emitting = emitting
+	elif node is CPUParticles2D:
+		(node as CPUParticles2D).emitting = emitting
+	else:
+		_send_response({"error": "Node is not a particle emitter: " + node.get_class()})
+		return
+	_send_response({"success": true, "emitting": emitting})
+
+func _cmd_get_navigation_agents(_params: Dictionary) -> void:
+	var agents: Array = []
+	var queue: Array = [get_tree().root]
+	while queue.size() > 0:
+		var node = queue.pop_front()
+		if node is NavigationAgent2D:
+			var a := node as NavigationAgent2D
+			agents.append({"path": str(node.get_path()), "type": "NavigationAgent2D", "target_position": {"x": a.target_position.x, "y": a.target_position.y}, "is_navigation_finished": a.is_navigation_finished()})
+		elif node is NavigationAgent3D:
+			var a := node as NavigationAgent3D
+			agents.append({"path": str(node.get_path()), "type": "NavigationAgent3D", "target_position": {"x": a.target_position.x, "y": a.target_position.y, "z": a.target_position.z}, "is_navigation_finished": a.is_navigation_finished()})
+		for child in node.get_children():
+			queue.append(child)
+	_send_response({"success": true, "count": agents.size(), "agents": agents})
+
+func _cmd_navigation_agent_set_target(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is NavigationAgent2D:
+		(node as NavigationAgent2D).target_position = Vector2(x, y)
+		_send_response({"success": true, "type": "2D", "target": {"x": x, "y": y}})
+	elif node is NavigationAgent3D:
+		(node as NavigationAgent3D).target_position = Vector3(x, y, z)
+		_send_response({"success": true, "type": "3D", "target": {"x": x, "y": y, "z": z}})
+	else:
+		_send_response({"error": "Node is not a NavigationAgent: " + node.get_class()})
+
+func _cmd_get_world_environment(_params: Dictionary) -> void:
+	var queue: Array = [get_tree().root]
+	while queue.size() > 0:
+		var node = queue.pop_front()
+		if node is WorldEnvironment:
+			var we := node as WorldEnvironment
+			var env = we.environment
+			if env != null:
+				_send_response({"success": true, "path": str(node.get_path()), "background_mode": env.background_mode, "ambient_color": {"r": env.ambient_light_color.r, "g": env.ambient_light_color.g, "b": env.ambient_light_color.b}, "ambient_energy": env.ambient_light_energy, "fog_enabled": env.fog_enabled})
+			else:
+				_send_response({"success": true, "path": str(node.get_path()), "environment": null})
+			return
+		for child in node.get_children():
+			queue.append(child)
+	_send_response({"error": "No WorldEnvironment found in scene"})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()
