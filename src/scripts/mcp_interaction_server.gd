@@ -16,6 +16,8 @@ var _held_keys: Dictionary = {}
 var _recording: bool = false
 var _recorded_events: Array = []
 var _recording_start_ms: float = 0.0
+var _fps_history: Array = []
+var _fps_history_max: int = 300
 
 func _ready() -> void:
 	# Ensure MCP server keeps processing even when game is paused
@@ -30,6 +32,11 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
+	# Track FPS history
+	_fps_history.append(Engine.get_frames_per_second())
+	if _fps_history.size() > _fps_history_max:
+		_fps_history = _fps_history.slice(_fps_history.size() - _fps_history_max)
+
 	if _server == null:
 		return
 
@@ -438,6 +445,26 @@ func _handle_command(json_str: String) -> void:
 			_cmd_skeleton_get_bones(params)
 		"skeleton_set_bone_pose":
 			_cmd_skeleton_set_bone_pose(params)
+		"subviewport_set_size":
+			_cmd_subviewport_set_size(params)
+		"gridmap_set_cell":
+			_cmd_gridmap_set_cell(params)
+		"gridmap_get_used_cells":
+			_cmd_gridmap_get_used_cells(params)
+		"gridmap_clear":
+			_cmd_gridmap_clear(params)
+		"path2d_set_points":
+			_cmd_path2d_set_points(params)
+		"get_fps_history":
+			_cmd_get_fps_history(params)
+		"set_environment_property":
+			_cmd_set_environment_property(params)
+		"get_physics_layers":
+			_cmd_get_physics_layers(params)
+		"set_physics_layers":
+			_cmd_set_physics_layers(params)
+		"get_node_rect":
+			_cmd_get_node_rect(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -5403,6 +5430,164 @@ func _cmd_skeleton_set_bone_pose(params: Dictionary) -> void:
 		_send_response({"success": true, "bone_name": bone_name, "bone_index": bone_idx})
 	else:
 		_send_response({"error": "Node is not a Skeleton3D: " + node.get_class()})
+
+
+func _cmd_subviewport_set_size(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var width: int = params.get("width", 256)
+	var height: int = params.get("height", 256)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is SubViewport:
+		_send_response({"error": "SubViewport not found: " + node_path})
+		return
+	(node as SubViewport).size = Vector2i(width, height)
+	_send_response({"success": true, "size": {"x": width, "y": height}})
+
+
+func _cmd_gridmap_set_cell(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: int = params.get("x", 0)
+	var y: int = params.get("y", 0)
+	var z: int = params.get("z", 0)
+	var item_index: int = params.get("item_index", 0)
+	var orientation: int = params.get("orientation", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is GridMap:
+		_send_response({"error": "GridMap not found: " + node_path})
+		return
+	(node as GridMap).set_cell_item(Vector3i(x, y, z), item_index, orientation)
+	_send_response({"success": true, "cell": {"x": x, "y": y, "z": z}, "item_index": item_index})
+
+
+func _cmd_gridmap_get_used_cells(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is GridMap:
+		_send_response({"error": "GridMap not found: " + node_path})
+		return
+	var gm := node as GridMap
+	var cells: Array = []
+	for cell in gm.get_used_cells():
+		cells.append({"x": cell.x, "y": cell.y, "z": cell.z, "item": gm.get_cell_item(cell)})
+	_send_response({"success": true, "cells": cells, "count": cells.size()})
+
+
+func _cmd_gridmap_clear(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is GridMap:
+		_send_response({"error": "GridMap not found: " + node_path})
+		return
+	(node as GridMap).clear()
+	_send_response({"success": true, "cleared": true})
+
+
+func _cmd_path2d_set_points(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var points: Array = params.get("points", [])
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Path2D:
+		_send_response({"error": "Path2D not found: " + node_path})
+		return
+	var path := node as Path2D
+	var curve := Curve2D.new()
+	for pt in points:
+		curve.add_point(Vector2(pt.get("x", 0), pt.get("y", 0)))
+	path.curve = curve
+	_send_response({"success": true, "point_count": curve.get_point_count()})
+
+
+func _cmd_get_fps_history(params: Dictionary) -> void:
+	var sample_count: int = params.get("sample_count", 60)
+	# Return current FPS and recent history from our tracked array
+	var current_fps: float = Engine.get_frames_per_second()
+	# We store fps samples in _fps_history; if empty, fill with current value
+	if _fps_history.is_empty():
+		_fps_history.append(current_fps)
+	var history = _fps_history.slice(max(0, _fps_history.size() - sample_count))
+	var avg_fps: float = 0.0
+	for f in history:
+		avg_fps += f
+	avg_fps = avg_fps / max(history.size(), 1)
+	_send_response({
+		"success": true,
+		"current_fps": current_fps,
+		"average_fps": avg_fps,
+		"sample_count": history.size(),
+		"history": history
+	})
+
+
+func _cmd_set_environment_property(params: Dictionary) -> void:
+	var property_name: String = params.get("property_name", "")
+	var property_value = params.get("property_value", null)
+	var env_node: WorldEnvironment = _find_world_environment(get_tree().root)
+	if env_node == null:
+		_send_response({"error": "No WorldEnvironment found in scene"})
+		return
+	if env_node.environment == null:
+		_send_response({"error": "WorldEnvironment has no Environment resource"})
+		return
+	env_node.environment.set(property_name, property_value)
+	_send_response({"success": true, "property": property_name})
+
+
+func _find_world_environment(node: Node) -> WorldEnvironment:
+	if node is WorldEnvironment:
+		return node as WorldEnvironment
+	for child in node.get_children():
+		var result = _find_world_environment(child)
+		if result != null:
+			return result
+	return null
+
+
+func _cmd_get_physics_layers(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var result: Dictionary = {"node_path": node_path, "node_class": node.get_class()}
+	if node.get("collision_layer") != null:
+		result["collision_layer"] = node.get("collision_layer")
+		result["collision_mask"] = node.get("collision_mask")
+	_send_response({"success": true, "physics": result})
+
+
+func _cmd_set_physics_layers(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var collision_layer = params.get("collision_layer", null)
+	var collision_mask = params.get("collision_mask", null)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var changed: Array = []
+	if collision_layer != null:
+		node.set("collision_layer", collision_layer)
+		changed.append("collision_layer")
+	if collision_mask != null:
+		node.set("collision_mask", collision_mask)
+		changed.append("collision_mask")
+	_send_response({"success": true, "changed": changed})
+
+
+func _cmd_get_node_rect(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is Control:
+		var ctrl := node as Control
+		var rect: Rect2 = ctrl.get_global_rect()
+		_send_response({"success": true, "rect": {"x": rect.position.x, "y": rect.position.y, "w": rect.size.x, "h": rect.size.y}})
+	elif node is Node2D:
+		var n2d := node as Node2D
+		_send_response({"success": true, "global_position": {"x": n2d.global_position.x, "y": n2d.global_position.y}})
+	else:
+		_send_response({"error": "Node is not a Control or Node2D: " + node.get_class()})
 
 
 func _exit_tree() -> void:
