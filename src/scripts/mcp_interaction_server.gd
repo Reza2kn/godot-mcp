@@ -539,6 +539,20 @@ func _handle_command(json_str: String) -> void:
 			_cmd_node_set_z_index(params)
 		"emit_signal_on_node":
 			_cmd_emit_signal_on_node(params)
+		"get_node_metadata":
+			_cmd_get_node_metadata(params)
+		"set_node_metadata":
+			_cmd_set_node_metadata(params)
+		"node_add_to_group_runtime":
+			_cmd_node_add_to_group_runtime(params)
+		"node_remove_from_group_runtime":
+			_cmd_node_remove_from_group_runtime(params)
+		"get_nodes_in_group_runtime":
+			_cmd_get_nodes_in_group_runtime(params)
+		"game_set_time_scale":
+			_cmd_game_set_time_scale(params)
+		"game_get_scene_tree":
+			_cmd_game_get_scene_tree(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -6257,6 +6271,80 @@ func _cmd_emit_signal_on_node(params: Dictionary) -> void:
 		return
 	node.emit_signal(signal_name)
 	_send_response({"success": true, "signal_name": signal_name})
+
+
+func _cmd_get_node_metadata(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var meta: Dictionary = {}
+	for key in node.get_meta_list():
+		meta[key] = _to_serializable(node.get_meta(key))
+	_send_response({"success": true, "node_path": node_path, "metadata": meta})
+
+func _cmd_set_node_metadata(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var key: String = params.get("key", "")
+	var value = params.get("value", null)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	node.set_meta(key, value)
+	_send_response({"success": true, "key": key, "value": _to_serializable(value)})
+
+func _cmd_node_add_to_group_runtime(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var group_name: String = params.get("group_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	node.add_to_group(group_name)
+	_send_response({"success": true, "group": group_name, "in_group": node.is_in_group(group_name)})
+
+func _cmd_node_remove_from_group_runtime(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var group_name: String = params.get("group_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	node.remove_from_group(group_name)
+	_send_response({"success": true, "group": group_name})
+
+func _cmd_get_nodes_in_group_runtime(params: Dictionary) -> void:
+	var group_name: String = params.get("group_name", "")
+	var nodes = get_tree().get_nodes_in_group(group_name)
+	var result: Array = []
+	for node in nodes:
+		result.append({"path": str(node.get_path()), "name": node.name, "class": node.get_class()})
+	_send_response({"success": true, "group": group_name, "count": result.size(), "nodes": result})
+
+func _cmd_game_set_time_scale(params: Dictionary) -> void:
+	var time_scale: float = params.get("time_scale", 1.0)
+	Engine.time_scale = time_scale
+	_send_response({"success": true, "time_scale": time_scale})
+
+func _cmd_game_get_scene_tree(params: Dictionary) -> void:
+	var max_depth: int = params.get("max_depth", 5)
+	var tree = _build_tree_node_depth(get_tree().root, 0, max_depth)
+	_send_response({"success": true, "tree": tree})
+
+func _build_tree_node_depth(node: Node, depth: int, max_depth: int) -> Dictionary:
+	var result: Dictionary = {
+		"name": node.name,
+		"class": node.get_class(),
+		"path": str(node.get_path())
+	}
+	if depth < max_depth:
+		var children: Array = []
+		for child in node.get_children():
+			children.append(_build_tree_node_depth(child, depth + 1, max_depth))
+		result["children"] = children
+	return result
 
 
 func _exit_tree() -> void:
