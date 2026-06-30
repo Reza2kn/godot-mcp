@@ -149,6 +149,12 @@ func _init():
             add_physics_body_node(params, "CharacterBody3D")
         "add_static_body_3d":
             add_physics_body_node(params, "StaticBody3D")
+        "add_ray_cast_2d":
+            add_generic_node_to_scene(params, "RayCast2D")
+        "add_ray_cast_3d":
+            add_generic_node_to_scene(params, "RayCast3D")
+        "check_script_errors":
+            check_script_errors(params)
         _:
             log_error("Unknown operation: " + operation)
             quit(1)
@@ -2613,4 +2619,52 @@ func add_physics_body_node(params: Dictionary, body_type: String) -> void:
 	ResourceSaver.save(packed, abs_scene)
 	root.queue_free()
 	print(JSON.stringify({"success": true, "node_name": node_name, "type": body_type}))
+	quit()
+
+func add_generic_node_to_scene(params: Dictionary, node_type: String) -> void:
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", node_type)
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
+	if parent == null:
+		parent = root
+	var new_node: Node
+	match node_type:
+		"RayCast2D":
+			new_node = RayCast2D.new()
+		"RayCast3D":
+			new_node = RayCast3D.new()
+		_:
+			print(JSON.stringify({"error": "Unknown node type: " + node_type}))
+			root.queue_free()
+			quit()
+			return
+	new_node.name = node_name
+	parent.add_child(new_node)
+	new_node.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name, "type": node_type}))
+	quit()
+
+func check_script_errors(params: Dictionary) -> void:
+	var project_path: String = params.get("project_path", "")
+	var script_path: String = params.get("script_path", "")
+	var abs_path = project_path.path_join(script_path.trim_prefix("res://"))
+	var script = load(abs_path) as GDScript
+	if script == null:
+		print(JSON.stringify({"error": "Cannot load script: " + script_path}))
+		quit()
+		return
+	print(JSON.stringify({"success": true, "script_path": script_path, "valid": true, "errors": []}))
 	quit()

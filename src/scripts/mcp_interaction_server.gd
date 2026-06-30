@@ -563,6 +563,14 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_2d_camera_info(params)
 		"camera_2d_set_zoom":
 			_cmd_camera_2d_set_zoom(params)
+		"node_set_visible_runtime":
+			_cmd_node_set_visible_runtime(params)
+		"node_get_visible_runtime":
+			_cmd_node_get_visible_runtime(params)
+		"free_node_runtime":
+			_cmd_free_node_runtime(params)
+		"duplicate_node_runtime":
+			_cmd_duplicate_node_runtime(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -6433,6 +6441,61 @@ func _cmd_camera_2d_set_zoom(params: Dictionary) -> void:
 	(node as Camera2D).zoom = Vector2(x, y)
 	_send_response({"success": true, "zoom": {"x": x, "y": y}})
 
+
+func _cmd_node_set_visible_runtime(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var visible: bool = params.get("visible", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if not node is CanvasItem and not node is Node3D:
+		_send_response({"error": "Node is not a CanvasItem or Node3D: " + node.get_class()})
+		return
+	if node is CanvasItem:
+		(node as CanvasItem).visible = visible
+	elif node is Node3D:
+		(node as Node3D).visible = visible
+	_send_response({"success": true, "node_path": node_path, "visible": visible})
+
+func _cmd_node_get_visible_runtime(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var visible = null
+	if node is CanvasItem:
+		visible = (node as CanvasItem).visible
+	elif node is Node3D:
+		visible = (node as Node3D).visible
+	_send_response({"success": true, "node_path": node_path, "visible": visible})
+
+func _cmd_free_node_runtime(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var parent_path = str(node.get_parent().get_path()) if node.get_parent() != null else ""
+	node.queue_free()
+	_send_response({"success": true, "freed_path": node_path, "parent_path": parent_path})
+
+func _cmd_duplicate_node_runtime(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var new_name: String = params.get("new_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var dup = node.duplicate()
+	if new_name != "":
+		dup.name = new_name
+	else:
+		dup.name = node.name + "_copy"
+	node.get_parent().add_child(dup)
+	dup.owner = get_tree().root
+	_send_response({"success": true, "original_path": node_path, "new_path": str(dup.get_path()), "new_name": dup.name})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()
