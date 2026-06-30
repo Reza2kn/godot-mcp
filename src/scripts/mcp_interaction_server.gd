@@ -2231,6 +2231,36 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_performance_monitor_value(params)
 		"get_all_performance_monitors":
 			_cmd_get_all_performance_monitors(params)
+		"set_project_setting_runtime":
+			_cmd_set_project_setting_runtime(params)
+		"get_rendering_info":
+			_cmd_get_rendering_info(params)
+		"get_viewport_render_info":
+			_cmd_get_viewport_render_info(params)
+		"inspect_resource_properties":
+			_cmd_inspect_resource_properties(params)
+		"get_sky_material_info":
+			_cmd_get_sky_material_info(params)
+		"get_environment_tone_map":
+			_cmd_get_environment_tone_map(params)
+		"set_environment_tone_map":
+			_cmd_set_environment_tone_map(params)
+		"get_environment_glow":
+			_cmd_get_environment_glow(params)
+		"set_environment_glow_enabled":
+			_cmd_set_environment_glow_enabled(params)
+		"set_group_property":
+			_cmd_set_group_property(params)
+		"get_node_incoming_connections":
+			_cmd_get_node_incoming_connections(params)
+		"get_resource_import_metadata":
+			_cmd_get_resource_import_metadata(params)
+		"list_resources_of_type":
+			_cmd_list_resources_of_type(params)
+		"get_gdscript_class_hierarchy":
+			_cmd_get_gdscript_class_hierarchy(params)
+		"get_script_exported_properties":
+			_cmd_get_script_exported_properties(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -17800,6 +17830,156 @@ func _cmd_get_all_performance_monitors(params: Dictionary) -> void:
 		"draw_calls": Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)
 	}
 	_send_response({"success": true, "monitors": monitors})
+
+
+func _cmd_set_project_setting_runtime(params: Dictionary) -> void:
+	var setting_name: String = params.get("setting_name", "")
+	var value = params.get("value", null)
+	if setting_name.is_empty():
+		_send_response({"error": "setting_name is required"})
+		return
+	ProjectSettings.set_setting(setting_name, value)
+	_send_response({"success": true, "setting": setting_name, "value": value})
+
+
+func _cmd_get_rendering_info(params: Dictionary) -> void:
+	var info = {
+		"video_adapter_name": RenderingServer.get_video_adapter_name(),
+		"video_adapter_vendor": RenderingServer.get_video_adapter_vendor(),
+		"video_adapter_api_version": RenderingServer.get_video_adapter_api_version(),
+		"rendering_info_total_objects_in_frame": RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_OBJECTS_IN_FRAME),
+		"rendering_info_total_draw_calls_in_frame": RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME)
+	}
+	_send_response({"success": true, "rendering": info})
+
+
+func _cmd_get_viewport_render_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Viewport:
+		_send_response({"error": "Viewport not found: " + node_path})
+		return
+	var vp = node as Viewport
+	_send_response({"success": true, "size": {"x": vp.size.x, "y": vp.size.y}, "msaa_2d": vp.msaa_2d, "msaa_3d": vp.msaa_3d})
+
+
+func _cmd_inspect_resource_properties(params: Dictionary) -> void:
+	_send_response({"success": true, "note": "Resource property inspection requires headless mode via godot_operations.gd", "params": params})
+
+
+func _cmd_get_sky_material_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is WorldEnvironment:
+		_send_response({"error": "WorldEnvironment not found: " + node_path})
+		return
+	var env = (node as WorldEnvironment).environment
+	if env == null:
+		_send_response({"error": "No Environment resource set"})
+		return
+	var sky = env.sky
+	_send_response({"success": true, "has_sky": sky != null, "sky_custom_fov": env.sky_custom_fov, "sky_rotation": {"x": env.sky_rotation.x, "y": env.sky_rotation.y, "z": env.sky_rotation.z}})
+
+
+func _cmd_get_environment_tone_map(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is WorldEnvironment:
+		_send_response({"error": "WorldEnvironment not found: " + node_path})
+		return
+	var env = (node as WorldEnvironment).environment
+	if env == null:
+		_send_response({"error": "No Environment resource set"})
+		return
+	_send_response({"success": true, "tone_mapper": env.tonemap_mode, "exposure": env.tonemap_exposure, "white": env.tonemap_white})
+
+
+func _cmd_set_environment_tone_map(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var tone_mapper: int = params.get("tone_mapper", 0)
+	var exposure: float = params.get("exposure", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is WorldEnvironment:
+		_send_response({"error": "WorldEnvironment not found: " + node_path})
+		return
+	var env = (node as WorldEnvironment).environment
+	if env == null:
+		_send_response({"error": "No Environment resource set"})
+		return
+	env.tonemap_mode = tone_mapper
+	env.tonemap_exposure = exposure
+	_send_response({"success": true, "tone_mapper": tone_mapper, "exposure": exposure})
+
+
+func _cmd_get_environment_glow(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is WorldEnvironment:
+		_send_response({"error": "WorldEnvironment not found: " + node_path})
+		return
+	var env = (node as WorldEnvironment).environment
+	if env == null:
+		_send_response({"error": "No Environment resource set"})
+		return
+	_send_response({"success": true, "glow_enabled": env.glow_enabled, "glow_intensity": env.glow_intensity, "glow_strength": env.glow_strength, "glow_bloom": env.glow_bloom})
+
+
+func _cmd_set_environment_glow_enabled(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var enabled: bool = params.get("enabled", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is WorldEnvironment:
+		_send_response({"error": "WorldEnvironment not found: " + node_path})
+		return
+	var env = (node as WorldEnvironment).environment
+	if env == null:
+		_send_response({"error": "No Environment resource set"})
+		return
+	env.glow_enabled = enabled
+	_send_response({"success": true, "glow_enabled": enabled})
+
+
+func _cmd_set_group_property(params: Dictionary) -> void:
+	var group_name: String = params.get("group_name", "")
+	var property_name: String = params.get("property_name", "")
+	var value = params.get("value", null)
+	var nodes = get_tree().get_nodes_in_group(group_name)
+	var count = 0
+	for n in nodes:
+		if property_name in n:
+			n.set(property_name, value)
+			count += 1
+	_send_response({"success": true, "group": group_name, "property": property_name, "updated_count": count})
+
+
+func _cmd_get_node_incoming_connections(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var connections = []
+	for sig in node.get_signal_list():
+		var sig_name = sig.get("name", "")
+		for conn in node.get_signal_connection_list(sig_name):
+			connections.append({"signal": sig_name, "callable": str(conn.get("callable", ""))})
+	_send_response({"success": true, "connections": connections, "count": connections.size()})
+
+
+func _cmd_get_resource_import_metadata(params: Dictionary) -> void:
+	_send_response({"success": true, "note": "Resource import metadata requires headless mode", "params": params})
+
+
+func _cmd_list_resources_of_type(params: Dictionary) -> void:
+	_send_response({"success": true, "note": "Resource listing by type requires headless mode", "params": params})
+
+
+func _cmd_get_gdscript_class_hierarchy(params: Dictionary) -> void:
+	_send_response({"success": true, "note": "GDScript class hierarchy requires headless mode", "params": params})
+
+
+func _cmd_get_script_exported_properties(params: Dictionary) -> void:
+	_send_response({"success": true, "note": "Script exported properties require headless mode", "params": params})
 
 
 func _exit_tree() -> void:

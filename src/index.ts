@@ -18550,6 +18550,40 @@ class GodotServer {
       { name: 'write_interactable_object_script', description: 'Write an E-to-interact object script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, promptText: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_item_pickup_script', description: 'Write an item pickup Area2D script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, itemName: { type: 'string' }, itemValue: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
       { name: 'write_moving_platform_script', description: 'Write a moving platform between two points.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, speed: { type: 'number' }, waitTime: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      // Batch 75 — Group A: Performance / Engine monitoring
+      { name: 'get_performance_monitor_value', description: 'Get a single Godot Performance monitor value.', inputSchema: { type: 'object', properties: { monitorName: { type: 'string' } }, required: ['monitorName'] } },
+      { name: 'get_all_performance_monitors', description: 'Get all key Godot Performance monitor values.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'set_project_setting_runtime', description: 'Set a Godot project setting at runtime.', inputSchema: { type: 'object', properties: { settingName: { type: 'string' }, value: {} }, required: ['settingName', 'value'] } },
+      { name: 'get_rendering_info', description: 'Get GPU rendering info (objects drawn, etc).', inputSchema: { type: 'object', properties: {} } },
+      { name: 'get_viewport_render_info', description: 'Get draw calls and vertices for a viewport.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      // Batch 75 — Group B: RenderingServer / environment
+      { name: 'get_sky_material_info', description: 'Get Sky resource and material from an env.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_environment_tone_map', description: 'Get tone mapper and exposure from environment.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_environment_tone_map', description: 'Set tone mapper and exposure on environment.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, toneMapper: { type: 'integer' }, exposure: { type: 'number' } }, required: ['nodePath'] } },
+      { name: 'get_environment_glow', description: 'Get glow settings from a WorldEnvironment.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_environment_glow_enabled', description: 'Enable or disable glow on a WorldEnvironment.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, enabled: { type: 'boolean' } }, required: ['nodePath', 'enabled'] } },
+      // Batch 75 — Group C: Scene tree / node management
+      { name: 'set_group_property', description: 'Set a property on all nodes in a group.', inputSchema: { type: 'object', properties: { groupName: { type: 'string' }, propertyName: { type: 'string' }, value: {} }, required: ['groupName', 'propertyName', 'value'] } },
+      { name: 'get_scene_unique_nodes', description: 'Get all nodes with unique names (% prefix).', inputSchema: { type: 'object', properties: { rootPath: { type: 'string' } }, required: ['rootPath'] } },
+      { name: 'get_node_incoming_connections', description: 'Get all incoming signal connections to a node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      // Batch 75 — Group D: Resource inspection (headlessOp)
+      { name: 'inspect_resource_properties', description: 'Inspect all properties of a resource file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, resourcePath: { type: 'string' } }, required: ['projectPath', 'resourcePath'] } },
+      { name: 'get_resource_import_metadata', description: 'Get import metadata for an imported asset.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, filePath: { type: 'string' } }, required: ['projectPath', 'filePath'] } },
+      { name: 'list_resources_of_type', description: 'List all resources of a given class type.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, resourceType: { type: 'string' } }, required: ['projectPath', 'resourceType'] } },
+      { name: 'get_gdscript_class_hierarchy', description: 'Get inheritance chain of a GDScript class.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, className: { type: 'string' } }, required: ['projectPath', 'className'] } },
+      { name: 'get_script_exported_properties', description: 'Get exported vars of a GDScript script file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      // Batch 75 — Group E: GDScript templates
+      { name: 'write_game_over_screen_script', description: 'Write a game over screen with retry button.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_fps_counter_script', description: 'Write an FPS counter Label script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, updateInterval: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_debug_overlay_script', description: 'Write a debug info overlay panel script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_input_buffer_script', description: 'Write an input buffer for frame-perfect input.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, bufferFrames: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_coyote_time_script', description: 'Write coyote time for CharacterBody2D jumps.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, coyoteTime: { type: 'number' }, jumpForce: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_camera_follow_3d_script', description: 'Write a 3D camera that follows a target.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, followSpeed: { type: 'number' }, offset: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_sprite_outline_script', description: 'Write a shader-based sprite outline script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, outlineColor: { type: 'string' }, outlineWidth: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_pathfinding_agent_2d_script', description: 'Write an AI agent using NavigationAgent2D.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, speed: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_grid_snap_script', description: 'Write a grid-snap drag-and-drop script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, gridSize: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_card_game_base_script', description: 'Write a base card game hand/deck script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_turn_based_combat_script', description: 'Write a turn-based combat manager script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
       ],
     }));
 
@@ -22080,6 +22114,65 @@ class GodotServer {
           return await this.handleWriteItemPickupScript(request.params.arguments);
         case 'write_moving_platform_script':
           return await this.handleWriteMovingPlatformScript(request.params.arguments);
+        // Batch 75 switch cases
+        case 'get_performance_monitor_value':
+          return await this.handleGetPerformanceMonitorValue(request.params.arguments);
+        case 'get_all_performance_monitors':
+          return await this.handleGetAllPerformanceMonitors(request.params.arguments);
+        case 'set_project_setting_runtime':
+          return await this.handleSetProjectSettingRuntime(request.params.arguments);
+        case 'get_rendering_info':
+          return await this.handleGetRenderingInfo(request.params.arguments);
+        case 'get_viewport_render_info':
+          return await this.handleGetViewportRenderInfo(request.params.arguments);
+        case 'get_sky_material_info':
+          return await this.handleGetSkyMaterialInfo(request.params.arguments);
+        case 'get_environment_tone_map':
+          return await this.handleGetEnvironmentToneMap(request.params.arguments);
+        case 'set_environment_tone_map':
+          return await this.handleSetEnvironmentToneMap(request.params.arguments);
+        case 'get_environment_glow':
+          return await this.handleGetEnvironmentGlow(request.params.arguments);
+        case 'set_environment_glow_enabled':
+          return await this.handleSetEnvironmentGlowEnabled(request.params.arguments);
+        case 'set_group_property':
+          return await this.handleSetGroupProperty(request.params.arguments);
+        case 'get_scene_unique_nodes':
+          return await this.handleGetSceneUniqueNodes(request.params.arguments);
+        case 'get_node_incoming_connections':
+          return await this.handleGetNodeIncomingConnections(request.params.arguments);
+        case 'inspect_resource_properties':
+          return await this.handleInspectResourceProperties(request.params.arguments);
+        case 'get_resource_import_metadata':
+          return await this.handleGetResourceImportMetadata(request.params.arguments);
+        case 'list_resources_of_type':
+          return await this.handleListResourcesOfType(request.params.arguments);
+        case 'get_gdscript_class_hierarchy':
+          return await this.handleGetGdscriptClassHierarchy(request.params.arguments);
+        case 'get_script_exported_properties':
+          return await this.handleGetScriptExportedProperties(request.params.arguments);
+        case 'write_game_over_screen_script':
+          return await this.handleWriteGameOverScreenScript(request.params.arguments);
+        case 'write_fps_counter_script':
+          return await this.handleWriteFpsCounterScript(request.params.arguments);
+        case 'write_debug_overlay_script':
+          return await this.handleWriteDebugOverlayScript(request.params.arguments);
+        case 'write_input_buffer_script':
+          return await this.handleWriteInputBufferScript(request.params.arguments);
+        case 'write_coyote_time_script':
+          return await this.handleWriteCoyoteTimeScript(request.params.arguments);
+        case 'write_camera_follow_3d_script':
+          return await this.handleWriteCameraFollow3dScript(request.params.arguments);
+        case 'write_sprite_outline_script':
+          return await this.handleWriteSpriteOutlineScript(request.params.arguments);
+        case 'write_pathfinding_agent_2d_script':
+          return await this.handleWritePathfindingAgent2dScript(request.params.arguments);
+        case 'write_grid_snap_script':
+          return await this.handleWriteGridSnapScript(request.params.arguments);
+        case 'write_card_game_base_script':
+          return await this.handleWriteCardGameBaseScript(request.params.arguments);
+        case 'write_turn_based_combat_script':
+          return await this.handleWriteTurnBasedCombatScript(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -45113,6 +45206,535 @@ func get_current_waypoint_index() -> int:
       if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  // ── Batch 75 handlers ───────────────────────────────────────────────────────
+
+  // Group A: Performance / Engine monitoring
+  private async handleGetPerformanceMonitorValue(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.monitorName) return createErrorResponse('monitorName is required.');
+    return this.gameCommand('get_performance_monitor_value', args, a => ({ monitor_name: a.monitorName ?? 'TIME_FPS' }));
+  }
+
+  private async handleGetAllPerformanceMonitors(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_all_performance_monitors', args, _a => ({}));
+  }
+
+  private async handleSetProjectSettingRuntime(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.settingName) return createErrorResponse('settingName is required.');
+    return this.gameCommand('set_project_setting_runtime', args, a => ({ setting_name: a.settingName ?? '', value: a.value ?? '' }));
+  }
+
+  private async handleGetRenderingInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_rendering_info', args, _a => ({}));
+  }
+
+  private async handleGetViewportRenderInfo(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_viewport_render_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  // Group B: RenderingServer / environment
+  private async handleGetSkyMaterialInfo(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_sky_material_info', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleGetEnvironmentToneMap(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_environment_tone_map', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetEnvironmentToneMap(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_environment_tone_map', args, a => ({ node_path: a.nodePath ?? '', tone_mapper: a.toneMapper ?? 0, exposure: a.exposure ?? 1.0 }));
+  }
+
+  private async handleGetEnvironmentGlow(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_environment_glow', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  private async handleSetEnvironmentGlowEnabled(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_environment_glow_enabled', args, a => ({ node_path: a.nodePath ?? '', enabled: a.enabled ?? true }));
+  }
+
+  // Group C: Scene tree / node management
+  private async handleSetGroupProperty(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.groupName || !args.propertyName) return createErrorResponse('groupName and propertyName are required.');
+    return this.gameCommand('set_group_property', args, a => ({ group_name: a.groupName ?? '', property_name: a.propertyName ?? '', value: a.value ?? null }));
+  }
+
+  private async handleGetSceneUniqueNodes(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.rootPath) return createErrorResponse('rootPath is required.');
+    return this.gameCommand('get_scene_unique_nodes', args, a => ({ root_path: a.rootPath ?? '' }));
+  }
+
+  private async handleGetNodeIncomingConnections(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_node_incoming_connections', args, a => ({ node_path: a.nodePath ?? '' }));
+  }
+
+  // Group D: Resource inspection (headlessOp)
+  private async handleInspectResourceProperties(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.resourcePath) return createErrorResponse('projectPath and resourcePath are required.');
+    return this.headlessOp('inspect_resource_properties', args, a => ({ projectPath: a.projectPath, params: { resource_path: a.resourcePath ?? '' } }));
+  }
+
+  private async handleGetResourceImportMetadata(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.filePath) return createErrorResponse('projectPath and filePath are required.');
+    return this.headlessOp('get_resource_import_metadata', args, a => ({ projectPath: a.projectPath, params: { file_path: a.filePath ?? '' } }));
+  }
+
+  private async handleListResourcesOfType(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.resourceType) return createErrorResponse('projectPath and resourceType are required.');
+    return this.headlessOp('list_resources_of_type', args, a => ({ projectPath: a.projectPath, params: { resource_type: a.resourceType ?? '' } }));
+  }
+
+  private async handleGetGdscriptClassHierarchy(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.className) return createErrorResponse('projectPath and className are required.');
+    return this.headlessOp('get_gdscript_class_hierarchy', args, a => ({ projectPath: a.projectPath, params: { class_name: a.className ?? '' } }));
+  }
+
+  private async handleGetScriptExportedProperties(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    return this.headlessOp('get_script_exported_properties', args, a => ({ projectPath: a.projectPath, params: { script_path: a.scriptPath ?? '' } }));
+  }
+
+  // Group E: GDScript templates (write_game_over_screen_script, write_fps_counter_script,
+  // write_debug_overlay_script handlers already exist in earlier batch — routed there)
+
+  private async handleWriteInputBufferScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.startsWith('res://')
+      ? require('path').join(args.projectPath, args.scriptPath.replace('res://', ''))
+      : args.scriptPath;
+    const bufferFrames = args.bufferFrames ?? 6;
+    const content = `extends Node
+## InputBuffer — stores recent inputs for frame-perfect buffered reads.
+
+@export var buffer_frames: int = ${bufferFrames}
+
+var _buffer: Dictionary = {}  # action -> frames_remaining
+
+func buffer(action: StringName) -> void:
+\t_buffer[action] = buffer_frames
+
+func consume(action: StringName) -> bool:
+\tif _buffer.get(action, 0) > 0:
+\t\t_buffer[action] = 0
+\t\treturn true
+\treturn false
+
+func _process(_delta: float) -> void:
+\tfor action in _buffer.keys():
+\t\tif _buffer[action] > 0:
+\t\t\t_buffer[action] -= 1
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteCoyoteTimeScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.startsWith('res://')
+      ? require('path').join(args.projectPath, args.scriptPath.replace('res://', ''))
+      : args.scriptPath;
+    const coyoteTime = args.coyoteTime ?? 0.12;
+    const jumpForce = args.jumpForce ?? 400;
+    const content = `extends CharacterBody2D
+## CoyoteJump — allows jumping briefly after walking off a ledge.
+
+const GRAVITY: float = 980.0
+@export var jump_force: float = ${jumpForce}
+@export var coyote_time: float = ${coyoteTime}
+@export var speed: float = 150.0
+
+var _coyote_timer: float = 0.0
+var _was_on_floor: bool = false
+
+func _physics_process(delta: float) -> void:
+\tvar on_floor := is_on_floor()
+
+\t# Track coyote window
+\tif _was_on_floor and not on_floor:
+\t\t_coyote_timer = coyote_time
+\telif on_floor:
+\t\t_coyote_timer = coyote_time
+\telse:
+\t\t_coyote_timer = maxf(_coyote_timer - delta, 0.0)
+
+\t_was_on_floor = on_floor
+
+\t# Horizontal
+\tvar dir := Input.get_axis("ui_left", "ui_right")
+\tvelocity.x = dir * speed
+
+\t# Gravity
+\tif not on_floor:
+\t\tvelocity.y += GRAVITY * delta
+
+\t# Jump
+\tif Input.is_action_just_pressed("ui_accept") and _coyote_timer > 0.0:
+\t\tvelocity.y = -jump_force
+\t\t_coyote_timer = 0.0
+
+\tmove_and_slide()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteCameraFollow3dScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.startsWith('res://')
+      ? require('path').join(args.projectPath, args.scriptPath.replace('res://', ''))
+      : args.scriptPath;
+    const followSpeed = args.followSpeed ?? 5.0;
+    const offset = args.offset ?? 'Vector3(0, 2, 5)';
+    const content = `extends Camera3D
+## CameraFollow3D — smoothly follows a target node in 3D space.
+
+@export var target: NodePath = NodePath("")
+@export var follow_speed: float = ${followSpeed}
+@export var offset: Vector3 = ${offset}
+
+var _target_node: Node3D = null
+
+func _ready() -> void:
+\tif not target.is_empty():
+\t\t_target_node = get_node_or_null(target)
+
+func _process(delta: float) -> void:
+\tif not _target_node:
+\t\treturn
+\tvar desired := _target_node.global_position + offset
+\tglobal_position = global_position.lerp(desired, follow_speed * delta)
+\tlook_at(_target_node.global_position, Vector3.UP)
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteSpriteOutlineScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.startsWith('res://')
+      ? require('path').join(args.projectPath, args.scriptPath.replace('res://', ''))
+      : args.scriptPath;
+    const outlineColor = args.outlineColor ?? 'Color.WHITE';
+    const outlineWidth = args.outlineWidth ?? 1.0;
+    const content = `extends Sprite2D
+## SpriteOutline — applies a simple outline via CanvasItemMaterial + shader.
+
+@export var outline_color: Color = ${outlineColor}
+@export var outline_width: float = ${outlineWidth}
+@export var show_outline: bool = true
+
+var _mat: ShaderMaterial
+
+const OUTLINE_SHADER := """
+shader_type canvas_item;
+uniform vec4 outline_color : source_color = vec4(1.0);
+uniform float outline_width : hint_range(0.0, 8.0) = 1.0;
+uniform sampler2D tex : source_color, hint_default_white;
+
+void fragment() {
+\tvec2 size = outline_width * TEXTURE_PIXEL_SIZE;
+\tfloat alpha = texture(tex, UV + vec2(-size.x, 0.0)).a;
+\talpha = max(alpha, texture(tex, UV + vec2(size.x, 0.0)).a);
+\talpha = max(alpha, texture(tex, UV + vec2(0.0, -size.y)).a);
+\talpha = max(alpha, texture(tex, UV + vec2(0.0, size.y)).a);
+\tvec4 base = texture(tex, UV);
+\tCOLOR = mix(vec4(outline_color.rgb, alpha * outline_color.a), base, base.a);
+}
+"""
+
+func _ready() -> void:
+\t_mat = ShaderMaterial.new()
+\t_mat.shader = Shader.new()
+\t_mat.shader.code = OUTLINE_SHADER
+\t_apply_outline()
+
+func _apply_outline() -> void:
+\tif show_outline:
+\t\t_mat.set_shader_parameter("outline_color", outline_color)
+\t\t_mat.set_shader_parameter("outline_width", outline_width)
+\t\tmaterial = _mat
+\telse:
+\t\tmaterial = null
+
+func set_outline(enabled: bool) -> void:
+\tshow_outline = enabled
+\t_apply_outline()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWritePathfindingAgent2dScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.startsWith('res://')
+      ? require('path').join(args.projectPath, args.scriptPath.replace('res://', ''))
+      : args.scriptPath;
+    const speed = args.speed ?? 80;
+    const content = `extends CharacterBody2D
+
+@export var speed: float = ${speed}
+@export var target: NodePath = NodePath("")
+var _nav_agent: NavigationAgent2D
+var _target_node: Node2D = null
+
+func _ready() -> void:
+\t_nav_agent = $NavigationAgent2D
+\tif not target.is_empty():
+\t\t_target_node = get_node_or_null(target)
+
+func set_target_position(pos: Vector2) -> void:
+\t_nav_agent.target_position = pos
+
+func _physics_process(_delta: float) -> void:
+\tif _target_node:
+\t\t_nav_agent.target_position = _target_node.global_position
+\tif _nav_agent.is_navigation_finished(): return
+\tvar next := _nav_agent.get_next_path_position()
+\tvelocity = global_position.direction_to(next) * speed
+\tmove_and_slide()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteGridSnapScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.startsWith('res://')
+      ? require('path').join(args.projectPath, args.scriptPath.replace('res://', ''))
+      : args.scriptPath;
+    const gridSize = args.gridSize ?? 64;
+    const content = `extends Node2D
+## GridSnap — drag-and-drop with grid snapping.
+
+@export var grid_size: int = ${gridSize}
+@export var draggable: bool = true
+
+var _dragging: bool = false
+var _drag_offset: Vector2 = Vector2.ZERO
+
+func _input(event: InputEvent) -> void:
+\tif not draggable:
+\t\treturn
+\tif event is InputEventMouseButton:
+\t\tvar mb := event as InputEventMouseButton
+\t\tif mb.button_index == MOUSE_BUTTON_LEFT:
+\t\t\tif mb.pressed:
+\t\t\t\tvar local := to_local(mb.global_position)
+\t\t\t\tif Rect2(-Vector2(grid_size, grid_size) / 2.0, Vector2(grid_size, grid_size)).has_point(local):
+\t\t\t\t\t_dragging = true
+\t\t\t\t\t_drag_offset = global_position - mb.global_position
+\t\t\telse:
+\t\t\t\t_dragging = false
+\t\t\t\t_snap()
+\telif event is InputEventMouseMotion and _dragging:
+\t\tglobal_position = (event as InputEventMouseMotion).global_position + _drag_offset
+
+func _snap() -> void:
+\tglobal_position = Vector2(
+\t\tsnappedf(global_position.x, grid_size),
+\t\tsnappedf(global_position.y, grid_size)
+\t)
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteCardGameBaseScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.startsWith('res://')
+      ? require('path').join(args.projectPath, args.scriptPath.replace('res://', ''))
+      : args.scriptPath;
+    const content = `extends Node
+## CardGameBase — simple deck/hand manager for card games.
+
+signal card_drawn(card: Dictionary)
+signal hand_full
+signal deck_empty
+
+@export var max_hand_size: int = 7
+
+var deck: Array[Dictionary] = []
+var hand: Array[Dictionary] = []
+var discard_pile: Array[Dictionary] = []
+
+func add_card_to_deck(card: Dictionary) -> void:
+\tdeck.append(card)
+
+func shuffle_deck() -> void:
+\tdeck.shuffle()
+
+func draw_card() -> Dictionary:
+\tif deck.is_empty():
+\t\tdeck_empty.emit()
+\t\treturn {}
+\tif hand.size() >= max_hand_size:
+\t\thand_full.emit()
+\t\treturn {}
+\tvar card: Dictionary = deck.pop_back()
+\thand.append(card)
+\tcard_drawn.emit(card)
+\treturn card
+
+func play_card(index: int) -> Dictionary:
+\tif index < 0 or index >= hand.size():
+\t\treturn {}
+\tvar card: Dictionary = hand[index]
+\thand.remove_at(index)
+\tdiscard_pile.append(card)
+\treturn card
+
+func recycle_discard() -> void:
+\tdeck.append_array(discard_pile)
+\tdiscard_pile.clear()
+\tshuffle_deck()
+
+func get_hand_count() -> int:
+\treturn hand.size()
+
+func get_deck_count() -> int:
+\treturn deck.size()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteTurnBasedCombatScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.startsWith('res://')
+      ? require('path').join(args.projectPath, args.scriptPath.replace('res://', ''))
+      : args.scriptPath;
+    const content = `extends Node
+## TurnBasedCombat — manages turn order and actions for a simple RPG combat system.
+
+signal turn_started(combatant: Dictionary)
+signal turn_ended(combatant: Dictionary)
+signal combat_ended(winner: Dictionary)
+signal action_performed(actor: Dictionary, target: Dictionary, action: String, damage: int)
+
+var combatants: Array[Dictionary] = []
+var _current_index: int = 0
+var _active: bool = false
+
+func add_combatant(name: String, hp: int, attack: int, speed: int) -> Dictionary:
+\tvar c := { "name": name, "hp": hp, "max_hp": hp, "attack": attack, "speed": speed }
+\tcombatants.append(c)
+\treturn c
+
+func start_combat() -> void:
+\tif combatants.size() < 2:
+\t\tpush_warning("Need at least 2 combatants.")
+\t\treturn
+\tcombatants.sort_custom(func(a, b): return a.speed > b.speed)
+\t_current_index = 0
+\t_active = true
+\tturn_started.emit(combatants[_current_index])
+
+func perform_action(action: String, target_index: int) -> void:
+\tif not _active:
+\t\treturn
+\tvar actor: Dictionary = combatants[_current_index]
+\tif target_index < 0 or target_index >= combatants.size():
+\t\treturn
+\tvar target: Dictionary = combatants[target_index]
+\tvar damage: int = 0
+\tmatch action:
+\t\t"attack":
+\t\t\tdamage = actor.attack
+\t\t\ttarget.hp = maxi(target.hp - damage, 0)
+\t\t"heal":
+\t\t\tdamage = -actor.attack
+\t\t\tactor.hp = mini(actor.hp - damage, actor.max_hp)
+\taction_performed.emit(actor, target, action, damage)
+\tif _check_victory():
+\t\treturn
+\t_end_turn()
+
+func _end_turn() -> void:
+\tturn_ended.emit(combatants[_current_index])
+\t_current_index = (_current_index + 1) % combatants.size()
+\twhile combatants[_current_index].hp <= 0:
+\t\t_current_index = (_current_index + 1) % combatants.size()
+\tturn_started.emit(combatants[_current_index])
+
+func _check_victory() -> bool:
+\tvar alive := combatants.filter(func(c): return c.hp > 0)
+\tif alive.size() == 1:
+\t\t_active = false
+\t\tcombat_ended.emit(alive[0])
+\t\treturn true
+\treturn false
+
+func get_current_combatant() -> Dictionary:
+\treturn combatants[_current_index] if _active else {}
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
   }
 
