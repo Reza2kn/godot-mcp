@@ -1551,6 +1551,42 @@ func _handle_command(json_str: String) -> void:
 			_cmd_set_particle_lifetime(params)
 		"set_particle_one_shot":
 			_cmd_set_particle_one_shot(params)
+		"set_control_anchor":
+			_cmd_set_control_anchor(params)
+		"get_control_rect":
+			_cmd_get_control_rect(params)
+		"get_control_focus":
+			_cmd_get_control_focus(params)
+		"set_control_focus":
+			_cmd_set_control_focus(params)
+		"get_node_signal_list":
+			_cmd_get_node_signal_list(params)
+		"has_signal":
+			_cmd_has_signal(params)
+		"get_signal_connection_list":
+			_cmd_get_signal_connection_list(params)
+		"get_node_connections_count":
+			_cmd_get_node_connections_count(params)
+		"list_all_signal_connections":
+			_cmd_list_all_signal_connections(params)
+		"get_node_path":
+			_cmd_get_node_path(params)
+		"get_node_parent_path":
+			_cmd_get_node_parent_path(params)
+		"get_node_child_paths":
+			_cmd_get_node_child_paths(params)
+		"is_node_in_group":
+			_cmd_is_node_in_group(params)
+		"set_light_2d_energy":
+			_cmd_set_light_2d_energy(params)
+		"get_light_2d_info":
+			_cmd_get_light_2d_info(params)
+		"set_light_2d_color":
+			_cmd_set_light_2d_color(params)
+		"set_light_2d_texture_scale":
+			_cmd_set_light_2d_texture_scale(params)
+		"toggle_light_2d":
+			_cmd_toggle_light_2d(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -13047,6 +13083,239 @@ func _cmd_set_particle_one_shot(params: Dictionary) -> void:
 		_send_response({"error": "Not a particle node: " + node_path})
 		return
 	_send_response({"success": true, "one_shot": one_shot})
+
+
+func _cmd_set_control_anchor(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var preset_str: String = params.get("preset", "top_left")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control not found: " + node_path})
+		return
+	var preset: Control.LayoutPreset
+	match preset_str:
+		"top_left": preset = Control.PRESET_TOP_LEFT
+		"top_right": preset = Control.PRESET_TOP_RIGHT
+		"bottom_left": preset = Control.PRESET_BOTTOM_LEFT
+		"bottom_right": preset = Control.PRESET_BOTTOM_RIGHT
+		"center_left": preset = Control.PRESET_CENTER_LEFT
+		"center_right": preset = Control.PRESET_CENTER_RIGHT
+		"center_top": preset = Control.PRESET_CENTER_TOP
+		"center_bottom": preset = Control.PRESET_CENTER_BOTTOM
+		"center": preset = Control.PRESET_CENTER
+		"full_rect": preset = Control.PRESET_FULL_RECT
+		"left_wide": preset = Control.PRESET_LEFT_WIDE
+		"right_wide": preset = Control.PRESET_RIGHT_WIDE
+		"top_wide": preset = Control.PRESET_TOP_WIDE
+		"bottom_wide": preset = Control.PRESET_BOTTOM_WIDE
+		"vcenter_wide": preset = Control.PRESET_VCENTER_WIDE
+		"hcenter_wide": preset = Control.PRESET_HCENTER_WIDE
+		_: preset = Control.PRESET_TOP_LEFT
+	(node as Control).set_anchors_and_offsets_preset(preset)
+	_send_response({"success": true, "preset": preset_str})
+
+
+func _cmd_get_control_rect(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control not found: " + node_path})
+		return
+	var c := node as Control
+	var r = c.get_rect()
+	_send_response({"success": true, "x": r.position.x, "y": r.position.y, "width": r.size.x, "height": r.size.y, "global_x": c.global_position.x, "global_y": c.global_position.y})
+
+
+func _cmd_get_control_focus(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control not found: " + node_path})
+		return
+	_send_response({"success": true, "has_focus": (node as Control).has_focus()})
+
+
+func _cmd_set_control_focus(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control not found: " + node_path})
+		return
+	(node as Control).grab_focus()
+	_send_response({"success": true, "focused": true})
+
+
+func _cmd_get_node_signal_list(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var signals = node.get_signal_list()
+	var result = []
+	for s in signals:
+		result.append(s.get("name", ""))
+	_send_response({"success": true, "signals": result, "count": result.size()})
+
+
+func _cmd_has_signal(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var signal_name: String = params.get("signal_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	_send_response({"success": true, "has_signal": node.has_signal(signal_name), "signal_name": signal_name})
+
+
+func _cmd_get_signal_connection_list(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var signal_name: String = params.get("signal_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if not node.has_signal(signal_name):
+		_send_response({"error": "Signal not found: " + signal_name})
+		return
+	var connections = node.get_signal_connection_list(signal_name)
+	var result = []
+	for c in connections:
+		result.append({"target": str(c.get("callable", ""))})
+	_send_response({"success": true, "connections": result, "count": result.size()})
+
+
+func _cmd_get_node_connections_count(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var signals = node.get_signal_list()
+	var total = 0
+	for s in signals:
+		total += node.get_signal_connection_list(s.get("name", "")).size()
+	_send_response({"success": true, "total_connections": total, "signal_count": signals.size()})
+
+
+func _cmd_list_all_signal_connections(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var signals = node.get_signal_list()
+	var result = {}
+	for s in signals:
+		var sname = s.get("name", "")
+		var conns = node.get_signal_connection_list(sname)
+		if conns.size() > 0:
+			var list = []
+			for c in conns:
+				list.append(str(c.get("callable", "")))
+			result[sname] = list
+	_send_response({"success": true, "connected_signals": result})
+
+
+func _cmd_get_node_path(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	_send_response({"success": true, "node_path": str(node.get_path()), "name": node.name})
+
+
+func _cmd_get_node_parent_path(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var parent = node.get_parent()
+	if parent == null:
+		_send_response({"success": true, "parent_path": "", "is_root": true})
+	else:
+		_send_response({"success": true, "parent_path": str(parent.get_path()), "parent_name": parent.name})
+
+
+func _cmd_get_node_child_paths(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var result = []
+	for i in node.get_child_count():
+		var child = node.get_child(i)
+		result.append({"name": child.name, "path": str(child.get_path()), "class": child.get_class()})
+	_send_response({"success": true, "children": result, "count": result.size()})
+
+
+func _cmd_is_node_in_group(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var group_name: String = params.get("group_name", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	_send_response({"success": true, "in_group": node.is_in_group(group_name), "group_name": group_name, "all_groups": node.get_groups()})
+
+
+func _cmd_set_light_2d_energy(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var energy: float = params.get("energy", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Light2D:
+		_send_response({"error": "Light2D not found: " + node_path})
+		return
+	(node as Light2D).energy = energy
+	_send_response({"success": true, "energy": energy})
+
+
+func _cmd_get_light_2d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Light2D:
+		_send_response({"error": "Light2D not found: " + node_path})
+		return
+	var l := node as Light2D
+	_send_response({"success": true, "energy": l.energy, "enabled": l.enabled, "color": {"r": l.color.r, "g": l.color.g, "b": l.color.b}, "class": l.get_class()})
+
+
+func _cmd_set_light_2d_color(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var r: float = params.get("r", 1.0)
+	var g: float = params.get("g", 1.0)
+	var b: float = params.get("b", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Light2D:
+		_send_response({"error": "Light2D not found: " + node_path})
+		return
+	(node as Light2D).color = Color(r, g, b)
+	_send_response({"success": true, "color": {"r": r, "g": g, "b": b}})
+
+
+func _cmd_set_light_2d_texture_scale(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var scale_val: float = params.get("scale", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is PointLight2D:
+		_send_response({"error": "PointLight2D not found: " + node_path})
+		return
+	(node as PointLight2D).texture_scale = scale_val
+	_send_response({"success": true, "texture_scale": scale_val})
+
+
+func _cmd_toggle_light_2d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var enabled: bool = params.get("enabled", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Light2D:
+		_send_response({"error": "Light2D not found: " + node_path})
+		return
+	(node as Light2D).enabled = enabled
+	_send_response({"success": true, "enabled": enabled})
 
 
 func _exit_tree() -> void:

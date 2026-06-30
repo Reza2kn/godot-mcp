@@ -17043,6 +17043,141 @@ class GodotServer {
         description: 'Add an Anchor3D node to a scene.',
         inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' }, nodeName: { type: 'string' }, parentNodePath: { type: 'string' } }, required: ['projectPath', 'scenePath'] },
       },
+      // Batch 57 — Group A: Control node layout runtime
+      {
+        name: 'set_control_anchor',
+        description: 'Set anchor preset of a Control node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, preset: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_control_rect',
+        description: 'Get position and size of a Control node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_control_focus',
+        description: 'Check if a Control node has focus.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_control_focus',
+        description: 'Give keyboard focus to a Control node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      // Batch 57 — Group B: Signal introspection runtime
+      {
+        name: 'get_node_signal_list',
+        description: 'List all signals available on a node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'has_signal',
+        description: 'Check if a node has a specific signal.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, signalName: { type: 'string' } }, required: ['nodePath', 'signalName'] },
+      },
+      {
+        name: 'get_signal_connection_list',
+        description: 'List connections for a signal on a node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, signalName: { type: 'string' } }, required: ['nodePath', 'signalName'] },
+      },
+      {
+        name: 'disconnect_signal',
+        description: 'Disconnect a signal connection on a node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, signalName: { type: 'string' }, targetPath: { type: 'string' }, targetMethod: { type: 'string' } }, required: ['nodePath', 'signalName', 'targetPath', 'targetMethod'] },
+      },
+      {
+        name: 'get_node_connections_count',
+        description: 'Count incoming signal connections on a node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'list_all_signal_connections',
+        description: 'List all signals and connections on a node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      // Batch 57 — Group C: Node introspection runtime
+      {
+        name: 'get_node_path',
+        description: 'Get the full NodePath string of a node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_node_parent_path',
+        description: "Get the path of a node's parent node.",
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_node_child_paths',
+        description: 'Get paths of all direct children of a node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'is_node_in_group',
+        description: 'Check if a node belongs to a specific group.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, groupName: { type: 'string' } }, required: ['nodePath', 'groupName'] },
+      },
+      // Batch 57 — Group D: Light2D runtime tools
+      {
+        name: 'set_light_2d_energy',
+        description: 'Set energy of a Light2D node at runtime.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, energy: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_light_2d_info',
+        description: 'Get properties of a Light2D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_light_2d_color',
+        description: 'Set color of a Light2D node at runtime.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, r: { type: 'number' }, g: { type: 'number' }, b: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_light_2d_texture_scale',
+        description: 'Set texture scale of a PointLight2D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, scale: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'toggle_light_2d',
+        description: 'Enable or disable a Light2D node at runtime.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, enabled: { type: 'boolean' } }, required: ['nodePath'] },
+      },
+      // Batch 57 — Group E: GDScript template writers
+      {
+        name: 'write_gdshader_file',
+        description: 'Write a basic GDShader (.gdshader) file.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, shaderPath: { type: 'string' }, shaderType: { type: 'string' }, shaderCode: { type: 'string' } }, required: ['projectPath', 'shaderPath'] },
+      },
+      {
+        name: 'write_inventory_script',
+        description: 'Write a simple inventory/item system GDScript.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, maxSlots: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_dialogue_script',
+        description: 'Write a simple dialogue/cutscene manager script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_event_bus_script',
+        description: 'Write a global event bus/signal router script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_object_pool_script',
+        description: 'Write a generic object pooling GDScript.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, poolSize: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_camera_follow_script',
+        description: 'Write a camera follow/smooth script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, smoothing: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_pickup_script',
+        description: 'Write a 2D item pickup/collectible GDScript.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, itemId: { type: 'string' }, itemName: { type: 'string' }, points: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
+      },
       ],
     }));
 
@@ -19425,6 +19560,63 @@ class GodotServer {
         // Batch 56 — Group D: More node adders
         case 'add_anchor_3d_to_scene':
           return await this.handleAddAnchor3dToScene(request.params.arguments);
+        // Batch 57 — Group A: Control node layout runtime
+        case 'set_control_anchor':
+          return await this.handleSetControlAnchor(request.params.arguments);
+        case 'get_control_rect':
+          return await this.handleGetControlRect(request.params.arguments);
+        case 'get_control_focus':
+          return await this.handleGetControlFocus(request.params.arguments);
+        case 'set_control_focus':
+          return await this.handleSetControlFocus(request.params.arguments);
+        // Batch 57 — Group B: Signal introspection runtime
+        case 'get_node_signal_list':
+          return await this.handleGetNodeSignalList(request.params.arguments);
+        case 'has_signal':
+          return await this.handleHasSignal(request.params.arguments);
+        case 'get_signal_connection_list':
+          return await this.handleGetSignalConnectionList(request.params.arguments);
+        case 'disconnect_signal':
+          return await this.handleDisconnectSignal(request.params.arguments);
+        case 'get_node_connections_count':
+          return await this.handleGetNodeConnectionsCount(request.params.arguments);
+        case 'list_all_signal_connections':
+          return await this.handleListAllSignalConnections(request.params.arguments);
+        // Batch 57 — Group C: Node introspection runtime
+        case 'get_node_path':
+          return await this.handleGetNodePath(request.params.arguments);
+        case 'get_node_parent_path':
+          return await this.handleGetNodeParentPath(request.params.arguments);
+        case 'get_node_child_paths':
+          return await this.handleGetNodeChildPaths(request.params.arguments);
+        case 'is_node_in_group':
+          return await this.handleIsNodeInGroup(request.params.arguments);
+        // Batch 57 — Group D: Light2D runtime tools
+        case 'set_light_2d_energy':
+          return await this.handleSetLight2dEnergy(request.params.arguments);
+        case 'get_light_2d_info':
+          return await this.handleGetLight2dInfo(request.params.arguments);
+        case 'set_light_2d_color':
+          return await this.handleSetLight2dColor(request.params.arguments);
+        case 'set_light_2d_texture_scale':
+          return await this.handleSetLight2dTextureScale(request.params.arguments);
+        case 'toggle_light_2d':
+          return await this.handleToggleLight2d(request.params.arguments);
+        // Batch 57 — Group E: GDScript template writers
+        case 'write_gdshader_file':
+          return await this.handleWriteGdshaderFile(request.params.arguments);
+        case 'write_inventory_script':
+          return await this.handleWriteInventoryScript(request.params.arguments);
+        case 'write_dialogue_script':
+          return await this.handleWriteDialogueScript(request.params.arguments);
+        case 'write_event_bus_script':
+          return await this.handleWriteEventBusScript(request.params.arguments);
+        case 'write_object_pool_script':
+          return await this.handleWriteObjectPoolScript(request.params.arguments);
+        case 'write_camera_follow_script':
+          return await this.handleWriteCameraFollowScript(request.params.arguments);
+        case 'write_pickup_script':
+          return await this.handleWritePickupScript(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -34428,6 +34620,395 @@ ${funcs}
       projectPath: a.projectPath,
       params: { scene_path: a.scenePath, node_name: a.nodeName || 'Anchor3D', node_type: 'Marker3D', parent_node_path: a.parentNodePath || '.' }
     }));
+  }
+
+  // ── Batch 57 — Group A: Control node layout runtime ─────────────────────────
+
+  private async handleSetControlAnchor(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_control_anchor', args, a => ({ node_path: a.nodePath, preset: a.preset ?? 'top_left' }));
+  }
+
+  private async handleGetControlRect(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_control_rect', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetControlFocus(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_control_focus', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetControlFocus(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_control_focus', args, a => ({ node_path: a.nodePath }));
+  }
+
+  // ── Batch 57 — Group B: Signal introspection runtime ────────────────────────
+
+  private async handleGetNodeSignalList(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_node_signal_list', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleHasSignal(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('has_signal', args, a => ({ node_path: a.nodePath, signal_name: a.signalName ?? '' }));
+  }
+
+  private async handleGetSignalConnectionList(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_signal_connection_list', args, a => ({ node_path: a.nodePath, signal_name: a.signalName ?? '' }));
+  }
+
+  private async handleDisconnectSignal(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('disconnect_signal', args, a => ({ node_path: a.nodePath, signal_name: a.signalName ?? '', target_path: a.targetPath ?? '', target_method: a.targetMethod ?? '' }));
+  }
+
+  private async handleGetNodeConnectionsCount(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_node_connections_count', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleListAllSignalConnections(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('list_all_signal_connections', args, a => ({ node_path: a.nodePath }));
+  }
+
+  // ── Batch 57 — Group C: Node introspection runtime ──────────────────────────
+
+  private async handleGetNodePath(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_node_path', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetNodeParentPath(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_node_parent_path', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetNodeChildPaths(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_node_child_paths', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleIsNodeInGroup(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('is_node_in_group', args, a => ({ node_path: a.nodePath, group_name: a.groupName ?? '' }));
+  }
+
+  // ── Batch 57 — Group D: Light2D runtime tools ───────────────────────────────
+
+  private async handleSetLight2dEnergy(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_light_2d_energy', args, a => ({ node_path: a.nodePath, energy: a.energy ?? 1.0 }));
+  }
+
+  private async handleGetLight2dInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_light_2d_info', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetLight2dColor(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_light_2d_color', args, a => ({ node_path: a.nodePath, r: a.r ?? 1, g: a.g ?? 1, b: a.b ?? 1 }));
+  }
+
+  private async handleSetLight2dTextureScale(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_light_2d_texture_scale', args, a => ({ node_path: a.nodePath, scale: a.scale ?? 1.0 }));
+  }
+
+  private async handleToggleLight2d(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('toggle_light_2d', args, a => ({ node_path: a.nodePath, enabled: a.enabled ?? true }));
+  }
+
+  // ── Batch 57 — Group E: GDScript template writers ───────────────────────────
+
+  private async handleWriteGdshaderFile(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.shaderPath) return createErrorResponse('projectPath and shaderPath are required.');
+    const shaderType = args.shaderType ?? 'canvas_item';
+    const absPath = args.shaderPath.replace('res://', args.projectPath + '/');
+    const defaultCode: Record<string, string> = {
+      spatial: 'shader_type spatial;\n\nvoid fragment() {\n\tALBEDO = vec3(1.0, 0.0, 0.0);\n}\n',
+      canvas_item: 'shader_type canvas_item;\n\nvoid fragment() {\n\tCOLOR = texture(TEXTURE, UV);\n}\n',
+      particles: 'shader_type particles;\n\nvoid process() {\n\t// particle logic here\n}\n',
+      sky: 'shader_type sky;\n\nvoid sky() {\n\tCOLOR = vec3(0.3, 0.6, 1.0);\n}\n',
+    };
+    const content = args.shaderCode ?? defaultCode[shaderType] ?? defaultCode['canvas_item'];
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, shaderPath: args.shaderPath, shaderType }) }] };
+    } catch (e: any) {
+      return createErrorResponse(`Failed to write shader: ${e.message}`);
+    }
+  }
+
+  private async handleWriteInventoryScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const maxSlots = args.maxSlots ?? 20;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+
+signal item_added(item: Dictionary)
+signal item_removed(item: Dictionary)
+signal inventory_full
+
+@export var max_slots: int = ${maxSlots}
+var items: Array[Dictionary] = []
+
+func add_item(item: Dictionary) -> bool:
+\tif items.size() >= max_slots:
+\t\tinventory_full.emit()
+\t\treturn false
+\titems.append(item)
+\titem_added.emit(item)
+\treturn true
+
+func remove_item(item_id: String) -> bool:
+\tfor i in range(items.size()):
+\t\tif items[i].get("id", "") == item_id:
+\t\t\tvar removed = items[i]
+\t\t\titems.remove_at(i)
+\t\t\titem_removed.emit(removed)
+\t\t\treturn true
+\treturn false
+
+func has_item(item_id: String) -> bool:
+\tfor item in items:
+\t\tif item.get("id", "") == item_id:
+\t\t\treturn true
+\treturn false
+
+func get_item(item_id: String) -> Dictionary:
+\tfor item in items:
+\t\tif item.get("id", "") == item_id:
+\t\t\treturn item
+\treturn {}
+
+func clear() -> void:
+\titems.clear()
+
+func get_item_count() -> int:
+\treturn items.size()
+
+func is_full() -> bool:
+\treturn items.size() >= max_slots
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, maxSlots }) }] };
+    } catch (e: any) {
+      return createErrorResponse(`Failed to write script: ${e.message}`);
+    }
+  }
+
+  private async handleWriteDialogueScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+
+signal dialogue_started
+signal line_shown(speaker: String, text: String)
+signal dialogue_ended
+
+var lines: Array[Dictionary] = []
+var current_line: int = 0
+var is_active: bool = false
+
+func start_dialogue(dialogue_lines: Array[Dictionary]) -> void:
+\tlines = dialogue_lines
+\tcurrent_line = 0
+\tis_active = true
+\tdialogue_started.emit()
+\tshow_current_line()
+
+func show_current_line() -> void:
+\tif current_line >= lines.size():
+\t\tend_dialogue()
+\t\treturn
+\tvar line = lines[current_line]
+\tline_shown.emit(line.get("speaker", ""), line.get("text", ""))
+
+func advance() -> void:
+\tif not is_active:
+\t\treturn
+\tcurrent_line += 1
+\tshow_current_line()
+
+func end_dialogue() -> void:
+\tis_active = false
+\tlines.clear()
+\tdialogue_ended.emit()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) {
+      return createErrorResponse(`Failed to write script: ${e.message}`);
+    }
+  }
+
+  private async handleWriteEventBusScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+## EventBus — add as Autoload named "EventBus"
+## Usage: EventBus.player_died.emit()
+##        EventBus.player_died.connect(_on_player_died)
+
+signal player_died
+signal player_health_changed(health: int, max_health: int)
+signal score_changed(new_score: int)
+signal level_started(level_num: int)
+signal level_completed(level_num: int)
+signal item_collected(item_id: String)
+signal enemy_died(enemy_type: String, position: Vector2)
+signal game_paused(paused: bool)
+signal scene_changed(scene_name: String)
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, note: 'Add as Autoload named EventBus in Project > Project Settings > Autoload' }) }] };
+    } catch (e: any) {
+      return createErrorResponse(`Failed to write script: ${e.message}`);
+    }
+  }
+
+  private async handleWriteObjectPoolScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const poolSize = args.poolSize ?? 10;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+## Object Pool — reuses nodes to avoid GC spikes
+## Usage: var bullet = pool.get_object()
+##        pool.return_object(bullet)
+
+@export var scene: PackedScene
+@export var pool_size: int = ${poolSize}
+
+var _pool: Array[Node] = []
+
+func _ready() -> void:
+\tfor i in pool_size:
+\t\tvar obj = scene.instantiate()
+\t\tobj.visible = false
+\t\tadd_child(obj)
+\t\t_pool.append(obj)
+
+func get_object() -> Node:
+\tfor obj in _pool:
+\t\tif not obj.visible:
+\t\t\tobj.visible = true
+\t\t\treturn obj
+\t# Pool exhausted — create new
+\tvar obj = scene.instantiate()
+\tadd_child(obj)
+\t_pool.append(obj)
+\treturn obj
+
+func return_object(obj: Node) -> void:
+\tobj.visible = false
+\tif obj is RigidBody2D or obj is RigidBody3D:
+\t\tobj.linear_velocity = Vector3.ZERO if obj is RigidBody3D else Vector2.ZERO
+
+func get_active_count() -> int:
+\treturn _pool.filter(func(o): return o.visible).size()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, poolSize }) }] };
+    } catch (e: any) {
+      return createErrorResponse(`Failed to write script: ${e.message}`);
+    }
+  }
+
+  private async handleWriteCameraFollowScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const smoothing = args.smoothing ?? 5.0;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Camera2D
+## Smooth camera follow script
+## Attach to Camera2D. Set target in inspector or via code.
+
+@export var target: Node2D
+@export var smoothing_speed: float = ${smoothing}
+@export var offset: Vector2 = Vector2.ZERO
+
+func _process(delta: float) -> void:
+\tif target == null:
+\t\treturn
+\tvar target_pos = target.global_position + offset
+\tglobal_position = global_position.lerp(target_pos, smoothing_speed * delta)
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, smoothing }) }] };
+    } catch (e: any) {
+      return createErrorResponse(`Failed to write script: ${e.message}`);
+    }
+  }
+
+  private async handleWritePickupScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const itemId = args.itemId ?? 'coin';
+    const itemName = args.itemName ?? 'Coin';
+    const points = args.points ?? 10;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Area2D
+## Pickup/collectible script. Attach to Area2D with CollisionShape2D child.
+
+@export var item_id: String = "${itemId}"
+@export var item_name: String = "${itemName}"
+@export var points: int = ${points}
+@export var pickup_sound: AudioStream
+
+signal collected(item: Dictionary)
+
+func _ready() -> void:
+\tbody_entered.connect(_on_body_entered)
+
+func _on_body_entered(body: Node2D) -> void:
+\tif body.is_in_group("player"):
+\t\tvar item = {"id": item_id, "name": item_name, "points": points}
+\t\tcollected.emit(item)
+\t\tif pickup_sound:
+\t\t\tvar player = AudioStreamPlayer.new()
+\t\t\tget_parent().add_child(player)
+\t\t\tplayer.stream = pickup_sound
+\t\t\tplayer.play()
+\t\t\tplayer.finished.connect(player.queue_free)
+\t\tqueue_free()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, itemId, itemName, points }) }] };
+    } catch (e: any) {
+      return createErrorResponse(`Failed to write script: ${e.message}`);
+    }
   }
 
   // ── Navigation / Discovery helpers ──────────────────────────────────────────
