@@ -1845,6 +1845,46 @@ func _handle_command(json_str: String) -> void:
 			_cmd_set_h_slider_value(params)
 		"get_h_slider_value":
 			_cmd_get_h_slider_value(params)
+		"get_theme_info":
+			_cmd_get_theme_info(params)
+		"set_theme_font_size":
+			_cmd_set_theme_font_size(params)
+		"set_theme_color":
+			_cmd_set_theme_color(params)
+		"set_panel_stylebox_color":
+			_cmd_set_panel_stylebox_color(params)
+		"set_panel_border_color":
+			_cmd_set_panel_border_color(params)
+		"get_control_theme_type":
+			_cmd_get_control_theme_type(params)
+		"set_control_theme_type":
+			_cmd_set_control_theme_type(params)
+		"create_property_tween":
+			_cmd_create_property_tween(params)
+		"create_color_tween":
+			_cmd_create_color_tween(params)
+		"tween_node_position_2d":
+			_cmd_tween_node_position_2d(params)
+		"tween_node_scale":
+			_cmd_tween_node_scale(params)
+		"tween_node_alpha":
+			_cmd_tween_node_alpha(params)
+		"tween_node_rotation":
+			_cmd_tween_node_rotation(params)
+		"flash_node_color":
+			_cmd_flash_node_color(params)
+		"get_system_memory_info":
+			_cmd_get_system_memory_info(params)
+		"get_processor_name":
+			_cmd_get_processor_name(params)
+		"get_locale":
+			_cmd_get_locale(params)
+		"get_screen_resolution":
+			_cmd_get_screen_resolution(params)
+		"get_navigation_agent_2d_target":
+			_cmd_get_navigation_agent_2d_target(params)
+		"get_navigation_region_3d_baked":
+			_cmd_get_navigation_region_3d_baked(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -15232,6 +15272,249 @@ func _cmd_get_h_slider_value(params: Dictionary) -> void:
 		_send_response({"error": "HSlider not found: " + node_path})
 		return
 	_send_response({"success": true, "value": (node as HSlider).value})
+
+
+func _cmd_get_theme_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control not found: " + node_path})
+		return
+	var ctrl := node as Control
+	_send_response({"success": true, "theme_type_variation": ctrl.theme_type_variation, "has_theme": ctrl.theme != null})
+
+
+func _cmd_set_theme_font_size(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var font_size: int = params.get("font_size", 14)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control not found: " + node_path})
+		return
+	(node as Control).add_theme_font_size_override("font_size", font_size)
+	_send_response({"success": true, "font_size": font_size})
+
+
+func _cmd_set_theme_color(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var color_name: String = params.get("color_name", "font_color")
+	var r: float = params.get("r", 1.0)
+	var g: float = params.get("g", 1.0)
+	var b: float = params.get("b", 1.0)
+	var a: float = params.get("a", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control not found: " + node_path})
+		return
+	(node as Control).add_theme_color_override(color_name, Color(r, g, b, a))
+	_send_response({"success": true, "color_name": color_name, "color": {"r": r, "g": g, "b": b, "a": a}})
+
+
+func _cmd_set_panel_stylebox_color(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var r: float = params.get("r", 0.2)
+	var g: float = params.get("g", 0.2)
+	var b: float = params.get("b", 0.2)
+	var a: float = params.get("a", 1.0)
+	var corner_radius: int = params.get("corner_radius", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control not found: " + node_path})
+		return
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(r, g, b, a)
+	style.corner_radius_top_left = corner_radius
+	style.corner_radius_top_right = corner_radius
+	style.corner_radius_bottom_left = corner_radius
+	style.corner_radius_bottom_right = corner_radius
+	(node as Control).add_theme_stylebox_override("panel", style)
+	_send_response({"success": true, "color": {"r": r, "g": g, "b": b, "a": a}, "corner_radius": corner_radius})
+
+
+func _cmd_set_panel_border_color(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var r: float = params.get("r", 1.0)
+	var g: float = params.get("g", 1.0)
+	var b: float = params.get("b", 1.0)
+	var a: float = params.get("a", 1.0)
+	var border_width: int = params.get("border_width", 1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control not found: " + node_path})
+		return
+	var existing = (node as Control).get_theme_stylebox("panel")
+	var style: StyleBoxFlat
+	if existing is StyleBoxFlat:
+		style = existing as StyleBoxFlat
+	else:
+		style = StyleBoxFlat.new()
+	style.border_color = Color(r, g, b, a)
+	style.border_width_left = border_width
+	style.border_width_top = border_width
+	style.border_width_right = border_width
+	style.border_width_bottom = border_width
+	(node as Control).add_theme_stylebox_override("panel", style)
+	_send_response({"success": true, "border_color": {"r": r, "g": g, "b": b, "a": a}, "border_width": border_width})
+
+
+func _cmd_get_control_theme_type(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control not found: " + node_path})
+		return
+	_send_response({"success": true, "theme_type_variation": (node as Control).theme_type_variation})
+
+
+func _cmd_set_control_theme_type(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var theme_type: String = params.get("theme_type", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control not found: " + node_path})
+		return
+	(node as Control).theme_type_variation = theme_type
+	_send_response({"success": true, "theme_type_variation": theme_type})
+
+
+func _cmd_create_property_tween(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var property: String = params.get("property", "position:x")
+	var target_value = params.get("target_value", 0.0)
+	var duration: float = params.get("duration", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var tween = get_tree().create_tween()
+	tween.tween_property(node, property, target_value, duration)
+	_send_response({"success": true, "property": property, "target": target_value, "duration": duration})
+
+
+func _cmd_create_color_tween(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var r: float = params.get("r", 1.0)
+	var g: float = params.get("g", 1.0)
+	var b: float = params.get("b", 1.0)
+	var a: float = params.get("a", 1.0)
+	var duration: float = params.get("duration", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CanvasItem:
+		_send_response({"error": "CanvasItem not found: " + node_path})
+		return
+	var tween = get_tree().create_tween()
+	tween.tween_property(node, "modulate", Color(r, g, b, a), duration)
+	_send_response({"success": true, "target_color": {"r": r, "g": g, "b": b, "a": a}, "duration": duration})
+
+
+func _cmd_tween_node_position_2d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var duration: float = params.get("duration", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node2D:
+		_send_response({"error": "Node2D not found: " + node_path})
+		return
+	var tween = get_tree().create_tween()
+	tween.tween_property(node, "position", Vector2(x, y), duration)
+	_send_response({"success": true, "target": {"x": x, "y": y}, "duration": duration})
+
+
+func _cmd_tween_node_scale(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 1.0)
+	var y: float = params.get("y", 1.0)
+	var duration: float = params.get("duration", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node2D:
+		_send_response({"error": "Node2D not found: " + node_path})
+		return
+	var tween = get_tree().create_tween()
+	tween.tween_property(node, "scale", Vector2(x, y), duration)
+	_send_response({"success": true, "target_scale": {"x": x, "y": y}, "duration": duration})
+
+
+func _cmd_tween_node_alpha(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var alpha: float = params.get("alpha", 0.0)
+	var duration: float = params.get("duration", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CanvasItem:
+		_send_response({"error": "CanvasItem not found: " + node_path})
+		return
+	var tween = get_tree().create_tween()
+	tween.tween_property(node, "modulate:a", alpha, duration)
+	_send_response({"success": true, "target_alpha": alpha, "duration": duration})
+
+
+func _cmd_tween_node_rotation(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var degrees: float = params.get("degrees", 0.0)
+	var duration: float = params.get("duration", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node2D:
+		_send_response({"error": "Node2D not found: " + node_path})
+		return
+	var tween = get_tree().create_tween()
+	tween.tween_property(node, "rotation_degrees", degrees, duration)
+	_send_response({"success": true, "target_degrees": degrees, "duration": duration})
+
+
+func _cmd_flash_node_color(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var r: float = params.get("r", 1.0)
+	var g: float = params.get("g", 0.0)
+	var b: float = params.get("b", 0.0)
+	var duration: float = params.get("duration", 0.2)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CanvasItem:
+		_send_response({"error": "CanvasItem not found: " + node_path})
+		return
+	var original = (node as CanvasItem).modulate
+	var tween = get_tree().create_tween()
+	tween.tween_property(node, "modulate", Color(r, g, b), duration * 0.5)
+	tween.tween_property(node, "modulate", original, duration * 0.5)
+	_send_response({"success": true, "flash_color": {"r": r, "g": g, "b": b}, "duration": duration})
+
+
+func _cmd_get_system_memory_info(params: Dictionary) -> void:
+	var info = OS.get_memory_info()
+	_send_response({"success": true, "physical": info.get("physical", 0), "free": info.get("free", 0), "stack": info.get("stack", 0)})
+
+
+func _cmd_get_processor_name(params: Dictionary) -> void:
+	_send_response({"success": true, "processor_name": OS.get_processor_name(), "processor_count": OS.get_processor_count()})
+
+
+func _cmd_get_locale(params: Dictionary) -> void:
+	_send_response({"success": true, "locale": OS.get_locale(), "locale_language": OS.get_locale_language()})
+
+
+func _cmd_get_screen_resolution(params: Dictionary) -> void:
+	var screen_size = DisplayServer.screen_get_size()
+	var window_size = get_tree().root.size
+	_send_response({"success": true, "screen": {"width": screen_size.x, "height": screen_size.y}, "window": {"width": window_size.x, "height": window_size.y}})
+
+
+func _cmd_get_navigation_agent_2d_target(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is NavigationAgent2D:
+		_send_response({"error": "NavigationAgent2D not found: " + node_path})
+		return
+	var target = (node as NavigationAgent2D).target_position
+	_send_response({"success": true, "target": {"x": target.x, "y": target.y}})
+
+
+func _cmd_get_navigation_region_3d_baked(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is NavigationRegion3D:
+		_send_response({"error": "NavigationRegion3D not found: " + node_path})
+		return
+	var nr := node as NavigationRegion3D
+	_send_response({"success": true, "enabled": nr.enabled, "has_navmesh": nr.navigation_mesh != null})
 
 
 func _exit_tree() -> void:

@@ -18194,6 +18194,38 @@ class GodotServer {
         description: 'Get current value from an HSlider node.',
         inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
       },
+      // ── Batch 65 tool definitions ──────────────────────────────────────────────
+      // Group A: Theme / StyleBox UI tools
+      { name: 'get_theme_info', description: 'Get default font, size, color from a Control theme.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_theme_font_size', description: 'Set default font size in a Control\'s theme override.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, fontSize: { type: 'integer' } }, required: ['nodePath'] } },
+      { name: 'set_theme_color', description: 'Set a theme color override on a Control node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, colorName: { type: 'string' }, r: { type: 'number' }, g: { type: 'number' }, b: { type: 'number' }, a: { type: 'number' } }, required: ['nodePath', 'colorName'] } },
+      { name: 'set_panel_stylebox_color', description: 'Set Panel background color via StyleBoxFlat override.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, r: { type: 'number' }, g: { type: 'number' }, b: { type: 'number' }, a: { type: 'number' }, cornerRadius: { type: 'integer' } }, required: ['nodePath'] } },
+      { name: 'set_panel_border_color', description: 'Set Panel border color via StyleBoxFlat theme override.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, r: { type: 'number' }, g: { type: 'number' }, b: { type: 'number' }, a: { type: 'number' }, borderWidth: { type: 'integer' } }, required: ['nodePath'] } },
+      { name: 'get_control_theme_type', description: 'Get the theme_type_variation of a Control node.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'set_control_theme_type', description: 'Set theme_type_variation override on a Control.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, themeType: { type: 'string' } }, required: ['nodePath', 'themeType'] } },
+      // Group B: Tween animation at runtime
+      { name: 'create_property_tween', description: 'Animate a node property with Tween at runtime.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, property: { type: 'string' }, targetValue: { type: 'number' }, duration: { type: 'number' } }, required: ['nodePath', 'property', 'targetValue', 'duration'] } },
+      { name: 'create_color_tween', description: 'Animate a node\'s modulate color with Tween.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, r: { type: 'number' }, g: { type: 'number' }, b: { type: 'number' }, a: { type: 'number' }, duration: { type: 'number' } }, required: ['nodePath'] } },
+      { name: 'tween_node_position_2d', description: 'Tween a Node2D to a target 2D position.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, x: { type: 'number' }, y: { type: 'number' }, duration: { type: 'number' } }, required: ['nodePath'] } },
+      { name: 'tween_node_scale', description: 'Tween a Node2D scale to a target value.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, x: { type: 'number' }, y: { type: 'number' }, duration: { type: 'number' } }, required: ['nodePath'] } },
+      { name: 'tween_node_alpha', description: 'Tween a CanvasItem modulate alpha to target.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, alpha: { type: 'number' }, duration: { type: 'number' } }, required: ['nodePath'] } },
+      { name: 'tween_node_rotation', description: 'Tween a node\'s rotation to a target (degrees).', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, degrees: { type: 'number' }, duration: { type: 'number' } }, required: ['nodePath'] } },
+      { name: 'flash_node_color', description: 'Flash a CanvasItem to a color and back.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, r: { type: 'number' }, g: { type: 'number' }, b: { type: 'number' }, duration: { type: 'number' } }, required: ['nodePath'] } },
+      // Group C: OS / system runtime tools
+      { name: 'get_system_memory_info', description: 'Get total/free RAM and VRAM from OS.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'get_processor_name', description: 'Get CPU name from the OS singleton.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'get_locale', description: 'Get current system locale string from OS.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'get_screen_resolution', description: 'Get current screen size and window size.', inputSchema: { type: 'object', properties: {} } },
+      // Group D: Navigation3D / NavigationMesh tools
+      { name: 'get_navigation_agent_2d_target', description: 'Get target position of a NavigationAgent2D.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_navigation_region_3d_baked', description: 'Check if NavigationRegion3D has baked navmesh.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      // Group E: GDScript templates
+      { name: 'write_bullet_pool_script', description: 'Write an object pool for bullets/projectiles.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, poolSize: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_game_over_screen_script', description: 'Write a game over CanvasLayer/screen script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_pause_menu_script', description: 'Write a pause menu CanvasLayer script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_floating_text_script', description: 'Write a floating damage/score text script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, duration: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_camera_2d_smooth_script', description: 'Write a smooth-follow Camera2D script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, smoothing: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'write_consumable_item_script', description: 'Write a consumable pickup item script.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, healAmount: { type: 'number' } }, required: ['projectPath', 'scriptPath'] } },
       ],
     }));
 
@@ -21061,6 +21093,63 @@ class GodotServer {
           return await this.handleSetHSliderValue(request.params.arguments);
         case 'get_h_slider_value':
           return await this.handleGetHSliderValue(request.params.arguments);
+        // Batch 65 switch cases — Group A: Theme / StyleBox UI tools
+        case 'get_theme_info':
+          return await this.handleGetThemeInfo(request.params.arguments);
+        case 'set_theme_font_size':
+          return await this.handleSetThemeFontSize(request.params.arguments);
+        case 'set_theme_color':
+          return await this.handleSetThemeColor(request.params.arguments);
+        case 'set_panel_stylebox_color':
+          return await this.handleSetPanelStyleboxColor(request.params.arguments);
+        case 'set_panel_border_color':
+          return await this.handleSetPanelBorderColor(request.params.arguments);
+        case 'get_control_theme_type':
+          return await this.handleGetControlThemeType(request.params.arguments);
+        case 'set_control_theme_type':
+          return await this.handleSetControlThemeType(request.params.arguments);
+        // Batch 65 switch cases — Group B: Tween animation at runtime
+        case 'create_property_tween':
+          return await this.handleCreatePropertyTween(request.params.arguments);
+        case 'create_color_tween':
+          return await this.handleCreateColorTween(request.params.arguments);
+        case 'tween_node_position_2d':
+          return await this.handleTweenNodePosition2d(request.params.arguments);
+        case 'tween_node_scale':
+          return await this.handleTweenNodeScale(request.params.arguments);
+        case 'tween_node_alpha':
+          return await this.handleTweenNodeAlpha(request.params.arguments);
+        case 'tween_node_rotation':
+          return await this.handleTweenNodeRotation(request.params.arguments);
+        case 'flash_node_color':
+          return await this.handleFlashNodeColor(request.params.arguments);
+        // Batch 65 switch cases — Group C: OS / system runtime tools
+        case 'get_system_memory_info':
+          return await this.handleGetSystemMemoryInfo(request.params.arguments);
+        case 'get_processor_name':
+          return await this.handleGetProcessorName(request.params.arguments);
+        case 'get_locale':
+          return await this.handleGetLocale(request.params.arguments);
+        case 'get_screen_resolution':
+          return await this.handleGetScreenResolution(request.params.arguments);
+        // Batch 65 switch cases — Group D: Navigation tools
+        case 'get_navigation_agent_2d_target':
+          return await this.handleGetNavigationAgent2dTarget(request.params.arguments);
+        case 'get_navigation_region_3d_baked':
+          return await this.handleGetNavigationRegion3dBaked(request.params.arguments);
+        // Batch 65 switch cases — Group E: GDScript templates
+        case 'write_bullet_pool_script':
+          return await this.handleWriteBulletPoolScript(request.params.arguments);
+        case 'write_game_over_screen_script':
+          return await this.handleWriteGameOverScreenScript(request.params.arguments);
+        case 'write_pause_menu_script':
+          return await this.handleWritePauseMenuScript(request.params.arguments);
+        case 'write_floating_text_script':
+          return await this.handleWriteFloatingTextScript(request.params.arguments);
+        case 'write_camera_2d_smooth_script':
+          return await this.handleWriteCamera2dSmoothScript(request.params.arguments);
+        case 'write_consumable_item_script':
+          return await this.handleWriteConsumableItemScript(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -39141,6 +39230,342 @@ func _on_velocity_computed(safe_velocity: Vector2) -> void:
     args = normalizeParameters(args || {});
     if (!args.nodePath) return createErrorResponse('nodePath is required.');
     return this.gameCommand('get_h_slider_value', args, a => ({ node_path: a.nodePath }));
+  }
+
+  // ── Batch 65 handlers ────────────────────────────────────────────────────────
+
+  // Group A: Theme / StyleBox UI tools
+  private async handleGetThemeInfo(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_theme_info', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetThemeFontSize(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_theme_font_size', args, a => ({ node_path: a.nodePath, font_size: a.fontSize ?? 14 }));
+  }
+
+  private async handleSetThemeColor(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.colorName) return createErrorResponse('colorName is required.');
+    return this.gameCommand('set_theme_color', args, a => ({ node_path: a.nodePath, color_name: a.colorName ?? 'font_color', r: a.r ?? 1.0, g: a.g ?? 1.0, b: a.b ?? 1.0, a: a.a ?? 1.0 }));
+  }
+
+  private async handleSetPanelStyleboxColor(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_panel_stylebox_color', args, a => ({ node_path: a.nodePath, r: a.r ?? 0.2, g: a.g ?? 0.2, b: a.b ?? 0.2, a: a.a ?? 1.0, corner_radius: a.cornerRadius ?? 0 }));
+  }
+
+  private async handleSetPanelBorderColor(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_panel_border_color', args, a => ({ node_path: a.nodePath, r: a.r ?? 1.0, g: a.g ?? 1.0, b: a.b ?? 1.0, a: a.a ?? 1.0, border_width: a.borderWidth ?? 1 }));
+  }
+
+  private async handleGetControlThemeType(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_control_theme_type', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetControlThemeType(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.themeType) return createErrorResponse('themeType is required.');
+    return this.gameCommand('set_control_theme_type', args, a => ({ node_path: a.nodePath, theme_type: a.themeType ?? '' }));
+  }
+
+  // Group B: Tween animation at runtime
+  private async handleCreatePropertyTween(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.property) return createErrorResponse('property is required.');
+    if (args.targetValue === undefined) return createErrorResponse('targetValue is required.');
+    if (args.duration === undefined) return createErrorResponse('duration is required.');
+    return this.gameCommand('create_property_tween', args, a => ({ node_path: a.nodePath, property: a.property ?? 'position:x', target_value: a.targetValue ?? 0, duration: a.duration ?? 1.0 }));
+  }
+
+  private async handleCreateColorTween(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('create_color_tween', args, a => ({ node_path: a.nodePath, r: a.r ?? 1.0, g: a.g ?? 1.0, b: a.b ?? 1.0, a: a.a ?? 1.0, duration: a.duration ?? 1.0 }));
+  }
+
+  private async handleTweenNodePosition2d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('tween_node_position_2d', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0, duration: a.duration ?? 1.0 }));
+  }
+
+  private async handleTweenNodeScale(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('tween_node_scale', args, a => ({ node_path: a.nodePath, x: a.x ?? 1.0, y: a.y ?? 1.0, duration: a.duration ?? 1.0 }));
+  }
+
+  private async handleTweenNodeAlpha(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('tween_node_alpha', args, a => ({ node_path: a.nodePath, alpha: a.alpha ?? 0.0, duration: a.duration ?? 1.0 }));
+  }
+
+  private async handleTweenNodeRotation(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('tween_node_rotation', args, a => ({ node_path: a.nodePath, degrees: a.degrees ?? 0, duration: a.duration ?? 1.0 }));
+  }
+
+  private async handleFlashNodeColor(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('flash_node_color', args, a => ({ node_path: a.nodePath, r: a.r ?? 1.0, g: a.g ?? 0.0, b: a.b ?? 0.0, duration: a.duration ?? 0.2 }));
+  }
+
+  // Group C: OS / system runtime tools
+  private async handleGetSystemMemoryInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_system_memory_info', args, _a => ({}));
+  }
+
+  private async handleGetProcessorName(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_processor_name', args, _a => ({}));
+  }
+
+  private async handleGetLocale(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_locale', args, _a => ({}));
+  }
+
+  private async handleGetScreenResolution(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_screen_resolution', args, _a => ({}));
+  }
+
+  // Group D: Navigation tools
+  private async handleGetNavigationAgent2dTarget(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_navigation_agent_2d_target', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetNavigationRegion3dBaked(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_navigation_region_3d_baked', args, a => ({ node_path: a.nodePath }));
+  }
+
+  // Group E: GDScript templates
+  private async handleWriteBulletPoolScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const poolSize = args.poolSize ?? 20;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+## Object pool for bullets/projectiles — pre-instantiates and recycles instances.
+
+@export var bullet_scene: PackedScene
+@export var pool_size: int = ${poolSize}
+
+var _pool: Array = []
+var _index: int = 0
+
+func _ready() -> void:
+\tfor i in pool_size:
+\t\tvar bullet = bullet_scene.instantiate()
+\t\tbullet.visible = false
+\t\tadd_child(bullet)
+\t\t_pool.append(bullet)
+
+func get_bullet() -> Node:
+\tvar bullet = _pool[_index]
+\t_index = (_index + 1) % pool_size
+\tbullet.visible = true
+\treturn bullet
+
+func return_bullet(bullet: Node) -> void:
+\tbullet.visible = false
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, poolSize }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteGameOverScreenScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends CanvasLayer
+## Game over screen — pause the tree and show restart/quit options.
+
+signal restart_requested
+signal quit_requested
+
+@onready var restart_button: Button = $RestartButton
+@onready var quit_button: Button = $QuitButton
+
+func _ready() -> void:
+\thide()
+\tif restart_button:
+\t\trestart_button.pressed.connect(_on_restart_pressed)
+\tif quit_button:
+\t\tquit_button.pressed.connect(_on_quit_pressed)
+
+func show_game_over() -> void:
+\tget_tree().paused = true
+\tshow()
+
+func _on_restart_pressed() -> void:
+\tget_tree().paused = false
+\trestart_requested.emit()
+\thide()
+
+func _on_quit_pressed() -> void:
+\tquit_requested.emit()
+\tget_tree().quit()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWritePauseMenuScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends CanvasLayer
+## Pause menu — toggle pause on ui_cancel and show/hide the menu.
+
+var _paused: bool = false
+
+func _ready() -> void:
+\thide()
+
+func _unhandled_input(event: InputEvent) -> void:
+\tif event.is_action_pressed("ui_cancel"):
+\t\ttoggle_pause()
+
+func toggle_pause() -> void:
+\t_paused = !_paused
+\tget_tree().paused = _paused
+\tif _paused:
+\t\tshow()
+\telse:
+\t\thide()
+
+func _on_resume_pressed() -> void:
+\ttoggle_pause()
+
+func _on_quit_pressed() -> void:
+\tget_tree().paused = false
+\tget_tree().quit()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteFloatingTextScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const duration = args.duration ?? 1.5;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Label
+## Floating text — floats upward and fades out, then frees itself.
+
+@export var float_speed: float = 50.0
+@export var duration: float = ${duration}
+
+func _ready() -> void:
+\tvar tween = create_tween()
+\ttween.set_parallel(true)
+\ttween.tween_property(self, "position:y", position.y - float_speed, duration)
+\ttween.tween_property(self, "modulate:a", 0.0, duration)
+\ttween.finished.connect(queue_free)
+
+func set_text_value(value: String) -> void:
+\ttext = value
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, duration }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteCamera2dSmoothScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const smoothing = args.smoothing ?? 5.0;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Camera2D
+## Smooth-follow Camera2D — lerps toward the target each frame.
+
+@export var target: NodePath = NodePath("")
+@export var smoothing_speed: float = ${smoothing}
+
+var _target_node: Node2D = null
+
+func _ready() -> void:
+\tif target != NodePath(""):
+\t\t_target_node = get_node(target)
+
+func _process(delta: float) -> void:
+\tif _target_node == null:
+\t\treturn
+\tglobal_position = global_position.lerp(_target_node.global_position, smoothing_speed * delta)
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, smoothing }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteConsumableItemScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const healAmount = args.healAmount ?? 25;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Area2D
+## Consumable pickup — heals the body that enters and frees itself.
+
+signal consumed(amount: int)
+
+@export var heal_amount: int = ${healAmount}
+@export var auto_destroy: bool = true
+
+func _ready() -> void:
+\tbody_entered.connect(_on_body_entered)
+
+func _on_body_entered(body: Node) -> void:
+\tif body.has_method("heal"):
+\t\tbody.heal(heal_amount)
+\tconsumed.emit(heal_amount)
+\tif auto_destroy:
+\t\tqueue_free()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, healAmount }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
   }
 
   // ── Navigation / Discovery helpers ──────────────────────────────────────────
