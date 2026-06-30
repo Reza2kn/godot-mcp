@@ -815,6 +815,26 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_node_visibility(params)
 		"duplicate_node_in_game":
 			_cmd_duplicate_node_in_game(params)
+		"get_item_list_items":
+			_cmd_get_item_list_items(params)
+		"add_item_list_item":
+			_cmd_add_item_list_item(params)
+		"clear_item_list":
+			_cmd_clear_item_list(params)
+		"get_item_list_selected":
+			_cmd_get_item_list_selected(params)
+		"set_check_box_pressed":
+			_cmd_set_check_box_pressed(params)
+		"get_line_edit_text":
+			_cmd_get_line_edit_text(params)
+		"set_line_edit_text":
+			_cmd_set_line_edit_text(params)
+		"get_text_edit_text":
+			_cmd_get_text_edit_text(params)
+		"set_text_edit_text":
+			_cmd_set_text_edit_text(params)
+		"set_label_horizontal_alignment":
+			_cmd_set_label_horizontal_alignment(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -8201,6 +8221,117 @@ func _cmd_duplicate_node_in_game(params: Dictionary) -> void:
 	node.get_parent().add_child(dup)
 	dup.owner = get_tree().root
 	_send_response({"success": true, "original_path": node_path, "duplicate_path": str(dup.get_path()), "name": dup.name})
+
+func _cmd_get_item_list_items(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is ItemList:
+		_send_response({"error": "ItemList not found: " + node_path})
+		return
+	var il := node as ItemList
+	var items: Array = []
+	for i in range(il.item_count):
+		items.append({"index": i, "text": il.get_item_text(i), "selected": il.is_selected(i), "disabled": il.is_item_disabled(i)})
+	_send_response({"success": true, "count": il.item_count, "items": items})
+
+func _cmd_add_item_list_item(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var text: String = params.get("text", "")
+	var icon_path: String = params.get("icon", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is ItemList:
+		_send_response({"error": "ItemList not found: " + node_path})
+		return
+	var il := node as ItemList
+	if not icon_path.is_empty():
+		var icon_tex = load(icon_path) as Texture2D
+		il.add_item(text, icon_tex)
+	else:
+		il.add_item(text)
+	_send_response({"success": true, "text": text, "item_count": il.item_count})
+
+func _cmd_clear_item_list(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is ItemList:
+		_send_response({"error": "ItemList not found: " + node_path})
+		return
+	(node as ItemList).clear()
+	_send_response({"success": true, "cleared": true})
+
+func _cmd_get_item_list_selected(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is ItemList:
+		_send_response({"error": "ItemList not found: " + node_path})
+		return
+	var il := node as ItemList
+	var selected = il.get_selected_items()
+	var selected_texts: Array = []
+	for idx in selected:
+		selected_texts.append(il.get_item_text(idx))
+	_send_response({"success": true, "selected_indices": selected, "selected_texts": selected_texts})
+
+func _cmd_set_check_box_pressed(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var pressed: bool = params.get("pressed", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not (node is CheckBox or node is CheckButton):
+		_send_response({"error": "CheckBox/CheckButton not found: " + node_path})
+		return
+	(node as BaseButton).button_pressed = pressed
+	_send_response({"success": true, "pressed": pressed})
+
+func _cmd_get_line_edit_text(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is LineEdit:
+		_send_response({"error": "LineEdit not found: " + node_path})
+		return
+	_send_response({"success": true, "text": (node as LineEdit).text, "caret_column": (node as LineEdit).caret_column})
+
+func _cmd_set_line_edit_text(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var text: String = params.get("text", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is LineEdit:
+		_send_response({"error": "LineEdit not found: " + node_path})
+		return
+	(node as LineEdit).text = text
+	_send_response({"success": true, "text": text})
+
+func _cmd_get_text_edit_text(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TextEdit:
+		_send_response({"error": "TextEdit not found: " + node_path})
+		return
+	_send_response({"success": true, "text": (node as TextEdit).text, "line_count": (node as TextEdit).get_line_count()})
+
+func _cmd_set_text_edit_text(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var text: String = params.get("text", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TextEdit:
+		_send_response({"error": "TextEdit not found: " + node_path})
+		return
+	(node as TextEdit).text = text
+	_send_response({"success": true, "text": text})
+
+func _cmd_set_label_horizontal_alignment(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var alignment_str: String = params.get("alignment", "left")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Label:
+		_send_response({"error": "Label not found: " + node_path})
+		return
+	var align_val: int = HORIZONTAL_ALIGNMENT_LEFT
+	match alignment_str:
+		"center": align_val = HORIZONTAL_ALIGNMENT_CENTER
+		"right": align_val = HORIZONTAL_ALIGNMENT_RIGHT
+		"fill": align_val = HORIZONTAL_ALIGNMENT_FILL
+	(node as Label).horizontal_alignment = align_val
+	_send_response({"success": true, "alignment": alignment_str})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()

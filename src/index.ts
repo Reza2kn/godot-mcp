@@ -10905,6 +10905,263 @@ class GodotServer {
           required: ['nodePath'],
         },
       },
+      {
+        name: 'add_graph_node_to_scene',
+        description: 'Add a GraphNode node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Path of the parent node.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_graph_edit_to_scene',
+        description: 'Add a GraphEdit node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Path of the parent node.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_item_list_to_scene',
+        description: 'Add an ItemList node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Path of the parent node.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_separator_to_scene',
+        description: 'Add an HSeparator node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Path of the parent node.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_v_separator_to_scene',
+        description: 'Add a VSeparator node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Path of the parent node.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_panel_container_to_scene',
+        description: 'Add a PanelContainer node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Path of the parent node.' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_box_container_to_scene',
+        description: 'Add an HBoxContainer or VBoxContainer to a scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Path of the parent node.' },
+            orientation: { type: 'string', description: '"horizontal" or "vertical".' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_flow_container_to_scene',
+        description: 'Add an HFlowContainer or VFlowContainer to a scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node.' },
+            parentNodePath: { type: 'string', description: 'Path of the parent node.' },
+            orientation: { type: 'string', description: '"horizontal" or "vertical".' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'create_gdscript_file',
+        description: 'Create a new GDScript .gd file in the project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            scriptPath: { type: 'string', description: 'res:// path for the new .gd file.' },
+            extends: { type: 'string', description: 'Class to extend (default Node).' },
+            content: { type: 'string', description: 'Full file content override.' },
+          },
+          required: ['projectPath', 'scriptPath'],
+        },
+      },
+      {
+        name: 'create_shader_file',
+        description: 'Create a new .gdshader file in the project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project.' },
+            shaderPath: { type: 'string', description: 'res:// path for the new shader.' },
+            shaderType: { type: 'string', description: 'Shader type: spatial, canvas_item, etc.' },
+          },
+          required: ['projectPath', 'shaderPath'],
+        },
+      },
+      {
+        name: 'get_item_list_items',
+        description: 'Get all items from an ItemList node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the ItemList node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'add_item_list_item',
+        description: 'Add an item to an ItemList node in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the ItemList node.' },
+            text: { type: 'string', description: 'Text label for the new item.' },
+            icon: { type: 'string', description: 'res:// path to an icon texture.' },
+          },
+          required: ['nodePath', 'text'],
+        },
+      },
+      {
+        name: 'clear_item_list',
+        description: 'Clear all items from an ItemList in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the ItemList node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_item_list_selected',
+        description: 'Get selected items from an ItemList in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the ItemList node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_check_box_pressed',
+        description: 'Set the pressed state of a CheckBox in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the CheckBox node.' },
+            pressed: { type: 'boolean', description: 'Pressed state to set.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_line_edit_text',
+        description: 'Get the current text from a LineEdit in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the LineEdit node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_line_edit_text',
+        description: 'Set the text on a LineEdit node in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the LineEdit node.' },
+            text: { type: 'string', description: 'Text to set on the LineEdit.' },
+          },
+          required: ['nodePath', 'text'],
+        },
+      },
+      {
+        name: 'get_text_edit_text',
+        description: 'Get the text content from a TextEdit in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the TextEdit node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_text_edit_text',
+        description: 'Set the text content on a TextEdit in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the TextEdit node.' },
+            text: { type: 'string', description: 'Text content to set.' },
+          },
+          required: ['nodePath', 'text'],
+        },
+      },
+      {
+        name: 'set_label_horizontal_alignment',
+        description: 'Set horizontal alignment on a Label in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the Label node.' },
+            alignment: { type: 'string', description: 'Alignment: left, center, right, fill.' },
+          },
+          required: ['nodePath'],
+        },
+      },
       ],
     }));
 
@@ -12472,6 +12729,46 @@ class GodotServer {
           return await this.handleGetNodeVisibility(request.params.arguments);
         case 'duplicate_node_in_game':
           return await this.handleDuplicateNodeInGame(request.params.arguments);
+        case 'add_graph_node_to_scene':
+          return await this.handleAddGraphNodeToScene(request.params.arguments);
+        case 'add_graph_edit_to_scene':
+          return await this.handleAddGraphEditToScene(request.params.arguments);
+        case 'add_item_list_to_scene':
+          return await this.handleAddItemListToScene(request.params.arguments);
+        case 'add_separator_to_scene':
+          return await this.handleAddSeparatorToScene(request.params.arguments);
+        case 'add_v_separator_to_scene':
+          return await this.handleAddVSeparatorToScene(request.params.arguments);
+        case 'add_panel_container_to_scene':
+          return await this.handleAddPanelContainerToScene(request.params.arguments);
+        case 'add_box_container_to_scene':
+          return await this.handleAddBoxContainerToScene(request.params.arguments);
+        case 'add_flow_container_to_scene':
+          return await this.handleAddFlowContainerToScene(request.params.arguments);
+        case 'create_gdscript_file':
+          return await this.handleCreateGdscriptFile(request.params.arguments);
+        case 'create_shader_file':
+          return await this.handleCreateShaderFile(request.params.arguments);
+        case 'get_item_list_items':
+          return await this.handleGetItemListItems(request.params.arguments);
+        case 'add_item_list_item':
+          return await this.handleAddItemListItem(request.params.arguments);
+        case 'clear_item_list':
+          return await this.handleClearItemList(request.params.arguments);
+        case 'get_item_list_selected':
+          return await this.handleGetItemListSelected(request.params.arguments);
+        case 'set_check_box_pressed':
+          return await this.handleSetCheckBoxPressed(request.params.arguments);
+        case 'get_line_edit_text':
+          return await this.handleGetLineEditText(request.params.arguments);
+        case 'set_line_edit_text':
+          return await this.handleSetLineEditText(request.params.arguments);
+        case 'get_text_edit_text':
+          return await this.handleGetTextEditText(request.params.arguments);
+        case 'set_text_edit_text':
+          return await this.handleSetTextEditText(request.params.arguments);
+        case 'set_label_horizontal_alignment':
+          return await this.handleSetLabelHorizontalAlignment(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -23051,6 +23348,172 @@ class GodotServer {
     args = normalizeParameters(args || {});
     if (!args.nodePath) return createErrorResponse('nodePath is required.');
     return this.gameCommand('duplicate_node_in_game', args, a => ({ node_path: a.nodePath, new_name: a.newName || '' }));
+  }
+
+  private async handleAddGraphNodeToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'GraphNode', node_type: 'GraphNode', parent_node_path: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddGraphEditToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'GraphEdit', node_type: 'GraphEdit', parent_node_path: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddItemListToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'ItemList', node_type: 'ItemList', parent_node_path: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddSeparatorToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'HSeparator', node_type: 'HSeparator', parent_node_path: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddVSeparatorToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'VSeparator', node_type: 'VSeparator', parent_node_path: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddPanelContainerToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'PanelContainer', node_type: 'PanelContainer', parent_node_path: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddBoxContainerToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const nt = (args.orientation || 'horizontal') === 'vertical' ? 'VBoxContainer' : 'HBoxContainer';
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || nt, node_type: nt, parent_node_path: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddFlowContainerToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const nt2 = (args.orientation || 'horizontal') === 'vertical' ? 'VFlowContainer' : 'HFlowContainer';
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || nt2, node_type: nt2, parent_node_path: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleCreateGdscriptFile(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.scriptPath);
+    if (existsSync(absPath)) return createErrorResponse(`File already exists: ${args.scriptPath}`);
+    const extendsClass = args.extends || 'Node';
+    const fileContent = args.content || `extends ${extendsClass}\n\n\nfunc _ready() -> void:\n\tpass\n`;
+    try { writeFileSync(absPath, fileContent, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, extendsClass }) }] };
+  }
+
+  private async handleCreateShaderFile(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.shaderPath) return createErrorResponse('projectPath and shaderPath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.shaderPath);
+    if (existsSync(absPath)) return createErrorResponse(`File already exists: ${args.shaderPath}`);
+    const shaderType = args.shaderType || 'spatial';
+    const fileContent = `shader_type ${shaderType};\n\nvoid fragment() {\n\t// ALBEDO = vec3(1.0, 0.0, 0.0);\n}\n`;
+    try { writeFileSync(absPath, fileContent, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: JSON.stringify({ success: true, shaderPath: args.shaderPath, shaderType }) }] };
+  }
+
+  private async handleGetItemListItems(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_item_list_items', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleAddItemListItem(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.text) return createErrorResponse('nodePath and text are required.');
+    return this.gameCommand('add_item_list_item', args, a => ({ node_path: a.nodePath, text: a.text, icon: a.icon || '' }));
+  }
+
+  private async handleClearItemList(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('clear_item_list', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetItemListSelected(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_item_list_selected', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetCheckBoxPressed(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_check_box_pressed', args, a => ({ node_path: a.nodePath, pressed: a.pressed ?? true }));
+  }
+
+  private async handleGetLineEditText(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_line_edit_text', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetLineEditText(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.text) return createErrorResponse('nodePath and text are required.');
+    return this.gameCommand('set_line_edit_text', args, a => ({ node_path: a.nodePath, text: a.text }));
+  }
+
+  private async handleGetTextEditText(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_text_edit_text', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetTextEditText(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.text) return createErrorResponse('nodePath and text are required.');
+    return this.gameCommand('set_text_edit_text', args, a => ({ node_path: a.nodePath, text: a.text }));
+  }
+
+  private async handleSetLabelHorizontalAlignment(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_label_horizontal_alignment', args, a => ({ node_path: a.nodePath, alignment: a.alignment || 'left' }));
   }
 
 }
