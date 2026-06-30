@@ -5261,6 +5261,285 @@ class GodotServer {
           required: ['nodePath'],
         },
       },
+      {
+        name: 'get_animation_length',
+        description: 'Get the length of an animation from a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path or relative path to the .tscn file' },
+            animationName: { type: 'string', description: 'Name of the animation to query' },
+          },
+          required: ['projectPath', 'scenePath', 'animationName'],
+        },
+      },
+      {
+        name: 'set_animation_length',
+        description: 'Set the length of a named animation in a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path or relative path to the .tscn file' },
+            animationName: { type: 'string', description: 'Name of the animation to modify' },
+            length: { type: 'number', description: 'New animation length in seconds' },
+          },
+          required: ['projectPath', 'scenePath', 'animationName', 'length'],
+        },
+      },
+      {
+        name: 'get_input_map',
+        description: 'Get all input actions and their mappings from project.godot.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'find_large_resources',
+        description: 'Find files exceeding a size threshold in the project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            minSizeKb: { type: 'number', description: 'Minimum file size in KB (default 100)' },
+            extensions: {
+              type: 'array',
+              description: 'File extensions to scan (default: images, audio, 3D)',
+              items: { type: 'string' },
+            },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_scene_inheritance_chain',
+        description: 'Trace the inheritance chain of a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path or relative path to the .tscn file' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'create_localization_csv',
+        description: 'Create a CSV translation file template for multiple locales.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            outputPath: { type: 'string', description: 'res:// or relative output path for the CSV' },
+            languages: {
+              type: 'array',
+              description: 'List of locale codes (e.g. ["en","fr","de"])',
+              items: { type: 'string' },
+            },
+            keys: {
+              type: 'array',
+              description: 'Translation keys (optional, defaults provided)',
+              items: { type: 'string' },
+            },
+            overwrite: { type: 'boolean', description: 'Overwrite if file exists (default false)' },
+          },
+          required: ['projectPath', 'outputPath', 'languages'],
+        },
+      },
+      {
+        name: 'get_project_build_summary',
+        description: 'Get a comprehensive health summary of the Godot project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'list_project_shaders',
+        description: 'List all shader files (.gdshader) in the project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'add_signal_connection',
+        description: 'Add a signal connection between two nodes in a scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path or relative path to the .tscn file' },
+            signal: { type: 'string', description: 'Signal name to connect' },
+            from: { type: 'string', description: 'Node path emitting the signal' },
+            to: { type: 'string', description: 'Node path receiving the signal' },
+            method: { type: 'string', description: 'Method name on the receiving node' },
+          },
+          required: ['projectPath', 'scenePath', 'signal', 'from', 'to', 'method'],
+        },
+      },
+      {
+        name: 'remove_signal_connection',
+        description: 'Remove a signal connection from a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path or relative path to the .tscn file' },
+            signal: { type: 'string', description: 'Signal name to disconnect' },
+            from: { type: 'string', description: 'Node path emitting the signal' },
+            to: { type: 'string', description: 'Node path receiving the signal' },
+            method: { type: 'string', description: 'Method name on the receiving node' },
+          },
+          required: ['projectPath', 'scenePath', 'signal', 'from', 'to', 'method'],
+        },
+      },
+      {
+        name: 'theme_set_color_override',
+        description: 'Set a theme color override on a Control in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the Control node' },
+            colorName: { type: 'string', description: 'Theme color property name' },
+            r: { type: 'number', description: 'Red channel 0-1 (default 1)' },
+            g: { type: 'number', description: 'Green channel 0-1 (default 1)' },
+            b: { type: 'number', description: 'Blue channel 0-1 (default 1)' },
+            a: { type: 'number', description: 'Alpha channel 0-1 (default 1)' },
+          },
+          required: ['nodePath', 'colorName'],
+        },
+      },
+      {
+        name: 'popup_menu_add_item',
+        description: 'Add an item to a PopupMenu in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the PopupMenu node' },
+            label: { type: 'string', description: 'Display label for the new item' },
+            id: { type: 'integer', description: 'Item ID (default -1 for auto)' },
+          },
+          required: ['nodePath', 'label'],
+        },
+      },
+      {
+        name: 'option_button_add_item',
+        description: 'Add an item to an OptionButton in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the OptionButton node' },
+            label: { type: 'string', description: 'Display label for the new item' },
+            id: { type: 'integer', description: 'Item ID (default -1 for auto)' },
+          },
+          required: ['nodePath', 'label'],
+        },
+      },
+      {
+        name: 'item_list_add_item',
+        description: 'Add an item to an ItemList in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the ItemList node' },
+            label: { type: 'string', description: 'Display label for the new item' },
+            icon: { type: 'string', description: 'Optional res:// path to an icon texture' },
+            selectable: { type: 'boolean', description: 'Whether the item is selectable (default true)' },
+          },
+          required: ['nodePath', 'label'],
+        },
+      },
+      {
+        name: 'animation_set_loop',
+        description: 'Set the loop mode of an animation in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the AnimationPlayer node' },
+            animationName: { type: 'string', description: 'Name of the animation to modify' },
+            loopMode: { type: 'integer', description: '0=none, 1=linear, 2=ping-pong' },
+          },
+          required: ['nodePath', 'animationName', 'loopMode'],
+        },
+      },
+      {
+        name: 'multimesh_set_instance_count',
+        description: 'Set the instance count of a MultiMesh in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the MultiMeshInstance node' },
+            count: { type: 'integer', description: 'Number of instances to allocate' },
+          },
+          required: ['nodePath', 'count'],
+        },
+      },
+      {
+        name: 'multimesh_set_instance_transform',
+        description: 'Set a MultiMesh instance transform in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the MultiMeshInstance node' },
+            instanceIndex: { type: 'integer', description: 'Zero-based index of the instance' },
+            x: { type: 'number', description: 'X position (default 0)' },
+            y: { type: 'number', description: 'Y position (default 0)' },
+            z: { type: 'number', description: 'Z position (default 0)' },
+          },
+          required: ['nodePath', 'instanceIndex'],
+        },
+      },
+      {
+        name: 'audio_player_set_bus',
+        description: 'Set the bus of an AudioStreamPlayer in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the AudioStreamPlayer node' },
+            busName: { type: 'string', description: 'Audio bus name (e.g. "Master", "Music")' },
+          },
+          required: ['nodePath', 'busName'],
+        },
+      },
+      {
+        name: 'set_material_property',
+        description: 'Set a property on a MeshInstance material in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the MeshInstance node' },
+            surface: { type: 'integer', description: 'Surface index (default 0)' },
+            propertyName: { type: 'string', description: 'Material property name to set' },
+            propertyValue: { description: 'Value to assign to the material property' },
+          },
+          required: ['nodePath', 'propertyName', 'propertyValue'],
+        },
+      },
+      {
+        name: 'rich_text_append',
+        description: 'Append BBCode text to a RichTextLabel in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the RichTextLabel node' },
+            bbcode: { type: 'string', description: 'BBCode-formatted text to append' },
+            clear: { type: 'boolean', description: 'Clear existing text before appending (default false)' },
+          },
+          required: ['nodePath', 'bbcode'],
+        },
+      },
       ],
     }));
 
@@ -5942,6 +6221,46 @@ class GodotServer {
           return await this.handleSetPhysicsLayers(request.params.arguments);
         case 'get_node_rect':
           return await this.handleGetNodeRect(request.params.arguments);
+        case 'get_animation_length':
+          return await this.handleGetAnimationLength(request.params.arguments);
+        case 'set_animation_length':
+          return await this.handleSetAnimationLength(request.params.arguments);
+        case 'get_input_map':
+          return await this.handleGetInputMap(request.params.arguments);
+        case 'find_large_resources':
+          return await this.handleFindLargeResources(request.params.arguments);
+        case 'get_scene_inheritance_chain':
+          return await this.handleGetSceneInheritanceChain(request.params.arguments);
+        case 'create_localization_csv':
+          return await this.handleCreateLocalizationCsv(request.params.arguments);
+        case 'get_project_build_summary':
+          return await this.handleGetProjectBuildSummary(request.params.arguments);
+        case 'list_project_shaders':
+          return await this.handleListProjectShaders(request.params.arguments);
+        case 'add_signal_connection':
+          return await this.handleAddSignalConnection(request.params.arguments);
+        case 'remove_signal_connection':
+          return await this.handleRemoveSignalConnection(request.params.arguments);
+        case 'theme_set_color_override':
+          return await this.handleThemeSetColorOverride(request.params.arguments);
+        case 'popup_menu_add_item':
+          return await this.handlePopupMenuAddItem(request.params.arguments);
+        case 'option_button_add_item':
+          return await this.handleOptionButtonAddItem(request.params.arguments);
+        case 'item_list_add_item':
+          return await this.handleItemListAddItem(request.params.arguments);
+        case 'animation_set_loop':
+          return await this.handleAnimationSetLoop(request.params.arguments);
+        case 'multimesh_set_instance_count':
+          return await this.handleMultimeshSetInstanceCount(request.params.arguments);
+        case 'multimesh_set_instance_transform':
+          return await this.handleMultimeshSetInstanceTransform(request.params.arguments);
+        case 'audio_player_set_bus':
+          return await this.handleAudioPlayerSetBus(request.params.arguments);
+        case 'set_material_property':
+          return await this.handleSetMaterialProperty(request.params.arguments);
+        case 'rich_text_append':
+          return await this.handleRichTextAppend(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -11790,6 +12109,275 @@ class GodotServer {
     args = normalizeParameters(args || {});
     if (!args.nodePath) return createErrorResponse('nodePath is required.');
     return this.gameCommand('get_node_rect', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetAnimationLength(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.animationName)
+      return createErrorResponse('projectPath, scenePath, and animationName are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const animRegex = new RegExp(`\\[sub_resource[^\\]]+\\][\\s\\S]*?resource_name\\s*=\\s*"${args.animationName}"[\\s\\S]*?length\\s*=\\s*([\\d.]+)`, 'm');
+    const match = content.match(animRegex);
+    if (!match) {
+      const lengthMatch = content.match(new RegExp(`${args.animationName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^}]*?length\\s*=\\s*([\\d.]+)`, 'm'));
+      if (lengthMatch) return { content: [{ type: 'text', text: JSON.stringify({ animationName: args.animationName, length: parseFloat(lengthMatch[1]) }) }] };
+      return createErrorResponse(`Animation "${args.animationName}" not found or has no length property.`);
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ animationName: args.animationName, length: parseFloat(match[1]) }) }] };
+  }
+
+  private async handleSetAnimationLength(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.animationName || args.length === undefined)
+      return createErrorResponse('projectPath, scenePath, animationName, and length are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const animBlockRegex = new RegExp(`(\\[sub_resource[^\\]]+\\][\\s\\S]*?resource_name\\s*=\\s*"${args.animationName}"[\\s\\S]*?)(length\\s*=\\s*[\\d.]+)`, 'm');
+    const match = content.match(animBlockRegex);
+    if (!match) return createErrorResponse(`Animation "${args.animationName}" not found.`);
+    const newContent = content.replace(animBlockRegex, `$1length = ${args.length}`);
+    try { writeFileSync(absScene, newContent, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: `Set animation "${args.animationName}" length to ${args.length} seconds.` }] };
+  }
+
+  private async handleGetInputMap(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const projectFile = join(args.projectPath, 'project.godot');
+    if (!existsSync(projectFile)) return createErrorResponse('project.godot not found.');
+    let content: string;
+    try { content = readFileSync(projectFile, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const inputMatch = content.match(/\[input\]([\s\S]*?)(?=\n\[|$)/);
+    if (!inputMatch) return { content: [{ type: 'text', text: JSON.stringify({ actions: {} }) }] };
+    const actions: Record<string, string[]> = {};
+    for (const line of inputMatch[1].split('\n')) {
+      const kv = line.trim().match(/^([^=]+)\s*=\s*(.+)$/);
+      if (kv) actions[kv[1].trim()] = [kv[2].trim()];
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ actions }, null, 2) }] };
+  }
+
+  private async handleFindLargeResources(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const { statSync } = await import('node:fs');
+    const minBytes = (args.minSizeKb ?? 100) * 1024;
+    const exts = args.extensions || ['.png', '.jpg', '.ogg', '.mp3', '.wav', '.glb', '.gltf', '.fbx', '.tres', '.res', '.tscn'];
+    const files = this.collectFiles(args.projectPath, exts);
+    const large: Array<{ file: string; sizeKb: number }> = [];
+    for (const f of files) {
+      try {
+        const stat = statSync(f);
+        if (stat.size >= minBytes) {
+          large.push({ file: f.replace(args.projectPath + '/', ''), sizeKb: Math.round(stat.size / 1024) });
+        }
+      } catch {}
+    }
+    large.sort((a, b) => b.sizeKb - a.sizeKb);
+    return { content: [{ type: 'text', text: JSON.stringify({ count: large.length, minSizeKb: args.minSizeKb ?? 100, files: large }, null, 2) }] };
+  }
+
+  private async handleGetSceneInheritanceChain(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const chain: string[] = [];
+    let currentPath = args.scenePath;
+    const visited = new Set<string>();
+    while (currentPath && !visited.has(currentPath)) {
+      visited.add(currentPath);
+      chain.push(currentPath);
+      const absScene = this.resolveResPath(args.projectPath, currentPath);
+      if (!existsSync(absScene)) break;
+      let content: string;
+      try { content = readFileSync(absScene, 'utf8'); } catch { break; }
+      const inheritMatch = content.match(/\[gd_scene[^\]]*\][\s\S]*?\[ext_resource[^\]]*?type="PackedScene"[^\]]*?path="([^"]+)"/m)
+        || content.match(/^\[node name="[^"]+"[^\]]*?instance=ExtResource\("([^"]+)"\)/m);
+      if (!inheritMatch) break;
+      const extId = inheritMatch[1];
+      const extResMatch = content.match(new RegExp(`\\[ext_resource[^\\]]*?id="${extId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[^\\]]*?path="([^"]+)"`));
+      if (!extResMatch) break;
+      currentPath = extResMatch[1];
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ chain, depth: chain.length }, null, 2) }] };
+  }
+
+  private async handleCreateLocalizationCsv(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.outputPath || !Array.isArray(args.languages))
+      return createErrorResponse('projectPath, outputPath, and languages array are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.outputPath.startsWith('res://') ? args.outputPath : `res://${args.outputPath}`);
+    const langs = args.languages as string[];
+    const keys: string[] = args.keys || ['TITLE', 'START_BUTTON', 'QUIT_BUTTON', 'SETTINGS', 'BACK'];
+    const header = ['keys', ...langs].join(',');
+    const rows = keys.map((k: string) => [k, ...langs.map(() => '')].join(','));
+    const csv = [header, ...rows].join('\n') + '\n';
+    if (existsSync(absPath) && !args.overwrite) return createErrorResponse(`File exists: ${absPath}. Set overwrite=true to replace.`);
+    const { mkdirSync } = await import('node:fs');
+    try { mkdirSync(absPath.substring(0, absPath.lastIndexOf('/')), { recursive: true }); } catch {}
+    try { writeFileSync(absPath, csv, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: `Created CSV with ${langs.length} languages and ${keys.length} keys at ${args.outputPath}.` }] };
+  }
+
+  private async handleGetProjectBuildSummary(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const scripts = this.collectFiles(args.projectPath, ['.gd']);
+    const scenes = this.collectFiles(args.projectPath, ['.tscn']);
+    const resources = this.collectFiles(args.projectPath, ['.tres', '.res']);
+    const projectFile = join(args.projectPath, 'project.godot');
+    let totalNodes = 0, totalSignals = 0;
+    for (const scene of scenes) {
+      try {
+        const content = readFileSync(scene, 'utf8');
+        totalNodes += (content.match(/^\[node /gm) || []).length;
+        totalSignals += (content.match(/^\[connection /gm) || []).length;
+      } catch {}
+    }
+    let totalLines = 0;
+    for (const script of scripts) {
+      try { totalLines += readFileSync(script, 'utf8').split('\n').length; } catch {}
+    }
+    const projectName = existsSync(projectFile) ? (readFileSync(projectFile, 'utf8').match(/^config\/name\s*=\s*"([^"]+)"/m) || [])[1] : 'Unknown';
+    return { content: [{ type: 'text', text: JSON.stringify({
+      projectName,
+      counts: { scenes: scenes.length, scripts: scripts.length, resources: resources.length },
+      codeLines: totalLines,
+      sceneNodes: totalNodes,
+      signalConnections: totalSignals,
+    }, null, 2) }] };
+  }
+
+  private async handleListProjectShaders(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const shaders = this.collectFiles(args.projectPath, ['.gdshader', '.shader']);
+    const result: Array<{ path: string; shaderType?: string; sizeBytes: number }> = [];
+    const { statSync } = await import('node:fs');
+    for (const shader of shaders) {
+      let shaderType: string | undefined;
+      try {
+        const content = readFileSync(shader, 'utf8').slice(0, 100);
+        const typeMatch = content.match(/shader_type\s+(\w+)/);
+        shaderType = typeMatch ? typeMatch[1] : undefined;
+      } catch {}
+      try {
+        const stat = statSync(shader);
+        result.push({ path: shader.replace(args.projectPath + '/', ''), shaderType, sizeBytes: stat.size });
+      } catch {}
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ count: result.length, shaders: result }, null, 2) }] };
+  }
+
+  private async handleAddSignalConnection(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.signal || !args.from || !args.to || !args.method)
+      return createErrorResponse('projectPath, scenePath, signal, from, to, and method are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const connectionLine = `\n[connection signal="${args.signal}" from="${args.from}" to="${args.to}" method="${args.method}"]`;
+    if (content.includes(`signal="${args.signal}" from="${args.from}" to="${args.to}" method="${args.method}"`))
+      return { content: [{ type: 'text', text: 'Connection already exists.' }] };
+    content = content.trimEnd() + connectionLine + '\n';
+    try { writeFileSync(absScene, content, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: `Added connection: ${args.from}:${args.signal} → ${args.to}:${args.method}` }] };
+  }
+
+  private async handleRemoveSignalConnection(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.signal || !args.from || !args.to || !args.method)
+      return createErrorResponse('projectPath, scenePath, signal, from, to, and method are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const escapedSignal = args.signal.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const escapedFrom = args.from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const escapedTo = args.to.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const escapedMethod = args.method.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const connRegex = new RegExp(`\\n?\\[connection signal="${escapedSignal}" from="${escapedFrom}" to="${escapedTo}" method="${escapedMethod}"[^\\]]*\\]\\n?`, 'g');
+    const newContent = content.replace(connRegex, '\n');
+    if (newContent === content) return createErrorResponse('Connection not found.');
+    try { writeFileSync(absScene, newContent, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: `Removed connection: ${args.from}:${args.signal} → ${args.to}:${args.method}` }] };
+  }
+
+  private async handleThemeSetColorOverride(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.colorName) return createErrorResponse('nodePath and colorName are required.');
+    return this.gameCommand('theme_set_color_override', args, a => ({
+      node_path: a.nodePath, color_name: a.colorName, r: a.r ?? 1, g: a.g ?? 1, b: a.b ?? 1, a: a.a ?? 1,
+    }));
+  }
+
+  private async handlePopupMenuAddItem(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.label) return createErrorResponse('nodePath and label are required.');
+    return this.gameCommand('popup_menu_add_item', args, a => ({ node_path: a.nodePath, label: a.label, id: a.id ?? -1 }));
+  }
+
+  private async handleOptionButtonAddItem(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.label) return createErrorResponse('nodePath and label are required.');
+    return this.gameCommand('option_button_add_item', args, a => ({ node_path: a.nodePath, label: a.label, id: a.id ?? -1 }));
+  }
+
+  private async handleItemListAddItem(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.label) return createErrorResponse('nodePath and label are required.');
+    return this.gameCommand('item_list_add_item', args, a => ({ node_path: a.nodePath, label: a.label, selectable: a.selectable !== false }));
+  }
+
+  private async handleAnimationSetLoop(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.animationName || args.loopMode === undefined) return createErrorResponse('nodePath, animationName, and loopMode are required.');
+    return this.gameCommand('animation_set_loop', args, a => ({ node_path: a.nodePath, animation_name: a.animationName, loop_mode: a.loopMode }));
+  }
+
+  private async handleMultimeshSetInstanceCount(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || args.count === undefined) return createErrorResponse('nodePath and count are required.');
+    return this.gameCommand('multimesh_set_instance_count', args, a => ({ node_path: a.nodePath, count: a.count }));
+  }
+
+  private async handleMultimeshSetInstanceTransform(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || args.instanceIndex === undefined) return createErrorResponse('nodePath and instanceIndex are required.');
+    return this.gameCommand('multimesh_set_instance_transform', args, a => ({ node_path: a.nodePath, instance_index: a.instanceIndex, x: a.x ?? 0, y: a.y ?? 0, z: a.z ?? 0 }));
+  }
+
+  private async handleAudioPlayerSetBus(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.busName) return createErrorResponse('nodePath and busName are required.');
+    return this.gameCommand('audio_player_set_bus', args, a => ({ node_path: a.nodePath, bus_name: a.busName }));
+  }
+
+  private async handleSetMaterialProperty(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.propertyName || args.propertyValue === undefined) return createErrorResponse('nodePath, propertyName, and propertyValue are required.');
+    return this.gameCommand('set_material_property', args, a => ({ node_path: a.nodePath, surface: a.surface ?? 0, property_name: a.propertyName, property_value: a.propertyValue }));
+  }
+
+  private async handleRichTextAppend(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || args.bbcode === undefined) return createErrorResponse('nodePath and bbcode are required.');
+    return this.gameCommand('rich_text_append', args, a => ({ node_path: a.nodePath, bbcode: a.bbcode, clear: a.clear ?? false }));
   }
 
 }

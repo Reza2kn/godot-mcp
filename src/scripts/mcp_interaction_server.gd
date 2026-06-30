@@ -465,6 +465,26 @@ func _handle_command(json_str: String) -> void:
 			_cmd_set_physics_layers(params)
 		"get_node_rect":
 			_cmd_get_node_rect(params)
+		"theme_set_color_override":
+			_cmd_theme_set_color_override(params)
+		"popup_menu_add_item":
+			_cmd_popup_menu_add_item(params)
+		"option_button_add_item":
+			_cmd_option_button_add_item(params)
+		"item_list_add_item":
+			_cmd_item_list_add_item(params)
+		"animation_set_loop":
+			_cmd_animation_set_loop(params)
+		"multimesh_set_instance_count":
+			_cmd_multimesh_set_instance_count(params)
+		"multimesh_set_instance_transform":
+			_cmd_multimesh_set_instance_transform(params)
+		"audio_player_set_bus":
+			_cmd_audio_player_set_bus(params)
+		"set_material_property":
+			_cmd_set_material_property(params)
+		"rich_text_append":
+			_cmd_rich_text_append(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -5588,6 +5608,186 @@ func _cmd_get_node_rect(params: Dictionary) -> void:
 		_send_response({"success": true, "global_position": {"x": n2d.global_position.x, "y": n2d.global_position.y}})
 	else:
 		_send_response({"error": "Node is not a Control or Node2D: " + node.get_class()})
+
+
+func _cmd_theme_set_color_override(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var color_name: String = params.get("color_name", "")
+	var r: float = params.get("r", 1.0)
+	var g: float = params.get("g", 1.0)
+	var b: float = params.get("b", 1.0)
+	var a: float = params.get("a", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control not found: " + node_path})
+		return
+	(node as Control).add_theme_color_override(color_name, Color(r, g, b, a))
+	_send_response({"success": true, "color_name": color_name, "color": {"r": r, "g": g, "b": b, "a": a}})
+
+
+func _cmd_popup_menu_add_item(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var label: String = params.get("label", "")
+	var id: int = params.get("id", -1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is PopupMenu:
+		_send_response({"error": "PopupMenu not found: " + node_path})
+		return
+	(node as PopupMenu).add_item(label, id)
+	_send_response({"success": true, "label": label, "id": id, "item_count": (node as PopupMenu).get_item_count()})
+
+
+func _cmd_option_button_add_item(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var label: String = params.get("label", "")
+	var id: int = params.get("id", -1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is OptionButton:
+		_send_response({"error": "OptionButton not found: " + node_path})
+		return
+	(node as OptionButton).add_item(label, id)
+	_send_response({"success": true, "label": label, "item_count": (node as OptionButton).get_item_count()})
+
+
+func _cmd_item_list_add_item(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var label: String = params.get("label", "")
+	var selectable: bool = params.get("selectable", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is ItemList:
+		_send_response({"error": "ItemList not found: " + node_path})
+		return
+	var il := node as ItemList
+	var idx: int = il.add_item(label)
+	il.set_item_selectable(idx, selectable)
+	_send_response({"success": true, "label": label, "index": idx, "item_count": il.get_item_count()})
+
+
+func _cmd_animation_set_loop(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var anim_name: String = params.get("animation_name", "")
+	var loop_mode: int = params.get("loop_mode", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	var player := node as AnimationPlayer
+	if not player.has_animation(anim_name):
+		_send_response({"error": "Animation not found: " + anim_name})
+		return
+	var anim: Animation = player.get_animation(anim_name)
+	anim.loop_mode = loop_mode as Animation.LoopMode
+	_send_response({"success": true, "animation_name": anim_name, "loop_mode": loop_mode})
+
+
+func _cmd_multimesh_set_instance_count(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var count: int = params.get("count", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var mm: MultiMesh = null
+	if node is MultiMeshInstance3D:
+		mm = (node as MultiMeshInstance3D).multimesh
+	elif node is MultiMeshInstance2D:
+		mm = (node as MultiMeshInstance2D).multimesh
+	if mm == null:
+		_send_response({"error": "No MultiMesh found on node: " + node_path})
+		return
+	mm.instance_count = count
+	_send_response({"success": true, "instance_count": count})
+
+
+func _cmd_multimesh_set_instance_transform(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var instance_index: int = params.get("instance_index", 0)
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is MultiMeshInstance3D:
+		var mm: MultiMesh = (node as MultiMeshInstance3D).multimesh
+		if mm == null or instance_index >= mm.instance_count:
+			_send_response({"error": "Invalid MultiMesh or index out of range"})
+			return
+		var t := Transform3D.IDENTITY
+		t.origin = Vector3(x, y, z)
+		mm.set_instance_transform(instance_index, t)
+		_send_response({"success": true, "instance_index": instance_index, "position": {"x": x, "y": y, "z": z}})
+	elif node is MultiMeshInstance2D:
+		var mm: MultiMesh = (node as MultiMeshInstance2D).multimesh
+		if mm == null or instance_index >= mm.instance_count:
+			_send_response({"error": "Invalid MultiMesh or index out of range"})
+			return
+		var t := Transform2D.IDENTITY
+		t.origin = Vector2(x, y)
+		mm.set_instance_transform_2d(instance_index, t)
+		_send_response({"success": true, "instance_index": instance_index, "position": {"x": x, "y": y}})
+	else:
+		_send_response({"error": "Node is not a MultiMeshInstance: " + node.get_class()})
+
+
+func _cmd_audio_player_set_bus(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var bus_name: String = params.get("bus_name", "Master")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is AudioStreamPlayer:
+		(node as AudioStreamPlayer).bus = bus_name
+	elif node is AudioStreamPlayer2D:
+		(node as AudioStreamPlayer2D).bus = bus_name
+	elif node is AudioStreamPlayer3D:
+		(node as AudioStreamPlayer3D).bus = bus_name
+	else:
+		_send_response({"error": "Node is not an AudioStreamPlayer: " + node.get_class()})
+		return
+	_send_response({"success": true, "bus_name": bus_name, "node_path": node_path})
+
+
+func _cmd_set_material_property(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var surface: int = params.get("surface", 0)
+	var property_name: String = params.get("property_name", "")
+	var property_value = params.get("property_value", null)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var material: Material = null
+	if node is MeshInstance3D:
+		material = (node as MeshInstance3D).get_surface_override_material(surface)
+		if material == null:
+			material = (node as MeshInstance3D).get_active_material(surface)
+	elif node is Sprite2D:
+		material = (node as Sprite2D).material
+	elif node is CanvasItem:
+		material = (node as CanvasItem).material
+	if material == null:
+		_send_response({"error": "No material found on node"})
+		return
+	material.set(property_name, property_value)
+	_send_response({"success": true, "property_name": property_name})
+
+
+func _cmd_rich_text_append(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var bbcode: String = params.get("bbcode", "")
+	var clear: bool = params.get("clear", false)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RichTextLabel:
+		_send_response({"error": "RichTextLabel not found: " + node_path})
+		return
+	var rtl := node as RichTextLabel
+	if clear:
+		rtl.clear()
+	rtl.append_text(bbcode)
+	_send_response({"success": true, "appended": bbcode.length(), "node_path": node_path})
 
 
 func _exit_tree() -> void:
