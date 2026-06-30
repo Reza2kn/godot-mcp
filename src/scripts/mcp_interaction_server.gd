@@ -1769,6 +1769,56 @@ func _handle_command(json_str: String) -> void:
 			_cmd_set_directional_light_shadow(params)
 		"get_light_info":
 			_cmd_get_light_info(params)
+		"get_character_body_2d_info":
+			_cmd_get_character_body_2d_info(params)
+		"set_rigid_body_2d_mass":
+			_cmd_set_rigid_body_2d_mass(params)
+		"set_rigid_body_2d_gravity_scale":
+			_cmd_set_rigid_body_2d_gravity_scale(params)
+		"apply_central_impulse_2d":
+			_cmd_apply_central_impulse_2d(params)
+		"set_rigid_body_2d_freeze":
+			_cmd_set_rigid_body_2d_freeze(params)
+		"get_rigid_body_2d_info":
+			_cmd_get_rigid_body_2d_info(params)
+		"set_character_body_2d_velocity":
+			_cmd_set_character_body_2d_velocity(params)
+		"get_character_body_3d_info":
+			_cmd_get_character_body_3d_info(params)
+		"set_rigid_body_3d_mass":
+			_cmd_set_rigid_body_3d_mass(params)
+		"apply_central_impulse_3d":
+			_cmd_apply_central_impulse_3d(params)
+		"set_rigid_body_3d_gravity_scale":
+			_cmd_set_rigid_body_3d_gravity_scale(params)
+		"set_rigid_body_3d_freeze":
+			_cmd_set_rigid_body_3d_freeze(params)
+		"get_rigid_body_3d_info":
+			_cmd_get_rigid_body_3d_info(params)
+		"set_material_metallic":
+			_cmd_set_material_metallic(params)
+		"set_material_roughness":
+			_cmd_set_material_roughness(params)
+		"set_material_emission":
+			_cmd_set_material_emission(params)
+		"set_material_alpha_mode":
+			_cmd_set_material_alpha_mode(params)
+		"get_material_info":
+			_cmd_get_material_info(params)
+		"set_material_cull_mode":
+			_cmd_set_material_cull_mode(params)
+		"set_collision_shape_disabled":
+			_cmd_set_collision_shape_disabled(params)
+		"set_circle_shape_radius":
+			_cmd_set_circle_shape_radius(params)
+		"set_rect_shape_size":
+			_cmd_set_rect_shape_size(params)
+		"set_capsule_shape_size":
+			_cmd_set_capsule_shape_size(params)
+		"set_box_shape_size_3d":
+			_cmd_set_box_shape_size_3d(params)
+		"get_collision_layer_mask":
+			_cmd_get_collision_layer_mask(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -14654,6 +14704,364 @@ func _cmd_get_light_info(params: Dictionary) -> void:
 		"visible": light.visible
 	}
 	_send_response(info)
+
+func _cmd_get_character_body_2d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CharacterBody2D:
+		_send_response({"error": "CharacterBody2D not found: " + node_path})
+		return
+	var cb := node as CharacterBody2D
+	_send_response({"success": true, "velocity": {"x": cb.velocity.x, "y": cb.velocity.y}, "is_on_floor": cb.is_on_floor(), "is_on_wall": cb.is_on_wall(), "is_on_ceiling": cb.is_on_ceiling()})
+
+func _cmd_set_rigid_body_2d_mass(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var mass: float = params.get("mass", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RigidBody2D:
+		_send_response({"error": "RigidBody2D not found: " + node_path})
+		return
+	(node as RigidBody2D).mass = mass
+	_send_response({"success": true, "mass": mass})
+
+func _cmd_set_rigid_body_2d_gravity_scale(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var gravity_scale: float = params.get("gravity_scale", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RigidBody2D:
+		_send_response({"error": "RigidBody2D not found: " + node_path})
+		return
+	(node as RigidBody2D).gravity_scale = gravity_scale
+	_send_response({"success": true, "gravity_scale": gravity_scale})
+
+func _cmd_apply_central_impulse_2d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", -200.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RigidBody2D:
+		_send_response({"error": "RigidBody2D not found: " + node_path})
+		return
+	(node as RigidBody2D).apply_central_impulse(Vector2(x, y))
+	_send_response({"success": true, "impulse": {"x": x, "y": y}})
+
+func _cmd_set_rigid_body_2d_freeze(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var freeze: bool = params.get("freeze", false)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RigidBody2D:
+		_send_response({"error": "RigidBody2D not found: " + node_path})
+		return
+	(node as RigidBody2D).freeze = freeze
+	_send_response({"success": true, "freeze": freeze})
+
+func _cmd_get_rigid_body_2d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RigidBody2D:
+		_send_response({"error": "RigidBody2D not found: " + node_path})
+		return
+	var rb := node as RigidBody2D
+	_send_response({"success": true, "mass": rb.mass, "gravity_scale": rb.gravity_scale, "freeze": rb.freeze, "linear_velocity": {"x": rb.linear_velocity.x, "y": rb.linear_velocity.y}, "angular_velocity": rb.angular_velocity})
+
+func _cmd_set_character_body_2d_velocity(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CharacterBody2D:
+		_send_response({"error": "CharacterBody2D not found: " + node_path})
+		return
+	(node as CharacterBody2D).velocity = Vector2(x, y)
+	_send_response({"success": true, "velocity": {"x": x, "y": y}})
+
+func _cmd_get_character_body_3d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CharacterBody3D:
+		_send_response({"error": "CharacterBody3D not found: " + node_path})
+		return
+	var cb := node as CharacterBody3D
+	_send_response({"success": true, "velocity": {"x": cb.velocity.x, "y": cb.velocity.y, "z": cb.velocity.z}, "is_on_floor": cb.is_on_floor(), "is_on_wall": cb.is_on_wall(), "is_on_ceiling": cb.is_on_ceiling()})
+
+func _cmd_set_rigid_body_3d_mass(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var mass: float = params.get("mass", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RigidBody3D:
+		_send_response({"error": "RigidBody3D not found: " + node_path})
+		return
+	(node as RigidBody3D).mass = mass
+	_send_response({"success": true, "mass": mass})
+
+func _cmd_apply_central_impulse_3d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 200.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RigidBody3D:
+		_send_response({"error": "RigidBody3D not found: " + node_path})
+		return
+	(node as RigidBody3D).apply_central_impulse(Vector3(x, y, z))
+	_send_response({"success": true, "impulse": {"x": x, "y": y, "z": z}})
+
+func _cmd_set_rigid_body_3d_gravity_scale(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var gravity_scale: float = params.get("gravity_scale", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RigidBody3D:
+		_send_response({"error": "RigidBody3D not found: " + node_path})
+		return
+	(node as RigidBody3D).gravity_scale = gravity_scale
+	_send_response({"success": true, "gravity_scale": gravity_scale})
+
+func _cmd_set_rigid_body_3d_freeze(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var freeze: bool = params.get("freeze", false)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RigidBody3D:
+		_send_response({"error": "RigidBody3D not found: " + node_path})
+		return
+	(node as RigidBody3D).freeze = freeze
+	_send_response({"success": true, "freeze": freeze})
+
+func _cmd_get_rigid_body_3d_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RigidBody3D:
+		_send_response({"error": "RigidBody3D not found: " + node_path})
+		return
+	var rb := node as RigidBody3D
+	_send_response({"success": true, "mass": rb.mass, "gravity_scale": rb.gravity_scale, "freeze": rb.freeze, "linear_velocity": {"x": rb.linear_velocity.x, "y": rb.linear_velocity.y, "z": rb.linear_velocity.z}, "angular_velocity": {"x": rb.angular_velocity.x, "y": rb.angular_velocity.y, "z": rb.angular_velocity.z}})
+
+func _cmd_set_material_metallic(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var metallic: float = params.get("metallic", 0.0)
+	var surface_index: int = params.get("surface_index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var mat = (node as MeshInstance3D).get_surface_override_material(surface_index)
+	if mat == null:
+		mat = StandardMaterial3D.new()
+		(node as MeshInstance3D).set_surface_override_material(surface_index, mat)
+	if not mat is StandardMaterial3D:
+		_send_response({"error": "Material is not StandardMaterial3D"})
+		return
+	(mat as StandardMaterial3D).metallic = metallic
+	_send_response({"success": true, "metallic": metallic})
+
+func _cmd_set_material_roughness(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var roughness: float = params.get("roughness", 1.0)
+	var surface_index: int = params.get("surface_index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var mat = (node as MeshInstance3D).get_surface_override_material(surface_index)
+	if mat == null:
+		mat = StandardMaterial3D.new()
+		(node as MeshInstance3D).set_surface_override_material(surface_index, mat)
+	if not mat is StandardMaterial3D:
+		_send_response({"error": "Material is not StandardMaterial3D"})
+		return
+	(mat as StandardMaterial3D).roughness = roughness
+	_send_response({"success": true, "roughness": roughness})
+
+func _cmd_set_material_emission(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var r: float = params.get("r", 0.0)
+	var g: float = params.get("g", 0.0)
+	var b: float = params.get("b", 0.0)
+	var energy: float = params.get("energy", 1.0)
+	var surface_index: int = params.get("surface_index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var mat = (node as MeshInstance3D).get_surface_override_material(surface_index)
+	if mat == null:
+		mat = StandardMaterial3D.new()
+		(node as MeshInstance3D).set_surface_override_material(surface_index, mat)
+	if not mat is StandardMaterial3D:
+		_send_response({"error": "Material is not StandardMaterial3D"})
+		return
+	var sm := mat as StandardMaterial3D
+	sm.emission_enabled = true
+	sm.emission = Color(r, g, b)
+	sm.emission_energy_multiplier = energy
+	_send_response({"success": true, "emission": {"r": r, "g": g, "b": b}, "energy": energy})
+
+func _cmd_set_material_alpha_mode(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var alpha_mode_str: String = params.get("alpha_mode", "disabled")
+	var surface_index: int = params.get("surface_index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var mat = (node as MeshInstance3D).get_surface_override_material(surface_index)
+	if mat == null or not mat is StandardMaterial3D:
+		_send_response({"error": "No StandardMaterial3D on surface " + str(surface_index)})
+		return
+	var mode: BaseMaterial3D.Transparency
+	match alpha_mode_str:
+		"disabled": mode = BaseMaterial3D.TRANSPARENCY_DISABLED
+		"alpha": mode = BaseMaterial3D.TRANSPARENCY_ALPHA
+		"scissor": mode = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+		"hash": mode = BaseMaterial3D.TRANSPARENCY_ALPHA_HASH
+		_: mode = BaseMaterial3D.TRANSPARENCY_DISABLED
+	(mat as StandardMaterial3D).transparency = mode
+	_send_response({"success": true, "alpha_mode": alpha_mode_str})
+
+func _cmd_get_material_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var surface_index: int = params.get("surface_index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var mat = (node as MeshInstance3D).get_surface_override_material(surface_index)
+	if mat == null and (node as MeshInstance3D).mesh != null:
+		mat = (node as MeshInstance3D).mesh.surface_get_material(surface_index)
+	if mat == null:
+		_send_response({"success": true, "material": null, "type": "none"})
+		return
+	if mat is StandardMaterial3D:
+		var sm := mat as StandardMaterial3D
+		var c = sm.albedo_color
+		_send_response({"success": true, "type": "StandardMaterial3D", "albedo": {"r": c.r, "g": c.g, "b": c.b, "a": c.a}, "metallic": sm.metallic, "roughness": sm.roughness, "emission_enabled": sm.emission_enabled})
+	else:
+		_send_response({"success": true, "type": mat.get_class()})
+
+func _cmd_set_material_cull_mode(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var cull_mode_str: String = params.get("cull_mode", "back")
+	var surface_index: int = params.get("surface_index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var mat = (node as MeshInstance3D).get_surface_override_material(surface_index)
+	if mat == null or not mat is StandardMaterial3D:
+		_send_response({"error": "No StandardMaterial3D on surface"})
+		return
+	var mode: BaseMaterial3D.CullMode
+	match cull_mode_str:
+		"back": mode = BaseMaterial3D.CULL_BACK
+		"front": mode = BaseMaterial3D.CULL_FRONT
+		"disabled": mode = BaseMaterial3D.CULL_DISABLED
+		_: mode = BaseMaterial3D.CULL_BACK
+	(mat as StandardMaterial3D).cull_mode = mode
+	_send_response({"success": true, "cull_mode": cull_mode_str})
+
+func _cmd_set_collision_shape_disabled(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var disabled: bool = params.get("disabled", false)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is CollisionShape2D:
+		(node as CollisionShape2D).disabled = disabled
+	elif node is CollisionShape3D:
+		(node as CollisionShape3D).disabled = disabled
+	else:
+		_send_response({"error": "Not a CollisionShape node"})
+		return
+	_send_response({"success": true, "disabled": disabled})
+
+func _cmd_set_circle_shape_radius(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var radius: float = params.get("radius", 10.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CollisionShape2D:
+		_send_response({"error": "CollisionShape2D not found: " + node_path})
+		return
+	var shape = (node as CollisionShape2D).shape
+	if not shape is CircleShape2D:
+		_send_response({"error": "Shape is not CircleShape2D"})
+		return
+	(shape as CircleShape2D).radius = radius
+	_send_response({"success": true, "radius": radius})
+
+func _cmd_set_rect_shape_size(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var width: float = params.get("width", 20.0)
+	var height: float = params.get("height", 20.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CollisionShape2D:
+		_send_response({"error": "CollisionShape2D not found: " + node_path})
+		return
+	var shape = (node as CollisionShape2D).shape
+	if not shape is RectangleShape2D:
+		_send_response({"error": "Shape is not RectangleShape2D"})
+		return
+	(shape as RectangleShape2D).size = Vector2(width, height)
+	_send_response({"success": true, "size": {"width": width, "height": height}})
+
+func _cmd_set_capsule_shape_size(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var radius: float = params.get("radius", 10.0)
+	var height: float = params.get("height", 30.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is CollisionShape2D:
+		var shape = (node as CollisionShape2D).shape
+		if shape is CapsuleShape2D:
+			(shape as CapsuleShape2D).radius = radius
+			(shape as CapsuleShape2D).height = height
+		else:
+			_send_response({"error": "Shape is not CapsuleShape2D"})
+			return
+	elif node is CollisionShape3D:
+		var shape = (node as CollisionShape3D).shape
+		if shape is CapsuleShape3D:
+			(shape as CapsuleShape3D).radius = radius
+			(shape as CapsuleShape3D).height = height
+		else:
+			_send_response({"error": "Shape is not CapsuleShape3D"})
+			return
+	else:
+		_send_response({"error": "Not a CollisionShape node"})
+		return
+	_send_response({"success": true, "radius": radius, "height": height})
+
+func _cmd_set_box_shape_size_3d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 0.5)
+	var y: float = params.get("y", 0.5)
+	var z: float = params.get("z", 0.5)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CollisionShape3D:
+		_send_response({"error": "CollisionShape3D not found: " + node_path})
+		return
+	var shape = (node as CollisionShape3D).shape
+	if not shape is BoxShape3D:
+		_send_response({"error": "Shape is not BoxShape3D"})
+		return
+	(shape as BoxShape3D).size = Vector3(x, y, z)
+	_send_response({"success": true, "size": {"x": x, "y": y, "z": z}})
+
+func _cmd_get_collision_layer_mask(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is CollisionObject2D:
+		var co := node as CollisionObject2D
+		_send_response({"success": true, "collision_layer": co.collision_layer, "collision_mask": co.collision_mask})
+	elif node is CollisionObject3D:
+		var co := node as CollisionObject3D
+		_send_response({"success": true, "collision_layer": co.collision_layer, "collision_mask": co.collision_mask})
+	else:
+		_send_response({"error": "Node is not a CollisionObject"})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()

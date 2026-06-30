@@ -17949,6 +17949,171 @@ class GodotServer {
         description: 'Write a simple minimap display script.',
         inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
       },
+      // Batch 63 tool definitions — Group A: CharacterBody2D / RigidBody2D
+      {
+        name: 'get_character_body_2d_info',
+        description: 'Get velocity and state of a CharacterBody2D.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_rigid_body_2d_mass',
+        description: 'Set mass on a RigidBody2D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, mass: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_rigid_body_2d_gravity_scale',
+        description: 'Set gravity scale on a RigidBody2D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, gravityScale: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'apply_central_impulse_2d',
+        description: 'Apply a central impulse to a RigidBody2D.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, x: { type: 'number' }, y: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_rigid_body_2d_freeze',
+        description: 'Freeze or unfreeze a RigidBody2D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, freeze: { type: 'boolean' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_rigid_body_2d_info',
+        description: 'Get mass, velocity, freeze state of RigidBody2D.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_character_body_2d_velocity',
+        description: 'Set velocity on a CharacterBody2D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, x: { type: 'number' }, y: { type: 'number' } }, required: ['nodePath'] },
+      },
+      // Batch 63 tool definitions — Group B: CharacterBody3D / RigidBody3D
+      {
+        name: 'get_character_body_3d_info',
+        description: 'Get velocity/state of a CharacterBody3D.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_rigid_body_3d_mass',
+        description: 'Set mass on a RigidBody3D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, mass: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'apply_central_impulse_3d',
+        description: 'Apply a central impulse to a RigidBody3D.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, x: { type: 'number' }, y: { type: 'number' }, z: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_rigid_body_3d_gravity_scale',
+        description: 'Set gravity scale on a RigidBody3D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, gravityScale: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_rigid_body_3d_freeze',
+        description: 'Freeze or unfreeze a RigidBody3D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, freeze: { type: 'boolean' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_rigid_body_3d_info',
+        description: 'Get mass, velocity, linear damp of RigidBody3D.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      // Batch 63 tool definitions — Group C: StandardMaterial3D
+      {
+        name: 'set_material_metallic',
+        description: 'Set metallic value on a MeshInstance3D material.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, metallic: { type: 'number' }, surfaceIndex: { type: 'integer' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_material_roughness',
+        description: 'Set roughness value on a MeshInstance3D material.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, roughness: { type: 'number' }, surfaceIndex: { type: 'integer' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_material_emission',
+        description: 'Set emission color on a MeshInstance3D material.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, r: { type: 'number' }, g: { type: 'number' }, b: { type: 'number' }, energy: { type: 'number' }, surfaceIndex: { type: 'integer' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_material_alpha_mode',
+        description: 'Set alpha mode on a MeshInstance3D material.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, alphaMode: { type: 'string', enum: ['disabled', 'alpha', 'scissor', 'hash'] }, surfaceIndex: { type: 'integer' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_material_info',
+        description: 'Get material properties from a MeshInstance3D.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, surfaceIndex: { type: 'integer' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_material_cull_mode',
+        description: 'Set cull mode on a MeshInstance3D material.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, cullMode: { type: 'string', enum: ['back', 'front', 'disabled'] }, surfaceIndex: { type: 'integer' } }, required: ['nodePath'] },
+      },
+      // Batch 63 tool definitions — Group D: CollisionShape manipulation
+      {
+        name: 'set_collision_shape_disabled',
+        description: 'Enable or disable a CollisionShape2D/3D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, disabled: { type: 'boolean' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_circle_shape_radius',
+        description: 'Set radius on a CircleShape2D collision shape.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, radius: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_rect_shape_size',
+        description: 'Set size on a RectangleShape2D collision shape.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, width: { type: 'number' }, height: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_capsule_shape_size',
+        description: 'Set radius/height on a CapsuleShape2D/3D shape.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, radius: { type: 'number' }, height: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_box_shape_size_3d',
+        description: 'Set extents on a BoxShape3D collision shape.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, x: { type: 'number' }, y: { type: 'number' }, z: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_collision_layer_mask',
+        description: 'Get collision layer and mask of a physics body.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      // Batch 63 tool definitions — Group E: GDScript templates
+      {
+        name: 'write_fps_counter_script',
+        description: 'Write a FPS counter HUD label script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_health_bar_script',
+        description: 'Write a health bar UI script for ProgressBar.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_crosshair_script',
+        description: 'Write a 2D crosshair that follows the mouse.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_respawn_system_script',
+        description: 'Write a player respawn system script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, respawnDelay: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_wave_spawner_script',
+        description: 'Write an enemy wave spawner script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, wavesCount: { type: 'integer' }, enemiesPerWave: { type: 'integer' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_day_night_cycle_script',
+        description: 'Write a day/night cycle environment controller.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, dayDuration: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_pathfinding_agent_script',
+        description: 'Write a NavigationAgent2D-based pathfinding script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
       ],
     }));
 
@@ -20712,6 +20877,75 @@ class GodotServer {
           return await this.handleWriteNotificationsUiScript(request.params.arguments);
         case 'write_minimap_script':
           return await this.handleWriteMinimapScript(request.params.arguments);
+        // Batch 63 switch cases — Group A: CharacterBody2D / RigidBody2D
+        case 'get_character_body_2d_info':
+          return await this.handleGetCharacterBody2dInfo(request.params.arguments);
+        case 'set_rigid_body_2d_mass':
+          return await this.handleSetRigidBody2dMass(request.params.arguments);
+        case 'set_rigid_body_2d_gravity_scale':
+          return await this.handleSetRigidBody2dGravityScale(request.params.arguments);
+        case 'apply_central_impulse_2d':
+          return await this.handleApplyCentralImpulse2d(request.params.arguments);
+        case 'set_rigid_body_2d_freeze':
+          return await this.handleSetRigidBody2dFreeze(request.params.arguments);
+        case 'get_rigid_body_2d_info':
+          return await this.handleGetRigidBody2dInfo(request.params.arguments);
+        case 'set_character_body_2d_velocity':
+          return await this.handleSetCharacterBody2dVelocity(request.params.arguments);
+        // Batch 63 switch cases — Group B: CharacterBody3D / RigidBody3D
+        case 'get_character_body_3d_info':
+          return await this.handleGetCharacterBody3dInfo(request.params.arguments);
+        case 'set_rigid_body_3d_mass':
+          return await this.handleSetRigidBody3dMass(request.params.arguments);
+        case 'apply_central_impulse_3d':
+          return await this.handleApplyCentralImpulse3d(request.params.arguments);
+        case 'set_rigid_body_3d_gravity_scale':
+          return await this.handleSetRigidBody3dGravityScale(request.params.arguments);
+        case 'set_rigid_body_3d_freeze':
+          return await this.handleSetRigidBody3dFreeze(request.params.arguments);
+        case 'get_rigid_body_3d_info':
+          return await this.handleGetRigidBody3dInfo(request.params.arguments);
+        // Batch 63 switch cases — Group C: StandardMaterial3D
+        case 'set_material_metallic':
+          return await this.handleSetMaterialMetallic(request.params.arguments);
+        case 'set_material_roughness':
+          return await this.handleSetMaterialRoughness(request.params.arguments);
+        case 'set_material_emission':
+          return await this.handleSetMaterialEmission63(request.params.arguments);
+        case 'set_material_alpha_mode':
+          return await this.handleSetMaterialAlphaMode(request.params.arguments);
+        case 'get_material_info':
+          return await this.handleGetMaterialInfo63(request.params.arguments);
+        case 'set_material_cull_mode':
+          return await this.handleSetMaterialCullMode(request.params.arguments);
+        // Batch 63 switch cases — Group D: CollisionShape manipulation
+        case 'set_collision_shape_disabled':
+          return await this.handleSetCollisionShapeDisabled(request.params.arguments);
+        case 'set_circle_shape_radius':
+          return await this.handleSetCircleShapeRadius(request.params.arguments);
+        case 'set_rect_shape_size':
+          return await this.handleSetRectShapeSize(request.params.arguments);
+        case 'set_capsule_shape_size':
+          return await this.handleSetCapsuleShapeSize(request.params.arguments);
+        case 'set_box_shape_size_3d':
+          return await this.handleSetBoxShapeSize3d(request.params.arguments);
+        case 'get_collision_layer_mask':
+          return await this.handleGetCollisionLayerMask(request.params.arguments);
+        // Batch 63 switch cases — Group E: GDScript templates
+        case 'write_fps_counter_script':
+          return await this.handleWriteFpsCounterScript(request.params.arguments);
+        case 'write_health_bar_script':
+          return await this.handleWriteHealthBarScript(request.params.arguments);
+        case 'write_crosshair_script':
+          return await this.handleWriteCrosshairScript(request.params.arguments);
+        case 'write_respawn_system_script':
+          return await this.handleWriteRespawnSystemScript(request.params.arguments);
+        case 'write_wave_spawner_script':
+          return await this.handleWriteWaveSpawnerScript(request.params.arguments);
+        case 'write_day_night_cycle_script':
+          return await this.handleWriteDayNightCycleScript(request.params.arguments);
+        case 'write_pathfinding_agent_script':
+          return await this.handleWritePathfindingAgentScript(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -38241,6 +38475,455 @@ func set_tracked_node(node: Node2D) -> void:
 func set_zoom(zoom: float) -> void:
 \tzoom_level = zoom
 \tcamera.zoom = Vector2(zoom, zoom)
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  // ── Batch 63 handlers — Group A: CharacterBody2D / RigidBody2D ──────────────
+
+  private async handleGetCharacterBody2dInfo(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_character_body_2d_info', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetRigidBody2dMass(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_rigid_body_2d_mass', args, a => ({ node_path: a.nodePath, mass: a.mass ?? 1.0 }));
+  }
+
+  private async handleSetRigidBody2dGravityScale(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_rigid_body_2d_gravity_scale', args, a => ({ node_path: a.nodePath, gravity_scale: a.gravityScale ?? 1.0 }));
+  }
+
+  private async handleApplyCentralImpulse2d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('apply_central_impulse_2d', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? -200 }));
+  }
+
+  private async handleSetRigidBody2dFreeze(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_rigid_body_2d_freeze', args, a => ({ node_path: a.nodePath, freeze: a.freeze === true }));
+  }
+
+  private async handleGetRigidBody2dInfo(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_rigid_body_2d_info', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetCharacterBody2dVelocity(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_character_body_2d_velocity', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0 }));
+  }
+
+  // ── Batch 63 handlers — Group B: CharacterBody3D / RigidBody3D ──────────────
+
+  private async handleGetCharacterBody3dInfo(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_character_body_3d_info', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetRigidBody3dMass(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_rigid_body_3d_mass', args, a => ({ node_path: a.nodePath, mass: a.mass ?? 1.0 }));
+  }
+
+  private async handleApplyCentralImpulse3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('apply_central_impulse_3d', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 200, z: a.z ?? 0 }));
+  }
+
+  private async handleSetRigidBody3dGravityScale(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_rigid_body_3d_gravity_scale', args, a => ({ node_path: a.nodePath, gravity_scale: a.gravityScale ?? 1.0 }));
+  }
+
+  private async handleSetRigidBody3dFreeze(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_rigid_body_3d_freeze', args, a => ({ node_path: a.nodePath, freeze: a.freeze === true }));
+  }
+
+  private async handleGetRigidBody3dInfo(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_rigid_body_3d_info', args, a => ({ node_path: a.nodePath }));
+  }
+
+  // ── Batch 63 handlers — Group C: StandardMaterial3D ─────────────────────────
+
+  private async handleSetMaterialAlbedoColor63(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_material_albedo_color', args, a => ({
+      node_path: a.nodePath, r: a.r ?? 1.0, g: a.g ?? 1.0, b: a.b ?? 1.0, a: a.a ?? 1.0, surface_index: a.surfaceIndex ?? 0,
+    }));
+  }
+
+  private async handleSetMaterialMetallic(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_material_metallic', args, a => ({
+      node_path: a.nodePath, metallic: a.metallic ?? 0.0, surface_index: a.surfaceIndex ?? 0,
+    }));
+  }
+
+  private async handleSetMaterialRoughness(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_material_roughness', args, a => ({
+      node_path: a.nodePath, roughness: a.roughness ?? 1.0, surface_index: a.surfaceIndex ?? 0,
+    }));
+  }
+
+  private async handleSetMaterialEmission63(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_material_emission', args, a => ({
+      node_path: a.nodePath, r: a.r ?? 0.0, g: a.g ?? 0.0, b: a.b ?? 0.0, energy: a.energy ?? 1.0, surface_index: a.surfaceIndex ?? 0,
+    }));
+  }
+
+  private async handleSetMaterialAlphaMode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_material_alpha_mode', args, a => ({
+      node_path: a.nodePath, alpha_mode: a.alphaMode ?? 'disabled', surface_index: a.surfaceIndex ?? 0,
+    }));
+  }
+
+  private async handleGetMaterialInfo63(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_material_info', args, a => ({ node_path: a.nodePath, surface_index: a.surfaceIndex ?? 0 }));
+  }
+
+  private async handleSetMaterialCullMode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_material_cull_mode', args, a => ({
+      node_path: a.nodePath, cull_mode: a.cullMode ?? 'back', surface_index: a.surfaceIndex ?? 0,
+    }));
+  }
+
+  // ── Batch 63 handlers — Group D: CollisionShape manipulation ─────────────────
+
+  private async handleGetCollisionShapeInfo63(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_collision_shape_info', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetCollisionShapeDisabled(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_collision_shape_disabled', args, a => ({ node_path: a.nodePath, disabled: a.disabled === true }));
+  }
+
+  private async handleSetCircleShapeRadius(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_circle_shape_radius', args, a => ({ node_path: a.nodePath, radius: a.radius ?? 10.0 }));
+  }
+
+  private async handleSetRectShapeSize(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_rect_shape_size', args, a => ({ node_path: a.nodePath, width: a.width ?? 20, height: a.height ?? 20 }));
+  }
+
+  private async handleSetCapsuleShapeSize(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_capsule_shape_size', args, a => ({ node_path: a.nodePath, radius: a.radius ?? 10, height: a.height ?? 30 }));
+  }
+
+  private async handleSetBoxShapeSize3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_box_shape_size_3d', args, a => ({ node_path: a.nodePath, x: a.x ?? 0.5, y: a.y ?? 0.5, z: a.z ?? 0.5 }));
+  }
+
+  private async handleGetCollisionLayerMask(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_collision_layer_mask', args, a => ({ node_path: a.nodePath }));
+  }
+
+  // ── Batch 63 handlers — Group E: GDScript templates ─────────────────────────
+
+  private async handleWriteFpsCounterScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Label
+## FpsCounter — updates every frame with the current FPS.
+
+func _process(_delta: float) -> void:
+\ttext = "FPS: %d" % Engine.get_frames_per_second()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteHealthBarScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends ProgressBar
+## HealthBar — tracks current health and emits health_depleted when empty.
+
+signal health_depleted
+
+@export var max_health: float = 100.0
+var current_health: float = max_health
+
+func _ready() -> void:
+\tmax_value = max_health
+\tvalue = current_health
+
+func set_health(amount: float) -> void:
+\tcurrent_health = clampf(amount, 0, max_health)
+\tvalue = current_health
+\tif current_health <= 0:
+\t\thealth_depleted.emit()
+
+func heal(amount: float) -> void:
+\tset_health(current_health + amount)
+
+func damage(amount: float) -> void:
+\tset_health(current_health - amount)
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteCrosshairScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node2D
+## Crosshair — follows the mouse cursor each frame.
+
+func _process(_delta: float) -> void:
+\tglobal_position = get_viewport().get_mouse_position()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteRespawnSystemScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const delay: number = args.respawnDelay ?? 3.0;
+    const content = `extends Node
+## RespawnSystem — handles player death and delayed respawning.
+
+signal player_died
+signal player_respawned
+
+@export var respawn_delay: float = ${delay}
+@export var spawn_point: NodePath = ""
+
+var _player: Node = null
+
+func register_player(player: Node) -> void:
+\t_player = player
+
+func trigger_death() -> void:
+\tif _player:
+\t\t_player.hide()
+\t\t_player.set_process(false)
+\t\t_player.set_physics_process(false)
+\tplayer_died.emit()
+\tget_tree().create_timer(respawn_delay).timeout.connect(_do_respawn)
+
+func _do_respawn() -> void:
+\tif _player:
+\t\tif spawn_point:
+\t\t\tvar sp = get_node_or_null(spawn_point)
+\t\t\tif sp:
+\t\t\t\t_player.global_position = sp.global_position
+\t\t_player.show()
+\t\t_player.set_process(true)
+\t\t_player.set_physics_process(true)
+\tplayer_respawned.emit()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteWaveSpawnerScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const waves: number = args.wavesCount ?? 5;
+    const perWave: number = args.enemiesPerWave ?? 5;
+    const content = `extends Node
+## WaveSpawner — spawns enemy waves with configurable count and delay.
+
+signal wave_started(wave_number: int)
+signal wave_completed(wave_number: int)
+signal all_waves_completed
+
+@export var enemy_scene: PackedScene
+@export var spawn_points: Array[NodePath] = []
+@export var total_waves: int = ${waves}
+@export var enemies_per_wave: int = ${perWave}
+@export var time_between_waves: float = 5.0
+
+var current_wave: int = 0
+var _alive_enemies: int = 0
+
+func start_waves() -> void:
+\tcurrent_wave = 0
+\t_spawn_next_wave()
+
+func _spawn_next_wave() -> void:
+\tif current_wave >= total_waves:
+\t\tall_waves_completed.emit()
+\t\treturn
+\tcurrent_wave += 1
+\twave_started.emit(current_wave)
+\t_alive_enemies = enemies_per_wave
+\tfor i in enemies_per_wave:
+\t\tvar sp_path = spawn_points[i % spawn_points.size()] if spawn_points.size() > 0 else ""
+\t\tvar pos = Vector2.ZERO
+\t\tif sp_path:
+\t\t\tvar sp = get_node_or_null(sp_path)
+\t\t\tif sp: pos = sp.global_position
+\t\tvar enemy = enemy_scene.instantiate()
+\t\tget_parent().add_child(enemy)
+\t\tif enemy.has_method("set_global_position"):
+\t\t\tenemy.global_position = pos
+\t\tif enemy.has_signal("died"):
+\t\t\tenemy.died.connect(_on_enemy_died)
+
+func _on_enemy_died() -> void:
+\t_alive_enemies -= 1
+\tif _alive_enemies <= 0:
+\t\twave_completed.emit(current_wave)
+\t\tget_tree().create_timer(time_between_waves).timeout.connect(_spawn_next_wave)
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteDayNightCycleScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const duration: number = args.dayDuration ?? 120;
+    const content = `extends WorldEnvironment
+## DayNightCycle — smoothly rotates a DirectionalLight3D to simulate day/night.
+## Attach to a WorldEnvironment node that has a sibling DirectionalLight3D.
+
+signal time_of_day_changed(normalized_time: float)
+
+@export var day_duration: float = ${duration}
+@export var sun_path: NodePath = ""
+
+var _time: float = 0.0
+var _sun: DirectionalLight3D = null
+
+func _ready() -> void:
+\tif sun_path:
+\t\t_sun = get_node_or_null(sun_path)
+
+func _process(delta: float) -> void:
+\t_time = fmod(_time + delta, day_duration)
+\tvar t: float = _time / day_duration  # 0..1
+\ttime_of_day_changed.emit(t)
+\t_update_sun(t)
+
+func _update_sun(t: float) -> void:
+\tif not _sun:
+\t\treturn
+\t# Rotate sun: noon at t=0.5, midnight at t=0/1
+\tvar angle_deg: float = (t * 360.0) - 90.0
+\t_sun.rotation_degrees.x = angle_deg
+\t# Dim light at night (t < 0.25 or t > 0.75)
+\tvar brightness: float = clampf(sin(t * PI), 0.0, 1.0)
+\t_sun.light_energy = brightness
+
+func get_normalized_time() -> float:
+\treturn _time / day_duration
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWritePathfindingAgentScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends CharacterBody2D
+## PathfindingAgent — moves toward a target using NavigationAgent2D.
+## Requires a NavigationAgent2D child node named NavigationAgent2D.
+
+@export var speed: float = 100.0
+@export var target_position: Vector2 = Vector2.ZERO
+
+@onready var nav_agent: NavigationAgent2D = $NavigationAgent2D
+
+func _ready() -> void:
+\tnav_agent.velocity_computed.connect(_on_velocity_computed)
+
+func set_target(pos: Vector2) -> void:
+\ttarget_position = pos
+\tnav_agent.target_position = pos
+
+func _physics_process(_delta: float) -> void:
+\tif nav_agent.is_navigation_finished():
+\t\treturn
+\tvar next = nav_agent.get_next_path_position()
+\tvar dir = (next - global_position).normalized()
+\tnav_agent.set_velocity(dir * speed)
+
+func _on_velocity_computed(safe_velocity: Vector2) -> void:
+\tvelocity = safe_velocity
+\tmove_and_slide()
 `;
     try {
       const dir = require('path').dirname(absPath);
