@@ -1393,6 +1393,52 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_physics_body_collision_mask(params)
 		"enable_physics_body":
 			_cmd_enable_physics_body(params)
+		"set_physics_body_3d_collision_layer":
+			_cmd_set_physics_body_3d_collision_layer(params)
+		"get_physics_body_3d_collision_layer":
+			_cmd_get_physics_body_3d_collision_layer(params)
+		"set_physics_body_3d_collision_mask":
+			_cmd_set_physics_body_3d_collision_mask(params)
+		"get_physics_body_3d_collision_mask":
+			_cmd_get_physics_body_3d_collision_mask(params)
+		"set_rigid_body_3d_sleeping":
+			_cmd_set_rigid_body_3d_sleeping(params)
+		"get_rigid_body_3d_state":
+			_cmd_get_rigid_body_3d_state(params)
+		"set_character_body_3d_velocity":
+			_cmd_set_character_body_3d_velocity(params)
+		"get_character_body_3d_velocity":
+			_cmd_get_character_body_3d_velocity(params)
+		"is_character_body_3d_on_floor":
+			_cmd_is_character_body_3d_on_floor(params)
+		"apply_impulse_3d":
+			_cmd_apply_impulse_3d(params)
+		"get_environment_info":
+			_cmd_get_environment_info(params)
+		"set_environment_brightness":
+			_cmd_set_environment_brightness(params)
+		"set_directional_light_energy":
+			_cmd_set_directional_light_energy(params)
+		"set_directional_light_color":
+			_cmd_set_directional_light_color(params)
+		"set_omni_light_energy":
+			_cmd_set_omni_light_energy(params)
+		"set_omni_light_range":
+			_cmd_set_omni_light_range(params)
+		"set_spot_light_energy":
+			_cmd_set_spot_light_energy(params)
+		"get_3d_camera_info":
+			_cmd_get_3d_camera_info(params)
+		"set_camera_3d_fov":
+			_cmd_set_camera_3d_fov(params)
+		"set_camera_3d_near":
+			_cmd_set_camera_3d_near(params)
+		"set_camera_3d_far":
+			_cmd_set_camera_3d_far(params)
+		"make_camera_current":
+			_cmd_make_camera_current(params)
+		"get_visible_rect":
+			_cmd_get_visible_rect(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -11885,6 +11931,264 @@ func _cmd_enable_physics_body(params: Dictionary) -> void:
 		_send_response({"error": "Not a physics body: " + node_path})
 		return
 	_send_response({"success": true, "enabled": enabled})
+
+
+func _cmd_set_physics_body_3d_collision_layer(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var layer: int = params.get("layer", 1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CollisionObject3D:
+		_send_response({"error": "CollisionObject3D not found: " + node_path})
+		return
+	(node as CollisionObject3D).collision_layer = layer
+	_send_response({"success": true, "collision_layer": layer})
+
+
+func _cmd_get_physics_body_3d_collision_layer(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CollisionObject3D:
+		_send_response({"error": "CollisionObject3D not found: " + node_path})
+		return
+	_send_response({"success": true, "collision_layer": (node as CollisionObject3D).collision_layer})
+
+
+func _cmd_set_physics_body_3d_collision_mask(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var mask: int = params.get("mask", 1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CollisionObject3D:
+		_send_response({"error": "CollisionObject3D not found: " + node_path})
+		return
+	(node as CollisionObject3D).collision_mask = mask
+	_send_response({"success": true, "collision_mask": mask})
+
+
+func _cmd_get_physics_body_3d_collision_mask(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CollisionObject3D:
+		_send_response({"error": "CollisionObject3D not found: " + node_path})
+		return
+	_send_response({"success": true, "collision_mask": (node as CollisionObject3D).collision_mask})
+
+
+func _cmd_set_rigid_body_3d_sleeping(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var sleeping: bool = params.get("sleeping", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RigidBody3D:
+		_send_response({"error": "RigidBody3D not found: " + node_path})
+		return
+	(node as RigidBody3D).sleeping = sleeping
+	_send_response({"success": true, "sleeping": sleeping})
+
+
+func _cmd_get_rigid_body_3d_state(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RigidBody3D:
+		_send_response({"error": "RigidBody3D not found: " + node_path})
+		return
+	var rb := node as RigidBody3D
+	_send_response({"success": true, "position": {"x": rb.position.x, "y": rb.position.y, "z": rb.position.z}, "linear_velocity": {"x": rb.linear_velocity.x, "y": rb.linear_velocity.y, "z": rb.linear_velocity.z}, "angular_velocity": {"x": rb.angular_velocity.x, "y": rb.angular_velocity.y, "z": rb.angular_velocity.z}, "sleeping": rb.sleeping, "mass": rb.mass})
+
+
+func _cmd_set_character_body_3d_velocity(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var vx: float = params.get("vx", 0.0)
+	var vy: float = params.get("vy", 0.0)
+	var vz: float = params.get("vz", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CharacterBody3D:
+		_send_response({"error": "CharacterBody3D not found: " + node_path})
+		return
+	(node as CharacterBody3D).velocity = Vector3(vx, vy, vz)
+	_send_response({"success": true, "velocity": {"x": vx, "y": vy, "z": vz}})
+
+
+func _cmd_get_character_body_3d_velocity(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CharacterBody3D:
+		_send_response({"error": "CharacterBody3D not found: " + node_path})
+		return
+	var v: Vector3 = (node as CharacterBody3D).velocity
+	_send_response({"success": true, "velocity": {"x": v.x, "y": v.y, "z": v.z}})
+
+
+func _cmd_is_character_body_3d_on_floor(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CharacterBody3D:
+		_send_response({"error": "CharacterBody3D not found: " + node_path})
+		return
+	_send_response({"success": true, "on_floor": (node as CharacterBody3D).is_on_floor(), "on_wall": (node as CharacterBody3D).is_on_wall(), "on_ceiling": (node as CharacterBody3D).is_on_ceiling()})
+
+
+func _cmd_apply_impulse_3d(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var ix: float = params.get("ix", 0.0)
+	var iy: float = params.get("iy", 0.0)
+	var iz: float = params.get("iz", 0.0)
+	var px: float = params.get("px", 0.0)
+	var py: float = params.get("py", 0.0)
+	var pz: float = params.get("pz", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RigidBody3D:
+		_send_response({"error": "RigidBody3D not found: " + node_path})
+		return
+	(node as RigidBody3D).apply_impulse(Vector3(ix, iy, iz), Vector3(px, py, pz))
+	_send_response({"success": true, "impulse": {"x": ix, "y": iy, "z": iz}})
+
+
+func _cmd_get_environment_info(_params: Dictionary) -> void:
+	var env_node = get_tree().root.find_child("WorldEnvironment", true, false)
+	if env_node == null:
+		_send_response({"error": "No WorldEnvironment found in scene"})
+		return
+	var env = (env_node as WorldEnvironment).environment
+	if env == null:
+		_send_response({"error": "WorldEnvironment has no Environment resource"})
+		return
+	_send_response({"success": true, "fog_enabled": env.fog_enabled, "glow_enabled": env.glow_enabled, "background_mode": env.background_mode, "ambient_light_energy": env.ambient_light_energy})
+
+
+func _cmd_set_environment_brightness(params: Dictionary) -> void:
+	var exposure: float = params.get("exposure", 1.0)
+	var brightness: float = params.get("brightness", 1.0)
+	var env_node = get_tree().root.find_child("WorldEnvironment", true, false)
+	if env_node == null:
+		_send_response({"error": "No WorldEnvironment found"})
+		return
+	var env = (env_node as WorldEnvironment).environment
+	if env == null:
+		_send_response({"error": "No Environment resource"})
+		return
+	env.tonemap_exposure = exposure
+	env.tonemap_white = brightness
+	_send_response({"success": true, "exposure": exposure, "brightness": brightness})
+
+
+func _cmd_set_directional_light_energy(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var energy: float = params.get("energy", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is DirectionalLight3D:
+		_send_response({"error": "DirectionalLight3D not found: " + node_path})
+		return
+	(node as DirectionalLight3D).light_energy = energy
+	_send_response({"success": true, "energy": energy})
+
+
+func _cmd_set_directional_light_color(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var r: float = params.get("r", 1.0)
+	var g: float = params.get("g", 1.0)
+	var b: float = params.get("b", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is DirectionalLight3D:
+		_send_response({"error": "DirectionalLight3D not found: " + node_path})
+		return
+	(node as DirectionalLight3D).light_color = Color(r, g, b)
+	_send_response({"success": true, "color": {"r": r, "g": g, "b": b}})
+
+
+func _cmd_set_omni_light_energy(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var energy: float = params.get("energy", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is OmniLight3D:
+		_send_response({"error": "OmniLight3D not found: " + node_path})
+		return
+	(node as OmniLight3D).light_energy = energy
+	_send_response({"success": true, "energy": energy})
+
+
+func _cmd_set_omni_light_range(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var range_val: float = params.get("range", 10.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is OmniLight3D:
+		_send_response({"error": "OmniLight3D not found: " + node_path})
+		return
+	(node as OmniLight3D).omni_range = range_val
+	_send_response({"success": true, "range": range_val})
+
+
+func _cmd_set_spot_light_energy(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var energy: float = params.get("energy", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is SpotLight3D:
+		_send_response({"error": "SpotLight3D not found: " + node_path})
+		return
+	(node as SpotLight3D).light_energy = energy
+	_send_response({"success": true, "energy": energy})
+
+
+func _cmd_get_3d_camera_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Camera3D:
+		_send_response({"error": "Camera3D not found: " + node_path})
+		return
+	var cam := node as Camera3D
+	_send_response({"success": true, "fov": cam.fov, "near": cam.near, "far": cam.far, "projection": cam.projection, "current": cam.current})
+
+
+func _cmd_set_camera_3d_fov(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var fov: float = params.get("fov", 75.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Camera3D:
+		_send_response({"error": "Camera3D not found: " + node_path})
+		return
+	(node as Camera3D).fov = fov
+	_send_response({"success": true, "fov": fov})
+
+
+func _cmd_set_camera_3d_near(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var near: float = params.get("near", 0.05)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Camera3D:
+		_send_response({"error": "Camera3D not found: " + node_path})
+		return
+	(node as Camera3D).near = near
+	_send_response({"success": true, "near": near})
+
+
+func _cmd_set_camera_3d_far(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var far: float = params.get("far", 4000.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Camera3D:
+		_send_response({"error": "Camera3D not found: " + node_path})
+		return
+	(node as Camera3D).far = far
+	_send_response({"success": true, "far": far})
+
+
+func _cmd_make_camera_current(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is Camera3D:
+		(node as Camera3D).make_current()
+		_send_response({"success": true, "camera_path": node_path})
+	elif node is Camera2D:
+		(node as Camera2D).make_current()
+		_send_response({"success": true, "camera_path": node_path})
+	else:
+		_send_response({"error": "Not a camera node: " + node_path})
+
+
+func _cmd_get_visible_rect(_params: Dictionary) -> void:
+	var rect: Rect2 = get_viewport().get_visible_rect()
+	_send_response({"success": true, "x": rect.position.x, "y": rect.position.y, "width": rect.size.x, "height": rect.size.y})
 
 
 func _exit_tree() -> void:

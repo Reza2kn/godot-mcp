@@ -15618,6 +15618,364 @@ class GodotServer {
             required: ['nodePath'],
           },
         },
+        // Batch 51 — Group A: 3D physics runtime tools
+        {
+          name: 'set_physics_body_3d_collision_layer',
+          description: 'Set collision layer of a 3D physics body.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              layer: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_physics_body_3d_collision_layer',
+          description: 'Get collision layer of a 3D physics body.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_physics_body_3d_collision_mask',
+          description: 'Set collision mask of a 3D physics body.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              mask: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_physics_body_3d_collision_mask',
+          description: 'Get collision mask of a 3D physics body.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_rigid_body_3d_sleeping',
+          description: 'Set sleeping state of a RigidBody3D node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              sleeping: { type: 'boolean' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_rigid_body_3d_state',
+          description: 'Get full physics state of a RigidBody3D node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_character_body_3d_velocity',
+          description: 'Set velocity of a CharacterBody3D node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              vx: { type: 'number' },
+              vy: { type: 'number' },
+              vz: { type: 'number' },
+            },
+          },
+        },
+        {
+          name: 'get_character_body_3d_velocity',
+          description: 'Get velocity of a CharacterBody3D node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'is_character_body_3d_on_floor',
+          description: 'Check if CharacterBody3D is on the floor.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'apply_impulse_3d',
+          description: 'Apply a 3D impulse to a RigidBody3D node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              ix: { type: 'number' },
+              iy: { type: 'number' },
+              iz: { type: 'number' },
+              px: { type: 'number' },
+              py: { type: 'number' },
+              pz: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        // Batch 51 — Group B: Environment & rendering tools
+        {
+          name: 'get_environment_info',
+          description: 'Get WorldEnvironment settings from running scene.',
+          inputSchema: {
+            type: 'object',
+            properties: {},
+          },
+        },
+        {
+          name: 'set_environment_brightness',
+          description: 'Set WorldEnvironment tonemap exposure/brightness.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              exposure: { type: 'number' },
+              brightness: { type: 'number' },
+            },
+          },
+        },
+        {
+          name: 'set_directional_light_energy',
+          description: 'Set energy of a DirectionalLight3D node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              energy: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_directional_light_color',
+          description: 'Set color of a DirectionalLight3D node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              r: { type: 'number' },
+              g: { type: 'number' },
+              b: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_omni_light_energy',
+          description: 'Set energy of an OmniLight3D node at runtime.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              energy: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_omni_light_range',
+          description: 'Set range of an OmniLight3D node at runtime.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              range: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_spot_light_energy',
+          description: 'Set energy of a SpotLight3D node at runtime.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              energy: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        // Batch 51 — Group C: Diagnostic / validation tools
+        {
+          name: 'validate_scene_physics',
+          description: 'Check if physics bodies in scene have collision shapes.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'find_node_by_type_in_scene',
+          description: 'Find first node of a given type in scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeType: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath', 'nodeType'],
+          },
+        },
+        {
+          name: 'list_nodes_without_scripts',
+          description: 'List nodes in scene that have no script attached.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'get_scene_root_type',
+          description: 'Get the root node class of a scene file.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'list_scene_signals',
+          description: 'List all signals defined in scripts within a scene.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        {
+          name: 'check_node_has_children',
+          description: 'Check if a node in a scene has child nodes.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+              nodeName: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath', 'nodeName'],
+          },
+        },
+        {
+          name: 'get_scene_resource_dependencies',
+          description: 'List resources (.tres files) used in a scene.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              projectPath: { type: 'string' },
+              scenePath: { type: 'string' },
+            },
+            required: ['projectPath', 'scenePath'],
+          },
+        },
+        // Batch 51 — Group D: Viewport & Camera 3D runtime tools
+        {
+          name: 'get_3d_camera_info',
+          description: 'Get Camera3D properties: FOV, near, far, projection.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_camera_3d_fov',
+          description: 'Set field of view of a Camera3D node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              fov: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_camera_3d_near',
+          description: 'Set near clip distance of a Camera3D node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              near: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'set_camera_3d_far',
+          description: 'Set far clip distance of a Camera3D node.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+              far: { type: 'number' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'make_camera_current',
+          description: 'Set a Camera2D or Camera3D as the active camera.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              nodePath: { type: 'string' },
+            },
+            required: ['nodePath'],
+          },
+        },
+        {
+          name: 'get_visible_rect',
+          description: 'Get the visible rectangle of the 2D viewport.',
+          inputSchema: {
+            type: 'object',
+            properties: {},
+          },
+        },
       ],
     }));
 
@@ -17695,6 +18053,70 @@ class GodotServer {
           return await this.handleGetBeginnerGuide(request.params.arguments);
         case 'get_workflow':
           return await this.handleGetWorkflow(request.params.arguments);
+        // Batch 51 switch cases — Group A: 3D physics runtime tools
+        case 'set_physics_body_3d_collision_layer':
+          return await this.handleSetPhysicsBody3dCollisionLayer(request.params.arguments);
+        case 'get_physics_body_3d_collision_layer':
+          return await this.handleGetPhysicsBody3dCollisionLayer(request.params.arguments);
+        case 'set_physics_body_3d_collision_mask':
+          return await this.handleSetPhysicsBody3dCollisionMask(request.params.arguments);
+        case 'get_physics_body_3d_collision_mask':
+          return await this.handleGetPhysicsBody3dCollisionMask(request.params.arguments);
+        case 'set_rigid_body_3d_sleeping':
+          return await this.handleSetRigidBody3dSleeping(request.params.arguments);
+        case 'get_rigid_body_3d_state':
+          return await this.handleGetRigidBody3dState(request.params.arguments);
+        case 'set_character_body_3d_velocity':
+          return await this.handleSetCharacterBody3dVelocity(request.params.arguments);
+        case 'get_character_body_3d_velocity':
+          return await this.handleGetCharacterBody3dVelocity(request.params.arguments);
+        case 'is_character_body_3d_on_floor':
+          return await this.handleIsCharacterBody3dOnFloor(request.params.arguments);
+        case 'apply_impulse_3d':
+          return await this.handleApplyImpulse3d(request.params.arguments);
+        // Batch 51 switch cases — Group B: Environment & rendering tools
+        case 'get_environment_info':
+          return await this.handleGetEnvironmentInfo(request.params.arguments);
+        case 'set_environment_brightness':
+          return await this.handleSetEnvironmentBrightness(request.params.arguments);
+        case 'set_directional_light_energy':
+          return await this.handleSetDirectionalLightEnergy(request.params.arguments);
+        case 'set_directional_light_color':
+          return await this.handleSetDirectionalLightColor(request.params.arguments);
+        case 'set_omni_light_energy':
+          return await this.handleSetOmniLightEnergy(request.params.arguments);
+        case 'set_omni_light_range':
+          return await this.handleSetOmniLightRange(request.params.arguments);
+        case 'set_spot_light_energy':
+          return await this.handleSetSpotLightEnergy(request.params.arguments);
+        // Batch 51 switch cases — Group C: Diagnostic / validation tools
+        case 'validate_scene_physics':
+          return await this.handleValidateScenePhysics(request.params.arguments);
+        case 'find_node_by_type_in_scene':
+          return await this.handleFindNodeByTypeInScene(request.params.arguments);
+        case 'list_nodes_without_scripts':
+          return await this.handleListNodesWithoutScripts(request.params.arguments);
+        case 'get_scene_root_type':
+          return await this.handleGetSceneRootType(request.params.arguments);
+        case 'list_scene_signals':
+          return await this.handleListSceneSignals(request.params.arguments);
+        case 'check_node_has_children':
+          return await this.handleCheckNodeHasChildren(request.params.arguments);
+        case 'get_scene_resource_dependencies':
+          return await this.handleGetSceneResourceDependencies(request.params.arguments);
+        // Batch 51 switch cases — Group D: Viewport & Camera 3D runtime tools
+        case 'get_3d_camera_info':
+          return await this.handleGet3dCameraInfo(request.params.arguments);
+        case 'set_camera_3d_fov':
+          return await this.handleSetCamera3dFov(request.params.arguments);
+        case 'set_camera_3d_near':
+          return await this.handleSetCamera3dNear(request.params.arguments);
+        case 'set_camera_3d_far':
+          return await this.handleSetCamera3dFar(request.params.arguments);
+        case 'make_camera_current':
+          return await this.handleMakeCameraCurrent(request.params.arguments);
+        case 'get_visible_rect':
+          return await this.handleGetVisibleRect(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -31441,6 +31863,164 @@ class GodotServer {
   private async handleEnablePhysicsBody(args: any) {
     args = normalizeParameters(args || {});
     return this.gameCommand('enable_physics_body', args, a => ({ node_path: a.nodePath, enabled: a.enabled ?? true }));
+  }
+
+  // ── Batch 51 handlers — Group A: 3D physics runtime tools ───────────────────
+
+  private async handleSetPhysicsBody3dCollisionLayer(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_physics_body_3d_collision_layer', args, a => ({ node_path: a.nodePath, layer: a.layer ?? 1 }));
+  }
+
+  private async handleGetPhysicsBody3dCollisionLayer(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_physics_body_3d_collision_layer', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetPhysicsBody3dCollisionMask(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_physics_body_3d_collision_mask', args, a => ({ node_path: a.nodePath, mask: a.mask ?? 1 }));
+  }
+
+  private async handleGetPhysicsBody3dCollisionMask(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_physics_body_3d_collision_mask', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetRigidBody3dSleeping(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_rigid_body_3d_sleeping', args, a => ({ node_path: a.nodePath, sleeping: a.sleeping ?? true }));
+  }
+
+  private async handleGetRigidBody3dState(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_rigid_body_3d_state', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetCharacterBody3dVelocity(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_character_body_3d_velocity', args, a => ({ node_path: a.nodePath, vx: a.vx ?? 0, vy: a.vy ?? 0, vz: a.vz ?? 0 }));
+  }
+
+  private async handleGetCharacterBody3dVelocity(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_character_body_3d_velocity', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleIsCharacterBody3dOnFloor(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('is_character_body_3d_on_floor', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleApplyImpulse3d(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('apply_impulse_3d', args, a => ({ node_path: a.nodePath, ix: a.ix ?? 0, iy: a.iy ?? 0, iz: a.iz ?? 0, px: a.px ?? 0, py: a.py ?? 0, pz: a.pz ?? 0 }));
+  }
+
+  // ── Batch 51 handlers — Group B: Environment & rendering tools ───────────────
+
+  private async handleGetEnvironmentInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_environment_info', args, _a => ({}));
+  }
+
+  private async handleSetEnvironmentBrightness(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_environment_brightness', args, a => ({ exposure: a.exposure ?? 1.0, brightness: a.brightness ?? 1.0 }));
+  }
+
+  private async handleSetDirectionalLightEnergy(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_directional_light_energy', args, a => ({ node_path: a.nodePath, energy: a.energy ?? 1.0 }));
+  }
+
+  private async handleSetDirectionalLightColor(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_directional_light_color', args, a => ({ node_path: a.nodePath, r: a.r ?? 1, g: a.g ?? 1, b: a.b ?? 1 }));
+  }
+
+  private async handleSetOmniLightEnergy(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_omni_light_energy', args, a => ({ node_path: a.nodePath, energy: a.energy ?? 1.0 }));
+  }
+
+  private async handleSetOmniLightRange(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_omni_light_range', args, a => ({ node_path: a.nodePath, range: a.range ?? 10.0 }));
+  }
+
+  private async handleSetSpotLightEnergy(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_spot_light_energy', args, a => ({ node_path: a.nodePath, energy: a.energy ?? 1.0 }));
+  }
+
+  // ── Batch 51 handlers — Group C: Diagnostic / validation tools ──────────────
+
+  private async handleValidateScenePhysics(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('validate_scene_physics', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath } }));
+  }
+
+  private async handleFindNodeByTypeInScene(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('find_node_by_type_in_scene', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_type: a.nodeType ?? '' } }));
+  }
+
+  private async handleListNodesWithoutScripts(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('list_nodes_without_scripts', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath } }));
+  }
+
+  private async handleGetSceneRootType(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('get_scene_root_type', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath } }));
+  }
+
+  private async handleListSceneSignals(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('list_scene_signals', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath } }));
+  }
+
+  private async handleCheckNodeHasChildren(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('check_node_has_children', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName ?? '' } }));
+  }
+
+  private async handleGetSceneResourceDependencies(args: any) {
+    args = normalizeParameters(args || {});
+    return this.headlessOp('get_scene_resource_dependencies', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath } }));
+  }
+
+  // ── Batch 51 handlers — Group D: Viewport & Camera 3D runtime tools ──────────
+
+  private async handleGet3dCameraInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_3d_camera_info', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetCamera3dFov(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_camera_3d_fov', args, a => ({ node_path: a.nodePath, fov: a.fov ?? 75.0 }));
+  }
+
+  private async handleSetCamera3dNear(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_camera_3d_near', args, a => ({ node_path: a.nodePath, near: a.near ?? 0.05 }));
+  }
+
+  private async handleSetCamera3dFar(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_camera_3d_far', args, a => ({ node_path: a.nodePath, far: a.far ?? 4000.0 }));
+  }
+
+  private async handleMakeCameraCurrent(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('make_camera_current', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetVisibleRect(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_visible_rect', args, _a => ({}));
   }
 
   // ── Navigation / Discovery helpers ──────────────────────────────────────────
