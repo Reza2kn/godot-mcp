@@ -17679,6 +17679,151 @@ class GodotServer {
         description: 'Write a 2D sprite outline GDShader file.',
         inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, shaderPath: { type: 'string' } }, required: ['projectPath', 'shaderPath'] },
       },
+      // Batch 61 — Group A: TileMap runtime tools
+      {
+        name: 'get_tilemap_cell_source_id',
+        description: 'Get source ID of a TileMap cell at coords.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, x: { type: 'integer' }, y: { type: 'integer' }, layer: { type: 'integer' } }, required: ['nodePath', 'x', 'y'] },
+      },
+      {
+        name: 'erase_tilemap_cell',
+        description: 'Erase a cell from a TileMap at given coordinates.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, x: { type: 'integer' }, y: { type: 'integer' }, layer: { type: 'integer' } }, required: ['nodePath', 'x', 'y'] },
+      },
+      {
+        name: 'get_tilemap_used_cells',
+        description: 'Get list of used cells in a TileMap layer.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, layer: { type: 'integer' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'map_to_local_tilemap',
+        description: 'Convert TileMap map coords to local position.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, x: { type: 'integer' }, y: { type: 'integer' } }, required: ['nodePath', 'x', 'y'] },
+      },
+      // Batch 61 — Group B: GridMap runtime tools
+      {
+        name: 'get_gridmap_cell_item',
+        description: 'Get the item type at GridMap cell coordinates.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, x: { type: 'integer' }, y: { type: 'integer' }, z: { type: 'integer' } }, required: ['nodePath', 'x', 'y', 'z'] },
+      },
+      {
+        name: 'set_gridmap_cell_item',
+        description: 'Set item at GridMap cell. itemId -1 clears cell.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, x: { type: 'integer' }, y: { type: 'integer' }, z: { type: 'integer' }, itemId: { type: 'integer' }, orientation: { type: 'integer' } }, required: ['nodePath', 'x', 'y', 'z', 'itemId'] },
+      },
+      {
+        name: 'get_gridmap_used_cells',
+        description: 'Get all non-empty cell positions in a GridMap.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'clear_gridmap',
+        description: 'Clear all cells from a GridMap node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_gridmap_cell_size',
+        description: 'Get the cell size of a GridMap.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_gridmap_mesh_library_items',
+        description: 'Get item IDs from GridMap\'s MeshLibrary.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_gridmap_bake_mesh',
+        description: 'Get the baked mesh bounds of a GridMap.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      // Batch 61 — Group C: AStar2D / AStar3D pathfinding tools
+      {
+        name: 'get_astar2d_point_count',
+        description: 'Get the number of points in an AStar2D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'add_astar2d_point',
+        description: 'Add a point to an AStar2D pathfinding graph.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, pointId: { type: 'integer' }, x: { type: 'number' }, y: { type: 'number' }, weightScale: { type: 'number' } }, required: ['nodePath', 'pointId', 'x', 'y'] },
+      },
+      {
+        name: 'connect_astar2d_points',
+        description: 'Connect two points in an AStar2D graph.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, id1: { type: 'integer' }, id2: { type: 'integer' }, bidirectional: { type: 'boolean' } }, required: ['nodePath', 'id1', 'id2'] },
+      },
+      {
+        name: 'get_astar2d_id_path',
+        description: 'Get point ID path from AStar2D A* search.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, fromId: { type: 'integer' }, toId: { type: 'integer' } }, required: ['nodePath', 'fromId', 'toId'] },
+      },
+      {
+        name: 'get_astar2d_point_path',
+        description: 'Get Vector2 path from AStar2D A* search.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, fromId: { type: 'integer' }, toId: { type: 'integer' } }, required: ['nodePath', 'fromId', 'toId'] },
+      },
+      {
+        name: 'get_astar3d_point_path',
+        description: 'Get Vector3 path from AStar3D A* search.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, fromId: { type: 'integer' }, toId: { type: 'integer' } }, required: ['nodePath', 'fromId', 'toId'] },
+      },
+      // Batch 61 — Group D: VideoStreamPlayer runtime tools
+      {
+        name: 'play_video_stream',
+        description: 'Play the VideoStreamPlayer node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'stop_video_stream',
+        description: 'Stop the VideoStreamPlayer node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_video_stream_position',
+        description: 'Get current playback position of VideoStreamPlayer.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_video_stream_volume',
+        description: 'Set volume on a VideoStreamPlayer node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, volume: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'is_video_stream_playing',
+        description: 'Check if a VideoStreamPlayer is playing.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      // Batch 61 — Group E: Shader / resource writers
+      {
+        name: 'write_dissolve_shader',
+        description: 'Write a dissolve/burn effect GDShader file.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, shaderPath: { type: 'string' } }, required: ['projectPath', 'shaderPath'] },
+      },
+      {
+        name: 'write_pixelate_shader',
+        description: 'Write a pixelate screen effect GDShader file.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, shaderPath: { type: 'string' } }, required: ['projectPath', 'shaderPath'] },
+      },
+      {
+        name: 'write_vignette_shader',
+        description: 'Write a vignette screen effect GDShader file.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, shaderPath: { type: 'string' } }, required: ['projectPath', 'shaderPath'] },
+      },
+      {
+        name: 'write_simple_enemy_patrol_script',
+        description: 'Write a basic patrolling enemy AI script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, speed: { type: 'number' }, patrolRange: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_inventory_system_script',
+        description: 'Write a simple inventory system script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_dialogue_system_script',
+        description: 'Write a simple dialogue box display script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
       ],
     }));
 
@@ -20328,6 +20473,67 @@ class GodotServer {
           return await this.handleWriteWaterSurfaceShader(request.params.arguments);
         case 'write_outline_shader':
           return await this.handleWriteOutlineShader(request.params.arguments);
+        // Batch 61 — Group A: TileMap runtime tools
+        case 'get_tilemap_cell_source_id':
+          return await this.handleGetTilemapCellSourceId(request.params.arguments);
+        case 'erase_tilemap_cell':
+          return await this.handleEraseTilemapCell(request.params.arguments);
+        case 'get_tilemap_used_cells':
+          return await this.handleGetTilemapUsedCells(request.params.arguments);
+        case 'map_to_local_tilemap':
+          return await this.handleMapToLocalTilemap(request.params.arguments);
+        // Batch 61 — Group B: GridMap runtime tools
+        case 'get_gridmap_cell_item':
+          return await this.handleGetGridmapCellItem(request.params.arguments);
+        case 'set_gridmap_cell_item':
+          return await this.handleSetGridmapCellItem(request.params.arguments);
+        case 'get_gridmap_used_cells':
+          return await this.handleGetGridmapUsedCells(request.params.arguments);
+        case 'clear_gridmap':
+          return await this.handleClearGridmap(request.params.arguments);
+        case 'get_gridmap_cell_size':
+          return await this.handleGetGridmapCellSize(request.params.arguments);
+        case 'get_gridmap_mesh_library_items':
+          return await this.handleGetGridmapMeshLibraryItems(request.params.arguments);
+        case 'get_gridmap_bake_mesh':
+          return await this.handleGetGridmapBakeMesh(request.params.arguments);
+        // Batch 61 — Group C: AStar2D / AStar3D pathfinding tools
+        case 'get_astar2d_point_count':
+          return await this.handleGetAstar2dPointCount(request.params.arguments);
+        case 'add_astar2d_point':
+          return await this.handleAddAstar2dPoint(request.params.arguments);
+        case 'connect_astar2d_points':
+          return await this.handleConnectAstar2dPoints(request.params.arguments);
+        case 'get_astar2d_id_path':
+          return await this.handleGetAstar2dIdPath(request.params.arguments);
+        case 'get_astar2d_point_path':
+          return await this.handleGetAstar2dPointPath(request.params.arguments);
+        case 'get_astar3d_point_path':
+          return await this.handleGetAstar3dPointPath(request.params.arguments);
+        // Batch 61 — Group D: VideoStreamPlayer runtime tools
+        case 'play_video_stream':
+          return await this.handlePlayVideoStream(request.params.arguments);
+        case 'stop_video_stream':
+          return await this.handleStopVideoStream(request.params.arguments);
+        case 'get_video_stream_position':
+          return await this.handleGetVideoStreamPosition(request.params.arguments);
+        case 'set_video_stream_volume':
+          return await this.handleSetVideoStreamVolume(request.params.arguments);
+        case 'is_video_stream_playing':
+          return await this.handleIsVideoStreamPlaying(request.params.arguments);
+        // Batch 61 — Group E: Shader / resource writers
+        case 'write_dissolve_shader':
+          return await this.handleWriteDissolveShader(request.params.arguments);
+        case 'write_pixelate_shader':
+          return await this.handleWritePixelateShader(request.params.arguments);
+        case 'write_vignette_shader':
+          return await this.handleWriteVignetteShader(request.params.arguments);
+        case 'write_simple_enemy_patrol_script':
+          return await this.handleWriteSimpleEnemyPatrolScript(request.params.arguments);
+        case 'write_inventory_system_script':
+          return await this.handleWriteInventorySystemScript(request.params.arguments);
+        case 'write_dialogue_system_script':
+          return await this.handleWriteDialogueSystemScript(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -37066,6 +37272,337 @@ void fragment() {
       if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, shaderPath: args.shaderPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  // ── Batch 61 — Group A: TileMap runtime handlers ────────────────────────────
+
+  private async handleGetTilemapCellSourceId(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_tilemap_cell_source_id', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0, layer: a.layer ?? 0 }));
+  }
+
+  private async handleEraseTilemapCell(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('erase_tilemap_cell', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0, layer: a.layer ?? 0 }));
+  }
+
+  private async handleGetTilemapUsedCells(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_tilemap_used_cells', args, a => ({ node_path: a.nodePath, layer: a.layer ?? 0 }));
+  }
+
+  private async handleMapToLocalTilemap(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('map_to_local_tilemap', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0 }));
+  }
+
+  // ── Batch 61 — Group B: GridMap runtime handlers ─────────────────────────────
+
+  private async handleGetGridmapCellItem(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_gridmap_cell_item', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0, z: a.z ?? 0 }));
+  }
+
+  private async handleSetGridmapCellItem(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_gridmap_cell_item', args, a => ({ node_path: a.nodePath, x: a.x ?? 0, y: a.y ?? 0, z: a.z ?? 0, item_id: a.itemId ?? 0, orientation: a.orientation ?? 0 }));
+  }
+
+  private async handleGetGridmapUsedCells(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_gridmap_used_cells', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleClearGridmap(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('clear_gridmap', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetGridmapCellSize(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_gridmap_cell_size', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetGridmapMeshLibraryItems(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_gridmap_mesh_library_items', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetGridmapBakeMesh(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_gridmap_bake_mesh', args, a => ({ node_path: a.nodePath }));
+  }
+
+  // ── Batch 61 — Group C: AStar2D / AStar3D pathfinding handlers ───────────────
+
+  private async handleGetAstar2dPointCount(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_astar2d_point_count', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleAddAstar2dPoint(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('add_astar2d_point', args, a => ({ node_path: a.nodePath, point_id: a.pointId ?? 0, x: a.x ?? 0, y: a.y ?? 0, weight_scale: a.weightScale ?? 1.0 }));
+  }
+
+  private async handleConnectAstar2dPoints(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('connect_astar2d_points', args, a => ({ node_path: a.nodePath, id1: a.id1 ?? 0, id2: a.id2 ?? 0, bidirectional: a.bidirectional !== false }));
+  }
+
+  private async handleGetAstar2dIdPath(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_astar2d_id_path', args, a => ({ node_path: a.nodePath, from_id: a.fromId ?? 0, to_id: a.toId ?? 0 }));
+  }
+
+  private async handleGetAstar2dPointPath(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_astar2d_point_path', args, a => ({ node_path: a.nodePath, from_id: a.fromId ?? 0, to_id: a.toId ?? 0 }));
+  }
+
+  private async handleGetAstar3dPointPath(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_astar3d_point_path', args, a => ({ node_path: a.nodePath, from_id: a.fromId ?? 0, to_id: a.toId ?? 0 }));
+  }
+
+  // ── Batch 61 — Group D: VideoStreamPlayer runtime handlers ───────────────────
+
+  private async handlePlayVideoStream(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('play_video_stream', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleStopVideoStream(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('stop_video_stream', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetVideoStreamPosition(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_video_stream_position', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetVideoStreamVolume(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('set_video_stream_volume', args, a => ({ node_path: a.nodePath, volume: a.volume ?? 0.0 }));
+  }
+
+  private async handleIsVideoStreamPlaying(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('is_video_stream_playing', args, a => ({ node_path: a.nodePath }));
+  }
+
+  // ── Batch 61 — Group E: Shader / resource writer handlers ────────────────────
+
+  private async handleWriteDissolveShader(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.shaderPath) return createErrorResponse('projectPath and shaderPath are required.');
+    const absPath = args.shaderPath.replace('res://', args.projectPath + '/');
+    const content = `shader_type canvas_item;
+
+uniform float dissolve_amount : hint_range(0.0, 1.0) = 0.0;
+uniform vec4 edge_color : source_color = vec4(1.0, 0.5, 0.0, 1.0);
+uniform float edge_width : hint_range(0.0, 0.2) = 0.05;
+uniform sampler2D noise_texture : hint_default_white;
+
+void fragment() {
+\tvec4 tex = texture(TEXTURE, UV);
+\tfloat noise = texture(noise_texture, UV).r;
+\tif (noise < dissolve_amount) discard;
+\tif (noise < dissolve_amount + edge_width) {
+\t\tCOLOR = edge_color;
+\t} else {
+\t\tCOLOR = tex;
+\t}
+}
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, shaderPath: args.shaderPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWritePixelateShader(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.shaderPath) return createErrorResponse('projectPath and shaderPath are required.');
+    const absPath = args.shaderPath.replace('res://', args.projectPath + '/');
+    const content = `shader_type canvas_item;
+
+uniform float pixel_size : hint_range(1.0, 64.0) = 4.0;
+
+void fragment() {
+\tvec2 size = vec2(textureSize(TEXTURE, 0));
+\tvec2 grid = floor(UV * size / pixel_size) * pixel_size / size;
+\tCOLOR = texture(TEXTURE, grid);
+}
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, shaderPath: args.shaderPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteVignetteShader(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.shaderPath) return createErrorResponse('projectPath and shaderPath are required.');
+    const absPath = args.shaderPath.replace('res://', args.projectPath + '/');
+    const content = `shader_type canvas_item;
+
+uniform float strength : hint_range(0.0, 1.0) = 0.5;
+uniform float radius : hint_range(0.0, 1.5) = 0.75;
+
+void fragment() {
+\tvec2 uv = UV - vec2(0.5);
+\tfloat dist = length(uv);
+\tfloat vig = smoothstep(radius, radius - strength * 0.5, dist);
+\tvec4 tex = texture(TEXTURE, UV);
+\tCOLOR = vec4(tex.rgb * vig, tex.a);
+}
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, shaderPath: args.shaderPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteSimpleEnemyPatrolScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const speed = args.speed ?? 60;
+    const range = args.patrolRange ?? 100;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends CharacterBody2D
+## Simple patrolling enemy.
+
+@export var patrol_speed: float = ${speed}.0
+@export var patrol_range: float = ${range}.0
+
+var _start_pos: Vector2
+var _direction: float = 1.0
+
+func _ready() -> void:
+\t_start_pos = global_position
+
+func _physics_process(delta: float) -> void:
+\tvelocity.x = _direction * patrol_speed
+\tmove_and_slide()
+\tif abs(global_position.x - _start_pos.x) >= patrol_range:
+\t\t_direction *= -1.0
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, speed, patrolRange: range }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteInventorySystemScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+## InventorySystem — manages items as dictionaries.
+
+signal item_added(item_name: String, quantity: int)
+signal item_removed(item_name: String, quantity: int)
+signal inventory_full
+
+@export var max_slots: int = 20
+var items: Dictionary = {}
+
+func add_item(item_name: String, quantity: int = 1) -> bool:
+\tif items.size() >= max_slots and not items.has(item_name):
+\t\tinventory_full.emit()
+\t\treturn false
+\titems[item_name] = items.get(item_name, 0) + quantity
+\titem_added.emit(item_name, quantity)
+\treturn true
+
+func remove_item(item_name: String, quantity: int = 1) -> bool:
+\tif not has_item(item_name, quantity):
+\t\treturn false
+\titems[item_name] -= quantity
+\tif items[item_name] <= 0:
+\t\titems.erase(item_name)
+\titem_removed.emit(item_name, quantity)
+\treturn true
+
+func has_item(item_name: String, quantity: int = 1) -> bool:
+\treturn items.get(item_name, 0) >= quantity
+
+func get_item_count(item_name: String) -> int:
+\treturn items.get(item_name, 0)
+
+func get_all_items() -> Dictionary:
+\treturn items.duplicate()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteDialogueSystemScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends CanvasLayer
+## DialogueSystem — simple typewriter dialogue box.
+## Add a Panel with Label child named 'MessageLabel'.
+
+signal dialogue_finished
+
+@export var typewriter_speed: float = 0.05
+@onready var label: Label = $Panel/MessageLabel
+
+var _lines: Array[String] = []
+var _current_line: int = 0
+var _is_typing: bool = false
+
+func show_dialogue(lines: Array[String]) -> void:
+\t_lines = lines
+\t_current_line = 0
+\tvisible = true
+\t_display_line(_lines[0])
+
+func _display_line(text: String) -> void:
+\t_is_typing = true
+\tlabel.text = ""
+\tfor ch in text:
+\t\tlabel.text += ch
+\t\tawait get_tree().create_timer(typewriter_speed).timeout
+\t_is_typing = false
+
+func _input(event: InputEvent) -> void:
+\tif not visible:
+\t\treturn
+\tif event.is_action_pressed("ui_accept"):
+\t\tif _is_typing:
+\t\t\tlabel.text = _lines[_current_line]
+\t\t\t_is_typing = false
+\t\t\treturn
+\t\t_current_line += 1
+\t\tif _current_line >= _lines.size():
+\t\t\tvisible = false
+\t\t\tdialogue_finished.emit()
+\t\telse:
+\t\t\t_display_line(_lines[_current_line])
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
   }
 

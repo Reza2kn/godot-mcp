@@ -1703,6 +1703,48 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_node_scene_file_path(params)
 		"get_scene_unique_nodes":
 			_cmd_get_scene_unique_nodes(params)
+		"get_tilemap_cell_source_id":
+			_cmd_get_tilemap_cell_source_id(params)
+		"erase_tilemap_cell":
+			_cmd_erase_tilemap_cell(params)
+		"get_tilemap_used_cells":
+			_cmd_get_tilemap_used_cells(params)
+		"map_to_local_tilemap":
+			_cmd_map_to_local_tilemap(params)
+		"get_gridmap_cell_item":
+			_cmd_get_gridmap_cell_item(params)
+		"set_gridmap_cell_item":
+			_cmd_set_gridmap_cell_item(params)
+		"get_gridmap_used_cells":
+			_cmd_get_gridmap_used_cells(params)
+		"clear_gridmap":
+			_cmd_clear_gridmap(params)
+		"get_gridmap_cell_size":
+			_cmd_get_gridmap_cell_size(params)
+		"get_gridmap_mesh_library_items":
+			_cmd_get_gridmap_mesh_library_items(params)
+		"get_gridmap_bake_mesh":
+			_cmd_get_gridmap_bake_mesh(params)
+		"play_video_stream":
+			_cmd_play_video_stream(params)
+		"stop_video_stream":
+			_cmd_stop_video_stream(params)
+		"get_video_stream_position":
+			_cmd_get_video_stream_position(params)
+		"set_video_stream_volume":
+			_cmd_set_video_stream_volume(params)
+		"is_video_stream_playing":
+			_cmd_is_video_stream_playing(params)
+		"get_astar2d_point_count":
+			_cmd_get_astar2d_point_count(params)
+		"add_astar2d_point":
+			_cmd_add_astar2d_point(params)
+		"connect_astar2d_points":
+			_cmd_connect_astar2d_points(params)
+		"get_astar2d_id_path":
+			_cmd_get_astar2d_id_path(params)
+		"get_astar2d_point_path":
+			_cmd_get_astar2d_point_path(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -14153,6 +14195,242 @@ func _cmd_get_scene_unique_nodes(params: Dictionary) -> void:
 				queue.append(child)
 	_send_response({"success": true, "unique_nodes": result, "count": result.size()})
 
+
+func _cmd_get_tilemap_cell_source_id(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: int = params.get("x", 0)
+	var y: int = params.get("y", 0)
+	var layer: int = params.get("layer", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TileMap:
+		_send_response({"error": "TileMap not found: " + node_path})
+		return
+	var tm := node as TileMap
+	var source_id = tm.get_cell_source_id(layer, Vector2i(x, y))
+	_send_response({"success": true, "source_id": source_id, "x": x, "y": y, "layer": layer})
+
+func _cmd_erase_tilemap_cell(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: int = params.get("x", 0)
+	var y: int = params.get("y", 0)
+	var layer: int = params.get("layer", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TileMap:
+		_send_response({"error": "TileMap not found: " + node_path})
+		return
+	(node as TileMap).erase_cell(layer, Vector2i(x, y))
+	_send_response({"success": true, "erased": {"x": x, "y": y}})
+
+func _cmd_get_tilemap_used_cells(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var layer: int = params.get("layer", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TileMap:
+		_send_response({"error": "TileMap not found: " + node_path})
+		return
+	var cells = (node as TileMap).get_used_cells(layer)
+	var result = []
+	for c in cells:
+		result.append({"x": c.x, "y": c.y})
+	_send_response({"success": true, "cells": result, "count": result.size()})
+
+func _cmd_map_to_local_tilemap(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: int = params.get("x", 0)
+	var y: int = params.get("y", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TileMap:
+		_send_response({"error": "TileMap not found: " + node_path})
+		return
+	var local_pos = (node as TileMap).map_to_local(Vector2i(x, y))
+	_send_response({"success": true, "local_x": local_pos.x, "local_y": local_pos.y})
+
+func _cmd_get_gridmap_cell_item(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: int = params.get("x", 0)
+	var y: int = params.get("y", 0)
+	var z: int = params.get("z", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is GridMap:
+		_send_response({"error": "GridMap not found: " + node_path})
+		return
+	var item = (node as GridMap).get_cell_item(Vector3i(x, y, z))
+	_send_response({"success": true, "item_id": item, "x": x, "y": y, "z": z})
+
+func _cmd_set_gridmap_cell_item(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: int = params.get("x", 0)
+	var y: int = params.get("y", 0)
+	var z: int = params.get("z", 0)
+	var item_id: int = params.get("item_id", 0)
+	var orientation: int = params.get("orientation", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is GridMap:
+		_send_response({"error": "GridMap not found: " + node_path})
+		return
+	(node as GridMap).set_cell_item(Vector3i(x, y, z), item_id, orientation)
+	_send_response({"success": true, "x": x, "y": y, "z": z, "item_id": item_id})
+
+func _cmd_get_gridmap_used_cells(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is GridMap:
+		_send_response({"error": "GridMap not found: " + node_path})
+		return
+	var cells = (node as GridMap).get_used_cells()
+	var result = []
+	for c in cells:
+		result.append({"x": c.x, "y": c.y, "z": c.z})
+	_send_response({"success": true, "cells": result, "count": result.size()})
+
+func _cmd_clear_gridmap(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is GridMap:
+		_send_response({"error": "GridMap not found: " + node_path})
+		return
+	(node as GridMap).clear()
+	_send_response({"success": true, "cleared": node_path})
+
+func _cmd_get_gridmap_cell_size(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is GridMap:
+		_send_response({"error": "GridMap not found: " + node_path})
+		return
+	var size = (node as GridMap).cell_size
+	_send_response({"success": true, "cell_size": {"x": size.x, "y": size.y, "z": size.z}})
+
+func _cmd_get_gridmap_mesh_library_items(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is GridMap:
+		_send_response({"error": "GridMap not found: " + node_path})
+		return
+	var gm := node as GridMap
+	if gm.mesh_library == null:
+		_send_response({"success": true, "items": [], "count": 0, "note": "No MeshLibrary assigned"})
+		return
+	var item_ids = gm.mesh_library.get_item_list()
+	var result = []
+	for id in item_ids:
+		result.append({"id": id, "name": gm.mesh_library.get_item_name(id)})
+	_send_response({"success": true, "items": result, "count": result.size()})
+
+func _cmd_get_gridmap_bake_mesh(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is GridMap:
+		_send_response({"error": "GridMap not found: " + node_path})
+		return
+	var gm := node as GridMap
+	var aabb = gm.get_bake_meshes_aabb()
+	_send_response({"success": true, "aabb_position": {"x": aabb.position.x, "y": aabb.position.y, "z": aabb.position.z}, "aabb_size": {"x": aabb.size.x, "y": aabb.size.y, "z": aabb.size.z}})
+
+func _cmd_play_video_stream(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is VideoStreamPlayer:
+		_send_response({"error": "VideoStreamPlayer not found: " + node_path})
+		return
+	(node as VideoStreamPlayer).play()
+	_send_response({"success": true, "playing": true})
+
+func _cmd_stop_video_stream(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is VideoStreamPlayer:
+		_send_response({"error": "VideoStreamPlayer not found: " + node_path})
+		return
+	(node as VideoStreamPlayer).stop()
+	_send_response({"success": true, "stopped": true})
+
+func _cmd_get_video_stream_position(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is VideoStreamPlayer:
+		_send_response({"error": "VideoStreamPlayer not found: " + node_path})
+		return
+	_send_response({"success": true, "position": (node as VideoStreamPlayer).stream_position})
+
+func _cmd_set_video_stream_volume(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var volume: float = params.get("volume", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is VideoStreamPlayer:
+		_send_response({"error": "VideoStreamPlayer not found: " + node_path})
+		return
+	(node as VideoStreamPlayer).volume = volume
+	_send_response({"success": true, "volume": volume})
+
+func _cmd_is_video_stream_playing(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is VideoStreamPlayer:
+		_send_response({"error": "VideoStreamPlayer not found: " + node_path})
+		return
+	_send_response({"success": true, "is_playing": (node as VideoStreamPlayer).is_playing()})
+
+func _cmd_get_astar2d_point_count(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Node:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node.get("astar") != null and node.get("astar") is AStar2D:
+		_send_response({"success": true, "point_count": node.astar.get_point_count()})
+	else:
+		_send_response({"error": "Node has no 'astar' property of type AStar2D"})
+
+func _cmd_add_astar2d_point(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var point_id: int = params.get("point_id", 0)
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var weight_scale: float = params.get("weight_scale", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or node.get("astar") == null or not node.astar is AStar2D:
+		_send_response({"error": "Node with AStar2D 'astar' not found: " + node_path})
+		return
+	node.astar.add_point(point_id, Vector2(x, y), weight_scale)
+	_send_response({"success": true, "added_point_id": point_id})
+
+func _cmd_connect_astar2d_points(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var id1: int = params.get("id1", 0)
+	var id2: int = params.get("id2", 1)
+	var bidirectional: bool = params.get("bidirectional", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or node.get("astar") == null or not node.astar is AStar2D:
+		_send_response({"error": "Node with AStar2D 'astar' not found: " + node_path})
+		return
+	node.astar.connect_points(id1, id2, bidirectional)
+	_send_response({"success": true, "connected": [id1, id2]})
+
+func _cmd_get_astar2d_id_path(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var from_id: int = params.get("from_id", 0)
+	var to_id: int = params.get("to_id", 1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or node.get("astar") == null or not node.astar is AStar2D:
+		_send_response({"error": "Node with AStar2D 'astar' not found: " + node_path})
+		return
+	var path = node.astar.get_id_path(from_id, to_id)
+	_send_response({"success": true, "id_path": Array(path)})
+
+func _cmd_get_astar2d_point_path(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var from_id: int = params.get("from_id", 0)
+	var to_id: int = params.get("to_id", 1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or node.get("astar") == null or not node.astar is AStar2D:
+		_send_response({"error": "Node with AStar2D 'astar' not found: " + node_path})
+		return
+	var path = node.astar.get_point_path(from_id, to_id)
+	var result = []
+	for p in path:
+		result.append({"x": p.x, "y": p.y})
+	_send_response({"success": true, "point_path": result, "count": result.size()})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()
