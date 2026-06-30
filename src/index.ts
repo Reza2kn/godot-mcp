@@ -14061,7 +14061,11 @@ class GodotServer {
     }));
 
     // ── Batch 46 tool definitions ──────────────────────────────────────────────
-    this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
+    this.server.setRequestHandler(ListToolsRequestSchema, async () => {
+      if (this._discoveryMode) {
+        return { tools: this.getDiscoveryModeTools() };
+      }
+      return ({
       tools: [
         // Group A: Node type adders
         {
@@ -18723,17 +18727,26 @@ class GodotServer {
       { name: 'set_scroll_container_scroll', description: 'Set scroll position of a ScrollContainer.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, scrollH: { type: 'integer' }, scrollV: { type: 'integer' } }, required: ['nodePath', 'scrollH', 'scrollV'] } },
       { name: 'get_nine_patch_rect_info', description: 'Get NinePatchRect patch margins and texture.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
       { name: 'set_nine_patch_rect_patch_margin', description: 'Set a NinePatchRect margin on one side.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, side: { type: 'integer' }, value: { type: 'integer' } }, required: ['nodePath', 'side', 'value'] } },
+      { name: 'godot_start_here', description: 'START HERE: Overview and how to use this MCP server with 1969 tools.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'godot_call', description: 'Call any Godot tool by name. Discover names via search_tools first.', inputSchema: { type: 'object', properties: { name: { type: 'string', description: 'Exact tool name (e.g. "set_node_position_2d")' }, args: { type: 'object', description: 'Arguments for the tool (same as calling it directly)' } }, required: ['name'] } },
+      { name: 'godot_suggest', description: 'Get tool suggestions for a natural language task description.', inputSchema: { type: 'object', properties: { task: { type: 'string', description: 'What you want to do (e.g. "make a character jump")' } }, required: ['task'] } },
       ],
-    }));
+    });
+    });
 
     // Handle tool calls
     this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
       this.logDebug(`Handling tool request: ${request.params.name}`);
-      switch (request.params.name) {
+      return await this.dispatchTool(request.params.name, request.params.arguments);
+    });
+  }
+
+  private async dispatchTool(name: string, args: any): Promise<any> {
+    switch (name) {
         case 'launch_editor':
-          return await this.handleLaunchEditor(request.params.arguments);
+          return await this.handleLaunchEditor(args);
         case 'run_project':
-          return await this.handleRunProject(request.params.arguments);
+          return await this.handleRunProject(args);
         case 'get_debug_output':
           return await this.handleGetDebugOutput();
         case 'stop_project':
@@ -18741,103 +18754,103 @@ class GodotServer {
         case 'get_godot_version':
           return await this.handleGetGodotVersion();
         case 'list_projects':
-          return await this.handleListProjects(request.params.arguments);
+          return await this.handleListProjects(args);
         case 'get_project_info':
-          return await this.handleGetProjectInfo(request.params.arguments);
+          return await this.handleGetProjectInfo(args);
         case 'create_scene':
-          return await this.handleCreateScene(request.params.arguments);
+          return await this.handleCreateScene(args);
         case 'add_node':
-          return await this.handleAddNode(request.params.arguments);
+          return await this.handleAddNode(args);
         case 'load_sprite':
-          return await this.handleLoadSprite(request.params.arguments);
+          return await this.handleLoadSprite(args);
         case 'export_mesh_library':
-          return await this.handleExportMeshLibrary(request.params.arguments);
+          return await this.handleExportMeshLibrary(args);
         case 'save_scene':
-          return await this.handleSaveScene(request.params.arguments);
+          return await this.handleSaveScene(args);
         case 'get_uid':
-          return await this.handleGetUid(request.params.arguments);
+          return await this.handleGetUid(args);
         case 'update_project_uids':
-          return await this.handleUpdateProjectUids(request.params.arguments);
+          return await this.handleUpdateProjectUids(args);
         case 'game_screenshot':
           return await this.handleGameScreenshot();
         case 'game_click':
-          return await this.handleGameClick(request.params.arguments);
+          return await this.handleGameClick(args);
         case 'game_key_press':
-          return await this.handleGameKeyPress(request.params.arguments);
+          return await this.handleGameKeyPress(args);
         case 'game_mouse_move':
-          return await this.handleGameMouseMove(request.params.arguments);
+          return await this.handleGameMouseMove(args);
         case 'game_get_ui':
           return await this.handleGameGetUi();
         case 'game_get_scene_tree':
           return await this.handleGameGetSceneTree();
         // New runtime interaction tools
         case 'game_eval':
-          return await this.handleGameEval(request.params.arguments);
+          return await this.handleGameEval(args);
         case 'game_get_property':
-          return await this.handleGameGetProperty(request.params.arguments);
+          return await this.handleGameGetProperty(args);
         case 'game_set_property':
-          return await this.handleGameSetProperty(request.params.arguments);
+          return await this.handleGameSetProperty(args);
         case 'game_call_method':
-          return await this.handleGameCallMethod(request.params.arguments);
+          return await this.handleGameCallMethod(args);
         case 'game_get_node_info':
-          return await this.handleGameGetNodeInfo(request.params.arguments);
+          return await this.handleGameGetNodeInfo(args);
         case 'game_instantiate_scene':
-          return await this.handleGameInstantiateScene(request.params.arguments);
+          return await this.handleGameInstantiateScene(args);
         case 'game_remove_node':
-          return await this.handleGameRemoveNode(request.params.arguments);
+          return await this.handleGameRemoveNode(args);
         case 'game_change_scene':
-          return await this.handleGameChangeScene(request.params.arguments);
+          return await this.handleGameChangeScene(args);
         case 'game_pause':
-          return await this.handleGamePause(request.params.arguments);
+          return await this.handleGamePause(args);
         case 'game_performance':
           return await this.handleGamePerformance();
         case 'game_wait':
-          return await this.handleGameWait(request.params.arguments);
+          return await this.handleGameWait(args);
         // Headless scene tools
         case 'read_scene':
-          return await this.handleReadScene(request.params.arguments);
+          return await this.handleReadScene(args);
         case 'modify_scene_node':
-          return await this.handleModifySceneNode(request.params.arguments);
+          return await this.handleModifySceneNode(args);
         case 'remove_scene_node':
-          return await this.handleRemoveSceneNode(request.params.arguments);
+          return await this.handleRemoveSceneNode(args);
         // Project management tools
         case 'read_project_settings':
-          return await this.handleReadProjectSettings(request.params.arguments);
+          return await this.handleReadProjectSettings(args);
         case 'modify_project_settings':
-          return await this.handleModifyProjectSettings(request.params.arguments);
+          return await this.handleModifyProjectSettings(args);
         case 'list_project_files':
-          return await this.handleListProjectFiles(request.params.arguments);
+          return await this.handleListProjectFiles(args);
         // New runtime signal/animation/group tools
         case 'game_connect_signal':
-          return await this.handleGameConnectSignal(request.params.arguments);
+          return await this.handleGameConnectSignal(args);
         case 'game_disconnect_signal':
-          return await this.handleGameDisconnectSignal(request.params.arguments);
+          return await this.handleGameDisconnectSignal(args);
         case 'game_emit_signal':
-          return await this.handleGameEmitSignal(request.params.arguments);
+          return await this.handleGameEmitSignal(args);
         case 'game_play_animation':
-          return await this.handleGamePlayAnimation(request.params.arguments);
+          return await this.handleGamePlayAnimation(args);
         case 'game_tween_property':
-          return await this.handleGameTweenProperty(request.params.arguments);
+          return await this.handleGameTweenProperty(args);
         case 'game_get_nodes_in_group':
-          return await this.handleGameGetNodesInGroup(request.params.arguments);
+          return await this.handleGameGetNodesInGroup(args);
         case 'game_find_nodes_by_class':
-          return await this.handleGameFindNodesByClass(request.params.arguments);
+          return await this.handleGameFindNodesByClass(args);
         case 'game_reparent_node':
-          return await this.handleGameReparentNode(request.params.arguments);
+          return await this.handleGameReparentNode(args);
         // Headless resource tools
         case 'attach_script':
-          return await this.handleAttachScript(request.params.arguments);
+          return await this.handleAttachScript(args);
         case 'create_resource':
-          return await this.handleCreateResource(request.params.arguments);
+          return await this.handleCreateResource(args);
         // File I/O tools
         case 'read_file':
-          return await this.handleReadFile(request.params.arguments);
+          return await this.handleReadFile(args);
         case 'write_file':
-          return await this.handleWriteFile(request.params.arguments);
+          return await this.handleWriteFile(args);
         case 'delete_file':
-          return await this.handleDeleteFile(request.params.arguments);
+          return await this.handleDeleteFile(args);
         case 'create_directory':
-          return await this.handleCreateDirectory(request.params.arguments);
+          return await this.handleCreateDirectory(args);
         // Error/Log capture tools
         case 'game_get_errors':
           return await this.handleGameGetErrors();
@@ -18845,4027 +18858,4032 @@ class GodotServer {
           return await this.handleGameGetLogs();
         // Enhanced input tools
         case 'game_key_hold':
-          return await this.handleGameKeyHold(request.params.arguments);
+          return await this.handleGameKeyHold(args);
         case 'game_key_release':
-          return await this.handleGameKeyRelease(request.params.arguments);
+          return await this.handleGameKeyRelease(args);
         case 'game_scroll':
-          return await this.handleGameScroll(request.params.arguments);
+          return await this.handleGameScroll(args);
         case 'game_mouse_drag':
-          return await this.handleGameMouseDrag(request.params.arguments);
+          return await this.handleGameMouseDrag(args);
         case 'game_gamepad':
-          return await this.handleGameGamepad(request.params.arguments);
+          return await this.handleGameGamepad(args);
         // Project management tools
         case 'create_project':
-          return await this.handleCreateProject(request.params.arguments);
+          return await this.handleCreateProject(args);
         case 'manage_autoloads':
-          return await this.handleManageAutoloads(request.params.arguments);
+          return await this.handleManageAutoloads(args);
         case 'manage_input_map':
-          return await this.handleManageInputMap(request.params.arguments);
+          return await this.handleManageInputMap(args);
         case 'manage_export_presets':
-          return await this.handleManageExportPresets(request.params.arguments);
+          return await this.handleManageExportPresets(args);
         // Advanced runtime tools
         case 'game_get_camera':
           return await this.handleGameGetCamera();
         case 'game_set_camera':
-          return await this.handleGameSetCamera(request.params.arguments);
+          return await this.handleGameSetCamera(args);
         case 'game_raycast':
-          return await this.handleGameRaycast(request.params.arguments);
+          return await this.handleGameRaycast(args);
         case 'game_get_audio':
           return await this.handleGameGetAudio();
         case 'game_spawn_node':
-          return await this.handleGameSpawnNode(request.params.arguments);
+          return await this.handleGameSpawnNode(args);
         // Shader, audio, navigation, tilemap, collision, environment tools
         case 'game_set_shader_param':
-          return await this.handleGameSetShaderParam(request.params.arguments);
+          return await this.handleGameSetShaderParam(args);
         case 'game_audio_play':
-          return await this.handleGameAudioPlay(request.params.arguments);
+          return await this.handleGameAudioPlay(args);
         case 'game_audio_bus':
-          return await this.handleGameAudioBus(request.params.arguments);
+          return await this.handleGameAudioBus(args);
         case 'game_navigate_path':
-          return await this.handleGameNavigatePath(request.params.arguments);
+          return await this.handleGameNavigatePath(args);
         case 'game_tilemap':
-          return await this.handleGameTilemap(request.params.arguments);
+          return await this.handleGameTilemap(args);
         case 'game_add_collision':
-          return await this.handleGameAddCollision(request.params.arguments);
+          return await this.handleGameAddCollision(args);
         case 'game_environment':
-          return await this.handleGameEnvironment(request.params.arguments);
+          return await this.handleGameEnvironment(args);
         // Group, timer, particles, animation, export, state, physics, joint, bone, theme, viewport, debug
         case 'game_manage_group':
-          return await this.handleGameManageGroup(request.params.arguments);
+          return await this.handleGameManageGroup(args);
         case 'game_create_timer':
-          return await this.handleGameCreateTimer(request.params.arguments);
+          return await this.handleGameCreateTimer(args);
         case 'game_set_particles':
-          return await this.handleGameSetParticles(request.params.arguments);
+          return await this.handleGameSetParticles(args);
         case 'game_create_animation':
-          return await this.handleGameCreateAnimation(request.params.arguments);
+          return await this.handleGameCreateAnimation(args);
         case 'export_project':
-          return await this.handleExportProject(request.params.arguments);
+          return await this.handleExportProject(args);
         case 'game_serialize_state':
-          return await this.handleGameSerializeState(request.params.arguments);
+          return await this.handleGameSerializeState(args);
         case 'game_physics_body':
-          return await this.handleGamePhysicsBody(request.params.arguments);
+          return await this.handleGamePhysicsBody(args);
         case 'game_create_joint':
-          return await this.handleGameCreateJoint(request.params.arguments);
+          return await this.handleGameCreateJoint(args);
         case 'game_bone_pose':
-          return await this.handleGameBonePose(request.params.arguments);
+          return await this.handleGameBonePose(args);
         case 'game_ui_theme':
-          return await this.handleGameUiTheme(request.params.arguments);
+          return await this.handleGameUiTheme(args);
         case 'game_viewport':
-          return await this.handleGameViewport(request.params.arguments);
+          return await this.handleGameViewport(args);
         case 'game_debug_draw':
-          return await this.handleGameDebugDraw(request.params.arguments);
+          return await this.handleGameDebugDraw(args);
         // Batch 1: Networking + Input + System + Signals + Script
         case 'game_http_request':
-          return await this.handleGameHttpRequest(request.params.arguments);
+          return await this.handleGameHttpRequest(args);
         case 'game_websocket':
-          return await this.handleGameWebsocket(request.params.arguments);
+          return await this.handleGameWebsocket(args);
         case 'game_multiplayer':
-          return await this.handleGameMultiplayer(request.params.arguments);
+          return await this.handleGameMultiplayer(args);
         case 'game_rpc':
-          return await this.handleGameRpc(request.params.arguments);
+          return await this.handleGameRpc(args);
         case 'game_touch':
-          return await this.handleGameTouch(request.params.arguments);
+          return await this.handleGameTouch(args);
         case 'game_input_state':
-          return await this.handleGameInputState(request.params.arguments);
+          return await this.handleGameInputState(args);
         case 'game_input_action':
-          return await this.handleGameInputAction(request.params.arguments);
+          return await this.handleGameInputAction(args);
         case 'game_list_signals':
-          return await this.handleGameListSignals(request.params.arguments);
+          return await this.handleGameListSignals(args);
         case 'game_await_signal':
-          return await this.handleGameAwaitSignal(request.params.arguments);
+          return await this.handleGameAwaitSignal(args);
         case 'game_script':
-          return await this.handleGameScript(request.params.arguments);
+          return await this.handleGameScript(args);
         case 'game_window':
-          return await this.handleGameWindow(request.params.arguments);
+          return await this.handleGameWindow(args);
         case 'game_os_info':
-          return await this.handleGameOsInfo(request.params.arguments);
+          return await this.handleGameOsInfo(args);
         case 'game_time_scale':
-          return await this.handleGameTimeScale(request.params.arguments);
+          return await this.handleGameTimeScale(args);
         case 'game_process_mode':
-          return await this.handleGameProcessMode(request.params.arguments);
+          return await this.handleGameProcessMode(args);
         case 'game_world_settings':
-          return await this.handleGameWorldSettings(request.params.arguments);
+          return await this.handleGameWorldSettings(args);
         // Batch 2: 3D Rendering + Lighting + Sky + Physics
         case 'game_csg':
-          return await this.handleGameCsg(request.params.arguments);
+          return await this.handleGameCsg(args);
         case 'game_multimesh':
-          return await this.handleGameMultimesh(request.params.arguments);
+          return await this.handleGameMultimesh(args);
         case 'game_procedural_mesh':
-          return await this.handleGameProceduralMesh(request.params.arguments);
+          return await this.handleGameProceduralMesh(args);
         case 'game_light_3d':
-          return await this.handleGameLight3d(request.params.arguments);
+          return await this.handleGameLight3d(args);
         case 'game_mesh_instance':
-          return await this.handleGameMeshInstance(request.params.arguments);
+          return await this.handleGameMeshInstance(args);
         case 'game_gridmap':
-          return await this.handleGameGridmap(request.params.arguments);
+          return await this.handleGameGridmap(args);
         case 'game_3d_effects':
-          return await this.handleGame3dEffects(request.params.arguments);
+          return await this.handleGame3dEffects(args);
         case 'game_gi':
-          return await this.handleGameGi(request.params.arguments);
+          return await this.handleGameGi(args);
         case 'game_path_3d':
-          return await this.handleGamePath3d(request.params.arguments);
+          return await this.handleGamePath3d(args);
         case 'game_sky':
-          return await this.handleGameSky(request.params.arguments);
+          return await this.handleGameSky(args);
         case 'game_camera_attributes':
-          return await this.handleGameCameraAttributes(request.params.arguments);
+          return await this.handleGameCameraAttributes(args);
         case 'game_navigation_3d':
-          return await this.handleGameNavigation3d(request.params.arguments);
+          return await this.handleGameNavigation3d(args);
         case 'game_physics_3d':
-          return await this.handleGamePhysics3d(request.params.arguments);
+          return await this.handleGamePhysics3d(args);
         // Batch 3: 2D Systems + Animation Advanced + Audio Effects
         case 'game_canvas':
-          return await this.handleGameCanvas(request.params.arguments);
+          return await this.handleGameCanvas(args);
         case 'game_canvas_draw':
-          return await this.handleGameCanvasDraw(request.params.arguments);
+          return await this.handleGameCanvasDraw(args);
         case 'game_light_2d':
-          return await this.handleGameLight2d(request.params.arguments);
+          return await this.handleGameLight2d(args);
         case 'game_parallax':
-          return await this.handleGameParallax(request.params.arguments);
+          return await this.handleGameParallax(args);
         case 'game_shape_2d':
-          return await this.handleGameShape2d(request.params.arguments);
+          return await this.handleGameShape2d(args);
         case 'game_path_2d':
-          return await this.handleGamePath2d(request.params.arguments);
+          return await this.handleGamePath2d(args);
         case 'game_physics_2d':
-          return await this.handleGamePhysics2d(request.params.arguments);
+          return await this.handleGamePhysics2d(args);
         case 'game_animation_tree':
-          return await this.handleGameAnimationTree(request.params.arguments);
+          return await this.handleGameAnimationTree(args);
         case 'game_animation_control':
-          return await this.handleGameAnimationControl(request.params.arguments);
+          return await this.handleGameAnimationControl(args);
         case 'game_skeleton_ik':
-          return await this.handleGameSkeletonIk(request.params.arguments);
+          return await this.handleGameSkeletonIk(args);
         case 'game_audio_effect':
-          return await this.handleGameAudioEffect(request.params.arguments);
+          return await this.handleGameAudioEffect(args);
         case 'game_audio_bus_layout':
-          return await this.handleGameAudioBusLayout(request.params.arguments);
+          return await this.handleGameAudioBusLayout(args);
         case 'game_audio_spatial':
-          return await this.handleGameAudioSpatial(request.params.arguments);
+          return await this.handleGameAudioSpatial(args);
         // Batch 4: Editor/Headless + Localization + Resource
         case 'rename_file':
-          return await this.handleRenameFile(request.params.arguments);
+          return await this.handleRenameFile(args);
         case 'manage_resource':
-          return await this.handleManageResource(request.params.arguments);
+          return await this.handleManageResource(args);
         case 'create_script':
-          return await this.handleCreateScript(request.params.arguments);
+          return await this.handleCreateScript(args);
         case 'manage_scene_signals':
-          return await this.handleManageSceneSignals(request.params.arguments);
+          return await this.handleManageSceneSignals(args);
         case 'manage_layers':
-          return await this.handleManageLayers(request.params.arguments);
+          return await this.handleManageLayers(args);
         case 'manage_plugins':
-          return await this.handleManagePlugins(request.params.arguments);
+          return await this.handleManagePlugins(args);
         case 'manage_shader':
-          return await this.handleManageShader(request.params.arguments);
+          return await this.handleManageShader(args);
         case 'manage_theme_resource':
-          return await this.handleManageThemeResource(request.params.arguments);
+          return await this.handleManageThemeResource(args);
         case 'set_main_scene':
-          return await this.handleSetMainScene(request.params.arguments);
+          return await this.handleSetMainScene(args);
         case 'manage_scene_structure':
-          return await this.handleManageSceneStructure(request.params.arguments);
+          return await this.handleManageSceneStructure(args);
         case 'manage_translations':
-          return await this.handleManageTranslations(request.params.arguments);
+          return await this.handleManageTranslations(args);
         case 'game_locale':
-          return await this.handleGameLocale(request.params.arguments);
+          return await this.handleGameLocale(args);
         // Batch 5: UI Controls + Rendering + Resource Runtime
         case 'game_ui_control':
-          return await this.handleGameUiControl(request.params.arguments);
+          return await this.handleGameUiControl(args);
         case 'game_ui_text':
-          return await this.handleGameUiText(request.params.arguments);
+          return await this.handleGameUiText(args);
         case 'game_ui_popup':
-          return await this.handleGameUiPopup(request.params.arguments);
+          return await this.handleGameUiPopup(args);
         case 'game_ui_tree':
-          return await this.handleGameUiTree(request.params.arguments);
+          return await this.handleGameUiTree(args);
         case 'game_ui_item_list':
-          return await this.handleGameUiItemList(request.params.arguments);
+          return await this.handleGameUiItemList(args);
         case 'game_ui_tabs':
-          return await this.handleGameUiTabs(request.params.arguments);
+          return await this.handleGameUiTabs(args);
         case 'game_ui_menu':
-          return await this.handleGameUiMenu(request.params.arguments);
+          return await this.handleGameUiMenu(args);
         case 'game_ui_range':
-          return await this.handleGameUiRange(request.params.arguments);
+          return await this.handleGameUiRange(args);
         case 'game_render_settings':
-          return await this.handleGameRenderSettings(request.params.arguments);
+          return await this.handleGameRenderSettings(args);
         case 'game_resource':
-          return await this.handleGameResource(request.params.arguments);
+          return await this.handleGameResource(args);
         // Batch 6: Visual Shader + Terrain + Video + CI/CD
         case 'game_visual_shader':
-          return await this.handleGameVisualShader(request.params.arguments);
+          return await this.handleGameVisualShader(args);
         case 'game_terrain':
-          return await this.handleGameTerrain(request.params.arguments);
+          return await this.handleGameTerrain(args);
         case 'game_video':
-          return await this.handleGameVideo(request.params.arguments);
+          return await this.handleGameVideo(args);
         case 'manage_ci_pipeline':
-          return await this.handleManageCiPipeline(request.params.arguments);
+          return await this.handleManageCiPipeline(args);
         case 'manage_docker_export':
-          return await this.handleManageDockerExport(request.params.arguments);
+          return await this.handleManageDockerExport(args);
         // ── Batch & Refactoring ──────────────────────────────────────────
         case 'find_nodes_by_type':
-          return await this.handleFindNodesByType(request.params.arguments);
+          return await this.handleFindNodesByType(args);
         case 'find_signal_connections':
-          return await this.handleFindSignalConnections(request.params.arguments);
+          return await this.handleFindSignalConnections(args);
         case 'batch_set_property':
-          return await this.handleBatchSetProperty(request.params.arguments);
+          return await this.handleBatchSetProperty(args);
         case 'find_node_references':
-          return await this.handleFindNodeReferences(request.params.arguments);
+          return await this.handleFindNodeReferences(args);
         case 'get_scene_dependencies':
-          return await this.handleGetSceneDependencies(request.params.arguments);
+          return await this.handleGetSceneDependencies(args);
         case 'cross_scene_set_property':
-          return await this.handleCrossSceneSetProperty(request.params.arguments);
+          return await this.handleCrossSceneSetProperty(args);
         case 'find_script_references':
-          return await this.handleFindScriptReferences(request.params.arguments);
+          return await this.handleFindScriptReferences(args);
         case 'detect_circular_dependencies':
-          return await this.handleDetectCircularDependencies(request.params.arguments);
+          return await this.handleDetectCircularDependencies(args);
         // ── Analysis ─────────────────────────────────────────────────────
         case 'analyze_scene_complexity':
-          return await this.handleAnalyzeSceneComplexity(request.params.arguments);
+          return await this.handleAnalyzeSceneComplexity(args);
         case 'analyze_signal_flow':
-          return await this.handleAnalyzeSignalFlow(request.params.arguments);
+          return await this.handleAnalyzeSignalFlow(args);
         case 'find_unused_resources':
-          return await this.handleFindUnusedResources(request.params.arguments);
+          return await this.handleFindUnusedResources(args);
         case 'get_project_statistics':
-          return await this.handleGetProjectStatistics(request.params.arguments);
+          return await this.handleGetProjectStatistics(args);
         // ── Import Settings ───────────────────────────────────────────────
         case 'import_get_config':
-          return await this.handleImportGetConfig(request.params.arguments);
+          return await this.handleImportGetConfig(args);
         case 'import_set_config':
-          return await this.handleImportSetConfig(request.params.arguments);
+          return await this.handleImportSetConfig(args);
         case 'import_list_presets':
-          return await this.handleImportListPresets(request.params.arguments);
+          return await this.handleImportListPresets(args);
         case 'import_reimport':
-          return await this.handleImportReiimport(request.params.arguments);
+          return await this.handleImportReiimport(args);
         // ── Script Management ─────────────────────────────────────────────
         case 'list_scripts':
-          return await this.handleListScripts(request.params.arguments);
+          return await this.handleListScripts(args);
         case 'search_in_files':
-          return await this.handleSearchInFiles(request.params.arguments);
+          return await this.handleSearchInFiles(args);
         case 'validate_script':
-          return await this.handleValidateScript(request.params.arguments);
+          return await this.handleValidateScript(args);
         // ── Scene Extras ──────────────────────────────────────────────────
         case 'delete_scene':
-          return await this.handleDeleteScene(request.params.arguments);
+          return await this.handleDeleteScene(args);
         case 'get_scene_file_content':
-          return await this.handleGetSceneFileContent(request.params.arguments);
+          return await this.handleGetSceneFileContent(args);
         case 'scene_set_unique_name':
-          return await this.handleSceneSetUniqueName(request.params.arguments);
+          return await this.handleSceneSetUniqueName(args);
         case 'duplicate_node':
-          return await this.handleDuplicateNode(request.params.arguments);
+          return await this.handleDuplicateNode(args);
         // ── VCS Integration ───────────────────────────────────────────────
         case 'vcs_status':
-          return await this.handleVcsStatus(request.params.arguments);
+          return await this.handleVcsStatus(args);
         case 'vcs_stage':
-          return await this.handleVcsStage(request.params.arguments);
+          return await this.handleVcsStage(args);
         case 'vcs_commit':
-          return await this.handleVcsCommit(request.params.arguments);
+          return await this.handleVcsCommit(args);
         case 'vcs_diff':
-          return await this.handleVcsDiff(request.params.arguments);
+          return await this.handleVcsDiff(args);
         case 'vcs_branch_list':
-          return await this.handleVcsBranchList(request.params.arguments);
+          return await this.handleVcsBranchList(args);
         case 'vcs_checkout':
-          return await this.handleVcsCheckout(request.params.arguments);
+          return await this.handleVcsCheckout(args);
         // ── Testing & QA ──────────────────────────────────────────────────
         case 'assert_node_state':
-          return await this.handleAssertNodeState(request.params.arguments);
+          return await this.handleAssertNodeState(args);
         case 'assert_screen_text':
-          return await this.handleAssertScreenText(request.params.arguments);
+          return await this.handleAssertScreenText(args);
         case 'compare_screenshots':
-          return await this.handleCompareScreenshots(request.params.arguments);
+          return await this.handleCompareScreenshots(args);
         case 'run_stress_test':
-          return await this.handleRunStressTest(request.params.arguments);
+          return await this.handleRunStressTest(args);
         // ── AnimationPlayer ───────────────────────────────────────────────
         case 'list_animations':
-          return await this.handleListAnimations(request.params.arguments);
+          return await this.handleListAnimations(args);
         case 'remove_animation':
-          return await this.handleRemoveAnimation(request.params.arguments);
+          return await this.handleRemoveAnimation(args);
         // ── TileSet ───────────────────────────────────────────────────────
         case 'tileset_create':
-          return await this.handleTilesetCreate(request.params.arguments);
+          return await this.handleTilesetCreate(args);
         case 'tileset_add_source':
-          return await this.handleTilesetAddSource(request.params.arguments);
+          return await this.handleTilesetAddSource(args);
         // ── SpriteFrames ──────────────────────────────────────────────────
         case 'spriteframes_create':
-          return await this.handleSpriteframesCreate(request.params.arguments);
+          return await this.handleSpriteframesCreate(args);
         case 'spriteframes_add_animation':
-          return await this.handleSpriteframesAddAnimation(request.params.arguments);
+          return await this.handleSpriteframesAddAnimation(args);
         case 'spriteframes_add_frame':
-          return await this.handleSpriteframesAddFrame(request.params.arguments);
+          return await this.handleSpriteframesAddFrame(args);
         // ── Runtime Game Tools ────────────────────────────────────────────
         case 'find_nodes_by_script':
-          return await this.handleFindNodesByScript(request.params.arguments);
+          return await this.handleFindNodesByScript(args);
         case 'batch_get_properties':
-          return await this.handleBatchGetProperties(request.params.arguments);
+          return await this.handleBatchGetProperties(args);
         case 'click_button_by_text':
-          return await this.handleClickButtonByText(request.params.arguments);
+          return await this.handleClickButtonByText(args);
         case 'wait_for_node':
-          return await this.handleWaitForNode(request.params.arguments);
+          return await this.handleWaitForNode(args);
         case 'find_nearby_nodes':
-          return await this.handleFindNearbyNodes(request.params.arguments);
+          return await this.handleFindNearbyNodes(args);
         case 'capture_frames':
-          return await this.handleCaptureFrames(request.params.arguments);
+          return await this.handleCaptureFrames(args);
         case 'monitor_properties':
-          return await this.handleMonitorProperties(request.params.arguments);
+          return await this.handleMonitorProperties(args);
         case 'start_recording':
-          return await this.handleStartRecording(request.params.arguments);
+          return await this.handleStartRecording(args);
         case 'stop_recording':
-          return await this.handleStopRecording(request.params.arguments);
+          return await this.handleStopRecording(args);
         case 'replay_recording':
-          return await this.handleReplayRecording(request.params.arguments);
+          return await this.handleReplayRecording(args);
         // ── AnimationTree State Machine ───────────────────────────────────
         case 'animtree_add_state':
-          return await this.handleAnimtreeAddState(request.params.arguments);
+          return await this.handleAnimtreeAddState(args);
         case 'animtree_remove_state':
-          return await this.handleAnimtreeRemoveState(request.params.arguments);
+          return await this.handleAnimtreeRemoveState(args);
         case 'animtree_add_transition':
-          return await this.handleAnimtreeAddTransition(request.params.arguments);
+          return await this.handleAnimtreeAddTransition(args);
         case 'animtree_remove_transition':
-          return await this.handleAnimtreeRemoveTransition(request.params.arguments);
+          return await this.handleAnimtreeRemoveTransition(args);
         case 'animtree_get_structure':
-          return await this.handleAnimtreeGetStructure(request.params.arguments);
+          return await this.handleAnimtreeGetStructure(args);
         // ── Soft Debugger ─────────────────────────────────────────────────
         case 'debugger_set_breakpoint':
-          return await this.handleDebuggerSetBreakpoint(request.params.arguments);
+          return await this.handleDebuggerSetBreakpoint(args);
         case 'debugger_list_breakpoints':
-          return await this.handleDebuggerListBreakpoints(request.params.arguments);
+          return await this.handleDebuggerListBreakpoints(args);
         case 'debugger_get_stack':
-          return await this.handleDebuggerGetStack(request.params.arguments);
+          return await this.handleDebuggerGetStack(args);
         case 'debugger_evaluate':
-          return await this.handleDebuggerEvaluate(request.params.arguments);
+          return await this.handleDebuggerEvaluate(args);
         // ── Headless Scene Extras ─────────────────────────────────────────
         case 'add_scene_instance':
-          return await this.handleAddSceneInstance(request.params.arguments);
+          return await this.handleAddSceneInstance(args);
         case 'move_node':
-          return await this.handleMoveNode(request.params.arguments);
+          return await this.handleMoveNode(args);
         case 'get_node_groups':
-          return await this.handleGetNodeGroups(request.params.arguments);
+          return await this.handleGetNodeGroups(args);
         case 'set_node_groups':
-          return await this.handleSetNodeGroups(request.params.arguments);
+          return await this.handleSetNodeGroups(args);
         case 'find_nodes_in_group':
-          return await this.handleFindNodesInGroup(request.params.arguments);
+          return await this.handleFindNodesInGroup(args);
         case 'scene_create_inherited':
-          return await this.handleSceneCreateInherited(request.params.arguments);
+          return await this.handleSceneCreateInherited(args);
         case 'add_autoload':
-          return await this.handleAddAutoload(request.params.arguments);
+          return await this.handleAddAutoload(args);
         case 'remove_autoload':
-          return await this.handleRemoveAutoload(request.params.arguments);
+          return await this.handleRemoveAutoload(args);
         // ── Resource Creation ─────────────────────────────────────────────
         case 'curve_create':
-          return await this.handleCurveCreate(request.params.arguments);
+          return await this.handleCurveCreate(args);
         case 'gradient_create':
-          return await this.handleGradientCreate(request.params.arguments);
+          return await this.handleGradientCreate(args);
         // ── Editor Tools ──────────────────────────────────────────────────
         case 'open_scene':
-          return await this.handleOpenScene(request.params.arguments);
+          return await this.handleOpenScene(args);
         case 'gdextension_list':
-          return await this.handleGdextensionList(request.params.arguments);
+          return await this.handleGdextensionList(args);
         // ── Node Transform / Order ───────────────────────────────────────────
         case 'reorder_node':
-          return await this.handleReorderNode(request.params.arguments);
+          return await this.handleReorderNode(args);
         case 'get_node_transform':
-          return await this.handleGetNodeTransform(request.params.arguments);
+          return await this.handleGetNodeTransform(args);
         case 'set_node_transform':
-          return await this.handleSetNodeTransform(request.params.arguments);
+          return await this.handleSetNodeTransform(args);
         // ── Groups ───────────────────────────────────────────────────────────
         case 'list_all_groups':
-          return await this.handleListAllGroups(request.params.arguments);
+          return await this.handleListAllGroups(args);
         case 'add_node_to_group':
-          return await this.handleAddNodeToGroup(request.params.arguments);
+          return await this.handleAddNodeToGroup(args);
         case 'remove_node_from_group':
-          return await this.handleRemoveNodeFromGroup(request.params.arguments);
+          return await this.handleRemoveNodeFromGroup(args);
         // ── Plugins ──────────────────────────────────────────────────────────
         case 'plugin_list':
-          return await this.handlePluginList(request.params.arguments);
+          return await this.handlePluginList(args);
         case 'plugin_enable':
-          return await this.handlePluginEnable(request.params.arguments);
+          return await this.handlePluginEnable(args);
         case 'plugin_disable':
-          return await this.handlePluginDisable(request.params.arguments);
+          return await this.handlePluginDisable(args);
         // ── Assets ───────────────────────────────────────────────────────────
         case 'shader_create':
-          return await this.handleShaderCreate(request.params.arguments);
+          return await this.handleShaderCreate(args);
         case 'material_create':
-          return await this.handleMaterialCreate(request.params.arguments);
+          return await this.handleMaterialCreate(args);
         case 'script_template':
-          return await this.handleScriptTemplate(request.params.arguments);
+          return await this.handleScriptTemplate(args);
         // ── Export ───────────────────────────────────────────────────────────
         case 'export_list_presets':
-          return await this.handleExportListPresets(request.params.arguments);
+          return await this.handleExportListPresets(args);
         case 'export_project':
-          return await this.handleExportProject(request.params.arguments);
+          return await this.handleExportProject(args);
         // ── TileMap (runtime) ────────────────────────────────────────────────
         case 'tilemap_set_cell':
-          return await this.handleTilemapSetCell(request.params.arguments);
+          return await this.handleTilemapSetCell(args);
         case 'tilemap_get_used_cells':
-          return await this.handleTilemapGetUsedCells(request.params.arguments);
+          return await this.handleTilemapGetUsedCells(args);
         case 'tilemap_clear':
-          return await this.handleTilemapClear(request.params.arguments);
+          return await this.handleTilemapClear(args);
         // ── Audio Bus (runtime) ──────────────────────────────────────────────
         case 'audio_bus_list':
-          return await this.handleAudioBusList(request.params.arguments);
+          return await this.handleAudioBusList(args);
         case 'audio_bus_create':
-          return await this.handleAudioBusCreate(request.params.arguments);
+          return await this.handleAudioBusCreate(args);
         case 'audio_bus_set_volume':
-          return await this.handleAudioBusSetVolume(request.params.arguments);
+          return await this.handleAudioBusSetVolume(args);
         case 'audio_bus_add_effect':
-          return await this.handleAudioBusAddEffect(request.params.arguments);
+          return await this.handleAudioBusAddEffect(args);
         // ── Performance / Batch (runtime) ────────────────────────────────────
         case 'get_performance_counters':
-          return await this.handleGetPerformanceCounters(request.params.arguments);
+          return await this.handleGetPerformanceCounters(args);
         case 'batch_set_properties':
-          return await this.handleBatchSetProperties(request.params.arguments);
+          return await this.handleBatchSetProperties(args);
         // ── Class API / Scene Info ───────────────────────────────────────────
         case 'get_class_api':
-          return await this.handleGetClassApi(request.params.arguments);
+          return await this.handleGetClassApi(args);
         case 'scene_node_count':
-          return await this.handleSceneNodeCount(request.params.arguments);
+          return await this.handleSceneNodeCount(args);
         // ── Node Metadata (static) ─────────────────────────────────────────
         case 'node_get_meta':
-          return await this.handleNodeGetMeta(request.params.arguments);
+          return await this.handleNodeGetMeta(args);
         case 'node_set_meta':
-          return await this.handleNodeSetMeta(request.params.arguments);
+          return await this.handleNodeSetMeta(args);
         case 'node_remove_meta':
-          return await this.handleNodeRemoveMeta(request.params.arguments);
+          return await this.handleNodeRemoveMeta(args);
         // ── Node Properties (static) ───────────────────────────────────────
         case 'get_node_property_raw':
-          return await this.handleGetNodePropertyRaw(request.params.arguments);
+          return await this.handleGetNodePropertyRaw(args);
         case 'set_node_property':
-          return await this.handleSetNodeProperty(request.params.arguments);
+          return await this.handleSetNodeProperty(args);
         // ── Project Settings ───────────────────────────────────────────────
         case 'get_project_settings_by_category':
-          return await this.handleGetProjectSettingsByCategory(request.params.arguments);
+          return await this.handleGetProjectSettingsByCategory(args);
         // ── Script Analysis ────────────────────────────────────────────────
         case 'find_orphan_scripts':
-          return await this.handleFindOrphanScripts(request.params.arguments);
+          return await this.handleFindOrphanScripts(args);
         // ── Scene Utilities ────────────────────────────────────────────────
         case 'duplicate_scene':
-          return await this.handleDuplicateScene(request.params.arguments);
+          return await this.handleDuplicateScene(args);
         // ── Resource Properties ────────────────────────────────────────────
         case 'resource_set_property':
-          return await this.handleResourceSetProperty(request.params.arguments);
+          return await this.handleResourceSetProperty(args);
         // ── Localisation ──────────────────────────────────────────────────
         case 'locale_list_tr_calls':
-          return await this.handleLocaleListTrCalls(request.params.arguments);
+          return await this.handleLocaleListTrCalls(args);
         // ── Animation (runtime) ────────────────────────────────────────────
         case 'animation_add_keyframe':
-          return await this.handleAnimationAddKeyframe(request.params.arguments);
+          return await this.handleAnimationAddKeyframe(args);
         case 'animation_get_keyframes':
-          return await this.handleAnimationGetKeyframes(request.params.arguments);
+          return await this.handleAnimationGetKeyframes(args);
         case 'animation_delete_keyframe':
-          return await this.handleAnimationDeleteKeyframe(request.params.arguments);
+          return await this.handleAnimationDeleteKeyframe(args);
         // ── UI / Control (runtime) ─────────────────────────────────────────
         case 'label_set_text':
-          return await this.handleLabelSetText(request.params.arguments);
+          return await this.handleLabelSetText(args);
         case 'control_set_size':
-          return await this.handleControlSetSize(request.params.arguments);
+          return await this.handleControlSetSize(args);
         // ── Scene Tree / Game (runtime) ────────────────────────────────────
         case 'get_tree_structure':
-          return await this.handleGetTreeStructure(request.params.arguments);
+          return await this.handleGetTreeStructure(args);
         case 'node_get_meta_runtime':
-          return await this.handleNodeGetMetaRuntime(request.params.arguments);
+          return await this.handleNodeGetMetaRuntime(args);
         case 'node_set_meta_runtime':
-          return await this.handleNodeSetMetaRuntime(request.params.arguments);
+          return await this.handleNodeSetMetaRuntime(args);
         case 'game_quit':
-          return await this.handleGameQuit(request.params.arguments);
+          return await this.handleGameQuit(args);
         case 'set_window_title':
-          return await this.handleSetWindowTitle(request.params.arguments);
+          return await this.handleSetWindowTitle(args);
         case 'create_locale_file':
-          return await this.handleCreateLocaleFile(request.params.arguments);
+          return await this.handleCreateLocaleFile(args);
         case 'add_locale_key':
-          return await this.handleAddLocaleKey(request.params.arguments);
+          return await this.handleAddLocaleKey(args);
         case 'scene_list_resources':
-          return await this.handleSceneListResources(request.params.arguments);
+          return await this.handleSceneListResources(args);
         case 'scene_list_sub_resources':
-          return await this.handleSceneListSubResources(request.params.arguments);
+          return await this.handleSceneListSubResources(args);
         case 'find_nodes_by_property':
-          return await this.handleFindNodesByProperty(request.params.arguments);
+          return await this.handleFindNodesByProperty(args);
         case 'get_script_class_info':
-          return await this.handleGetScriptClassInfo(request.params.arguments);
+          return await this.handleGetScriptClassInfo(args);
         case 'list_export_variables':
-          return await this.handleListExportVariables(request.params.arguments);
+          return await this.handleListExportVariables(args);
         case 'get_all_custom_signals':
-          return await this.handleGetAllCustomSignals(request.params.arguments);
+          return await this.handleGetAllCustomSignals(args);
         case 'get_scene_node_types':
-          return await this.handleGetSceneNodeTypes(request.params.arguments);
+          return await this.handleGetSceneNodeTypes(args);
         case 'rename_node':
-          return await this.handleRenameNode(request.params.arguments);
+          return await this.handleRenameNode(args);
         case 'camera_set_current':
-          return await this.handleCameraSetCurrent(request.params.arguments);
+          return await this.handleCameraSetCurrent(args);
         case 'camera_get_info':
-          return await this.handleCameraGetInfo(request.params.arguments);
+          return await this.handleCameraGetInfo(args);
         case 'set_node_z_index':
-          return await this.handleSetNodeZIndex(request.params.arguments);
+          return await this.handleSetNodeZIndex(args);
         case 'canvas_layer_set':
-          return await this.handleCanvasLayerSet(request.params.arguments);
+          return await this.handleCanvasLayerSet(args);
         case 'particle_set_emitting':
-          return await this.handleParticleSetEmitting(request.params.arguments);
+          return await this.handleParticleSetEmitting(args);
         case 'particle_restart':
-          return await this.handleParticleRestart(request.params.arguments);
+          return await this.handleParticleRestart(args);
         case 'grab_focus':
-          return await this.handleGrabFocus(request.params.arguments);
+          return await this.handleGrabFocus(args);
         case 'game_get_viewport_info':
-          return await this.handleGameGetViewportInfo(request.params.arguments);
+          return await this.handleGameGetViewportInfo(args);
         case 'skeleton_get_bones':
-          return await this.handleSkeletonGetBones(request.params.arguments);
+          return await this.handleSkeletonGetBones(args);
         case 'skeleton_set_bone_pose':
-          return await this.handleSkeletonSetBonePose(request.params.arguments);
+          return await this.handleSkeletonSetBonePose(args);
         // ── New tools batch ────────────────────────────────────────────────
         case 'find_class_inheritors':
-          return await this.handleFindClassInheritors(request.params.arguments);
+          return await this.handleFindClassInheritors(args);
         case 'get_scene_as_tree':
-          return await this.handleGetSceneAsTree(request.params.arguments);
+          return await this.handleGetSceneAsTree(args);
         case 'list_resource_types':
-          return await this.handleListResourceTypes(request.params.arguments);
+          return await this.handleListResourceTypes(args);
         case 'count_code_lines':
-          return await this.handleCountCodeLines(request.params.arguments);
+          return await this.handleCountCodeLines(args);
         case 'get_node_signal_connections':
-          return await this.handleGetNodeSignalConnections(request.params.arguments);
+          return await this.handleGetNodeSignalConnections(args);
         case 'get_collision_layer_names':
-          return await this.handleGetCollisionLayerNames(request.params.arguments);
+          return await this.handleGetCollisionLayerNames(args);
         case 'set_collision_layer_name':
-          return await this.handleSetCollisionLayerName(request.params.arguments);
+          return await this.handleSetCollisionLayerName(args);
         case 'create_node_path':
-          return await this.handleCreateNodePath(request.params.arguments);
+          return await this.handleCreateNodePath(args);
         case 'batch_rename_nodes':
-          return await this.handleBatchRenameNodes(request.params.arguments);
+          return await this.handleBatchRenameNodes(args);
         case 'list_scene_connections':
-          return await this.handleListSceneConnections(request.params.arguments);
+          return await this.handleListSceneConnections(args);
         case 'subviewport_set_size':
-          return await this.handleSubviewportSetSize(request.params.arguments);
+          return await this.handleSubviewportSetSize(args);
         case 'gridmap_set_cell':
-          return await this.handleGridmapSetCell(request.params.arguments);
+          return await this.handleGridmapSetCell(args);
         case 'gridmap_get_used_cells':
-          return await this.handleGridmapGetUsedCells(request.params.arguments);
+          return await this.handleGridmapGetUsedCells(args);
         case 'gridmap_clear':
-          return await this.handleGridmapClear(request.params.arguments);
+          return await this.handleGridmapClear(args);
         case 'path2d_set_points':
-          return await this.handlePath2dSetPoints(request.params.arguments);
+          return await this.handlePath2dSetPoints(args);
         case 'game_get_fps_history':
-          return await this.handleGameGetFpsHistory(request.params.arguments);
+          return await this.handleGameGetFpsHistory(args);
         case 'set_environment_property':
-          return await this.handleSetEnvironmentProperty(request.params.arguments);
+          return await this.handleSetEnvironmentProperty(args);
         case 'get_physics_layers':
-          return await this.handleGetPhysicsLayers(request.params.arguments);
+          return await this.handleGetPhysicsLayers(args);
         case 'set_physics_layers':
-          return await this.handleSetPhysicsLayers(request.params.arguments);
+          return await this.handleSetPhysicsLayers(args);
         case 'get_node_rect':
-          return await this.handleGetNodeRect(request.params.arguments);
+          return await this.handleGetNodeRect(args);
         case 'get_animation_length':
-          return await this.handleGetAnimationLength(request.params.arguments);
+          return await this.handleGetAnimationLength(args);
         case 'set_animation_length':
-          return await this.handleSetAnimationLength(request.params.arguments);
+          return await this.handleSetAnimationLength(args);
         case 'get_input_map':
-          return await this.handleGetInputMap(request.params.arguments);
+          return await this.handleGetInputMap(args);
         case 'find_large_resources':
-          return await this.handleFindLargeResources(request.params.arguments);
+          return await this.handleFindLargeResources(args);
         case 'get_scene_inheritance_chain':
-          return await this.handleGetSceneInheritanceChain(request.params.arguments);
+          return await this.handleGetSceneInheritanceChain(args);
         case 'create_localization_csv':
-          return await this.handleCreateLocalizationCsv(request.params.arguments);
+          return await this.handleCreateLocalizationCsv(args);
         case 'get_project_build_summary':
-          return await this.handleGetProjectBuildSummary(request.params.arguments);
+          return await this.handleGetProjectBuildSummary(args);
         case 'list_project_shaders':
-          return await this.handleListProjectShaders(request.params.arguments);
+          return await this.handleListProjectShaders(args);
         case 'add_signal_connection':
-          return await this.handleAddSignalConnection(request.params.arguments);
+          return await this.handleAddSignalConnection(args);
         case 'remove_signal_connection':
-          return await this.handleRemoveSignalConnection(request.params.arguments);
+          return await this.handleRemoveSignalConnection(args);
         case 'theme_set_color_override':
-          return await this.handleThemeSetColorOverride(request.params.arguments);
+          return await this.handleThemeSetColorOverride(args);
         case 'popup_menu_add_item':
-          return await this.handlePopupMenuAddItem(request.params.arguments);
+          return await this.handlePopupMenuAddItem(args);
         case 'option_button_add_item':
-          return await this.handleOptionButtonAddItem(request.params.arguments);
+          return await this.handleOptionButtonAddItem(args);
         case 'item_list_add_item':
-          return await this.handleItemListAddItem(request.params.arguments);
+          return await this.handleItemListAddItem(args);
         case 'animation_set_loop':
-          return await this.handleAnimationSetLoop(request.params.arguments);
+          return await this.handleAnimationSetLoop(args);
         case 'multimesh_set_instance_count':
-          return await this.handleMultimeshSetInstanceCount(request.params.arguments);
+          return await this.handleMultimeshSetInstanceCount(args);
         case 'multimesh_set_instance_transform':
-          return await this.handleMultimeshSetInstanceTransform(request.params.arguments);
+          return await this.handleMultimeshSetInstanceTransform(args);
         case 'audio_player_set_bus':
-          return await this.handleAudioPlayerSetBus(request.params.arguments);
+          return await this.handleAudioPlayerSetBus(args);
         case 'set_material_property':
-          return await this.handleSetMaterialProperty(request.params.arguments);
+          return await this.handleSetMaterialProperty(args);
         case 'rich_text_append':
-          return await this.handleRichTextAppend(request.params.arguments);
+          return await this.handleRichTextAppend(args);
         case 'check_missing_resources':
-          return await this.handleCheckMissingResources(request.params.arguments);
+          return await this.handleCheckMissingResources(args);
         case 'get_resource_usage':
-          return await this.handleGetResourceUsage(request.params.arguments);
+          return await this.handleGetResourceUsage(args);
         case 'list_custom_classes':
-          return await this.handleListCustomClasses(request.params.arguments);
+          return await this.handleListCustomClasses(args);
         case 'find_deprecated_apis':
-          return await this.handleFindDeprecatedApis(request.params.arguments);
+          return await this.handleFindDeprecatedApis(args);
         case 'get_project_total_size':
-          return await this.handleGetProjectTotalSize(request.params.arguments);
+          return await this.handleGetProjectTotalSize(args);
         case 'get_node_count_by_type':
-          return await this.handleGetNodeCountByType(request.params.arguments);
+          return await this.handleGetNodeCountByType(args);
         case 'list_all_autoloads':
-          return await this.handleListAllAutoloads(request.params.arguments);
+          return await this.handleListAllAutoloads(args);
         case 'get_scene_size':
-          return await this.handleGetSceneSize(request.params.arguments);
+          return await this.handleGetSceneSize(args);
         case 'compare_scene_nodes':
-          return await this.handleCompareSceneNodes(request.params.arguments);
+          return await this.handleCompareSceneNodes(args);
         case 'get_scene_statistics_all':
-          return await this.handleGetSceneStatisticsAll(request.params.arguments);
+          return await this.handleGetSceneStatisticsAll(args);
         case 'timer_start':
-          return await this.handleTimerStart(request.params.arguments);
+          return await this.handleTimerStart(args);
         case 'timer_stop':
-          return await this.handleTimerStop(request.params.arguments);
+          return await this.handleTimerStop(args);
         case 'timer_set_wait_time':
-          return await this.handleTimerSetWaitTime(request.params.arguments);
+          return await this.handleTimerSetWaitTime(args);
         case 'rigid_body_apply_impulse':
-          return await this.handleRigidBodyApplyImpulse(request.params.arguments);
+          return await this.handleRigidBodyApplyImpulse(args);
         case 'character_body_set_velocity':
-          return await this.handleCharacterBodySetVelocity(request.params.arguments);
+          return await this.handleCharacterBodySetVelocity(args);
         case 'ray_cast_force_update':
-          return await this.handleRayCastForceUpdate(request.params.arguments);
+          return await this.handleRayCastForceUpdate(args);
         case 'area_get_overlapping':
-          return await this.handleAreaGetOverlapping(request.params.arguments);
+          return await this.handleAreaGetOverlapping(args);
         case 'visibility_notifier_set_rect':
-          return await this.handleVisibilityNotifierSetRect(request.params.arguments);
+          return await this.handleVisibilityNotifierSetRect(args);
         case 'spring_arm_3d_set_length':
-          return await this.handleSpringArm3dSetLength(request.params.arguments);
+          return await this.handleSpringArm3dSetLength(args);
         case 'get_collision_shape_info':
-          return await this.handleGetCollisionShapeInfo(request.params.arguments);
+          return await this.handleGetCollisionShapeInfo(args);
         case 'add_mesh_instance':
-          return await this.handleAddMeshInstance(request.params.arguments);
+          return await this.handleAddMeshInstance(args);
         case 'add_directional_light_3d':
-          return await this.handleAddDirectionalLight3d(request.params.arguments);
+          return await this.handleAddDirectionalLight3d(args);
         case 'add_camera_3d':
-          return await this.handleAddCamera3d(request.params.arguments);
+          return await this.handleAddCamera3d(args);
         case 'add_omni_light_3d':
-          return await this.handleAddOmniLight3d(request.params.arguments);
+          return await this.handleAddOmniLight3d(args);
         case 'add_spot_light_3d':
-          return await this.handleAddSpotLight3d(request.params.arguments);
+          return await this.handleAddSpotLight3d(args);
         case 'add_collision_shape_2d':
-          return await this.handleAddCollisionShape2d(request.params.arguments);
+          return await this.handleAddCollisionShape2d(args);
         case 'add_collision_shape_3d':
-          return await this.handleAddCollisionShape3d(request.params.arguments);
+          return await this.handleAddCollisionShape3d(args);
         case 'add_area_2d':
-          return await this.handleAddArea2d(request.params.arguments);
+          return await this.handleAddArea2d(args);
         case 'add_navigation_agent_2d':
-          return await this.handleAddNavigationAgent2d(request.params.arguments);
+          return await this.handleAddNavigationAgent2d(args);
         case 'add_audio_stream_player':
-          return await this.handleAddAudioStreamPlayer(request.params.arguments);
+          return await this.handleAddAudioStreamPlayer(args);
         case 'find_scene_nodes_by_script':
-          return await this.handleFindSceneNodesByScript(request.params.arguments);
+          return await this.handleFindSceneNodesByScript(args);
         case 'get_groups_all':
-          return await this.handleGetGroupsAll(request.params.arguments);
+          return await this.handleGetGroupsAll(args);
         case 'search_project_text':
-          return await this.handleSearchProjectText(request.params.arguments);
+          return await this.handleSearchProjectText(args);
         case 'list_exported_variables':
-          return await this.handleListExportedVariables(request.params.arguments);
+          return await this.handleListExportedVariables(args);
         case 'get_signal_connections_all':
-          return await this.handleGetSignalConnectionsAll(request.params.arguments);
+          return await this.handleGetSignalConnectionsAll(args);
         case 'find_scenes_with_node_type':
-          return await this.handleFindScenesWithNodeType(request.params.arguments);
+          return await this.handleFindScenesWithNodeType(args);
         case 'get_script_signals':
-          return await this.handleGetScriptSignals(request.params.arguments);
+          return await this.handleGetScriptSignals(args);
         case 'get_script_constants':
-          return await this.handleGetScriptConstants(request.params.arguments);
+          return await this.handleGetScriptConstants(args);
         case 'list_project_scenes':
-          return await this.handleListProjectScenes(request.params.arguments);
+          return await this.handleListProjectScenes(args);
         case 'list_project_scripts':
-          return await this.handleListProjectScripts(request.params.arguments);
+          return await this.handleListProjectScripts(args);
         case 'get_tilemap_info':
-          return await this.handleGetTilemapInfo(request.params.arguments);
+          return await this.handleGetTilemapInfo(args);
         case 'animation_tree_get_state':
-          return await this.handleAnimationTreeGetState(request.params.arguments);
+          return await this.handleAnimationTreeGetState(args);
         case 'animation_tree_set_param':
-          return await this.handleAnimationTreeSetParam(request.params.arguments);
+          return await this.handleAnimationTreeSetParam(args);
         case 'progress_bar_set_value':
-          return await this.handleProgressBarSetValue(request.params.arguments);
+          return await this.handleProgressBarSetValue(args);
         case 'slider_set_value':
-          return await this.handleSliderSetValue(request.params.arguments);
+          return await this.handleSliderSetValue(args);
         case 'line_edit_set_text':
-          return await this.handleLineEditSetText(request.params.arguments);
+          return await this.handleLineEditSetText(args);
         case 'texture_rect_set_texture':
-          return await this.handleTextureRectSetTexture(request.params.arguments);
+          return await this.handleTextureRectSetTexture(args);
         case 'get_viewport_size':
-          return await this.handleGetViewportSize(request.params.arguments);
+          return await this.handleGetViewportSize(args);
         case 'get_render_info':
-          return await this.handleGetRenderInfo(request.params.arguments);
+          return await this.handleGetRenderInfo(args);
         case 'get_audio_bus_list':
-          return await this.handleGetAudioBusList(request.params.arguments);
+          return await this.handleGetAudioBusList(args);
         case 'set_audio_bus_volume':
-          return await this.handleSetAudioBusVolume(request.params.arguments);
+          return await this.handleSetAudioBusVolume(args);
         case 'get_physics_bodies':
-          return await this.handleGetPhysicsBodies(request.params.arguments);
+          return await this.handleGetPhysicsBodies(args);
         case 'set_gravity_scale':
-          return await this.handleSetGravityScale(request.params.arguments);
+          return await this.handleSetGravityScale(args);
         case 'get_animation_player_list':
-          return await this.handleGetAnimationPlayerList(request.params.arguments);
+          return await this.handleGetAnimationPlayerList(args);
         case 'node_set_modulate':
-          return await this.handleNodeSetModulate(request.params.arguments);
+          return await this.handleNodeSetModulate(args);
         case 'node_set_z_index':
-          return await this.handleNodeSetZIndex(request.params.arguments);
+          return await this.handleNodeSetZIndex(args);
         case 'emit_signal_on_node':
-          return await this.handleEmitSignalOnNode(request.params.arguments);
+          return await this.handleEmitSignalOnNode(args);
         case 'path_2d_add_point':
-          return await this.handlePath2dAddPoint(request.params.arguments);
+          return await this.handlePath2dAddPoint(args);
         case 'path_3d_add_point':
-          return await this.handlePath3dAddPoint(request.params.arguments);
+          return await this.handlePath3dAddPoint(args);
         case 'create_shader_material':
-          return await this.handleCreateShaderMaterial(request.params.arguments);
+          return await this.handleCreateShaderMaterial(args);
         case 'list_project_resources':
-          return await this.handleListProjectResources(request.params.arguments);
+          return await this.handleListProjectResources(args);
         case 'get_resource_type':
-          return await this.handleGetResourceType(request.params.arguments);
+          return await this.handleGetResourceType(args);
         case 'get_import_file':
-          return await this.handleGetImportFile(request.params.arguments);
+          return await this.handleGetImportFile(args);
         case 'get_node_metadata':
-          return await this.handleGetNodeMetadata(request.params.arguments);
+          return await this.handleGetNodeMetadata(args);
         case 'set_node_metadata':
-          return await this.handleSetNodeMetadata(request.params.arguments);
+          return await this.handleSetNodeMetadata(args);
         case 'get_input_action_list':
-          return await this.handleGetInputActionList(request.params.arguments);
+          return await this.handleGetInputActionList(args);
         case 'scene_replace_node_type':
-          return await this.handleSceneReplaceNodeType(request.params.arguments);
+          return await this.handleSceneReplaceNodeType(args);
         case 'get_scene_root_node':
-          return await this.handleGetSceneRootNode(request.params.arguments);
+          return await this.handleGetSceneRootNode(args);
         case 'node_add_to_group_runtime':
-          return await this.handleNodeAddToGroupRuntime(request.params.arguments);
+          return await this.handleNodeAddToGroupRuntime(args);
         case 'node_remove_from_group_runtime':
-          return await this.handleNodeRemoveFromGroupRuntime(request.params.arguments);
+          return await this.handleNodeRemoveFromGroupRuntime(args);
         case 'get_nodes_in_group_runtime':
-          return await this.handleGetNodesInGroupRuntime(request.params.arguments);
+          return await this.handleGetNodesInGroupRuntime(args);
         case 'game_set_time_scale':
-          return await this.handleGameSetTimeScale(request.params.arguments);
+          return await this.handleGameSetTimeScale(args);
         case 'get_editor_plugin_list':
-          return await this.handleGetEditorPluginList(request.params.arguments);
+          return await this.handleGetEditorPluginList(args);
         case 'validate_scene_file':
-          return await this.handleValidateSceneFile(request.params.arguments);
+          return await this.handleValidateSceneFile(args);
         case 'add_path_2d_node':
-          return await this.handleAddPath2dNode(request.params.arguments);
+          return await this.handleAddPath2dNode(args);
         case 'add_rigid_body_2d':
-          return await this.handleAddRigidBody2d(request.params.arguments);
+          return await this.handleAddRigidBody2d(args);
         case 'add_character_body_2d':
-          return await this.handleAddCharacterBody2d(request.params.arguments);
+          return await this.handleAddCharacterBody2d(args);
         case 'add_static_body_2d':
-          return await this.handleAddStaticBody2d(request.params.arguments);
+          return await this.handleAddStaticBody2d(args);
         case 'add_rigid_body_3d':
-          return await this.handleAddRigidBody3d(request.params.arguments);
+          return await this.handleAddRigidBody3d(args);
         case 'add_character_body_3d':
-          return await this.handleAddCharacterBody3d(request.params.arguments);
+          return await this.handleAddCharacterBody3d(args);
         case 'add_static_body_3d':
-          return await this.handleAddStaticBody3d(request.params.arguments);
+          return await this.handleAddStaticBody3d(args);
         case 'create_environment_resource':
-          return await this.handleCreateEnvironmentResource(request.params.arguments);
+          return await this.handleCreateEnvironmentResource(args);
         case 'create_physics_material':
-          return await this.handleCreatePhysicsMaterial(request.params.arguments);
+          return await this.handleCreatePhysicsMaterial(args);
         case 'get_script_variables':
-          return await this.handleGetScriptVariables(request.params.arguments);
+          return await this.handleGetScriptVariables(args);
         case 'create_audio_stream_wav':
-          return await this.handleCreateAudioStreamWav(request.params.arguments);
+          return await this.handleCreateAudioStreamWav(args);
         case 'find_nodes_with_property':
-          return await this.handleFindNodesWithProperty(request.params.arguments);
+          return await this.handleFindNodesWithProperty(args);
         case 'scene_set_node_property_batch':
-          return await this.handleSceneSetNodePropertyBatch(request.params.arguments);
+          return await this.handleSceneSetNodePropertyBatch(args);
         case 'get_canvas_layers':
-          return await this.handleGetCanvasLayers(request.params.arguments);
+          return await this.handleGetCanvasLayers(args);
         case 'canvas_layer_set_layer':
-          return await this.handleCanvasLayerSetLayer(request.params.arguments);
+          return await this.handleCanvasLayerSetLayer(args);
         case 'get_shader_params':
-          return await this.handleGetShaderParams(request.params.arguments);
+          return await this.handleGetShaderParams(args);
         case 'set_shader_param':
-          return await this.handleSetShaderParam(request.params.arguments);
+          return await this.handleSetShaderParam(args);
         case 'get_2d_camera_info':
-          return await this.handleGet2dCameraInfo(request.params.arguments);
+          return await this.handleGet2dCameraInfo(args);
         case 'camera_2d_set_zoom':
-          return await this.handleCamera2dSetZoom(request.params.arguments);
+          return await this.handleCamera2dSetZoom(args);
         case 'scene_batch_rename_nodes':
-          return await this.handleSceneBatchRenameNodes(request.params.arguments);
+          return await this.handleSceneBatchRenameNodes(args);
         case 'add_ray_cast_2d':
-          return await this.handleAddRayCast2d(request.params.arguments);
+          return await this.handleAddRayCast2d(args);
         case 'add_ray_cast_3d':
-          return await this.handleAddRayCast3d(request.params.arguments);
+          return await this.handleAddRayCast3d(args);
         case 'add_visual_shader':
-          return await this.handleAddVisualShader(request.params.arguments);
+          return await this.handleAddVisualShader(args);
         case 'list_scene_unique_names':
-          return await this.handleListSceneUniqueNames(request.params.arguments);
+          return await this.handleListSceneUniqueNames(args);
         case 'set_node_unique_name':
-          return await this.handleSetNodeUniqueName(request.params.arguments);
+          return await this.handleSetNodeUniqueName(args);
         case 'get_gdscript_parse_errors':
-          return await this.handleGetGdscriptParseErrors(request.params.arguments);
+          return await this.handleGetGdscriptParseErrors(args);
         case 'create_curve_resource':
-          return await this.handleCreateCurveResource(request.params.arguments);
+          return await this.handleCreateCurveResource(args);
         case 'get_font_info':
-          return await this.handleGetFontInfo(request.params.arguments);
+          return await this.handleGetFontInfo(args);
         case 'list_project_fonts':
-          return await this.handleListProjectFonts(request.params.arguments);
+          return await this.handleListProjectFonts(args);
         case 'list_project_audio':
-          return await this.handleListProjectAudio(request.params.arguments);
+          return await this.handleListProjectAudio(args);
         case 'list_project_images':
-          return await this.handleListProjectImages(request.params.arguments);
+          return await this.handleListProjectImages(args);
         case 'get_scene_node_path':
-          return await this.handleGetSceneNodePath(request.params.arguments);
+          return await this.handleGetSceneNodePath(args);
         case 'get_project_setting':
-          return await this.handleGetProjectSettingB48(request.params.arguments);
+          return await this.handleGetProjectSettingB48(args);
         case 'set_project_setting':
-          return await this.handleSetProjectSettingB48(request.params.arguments);
+          return await this.handleSetProjectSettingB48(args);
         case 'scene_toggle_node_visible':
-          return await this.handleSceneToggleNodeVisible(request.params.arguments);
+          return await this.handleSceneToggleNodeVisible(args);
         case 'get_scene_inheritance_info':
-          return await this.handleGetSceneInheritanceInfo(request.params.arguments);
+          return await this.handleGetSceneInheritanceInfo(args);
         case 'node_set_visible_runtime':
-          return await this.handleNodeSetVisibleRuntime(request.params.arguments);
+          return await this.handleNodeSetVisibleRuntime(args);
         case 'node_get_visible_runtime':
-          return await this.handleNodeGetVisibleRuntime(request.params.arguments);
+          return await this.handleNodeGetVisibleRuntime(args);
         case 'free_node_runtime':
-          return await this.handleFreeNodeRuntime(request.params.arguments);
+          return await this.handleFreeNodeRuntime(args);
         case 'duplicate_node_runtime':
-          return await this.handleDuplicateNodeRuntime(request.params.arguments);
+          return await this.handleDuplicateNodeRuntime(args);
         case 'add_spring_arm_3d':
-          return await this.handleAddSpringArm3d(request.params.arguments);
+          return await this.handleAddSpringArm3d(args);
         case 'add_vehicle_body_3d':
-          return await this.handleAddVehicleBody3d(request.params.arguments);
+          return await this.handleAddVehicleBody3d(args);
         case 'add_vehicle_wheel_3d':
-          return await this.handleAddVehicleWheel3d(request.params.arguments);
+          return await this.handleAddVehicleWheel3d(args);
         case 'add_skeleton_3d':
-          return await this.handleAddSkeleton3d(request.params.arguments);
+          return await this.handleAddSkeleton3d(args);
         case 'add_bone_attachment_3d':
-          return await this.handleAddBoneAttachment3d(request.params.arguments);
+          return await this.handleAddBoneAttachment3d(args);
         case 'add_world_environment':
-          return await this.handleAddWorldEnvironment(request.params.arguments);
+          return await this.handleAddWorldEnvironment(args);
         case 'add_decal_3d':
-          return await this.handleAddDecal3d(request.params.arguments);
+          return await this.handleAddDecal3d(args);
         case 'add_fog_volume':
-          return await this.handleAddFogVolume(request.params.arguments);
+          return await this.handleAddFogVolume(args);
         case 'add_gpu_particles_3d':
-          return await this.handleAddGpuParticles3d(request.params.arguments);
+          return await this.handleAddGpuParticles3d(args);
         case 'add_gpu_particles_2d':
-          return await this.handleAddGpuParticles2d(request.params.arguments);
+          return await this.handleAddGpuParticles2d(args);
         case 'get_animation_names':
-          return await this.handleGetAnimationNames(request.params.arguments);
+          return await this.handleGetAnimationNames(args);
         case 'get_node_owner':
-          return await this.handleGetNodeOwner(request.params.arguments);
+          return await this.handleGetNodeOwner(args);
         case 'count_script_lines':
-          return await this.handleCountScriptLines(request.params.arguments);
+          return await this.handleCountScriptLines(args);
         case 'get_scene_external_resources':
-          return await this.handleGetSceneExternalResources(request.params.arguments);
+          return await this.handleGetSceneExternalResources(args);
         case 'game_reload_scene':
-          return await this.handleGameReloadScene(request.params.arguments);
+          return await this.handleGameReloadScene(args);
         case 'set_node_process':
-          return await this.handleSetNodeProcess(request.params.arguments);
+          return await this.handleSetNodeProcess(args);
         case 'get_object_id':
-          return await this.handleGetObjectId(request.params.arguments);
+          return await this.handleGetObjectId(args);
         case 'call_method_on_node':
-          return await this.handleCallMethodOnNode(request.params.arguments);
+          return await this.handleCallMethodOnNode(args);
         case 'add_csg_box':
-          return await this.handleAddCsgBox(request.params.arguments);
+          return await this.handleAddCsgBox(args);
         case 'add_csg_sphere':
-          return await this.handleAddCsgSphere(request.params.arguments);
+          return await this.handleAddCsgSphere(args);
         case 'add_csg_cylinder':
-          return await this.handleAddCsgCylinder(request.params.arguments);
+          return await this.handleAddCsgCylinder(args);
         case 'add_csg_combiner':
-          return await this.handleAddCsgCombiner(request.params.arguments);
+          return await this.handleAddCsgCombiner(args);
         case 'add_navigation_region_3d':
-          return await this.handleAddNavigationRegion3d(request.params.arguments);
+          return await this.handleAddNavigationRegion3d(args);
         case 'add_navigation_region_2d':
-          return await this.handleAddNavigationRegion2d(request.params.arguments);
+          return await this.handleAddNavigationRegion2d(args);
         case 'add_cpu_particles_3d':
-          return await this.handleAddCpuParticles3d(request.params.arguments);
+          return await this.handleAddCpuParticles3d(args);
         case 'add_cpu_particles_2d':
-          return await this.handleAddCpuParticles2d(request.params.arguments);
+          return await this.handleAddCpuParticles2d(args);
         case 'add_reflection_probe':
-          return await this.handleAddReflectionProbe(request.params.arguments);
+          return await this.handleAddReflectionProbe(args);
         case 'add_lightmap_gi':
-          return await this.handleAddLightmapGi(request.params.arguments);
+          return await this.handleAddLightmapGi(args);
         case 'create_array_mesh':
-          return await this.handleCreateArrayMesh(request.params.arguments);
+          return await this.handleCreateArrayMesh(args);
         case 'create_navigation_mesh':
-          return await this.handleCreateNavigationMesh(request.params.arguments);
+          return await this.handleCreateNavigationMesh(args);
         case 'find_all_todos':
-          return await this.handleFindAllTodos(request.params.arguments);
+          return await this.handleFindAllTodos(args);
         case 'get_node_script_path':
-          return await this.handleGetNodeScriptPath(request.params.arguments);
+          return await this.handleGetNodeScriptPath(args);
         case 'scene_set_root_type':
-          return await this.handleSceneSetRootType(request.params.arguments);
+          return await this.handleSceneSetRootType(args);
         case 'get_particles_info':
-          return await this.handleGetParticlesInfo(request.params.arguments);
+          return await this.handleGetParticlesInfo(args);
         case 'set_particles_emitting':
-          return await this.handleSetParticlesEmitting(request.params.arguments);
+          return await this.handleSetParticlesEmitting(args);
         case 'get_navigation_agents':
-          return await this.handleGetNavigationAgents(request.params.arguments);
+          return await this.handleGetNavigationAgents(args);
         case 'navigation_agent_set_target':
-          return await this.handleNavigationAgentSetTarget(request.params.arguments);
+          return await this.handleNavigationAgentSetTarget(args);
         case 'get_world_environment':
-          return await this.handleGetWorldEnvironment(request.params.arguments);
+          return await this.handleGetWorldEnvironment(args);
         case 'add_multi_mesh_instance_3d':
-          return await this.handleAddMultiMeshInstance3d(request.params.arguments);
+          return await this.handleAddMultiMeshInstance3d(args);
         case 'add_occluder_instance_3d':
-          return await this.handleAddOccluderInstance3d(request.params.arguments);
+          return await this.handleAddOccluderInstance3d(args);
         case 'add_label_3d':
-          return await this.handleAddLabel3d(request.params.arguments);
+          return await this.handleAddLabel3d(args);
         case 'add_sprite_3d':
-          return await this.handleAddSprite3d(request.params.arguments);
+          return await this.handleAddSprite3d(args);
         case 'add_visible_on_screen_notifier_3d':
-          return await this.handleAddVisibleOnScreenNotifier3d(request.params.arguments);
+          return await this.handleAddVisibleOnScreenNotifier3d(args);
         case 'add_remote_transform_3d':
-          return await this.handleAddRemoteTransform3d(request.params.arguments);
+          return await this.handleAddRemoteTransform3d(args);
         case 'add_audio_listener_3d':
-          return await this.handleAddAudioListener3d(request.params.arguments);
+          return await this.handleAddAudioListener3d(args);
         case 'add_xr_origin_3d':
-          return await this.handleAddXrOrigin3d(request.params.arguments);
+          return await this.handleAddXrOrigin3d(args);
         case 'add_xr_camera_3d':
-          return await this.handleAddXrCamera3d(request.params.arguments);
+          return await this.handleAddXrCamera3d(args);
         case 'add_sub_viewport':
-          return await this.handleAddSubViewport(request.params.arguments);
+          return await this.handleAddSubViewport(args);
         case 'get_scene_sub_resources':
-          return await this.handleGetSceneSubResources(request.params.arguments);
+          return await this.handleGetSceneSubResources(args);
         case 'get_project_uid_map':
-          return await this.handleGetProjectUidMap(request.params.arguments);
+          return await this.handleGetProjectUidMap(args);
         case 'batch_set_node_property_runtime':
-          return await this.handleBatchSetNodePropertyRuntime(request.params.arguments);
+          return await this.handleBatchSetNodePropertyRuntime(args);
         case 'get_input_state':
-          return await this.handleGetInputState(request.params.arguments);
+          return await this.handleGetInputState(args);
         case 'simulate_input_action':
-          return await this.handleSimulateInputAction(request.params.arguments);
+          return await this.handleSimulateInputAction(args);
         case 'get_network_info':
-          return await this.handleGetNetworkInfo(request.params.arguments);
+          return await this.handleGetNetworkInfo(args);
         case 'scene_profiler_start':
-          return await this.handleSceneProfilerStart(request.params.arguments);
+          return await this.handleSceneProfilerStart(args);
         case 'scene_profiler_stop':
-          return await this.handleSceneProfilerStop(request.params.arguments);
+          return await this.handleSceneProfilerStop(args);
         case 'get_mouse_position':
-          return await this.handleGetMousePosition(request.params.arguments);
+          return await this.handleGetMousePosition(args);
         case 'warp_mouse':
-          return await this.handleWarpMouse(request.params.arguments);
+          return await this.handleWarpMouse(args);
         case 'add_sub_viewport_container':
-          return await this.handleAddSubViewportContainer(request.params.arguments);
+          return await this.handleAddSubViewportContainer(args);
         case 'add_texture_progress_bar':
-          return await this.handleAddTextureProgressBar(request.params.arguments);
+          return await this.handleAddTextureProgressBar(args);
         case 'add_nine_patch_rect':
-          return await this.handleAddNinePatchRect(request.params.arguments);
+          return await this.handleAddNinePatchRect(args);
         case 'add_color_rect':
-          return await this.handleAddColorRect(request.params.arguments);
+          return await this.handleAddColorRect(args);
         case 'add_scroll_container':
-          return await this.handleAddScrollContainer(request.params.arguments);
+          return await this.handleAddScrollContainer(args);
         case 'add_split_container':
-          return await this.handleAddSplitContainer(request.params.arguments);
+          return await this.handleAddSplitContainer(args);
         case 'add_tab_container':
-          return await this.handleAddTabContainer(request.params.arguments);
+          return await this.handleAddTabContainer(args);
         case 'add_grid_container':
-          return await this.handleAddGridContainer(request.params.arguments);
+          return await this.handleAddGridContainer(args);
         case 'add_flow_container':
-          return await this.handleAddFlowContainer(request.params.arguments);
+          return await this.handleAddFlowContainer(args);
         case 'add_aspect_ratio_container':
-          return await this.handleAddAspectRatioContainer(request.params.arguments);
+          return await this.handleAddAspectRatioContainer(args);
         case 'get_ui_theme_defaults':
-          return await this.handleGetUiThemeDefaults(request.params.arguments);
+          return await this.handleGetUiThemeDefaults(args);
         case 'get_rendering_settings':
-          return await this.handleGetRenderingSettings(request.params.arguments);
+          return await this.handleGetRenderingSettings(args);
         case 'get_physics_settings':
-          return await this.handleGetPhysicsSettings(request.params.arguments);
+          return await this.handleGetPhysicsSettings(args);
         case 'find_circular_dependencies':
-          return await this.handleFindCircularDependencies(request.params.arguments);
+          return await this.handleFindCircularDependencies(args);
         case 'get_gdscript_function_calls':
-          return await this.handleGetGdscriptFunctionCalls(request.params.arguments);
+          return await this.handleGetGdscriptFunctionCalls(args);
         case 'get_collision_layers_names':
-          return await this.handleGetCollisionLayersNames(request.params.arguments);
+          return await this.handleGetCollisionLayersNames(args);
         case 'get_color_in_game':
-          return await this.handleGetColorInGame(request.params.arguments);
+          return await this.handleGetColorInGame(args);
         case 'get_light_properties':
-          return await this.handleGetLightProperties(request.params.arguments);
+          return await this.handleGetLightProperties(args);
         case 'set_light_property':
-          return await this.handleSetLightProperty(request.params.arguments);
+          return await this.handleSetLightProperty(args);
         case 'add_polygon_2d':
-          return await this.handleAddPolygon2D(request.params.arguments);
+          return await this.handleAddPolygon2D(args);
         case 'add_line_2d':
-          return await this.handleAddLine2D(request.params.arguments);
+          return await this.handleAddLine2D(args);
         case 'add_tile_map_layer':
-          return await this.handleAddTileMapLayer(request.params.arguments);
+          return await this.handleAddTileMapLayer(args);
         case 'add_parallax_background':
-          return await this.handleAddParallaxBackground(request.params.arguments);
+          return await this.handleAddParallaxBackground(args);
         case 'add_parallax_layer':
-          return await this.handleAddParallaxLayer(request.params.arguments);
+          return await this.handleAddParallaxLayer(args);
         case 'add_canvas_modulate':
-          return await this.handleAddCanvasModulate(request.params.arguments);
+          return await this.handleAddCanvasModulate(args);
         case 'add_touch_screen_button':
-          return await this.handleAddTouchScreenButton(request.params.arguments);
+          return await this.handleAddTouchScreenButton(args);
         case 'add_joint_2d':
-          return await this.handleAddJoint2D(request.params.arguments);
+          return await this.handleAddJoint2D(args);
         case 'add_back_buffer_copy':
-          return await this.handleAddBackBufferCopy(request.params.arguments);
+          return await this.handleAddBackBufferCopy(args);
         case 'add_ray_cast_2d_from_camera':
-          return await this.handleAddRayCast2DFromCamera(request.params.arguments);
+          return await this.handleAddRayCast2DFromCamera(args);
         case 'get_tileset_sources':
-          return await this.handleGetTilesetSources(request.params.arguments);
+          return await this.handleGetTilesetSources(args);
         case 'get_sprite_frames_info':
-          return await this.handleGetSpriteFramesInfo(request.params.arguments);
+          return await this.handleGetSpriteFramesInfo(args);
         case 'get_animation_library_info':
-          return await this.handleGetAnimationLibraryInfo(request.params.arguments);
+          return await this.handleGetAnimationLibraryInfo(args);
         case 'get_gdextension_info':
-          return await this.handleGetGdextensionInfo(request.params.arguments);
+          return await this.handleGetGdextensionInfo(args);
         case 'get_scene_by_main_script':
-          return await this.handleGetSceneByMainScript(request.params.arguments);
+          return await this.handleGetSceneByMainScript(args);
         case 'get_runtime_scene_list':
-          return await this.handleGetRuntimeSceneList(request.params.arguments);
+          return await this.handleGetRuntimeSceneList(args);
         case 'game_set_debug_visible':
-          return await this.handleGameSetDebugVisible(request.params.arguments);
+          return await this.handleGameSetDebugVisible(args);
         case 'get_print_output':
-          return await this.handleGetPrintOutput(request.params.arguments);
+          return await this.handleGetPrintOutput(args);
         case 'clear_print_output':
-          return await this.handleClearPrintOutput(request.params.arguments);
+          return await this.handleClearPrintOutput(args);
         case 'send_message_to_game':
-          return await this.handleSendMessageToGame(request.params.arguments);
+          return await this.handleSendMessageToGame(args);
         case 'add_tween':
-          return await this.handleAddTween(request.params.arguments);
+          return await this.handleAddTween(args);
         case 'stop_tween':
-          return await this.handleStopTween(request.params.arguments);
+          return await this.handleStopTween(args);
         case 'get_http_response':
-          return await this.handleGetHttpResponse(request.params.arguments);
+          return await this.handleGetHttpResponse(args);
         case 'make_http_request':
-          return await this.handleMakeHttpRequest(request.params.arguments);
+          return await this.handleMakeHttpRequest(args);
         case 'get_os_info':
-          return await this.handleGetOsInfo(request.params.arguments);
+          return await this.handleGetOsInfo(args);
         case 'open_url_in_browser':
-          return await this.handleOpenUrlInBrowser(request.params.arguments);
+          return await this.handleOpenUrlInBrowser(args);
         case 'get_clipboard':
-          return await this.handleGetClipboard(request.params.arguments);
+          return await this.handleGetClipboard(args);
         case 'set_clipboard':
-          return await this.handleSetClipboard(request.params.arguments);
+          return await this.handleSetClipboard(args);
         case 'get_display_info':
-          return await this.handleGetDisplayInfo(request.params.arguments);
+          return await this.handleGetDisplayInfo(args);
         case 'set_window_size':
-          return await this.handleSetWindowSize(request.params.arguments);
+          return await this.handleSetWindowSize(args);
         case 'add_voxel_gi':
-          return await this.handleAddVoxelGi(request.params.arguments);
+          return await this.handleAddVoxelGi(args);
         case 'add_hinge_joint_3d':
-          return await this.handleAddHingeJoint3D(request.params.arguments);
+          return await this.handleAddHingeJoint3D(args);
         case 'add_slider_joint_3d':
-          return await this.handleAddSliderJoint3D(request.params.arguments);
+          return await this.handleAddSliderJoint3D(args);
         case 'add_cone_twist_joint_3d':
-          return await this.handleAddConeTwistJoint3D(request.params.arguments);
+          return await this.handleAddConeTwistJoint3D(args);
         case 'add_generic_6dof_joint_3d':
-          return await this.handleAddGeneric6DOFJoint3D(request.params.arguments);
+          return await this.handleAddGeneric6DOFJoint3D(args);
         case 'add_http_request':
-          return await this.handleAddHttpRequest(request.params.arguments);
+          return await this.handleAddHttpRequest(args);
         case 'add_audio_stream_player_2d':
-          return await this.handleAddAudioStreamPlayer2D(request.params.arguments);
+          return await this.handleAddAudioStreamPlayer2D(args);
         case 'add_audio_stream_player_3d':
-          return await this.handleAddAudioStreamPlayer3D(request.params.arguments);
+          return await this.handleAddAudioStreamPlayer3D(args);
         case 'add_video_stream_player':
-          return await this.handleAddVideoStreamPlayer(request.params.arguments);
+          return await this.handleAddVideoStreamPlayer(args);
         case 'list_project_videos':
-          return await this.handleListProjectVideos(request.params.arguments);
+          return await this.handleListProjectVideos(args);
         case 'instantiate_scene_at_runtime':
-          return await this.handleInstantiateSceneAtRuntime(request.params.arguments);
+          return await this.handleInstantiateSceneAtRuntime(args);
         case 'save_scene_at_runtime':
-          return await this.handleSaveSceneAtRuntime(request.params.arguments);
+          return await this.handleSaveSceneAtRuntime(args);
         case 'get_script_source':
-          return await this.handleGetScriptSource(request.params.arguments);
+          return await this.handleGetScriptSource(args);
         case 'create_animation_track':
-          return await this.handleCreateAnimationTrack(request.params.arguments);
+          return await this.handleCreateAnimationTrack(args);
         case 'add_animation_keyframe':
-          return await this.handleAddAnimationKeyframe(request.params.arguments);
+          return await this.handleAddAnimationKeyframe(args);
         case 'get_animation_track_count':
-          return await this.handleGetAnimationTrackCount(request.params.arguments);
+          return await this.handleGetAnimationTrackCount(args);
         case 'set_animation_speed_scale':
-          return await this.handleSetAnimationSpeedScale(request.params.arguments);
+          return await this.handleSetAnimationSpeedScale(args);
         case 'get_animation_position':
-          return await this.handleGetAnimationPosition(request.params.arguments);
+          return await this.handleGetAnimationPosition(args);
         case 'seek_animation':
-          return await this.handleSeekAnimation(request.params.arguments);
+          return await this.handleSeekAnimation(args);
         case 'blend_shape_set_value':
-          return await this.handleBlendShapeSetValue(request.params.arguments);
+          return await this.handleBlendShapeSetValue(args);
         case 'blend_shape_get_values':
-          return await this.handleBlendShapeGetValues(request.params.arguments);
+          return await this.handleBlendShapeGetValues(args);
         case 'get_bone_global_pose':
-          return await this.handleGetBoneGlobalPose(request.params.arguments);
+          return await this.handleGetBoneGlobalPose(args);
         case 'set_bone_pose':
-          return await this.handleSetBonePose(request.params.arguments);
+          return await this.handleSetBonePose(args);
         case 'list_gdscript_classes':
-          return await this.handleListGdscriptClasses(request.params.arguments);
+          return await this.handleListGdscriptClasses(args);
         case 'get_asset_preload_list':
-          return await this.handleGetAssetPreloadList(request.params.arguments);
+          return await this.handleGetAssetPreloadList(args);
         case 'get_scene_embedded_scripts':
-          return await this.handleGetSceneEmbeddedScripts(request.params.arguments);
+          return await this.handleGetSceneEmbeddedScripts(args);
         case 'batch_create_scenes':
-          return await this.handleBatchCreateScenes(request.params.arguments);
+          return await this.handleBatchCreateScenes(args);
         case 'get_node_animation_tracks':
-          return await this.handleGetNodeAnimationTracks(request.params.arguments);
+          return await this.handleGetNodeAnimationTracks(args);
         case 'rename_resource':
-          return await this.handleRenameResource(request.params.arguments);
+          return await this.handleRenameResource(args);
         case 'find_large_textures':
-          return await this.handleFindLargeTextures(request.params.arguments);
+          return await this.handleFindLargeTextures(args);
         case 'add_audio_effect_to_bus':
-          return await this.handleAddAudioEffectToBus(request.params.arguments);
+          return await this.handleAddAudioEffectToBus(args);
         case 'remove_audio_effect_from_bus':
-          return await this.handleRemoveAudioEffectFromBus(request.params.arguments);
+          return await this.handleRemoveAudioEffectFromBus(args);
         case 'get_audio_bus_effects':
-          return await this.handleGetAudioBusEffects(request.params.arguments);
+          return await this.handleGetAudioBusEffects(args);
         case 'set_audio_effect_parameter':
-          return await this.handleSetAudioEffectParameter(request.params.arguments);
+          return await this.handleSetAudioEffectParameter(args);
         case 'create_audio_bus':
-          return await this.handleCreateAudioBus(request.params.arguments);
+          return await this.handleCreateAudioBus(args);
         case 'list_audio_buses':
-          return await this.handleListAudioBuses(request.params.arguments);
+          return await this.handleListAudioBuses(args);
         case 'set_environment_glow':
-          return await this.handleSetEnvironmentGlow(request.params.arguments);
+          return await this.handleSetEnvironmentGlow(args);
         case 'set_environment_ssao':
-          return await this.handleSetEnvironmentSsao(request.params.arguments);
+          return await this.handleSetEnvironmentSsao(args);
         case 'set_environment_fog':
-          return await this.handleSetEnvironmentFog(request.params.arguments);
+          return await this.handleSetEnvironmentFog(args);
         case 'get_environment_properties':
-          return await this.handleGetEnvironmentProperties(request.params.arguments);
+          return await this.handleGetEnvironmentProperties(args);
         case 'setup_enet_multiplayer':
-          return await this.handleSetupEnetMultiplayer(request.params.arguments);
+          return await this.handleSetupEnetMultiplayer(args);
         case 'get_connected_peers':
-          return await this.handleGetConnectedPeers(request.params.arguments);
+          return await this.handleGetConnectedPeers(args);
         case 'disconnect_multiplayer':
-          return await this.handleDisconnectMultiplayer(request.params.arguments);
+          return await this.handleDisconnectMultiplayer(args);
         case 'send_multiplayer_rpc':
-          return await this.handleSendMultiplayerRpc(request.params.arguments);
+          return await this.handleSendMultiplayerRpc(args);
         case 'add_code_edit_to_scene':
-          return await this.handleAddCodeEditToScene(request.params.arguments);
+          return await this.handleAddCodeEditToScene(args);
         case 'add_text_edit_to_scene':
-          return await this.handleAddTextEditToScene(request.params.arguments);
+          return await this.handleAddTextEditToScene(args);
         case 'add_tree_to_scene':
-          return await this.handleAddTreeToScene(request.params.arguments);
+          return await this.handleAddTreeToScene(args);
         case 'add_split_container_to_scene':
-          return await this.handleAddSplitContainerToScene(request.params.arguments);
+          return await this.handleAddSplitContainerToScene(args);
         case 'reload_script_at_runtime':
-          return await this.handleReloadScriptAtRuntime(request.params.arguments);
+          return await this.handleReloadScriptAtRuntime(args);
         case 'get_loaded_gdextensions':
-          return await this.handleGetLoadedGdextensions(request.params.arguments);
+          return await this.handleGetLoadedGdextensions(args);
         case 'list_export_presets':
-          return await this.handleListExportPresets(request.params.arguments);
+          return await this.handleListExportPresets(args);
         case 'get_project_plugins':
-          return await this.handleGetProjectPlugins(request.params.arguments);
+          return await this.handleGetProjectPlugins(args);
         case 'get_autoloads':
-          return await this.handleGetAutoloads(request.params.arguments);
+          return await this.handleGetAutoloads(args);
         case 'get_project_layers':
-          return await this.handleGetProjectLayers(request.params.arguments);
+          return await this.handleGetProjectLayers(args);
         case 'get_physics_body_state':
-          return await this.handleGetPhysicsBodyState(request.params.arguments);
+          return await this.handleGetPhysicsBodyState(args);
         case 'apply_impulse_to_rigid_body':
-          return await this.handleApplyImpulseToRigidBody(request.params.arguments);
+          return await this.handleApplyImpulseToRigidBody(args);
         case 'set_rigid_body_freeze':
-          return await this.handleSetRigidBodyFreeze(request.params.arguments);
+          return await this.handleSetRigidBodyFreeze(args);
         case 'set_collision_mask':
-          return await this.handleSetCollisionMask(request.params.arguments);
+          return await this.handleSetCollisionMask(args);
         case 'set_collision_layer':
-          return await this.handleSetCollisionLayer(request.params.arguments);
+          return await this.handleSetCollisionLayer(args);
         case 'add_area_3d_to_scene':
-          return await this.handleAddArea3dToScene(request.params.arguments);
+          return await this.handleAddArea3dToScene(args);
         case 'add_static_body_2d_to_scene':
-          return await this.handleAddStaticBody2dToScene(request.params.arguments);
+          return await this.handleAddStaticBody2dToScene(args);
         case 'add_rigid_body_2d_to_scene':
-          return await this.handleAddRigidBody2dToScene(request.params.arguments);
+          return await this.handleAddRigidBody2dToScene(args);
         case 'add_character_body_2d_to_scene':
-          return await this.handleAddCharacterBody2dToScene(request.params.arguments);
+          return await this.handleAddCharacterBody2dToScene(args);
         case 'add_collision_shape_2d_to_scene':
-          return await this.handleAddCollisionShape2dToScene(request.params.arguments);
+          return await this.handleAddCollisionShape2dToScene(args);
         case 'add_collision_shape_3d_to_scene':
-          return await this.handleAddCollisionShape3dToScene(request.params.arguments);
+          return await this.handleAddCollisionShape3dToScene(args);
         case 'add_navigation_region_2d_to_scene':
-          return await this.handleAddNavigationRegion2dToScene(request.params.arguments);
+          return await this.handleAddNavigationRegion2dToScene(args);
         case 'add_navigation_region_3d_to_scene':
-          return await this.handleAddNavigationRegion3dToScene(request.params.arguments);
+          return await this.handleAddNavigationRegion3dToScene(args);
         case 'add_input_action':
-          return await this.handleAddInputAction(request.params.arguments);
+          return await this.handleAddInputAction(args);
         case 'remove_input_action':
-          return await this.handleRemoveInputAction(request.params.arguments);
+          return await this.handleRemoveInputAction(args);
         case 'get_runtime_input_actions':
-          return await this.handleGetRuntimeInputActions(request.params.arguments);
+          return await this.handleGetRuntimeInputActions(args);
         case 'is_action_pressed':
-          return await this.handleIsActionPressed(request.params.arguments);
+          return await this.handleIsActionPressed(args);
         case 'get_global_transform_3d':
-          return await this.handleGetGlobalTransform3d(request.params.arguments);
+          return await this.handleGetGlobalTransform3d(args);
         case 'set_global_transform_3d':
-          return await this.handleSetGlobalTransform3d(request.params.arguments);
+          return await this.handleSetGlobalTransform3d(args);
         case 'look_at_target':
-          return await this.handleLookAtTarget(request.params.arguments);
+          return await this.handleLookAtTarget(args);
         case 'add_timer_to_scene':
-          return await this.handleAddTimerToScene(request.params.arguments);
+          return await this.handleAddTimerToScene(args);
         case 'add_tween_to_scene':
-          return await this.handleAddTweenToScene(request.params.arguments);
+          return await this.handleAddTweenToScene(args);
         case 'add_canvas_layer_to_scene':
-          return await this.handleAddCanvasLayerToScene(request.params.arguments);
+          return await this.handleAddCanvasLayerToScene(args);
         case 'add_world_environment_to_scene':
-          return await this.handleAddWorldEnvironmentToScene(request.params.arguments);
+          return await this.handleAddWorldEnvironmentToScene(args);
         case 'add_directional_light_2d_to_scene':
-          return await this.handleAddDirectionalLight2dToScene(request.params.arguments);
+          return await this.handleAddDirectionalLight2dToScene(args);
         case 'add_point_light_2d_to_scene':
-          return await this.handleAddPointLight2dToScene(request.params.arguments);
+          return await this.handleAddPointLight2dToScene(args);
         case 'add_skeleton_3d_to_scene':
-          return await this.handleAddSkeleton3dToScene(request.params.arguments);
+          return await this.handleAddSkeleton3dToScene(args);
         case 'add_bone_attachment_3d_to_scene':
-          return await this.handleAddBoneAttachment3dToScene(request.params.arguments);
+          return await this.handleAddBoneAttachment3dToScene(args);
         case 'add_ray_cast_3d_to_scene':
-          return await this.handleAddRayCast3dToScene(request.params.arguments);
+          return await this.handleAddRayCast3dToScene(args);
         case 'add_shape_cast_3d_to_scene':
-          return await this.handleAddShapeCast3dToScene(request.params.arguments);
+          return await this.handleAddShapeCast3dToScene(args);
         case 'add_gpu_particles_2d_to_scene':
-          return await this.handleAddGpuParticles2dToScene(request.params.arguments);
+          return await this.handleAddGpuParticles2dToScene(args);
         case 'add_gpu_particles_3d_to_scene':
-          return await this.handleAddGpuParticles3dToScene(request.params.arguments);
+          return await this.handleAddGpuParticles3dToScene(args);
         case 'get_resource_uid':
-          return await this.handleGetResourceUid(request.params.arguments);
+          return await this.handleGetResourceUid(args);
         case 'list_uid_files':
-          return await this.handleListUidFiles(request.params.arguments);
+          return await this.handleListUidFiles(args);
         case 'get_import_settings':
-          return await this.handleGetImportSettings(request.params.arguments);
+          return await this.handleGetImportSettings(args);
         case 'list_import_files':
-          return await this.handleListImportFiles(request.params.arguments);
+          return await this.handleListImportFiles(args);
         case 'get_file_dependencies':
-          return await this.handleGetFileDependencies(request.params.arguments);
+          return await this.handleGetFileDependencies(args);
         case 'find_orphan_resources':
-          return await this.handleFindOrphanResources(request.params.arguments);
+          return await this.handleFindOrphanResources(args);
         case 'get_project_version':
-          return await this.handleGetProjectVersionB48(request.params.arguments);
+          return await this.handleGetProjectVersionB48(args);
         case 'get_scene_node_count':
-          return await this.handleGetSceneNodeCount(request.params.arguments);
+          return await this.handleGetSceneNodeCount(args);
         case 'get_signal_connections':
-          return await this.handleGetSignalConnections(request.params.arguments);
+          return await this.handleGetSignalConnections(args);
         case 'list_connected_signals_in_game':
-          return await this.handleListConnectedSignalsInGame(request.params.arguments);
+          return await this.handleListConnectedSignalsInGame(args);
         case 'connect_signal_in_game':
-          return await this.handleConnectSignalInGame(request.params.arguments);
+          return await this.handleConnectSignalInGame(args);
         case 'disconnect_signal_in_game':
-          return await this.handleDisconnectSignalInGame(request.params.arguments);
+          return await this.handleDisconnectSignalInGame(args);
         case 'emit_signal_in_game':
-          return await this.handleEmitSignalInGame(request.params.arguments);
+          return await this.handleEmitSignalInGame(args);
         case 'get_node_groups_in_game':
-          return await this.handleGetNodeGroupsInGame(request.params.arguments);
+          return await this.handleGetNodeGroupsInGame(args);
         case 'add_node_to_group_in_game':
-          return await this.handleAddNodeToGroupInGame(request.params.arguments);
+          return await this.handleAddNodeToGroupInGame(args);
         case 'remove_node_from_group_in_game':
-          return await this.handleRemoveNodeFromGroupInGame(request.params.arguments);
+          return await this.handleRemoveNodeFromGroupInGame(args);
         case 'get_nodes_in_group':
-          return await this.handleGetNodesInGroup(request.params.arguments);
+          return await this.handleGetNodesInGroup(args);
         case 'call_group_method':
-          return await this.handleCallGroupMethod(request.params.arguments);
+          return await this.handleCallGroupMethod(args);
         case 'get_project_file_stats':
-          return await this.handleGetProjectFileStats(request.params.arguments);
+          return await this.handleGetProjectFileStats(args);
         case 'search_in_scripts':
-          return await this.handleSearchInScripts(request.params.arguments);
+          return await this.handleSearchInScripts(args);
         case 'add_line_2d_to_scene':
-          return await this.handleAddLine2dToScene(request.params.arguments);
+          return await this.handleAddLine2dToScene(args);
         case 'add_polygon_2d_to_scene':
-          return await this.handleAddPolygon2dToScene(request.params.arguments);
+          return await this.handleAddPolygon2dToScene(args);
         case 'add_cpu_particles_2d_to_scene':
-          return await this.handleAddCpuParticles2dToScene(request.params.arguments);
+          return await this.handleAddCpuParticles2dToScene(args);
         case 'add_cpu_particles_3d_to_scene':
-          return await this.handleAddCpuParticles3dToScene(request.params.arguments);
+          return await this.handleAddCpuParticles3dToScene(args);
         case 'add_spring_arm_3d_to_scene':
-          return await this.handleAddSpringArm3dToScene(request.params.arguments);
+          return await this.handleAddSpringArm3dToScene(args);
         case 'add_remote_transform_3d_to_scene':
-          return await this.handleAddRemoteTransform3dToScene(request.params.arguments);
+          return await this.handleAddRemoteTransform3dToScene(args);
         case 'add_marker_3d_to_scene':
-          return await this.handleAddMarker3dToScene(request.params.arguments);
+          return await this.handleAddMarker3dToScene(args);
         case 'add_marker_2d_to_scene':
-          return await this.handleAddMarker2dToScene(request.params.arguments);
+          return await this.handleAddMarker2dToScene(args);
         case 'add_animation_tree_to_scene':
-          return await this.handleAddAnimationTreeToScene(request.params.arguments);
+          return await this.handleAddAnimationTreeToScene(args);
         case 'add_multi_mesh_instance_3d_to_scene':
-          return await this.handleAddMultiMeshInstance3dToScene(request.params.arguments);
+          return await this.handleAddMultiMeshInstance3dToScene(args);
         case 'set_particle_emission_rate':
-          return await this.handleSetParticleEmissionRate(request.params.arguments);
+          return await this.handleSetParticleEmissionRate(args);
         case 'get_particle_state':
-          return await this.handleGetParticleState(request.params.arguments);
+          return await this.handleGetParticleState(args);
         case 'restart_particles':
-          return await this.handleRestartParticles(request.params.arguments);
+          return await this.handleRestartParticles(args);
         case 'set_shader_uniform':
-          return await this.handleSetShaderUniform(request.params.arguments);
+          return await this.handleSetShaderUniform(args);
         case 'get_shader_uniforms':
-          return await this.handleGetShaderUniforms(request.params.arguments);
+          return await this.handleGetShaderUniforms(args);
         case 'get_material_properties':
-          return await this.handleGetMaterialProperties(request.params.arguments);
+          return await this.handleGetMaterialProperties(args);
         case 'set_light_3d_color':
-          return await this.handleSetLight3dColor(request.params.arguments);
+          return await this.handleSetLight3dColor(args);
         case 'set_light_3d_energy':
-          return await this.handleSetLight3dEnergy(request.params.arguments);
+          return await this.handleSetLight3dEnergy(args);
         case 'set_sky_material':
-          return await this.handleSetSkyMaterial(request.params.arguments);
+          return await this.handleSetSkyMaterial(args);
         case 'add_fog_volume_to_scene':
-          return await this.handleAddFogVolumeToScene(request.params.arguments);
+          return await this.handleAddFogVolumeToScene(args);
         case 'add_decal_to_scene':
-          return await this.handleAddDecalToScene(request.params.arguments);
+          return await this.handleAddDecalToScene(args);
         case 'add_reflection_probe_to_scene':
-          return await this.handleAddReflectionProbeToScene(request.params.arguments);
+          return await this.handleAddReflectionProbeToScene(args);
         case 'add_lightmap_gi_to_scene':
-          return await this.handleAddLightmapGiToScene(request.params.arguments);
+          return await this.handleAddLightmapGiToScene(args);
         case 'add_occluder_3d_to_scene':
-          return await this.handleAddOccluder3dToScene(request.params.arguments);
+          return await this.handleAddOccluder3dToScene(args);
         case 'add_visible_on_screen_notifier_3d_to_scene':
-          return await this.handleAddVisibleOnScreenNotifier3dToScene(request.params.arguments);
+          return await this.handleAddVisibleOnScreenNotifier3dToScene(args);
         case 'add_vehicle_body_3d_to_scene':
-          return await this.handleAddVehicleBody3dToScene(request.params.arguments);
+          return await this.handleAddVehicleBody3dToScene(args);
         case 'add_vehicle_wheel_3d_to_scene':
-          return await this.handleAddVehicleWheel3dToScene(request.params.arguments);
+          return await this.handleAddVehicleWheel3dToScene(args);
         case 'add_soft_body_3d_to_scene':
-          return await this.handleAddSoftBody3dToScene(request.params.arguments);
+          return await this.handleAddSoftBody3dToScene(args);
         case 'add_physics_body_3d_static_to_scene':
-          return await this.handleAddPhysicsBody3dStaticToScene(request.params.arguments);
+          return await this.handleAddPhysicsBody3dStaticToScene(args);
         case 'get_scene_resource_paths':
-          return await this.handleGetSceneResourcePaths(request.params.arguments);
+          return await this.handleGetSceneResourcePaths(args);
         case 'find_scenes_using_resource':
-          return await this.handleFindScenesUsingResource(request.params.arguments);
+          return await this.handleFindScenesUsingResource(args);
         case 'get_scene_subresources':
-          return await this.handleGetSceneSubresources(request.params.arguments);
+          return await this.handleGetSceneSubresources(args);
         case 'get_scene_metadata':
-          return await this.handleGetSceneMetadata(request.params.arguments);
+          return await this.handleGetSceneMetadata(args);
         case 'get_all_node_types_in_project':
-          return await this.handleGetAllNodeTypesInProject(request.params.arguments);
+          return await this.handleGetAllNodeTypesInProject(args);
         case 'get_node_metadata_in_game':
-          return await this.handleGetNodeMetadataInGame(request.params.arguments);
+          return await this.handleGetNodeMetadataInGame(args);
         case 'set_node_metadata_in_game':
-          return await this.handleSetNodeMetadataInGame(request.params.arguments);
+          return await this.handleSetNodeMetadataInGame(args);
         case 'get_time_in_game':
-          return await this.handleGetTimeInGame(request.params.arguments);
+          return await this.handleGetTimeInGame(args);
         case 'get_engine_version_in_game':
-          return await this.handleGetEngineVersionInGame(request.params.arguments);
+          return await this.handleGetEngineVersionInGame(args);
         case 'add_joint_2d_pin_to_scene':
-          return await this.handleAddJoint2dPinToScene(request.params.arguments);
+          return await this.handleAddJoint2dPinToScene(args);
         case 'add_joint_2d_groove_to_scene':
-          return await this.handleAddJoint2dGrooveToScene(request.params.arguments);
+          return await this.handleAddJoint2dGrooveToScene(args);
         case 'add_joint_2d_damped_spring_to_scene':
-          return await this.handleAddJoint2dDampedSpringToScene(request.params.arguments);
+          return await this.handleAddJoint2dDampedSpringToScene(args);
         case 'add_character_body_3d_to_scene':
-          return await this.handleAddCharacterBody3dToScene(request.params.arguments);
+          return await this.handleAddCharacterBody3dToScene(args);
         case 'add_camera_3d_to_scene':
-          return await this.handleAddCamera3dToScene(request.params.arguments);
+          return await this.handleAddCamera3dToScene(args);
         case 'add_camera_2d_to_scene':
-          return await this.handleAddCamera2dToScene(request.params.arguments);
+          return await this.handleAddCamera2dToScene(args);
         case 'add_rich_text_label_to_scene':
-          return await this.handleAddRichTextLabelToScene(request.params.arguments);
+          return await this.handleAddRichTextLabelToScene(args);
         case 'add_nine_patch_rect_to_scene':
-          return await this.handleAddNinePatchRectToScene(request.params.arguments);
+          return await this.handleAddNinePatchRectToScene(args);
         case 'add_color_rect_to_scene':
-          return await this.handleAddColorRectToScene(request.params.arguments);
+          return await this.handleAddColorRectToScene(args);
         case 'add_texture_rect_to_scene':
-          return await this.handleAddTextureRectToScene(request.params.arguments);
+          return await this.handleAddTextureRectToScene(args);
         case 'set_camera_fov':
-          return await this.handleSetCameraFov(request.params.arguments);
+          return await this.handleSetCameraFov(args);
         case 'set_camera_3d_current':
-          return await this.handleSetCamera3dCurrent(request.params.arguments);
+          return await this.handleSetCamera3dCurrent(args);
         case 'get_current_camera_3d':
-          return await this.handleGetCurrentCamera3d(request.params.arguments);
+          return await this.handleGetCurrentCamera3d(args);
         case 'set_camera_2d_zoom':
-          return await this.handleSetCamera2dZoom(request.params.arguments);
+          return await this.handleSetCamera2dZoom(args);
         case 'set_camera_2d_limit':
-          return await this.handleSetCamera2dLimit(request.params.arguments);
+          return await this.handleSetCamera2dLimit(args);
         case 'set_viewport_size':
-          return await this.handleSetViewportSize(request.params.arguments);
+          return await this.handleSetViewportSize(args);
         case 'set_time_scale':
-          return await this.handleSetTimeScale(request.params.arguments);
+          return await this.handleSetTimeScale(args);
         case 'get_scene_tree_paused':
-          return await this.handleGetSceneTreePaused(request.params.arguments);
+          return await this.handleGetSceneTreePaused(args);
         case 'add_hflow_container_to_scene':
-          return await this.handleAddHFlowContainerToScene(request.params.arguments);
+          return await this.handleAddHFlowContainerToScene(args);
         case 'add_vflow_container_to_scene':
-          return await this.handleAddVFlowContainerToScene(request.params.arguments);
+          return await this.handleAddVFlowContainerToScene(args);
         case 'add_margin_container_to_scene':
-          return await this.handleAddMarginContainerToScene(request.params.arguments);
+          return await this.handleAddMarginContainerToScene(args);
         case 'add_center_container_to_scene':
-          return await this.handleAddCenterContainerToScene(request.params.arguments);
+          return await this.handleAddCenterContainerToScene(args);
         case 'add_scroll_container_to_scene':
-          return await this.handleAddScrollContainerToScene(request.params.arguments);
+          return await this.handleAddScrollContainerToScene(args);
         case 'add_tab_container_to_scene':
-          return await this.handleAddTabContainerToScene(request.params.arguments);
+          return await this.handleAddTabContainerToScene(args);
         case 'add_tab_bar_to_scene':
-          return await this.handleAddTabBarToScene(request.params.arguments);
+          return await this.handleAddTabBarToScene(args);
         case 'add_menu_button_to_scene':
-          return await this.handleAddMenuButtonToScene(request.params.arguments);
+          return await this.handleAddMenuButtonToScene(args);
         case 'add_check_button_to_scene':
-          return await this.handleAddCheckButtonToScene(request.params.arguments);
+          return await this.handleAddCheckButtonToScene(args);
         case 'add_option_button_to_scene':
-          return await this.handleAddOptionButtonToScene(request.params.arguments);
+          return await this.handleAddOptionButtonToScene(args);
         case 'set_rich_text_label_bbcode':
-          return await this.handleSetRichTextLabelBbcode(request.params.arguments);
+          return await this.handleSetRichTextLabelBbcode(args);
         case 'set_progress_bar_value':
-          return await this.handleSetProgressBarValue(request.params.arguments);
+          return await this.handleSetProgressBarValue(args);
         case 'set_slider_value':
-          return await this.handleSetSliderValue(request.params.arguments);
+          return await this.handleSetSliderValue(args);
         case 'get_spin_box_value':
-          return await this.handleGetSpinBoxValue(request.params.arguments);
+          return await this.handleGetSpinBoxValue(args);
         case 'set_spin_box_value':
-          return await this.handleSetSpinBoxValue(request.params.arguments);
+          return await this.handleSetSpinBoxValue(args);
         case 'set_option_button_selected':
-          return await this.handleSetOptionButtonSelected(request.params.arguments);
+          return await this.handleSetOptionButtonSelected(args);
         case 'get_option_button_selected':
-          return await this.handleGetOptionButtonSelected(request.params.arguments);
+          return await this.handleGetOptionButtonSelected(args);
         case 'add_option_button_item':
-          return await this.handleAddOptionButtonItem(request.params.arguments);
+          return await this.handleAddOptionButtonItem(args);
         case 'set_tab_container_current':
-          return await this.handleSetTabContainerCurrent(request.params.arguments);
+          return await this.handleSetTabContainerCurrent(args);
         case 'get_color_picker_value':
-          return await this.handleGetColorPickerValue(request.params.arguments);
+          return await this.handleGetColorPickerValue(args);
         case 'add_popup_menu_to_scene':
-          return await this.handleAddPopupMenuToScene(request.params.arguments);
+          return await this.handleAddPopupMenuToScene(args);
         case 'add_popup_panel_to_scene':
-          return await this.handleAddPopupPanelToScene(request.params.arguments);
+          return await this.handleAddPopupPanelToScene(args);
         case 'add_file_dialog_to_scene':
-          return await this.handleAddFileDialogToScene(request.params.arguments);
+          return await this.handleAddFileDialogToScene(args);
         case 'add_confirmation_dialog_to_scene':
-          return await this.handleAddConfirmationDialogToScene(request.params.arguments);
+          return await this.handleAddConfirmationDialogToScene(args);
         case 'add_accept_dialog_to_scene':
-          return await this.handleAddAcceptDialogToScene(request.params.arguments);
+          return await this.handleAddAcceptDialogToScene(args);
         case 'add_color_picker_button_to_scene':
-          return await this.handleAddColorPickerButtonToScene(request.params.arguments);
+          return await this.handleAddColorPickerButtonToScene(args);
         case 'add_link_button_to_scene':
-          return await this.handleAddLinkButtonToScene(request.params.arguments);
+          return await this.handleAddLinkButtonToScene(args);
         case 'add_texture_button_to_scene':
-          return await this.handleAddTextureButtonToScene(request.params.arguments);
+          return await this.handleAddTextureButtonToScene(args);
         case 'add_texture_progress_bar_to_scene':
-          return await this.handleAddTextureProgressBarToScene(request.params.arguments);
+          return await this.handleAddTextureProgressBarToScene(args);
         case 'add_aspect_ratio_container_to_scene':
-          return await this.handleAddAspectRatioContainerToScene(request.params.arguments);
+          return await this.handleAddAspectRatioContainerToScene(args);
         case 'set_color_picker_color':
-          return await this.handleSetColorPickerColor(request.params.arguments);
+          return await this.handleSetColorPickerColor(args);
         case 'show_popup_menu':
-          return await this.handleShowPopupMenu(request.params.arguments);
+          return await this.handleShowPopupMenu(args);
         case 'add_popup_menu_item':
-          return await this.handleAddPopupMenuItem(request.params.arguments);
+          return await this.handleAddPopupMenuItem(args);
         case 'clear_popup_menu':
-          return await this.handleClearPopupMenu(request.params.arguments);
+          return await this.handleClearPopupMenu(args);
         case 'show_dialog':
-          return await this.handleShowDialog(request.params.arguments);
+          return await this.handleShowDialog(args);
         case 'hide_node':
-          return await this.handleHideNode(request.params.arguments);
+          return await this.handleHideNode(args);
         case 'show_node':
-          return await this.handleShowNode(request.params.arguments);
+          return await this.handleShowNode(args);
         case 'toggle_node_visibility':
-          return await this.handleToggleNodeVisibility(request.params.arguments);
+          return await this.handleToggleNodeVisibility(args);
         case 'get_node_visibility':
-          return await this.handleGetNodeVisibility(request.params.arguments);
+          return await this.handleGetNodeVisibility(args);
         case 'duplicate_node_in_game':
-          return await this.handleDuplicateNodeInGame(request.params.arguments);
+          return await this.handleDuplicateNodeInGame(args);
         case 'add_graph_node_to_scene':
-          return await this.handleAddGraphNodeToScene(request.params.arguments);
+          return await this.handleAddGraphNodeToScene(args);
         case 'add_graph_edit_to_scene':
-          return await this.handleAddGraphEditToScene(request.params.arguments);
+          return await this.handleAddGraphEditToScene(args);
         case 'add_item_list_to_scene':
-          return await this.handleAddItemListToScene(request.params.arguments);
+          return await this.handleAddItemListToScene(args);
         case 'add_separator_to_scene':
-          return await this.handleAddSeparatorToScene(request.params.arguments);
+          return await this.handleAddSeparatorToScene(args);
         case 'add_v_separator_to_scene':
-          return await this.handleAddVSeparatorToScene(request.params.arguments);
+          return await this.handleAddVSeparatorToScene(args);
         case 'add_panel_container_to_scene':
-          return await this.handleAddPanelContainerToScene(request.params.arguments);
+          return await this.handleAddPanelContainerToScene(args);
         case 'add_box_container_to_scene':
-          return await this.handleAddBoxContainerToScene(request.params.arguments);
+          return await this.handleAddBoxContainerToScene(args);
         case 'add_flow_container_to_scene':
-          return await this.handleAddFlowContainerToScene(request.params.arguments);
+          return await this.handleAddFlowContainerToScene(args);
         case 'create_gdscript_file':
-          return await this.handleCreateGdscriptFile(request.params.arguments);
+          return await this.handleCreateGdscriptFile(args);
         case 'create_shader_file':
-          return await this.handleCreateShaderFile(request.params.arguments);
+          return await this.handleCreateShaderFile(args);
         case 'get_item_list_items':
-          return await this.handleGetItemListItems(request.params.arguments);
+          return await this.handleGetItemListItems(args);
         case 'add_item_list_item':
-          return await this.handleAddItemListItem(request.params.arguments);
+          return await this.handleAddItemListItem(args);
         case 'clear_item_list':
-          return await this.handleClearItemList(request.params.arguments);
+          return await this.handleClearItemList(args);
         case 'get_item_list_selected':
-          return await this.handleGetItemListSelected(request.params.arguments);
+          return await this.handleGetItemListSelected(args);
         case 'set_check_box_pressed':
-          return await this.handleSetCheckBoxPressed(request.params.arguments);
+          return await this.handleSetCheckBoxPressed(args);
         case 'get_line_edit_text':
-          return await this.handleGetLineEditText(request.params.arguments);
+          return await this.handleGetLineEditText(args);
         case 'set_line_edit_text':
-          return await this.handleSetLineEditText(request.params.arguments);
+          return await this.handleSetLineEditText(args);
         case 'get_text_edit_text':
-          return await this.handleGetTextEditText(request.params.arguments);
+          return await this.handleGetTextEditText(args);
         case 'set_text_edit_text':
-          return await this.handleSetTextEditText(request.params.arguments);
+          return await this.handleSetTextEditText(args);
         case 'set_label_horizontal_alignment':
-          return await this.handleSetLabelHorizontalAlignment(request.params.arguments);
+          return await this.handleSetLabelHorizontalAlignment(args);
         case 'create_resource_file':
-          return await this.handleCreateResourceFile(request.params.arguments);
+          return await this.handleCreateResourceFile(args);
         case 'get_resource_file_content':
-          return await this.handleGetResourceFileContent(request.params.arguments);
+          return await this.handleGetResourceFileContent(args);
         case 'write_resource_file_content':
-          return await this.handleWriteResourceFileContent(request.params.arguments);
+          return await this.handleWriteResourceFileContent(args);
         case 'list_project_3d_models':
-          return await this.handleListProject3dModels(request.params.arguments);
+          return await this.handleListProject3dModels(args);
         case 'get_node_property_list':
-          return await this.handleGetNodePropertyList(request.params.arguments);
+          return await this.handleGetNodePropertyList(args);
         case 'get_node_method_list':
-          return await this.handleGetNodeMethodList(request.params.arguments);
+          return await this.handleGetNodeMethodList(args);
         case 'call_node_method':
-          return await this.handleCallNodeMethod(request.params.arguments);
+          return await this.handleCallNodeMethod(args);
         case 'get_node_constant':
-          return await this.handleGetNodeConstant(request.params.arguments);
+          return await this.handleGetNodeConstant(args);
         case 'set_process_enabled':
-          return await this.handleSetProcessEnabled(request.params.arguments);
+          return await this.handleSetProcessEnabled(args);
         case 'get_process_state':
-          return await this.handleGetProcessState(request.params.arguments);
+          return await this.handleGetProcessState(args);
         case 'add_to_scene_at_runtime':
-          return await this.handleAddToSceneAtRuntime(request.params.arguments);
+          return await this.handleAddToSceneAtRuntime(args);
         case 'remove_node_in_game':
-          return await this.handleRemoveNodeInGame(request.params.arguments);
+          return await this.handleRemoveNodeInGame(args);
         case 'reparent_node_in_game':
-          return await this.handleReparentNodeInGame(request.params.arguments);
+          return await this.handleReparentNodeInGame(args);
         case 'set_node_name':
-          return await this.handleSetNodeName(request.params.arguments);
+          return await this.handleSetNodeName(args);
         case 'get_children_count':
-          return await this.handleGetChildrenCount(request.params.arguments);
+          return await this.handleGetChildrenCount(args);
         case 'find_node_by_name':
-          return await this.handleFindNodeByName(request.params.arguments);
+          return await this.handleFindNodeByName(args);
         case 'get_scene_tree_snapshot':
-          return await this.handleGetSceneTreeSnapshot(request.params.arguments);
+          return await this.handleGetSceneTreeSnapshot(args);
         case 'get_node_at_position_2d':
-          return await this.handleGetNodeAtPosition2d(request.params.arguments);
+          return await this.handleGetNodeAtPosition2d(args);
         case 'raycast_3d':
-          return await this.handleRaycast3d(request.params.arguments);
+          return await this.handleRaycast3d(args);
         case 'overlap_sphere_3d':
-          return await this.handleOverlapSphere3d(request.params.arguments);
+          return await this.handleOverlapSphere3d(args);
         case 'get_physics_bodies_in_area':
-          return await this.handleGetPhysicsBodiesInArea(request.params.arguments);
+          return await this.handleGetPhysicsBodiesInArea(args);
         case 'set_linear_velocity':
-          return await this.handleSetLinearVelocity(request.params.arguments);
+          return await this.handleSetLinearVelocity(args);
         case 'set_angular_velocity':
-          return await this.handleSetAngularVelocity(request.params.arguments);
+          return await this.handleSetAngularVelocity(args);
         case 'get_distance_3d':
-          return await this.handleGetDistance3d(request.params.arguments);
+          return await this.handleGetDistance3d(args);
         case 'move_toward_3d':
-          return await this.handleMoveToward3d(request.params.arguments);
+          return await this.handleMoveToward3d(args);
         case 'get_navigation_path':
-          return await this.handleGetNavigationPath(request.params.arguments);
+          return await this.handleGetNavigationPath(args);
         case 'force_garbage_collect':
-          return await this.handleForceGarbageCollect(request.params.arguments);
+          return await this.handleForceGarbageCollect(args);
         case 'set_physics_fps':
-          return await this.handleSetPhysicsFps(request.params.arguments);
+          return await this.handleSetPhysicsFps(args);
         case 'get_node_count_in_tree':
-          return await this.handleGetNodeCountInTree(request.params.arguments);
+          return await this.handleGetNodeCountInTree(args);
         case 'print_to_godot_console':
-          return await this.handlePrintToGodotConsole(request.params.arguments);
+          return await this.handlePrintToGodotConsole(args);
         case 'get_scene_change_history':
-          return await this.handleGetSceneChangeHistory(request.params.arguments);
+          return await this.handleGetSceneChangeHistory(args);
         case 'get_signal_list':
-          return await this.handleGetSignalList(request.params.arguments);
+          return await this.handleGetSignalList(args);
         case 'wait_for_signal':
-          return await this.handleWaitForSignal(request.params.arguments);
+          return await this.handleWaitForSignal(args);
         case 'get_editor_theme_color':
-          return await this.handleGetEditorThemeColor(request.params.arguments);
+          return await this.handleGetEditorThemeColor(args);
         case 'add_spot_light_3d_to_scene':
-          return await this.handleAddSpotLight3dToScene(request.params.arguments);
+          return await this.handleAddSpotLight3dToScene(args);
         case 'add_omni_light_3d_to_scene':
-          return await this.handleAddOmniLight3dToScene(request.params.arguments);
+          return await this.handleAddOmniLight3dToScene(args);
         case 'add_directional_light_3d_to_scene':
-          return await this.handleAddDirectionalLight3dToScene(request.params.arguments);
+          return await this.handleAddDirectionalLight3dToScene(args);
         case 'add_csg_sphere_to_scene':
-          return await this.handleAddCsgSphereToScene(request.params.arguments);
+          return await this.handleAddCsgSphereToScene(args);
         case 'add_csg_box_to_scene':
-          return await this.handleAddCsgBoxToScene(request.params.arguments);
+          return await this.handleAddCsgBoxToScene(args);
         case 'add_csg_cylinder_to_scene':
-          return await this.handleAddCsgCylinderToScene(request.params.arguments);
+          return await this.handleAddCsgCylinderToScene(args);
         case 'add_csg_torus_to_scene':
-          return await this.handleAddCsgTorusToScene(request.params.arguments);
+          return await this.handleAddCsgTorusToScene(args);
         case 'add_csg_combiner_to_scene':
-          return await this.handleAddCsgCombinerToScene(request.params.arguments);
+          return await this.handleAddCsgCombinerToScene(args);
         case 'add_animated_sprite_3d_to_scene':
-          return await this.handleAddAnimatedSprite3dToScene(request.params.arguments);
+          return await this.handleAddAnimatedSprite3dToScene(args);
         case 'add_billboard_3d_to_scene':
-          return await this.handleAddBillboard3dToScene(request.params.arguments);
+          return await this.handleAddBillboard3dToScene(args);
         case 'set_spot_light_angle':
-          return await this.handleSetSpotLightAngle(request.params.arguments);
+          return await this.handleSetSpotLightAngle(args);
         case 'set_light_shadow':
-          return await this.handleSetLightShadow(request.params.arguments);
+          return await this.handleSetLightShadow(args);
         case 'set_light_range':
-          return await this.handleSetLightRange(request.params.arguments);
+          return await this.handleSetLightRange(args);
         case 'set_mesh_surface_material':
-          return await this.handleSetMeshSurfaceMaterial(request.params.arguments);
+          return await this.handleSetMeshSurfaceMaterial(args);
         case 'get_mesh_surface_count':
-          return await this.handleGetMeshSurfaceCount(request.params.arguments);
+          return await this.handleGetMeshSurfaceCount(args);
         case 'generate_mesh_normals':
-          return await this.handleGenerateMeshNormals(request.params.arguments);
+          return await this.handleGenerateMeshNormals(args);
         case 'list_project_meshes':
-          return await this.handleListProjectMeshes(request.params.arguments);
+          return await this.handleListProjectMeshes(args);
         case 'get_node_2d_position':
-          return await this.handleGetNode2dPosition(request.params.arguments);
+          return await this.handleGetNode2dPosition(args);
         case 'set_node_2d_position':
-          return await this.handleSetNode2dPosition(request.params.arguments);
+          return await this.handleSetNode2dPosition(args);
         case 'rotate_node_2d':
-          return await this.handleRotateNode2d(request.params.arguments);
+          return await this.handleRotateNode2d(args);
         case 'scale_node_2d':
-          return await this.handleScaleNode2d(request.params.arguments);
+          return await this.handleScaleNode2d(args);
         case 'rotate_node_3d':
-          return await this.handleRotateNode3d(request.params.arguments);
+          return await this.handleRotateNode3d(args);
         case 'scale_node_3d':
-          return await this.handleScaleNode3d(request.params.arguments);
+          return await this.handleScaleNode3d(args);
         case 'get_node_2d_transform':
-          return await this.handleGetNode2dTransform(request.params.arguments);
+          return await this.handleGetNode2dTransform(args);
         case 'get_node_3d_transform':
-          return await this.handleGetNode3dTransform(request.params.arguments);
+          return await this.handleGetNode3dTransform(args);
         case 'align_node_to_path':
-          return await this.handleAlignNodeToPath(request.params.arguments);
+          return await this.handleAlignNodeToPath(args);
         case 'get_path_2d_length':
-          return await this.handleGetPath2dLength(request.params.arguments);
+          return await this.handleGetPath2dLength(args);
         case 'set_animated_sprite_animation':
-          return await this.handleSetAnimatedSpriteAnimation(request.params.arguments);
+          return await this.handleSetAnimatedSpriteAnimation(args);
         case 'get_animated_sprite_frame':
-          return await this.handleGetAnimatedSpriteFrame(request.params.arguments);
+          return await this.handleGetAnimatedSpriteFrame(args);
         case 'set_animated_sprite_frame':
-          return await this.handleSetAnimatedSpriteFrame(request.params.arguments);
+          return await this.handleSetAnimatedSpriteFrame(args);
         case 'set_audio_stream_player_stream':
-          return await this.handleSetAudioStreamPlayerStream(request.params.arguments);
+          return await this.handleSetAudioStreamPlayerStream(args);
         case 'set_audio_stream_pitch_scale':
-          return await this.handleSetAudioStreamPitchScale(request.params.arguments);
+          return await this.handleSetAudioStreamPitchScale(args);
         case 'get_audio_stream_position':
-          return await this.handleGetAudioStreamPosition(request.params.arguments);
+          return await this.handleGetAudioStreamPosition(args);
         case 'seek_audio_stream':
-          return await this.handleSeekAudioStream(request.params.arguments);
+          return await this.handleSeekAudioStream(args);
         case 'get_character_body_velocity':
-          return await this.handleGetCharacterBodyVelocity(request.params.arguments);
+          return await this.handleGetCharacterBodyVelocity(args);
         case 'set_character_body_velocity':
-          return await this.handleSetCharacterBodyVelocity(request.params.arguments);
+          return await this.handleSetCharacterBodyVelocity(args);
         case 'move_and_slide_character':
-          return await this.handleMoveAndSlideCharacter(request.params.arguments);
+          return await this.handleMoveAndSlideCharacter(args);
         case 'is_character_on_floor':
-          return await this.handleIsCharacterOnFloor(request.params.arguments);
+          return await this.handleIsCharacterOnFloor(args);
         case 'get_navigation_agent_target':
-          return await this.handleGetNavigationAgentTarget(request.params.arguments);
+          return await this.handleGetNavigationAgentTarget(args);
         case 'set_tween_property':
-          return await this.handleSetTweenProperty(request.params.arguments);
+          return await this.handleSetTweenProperty(args);
         case 'kill_tweens_on_node':
-          return await this.handleKillTweensOnNode(request.params.arguments);
+          return await this.handleKillTweensOnNode(args);
         case 'get_screen_size':
-          return await this.handleGetScreenSize(request.params.arguments);
+          return await this.handleGetScreenSize(args);
         case 'get_screen_count':
-          return await this.handleGetScreenCount(request.params.arguments);
+          return await this.handleGetScreenCount(args);
         case 'set_display_mode':
-          return await this.handleSetDisplayMode(request.params.arguments);
+          return await this.handleSetDisplayMode(args);
         case 'get_global_mouse_position':
-          return await this.handleGetGlobalMousePosition(request.params.arguments);
+          return await this.handleGetGlobalMousePosition(args);
         case 'get_joy_count':
-          return await this.handleGetJoyCount(request.params.arguments);
+          return await this.handleGetJoyCount(args);
         case 'get_joy_name':
-          return await this.handleGetJoyName(request.params.arguments);
+          return await this.handleGetJoyName(args);
         case 'get_os_name':
-          return await this.handleGetOsName(request.params.arguments);
+          return await this.handleGetOsName(args);
         case 'get_cpu_count':
-          return await this.handleGetCpuCount(request.params.arguments);
+          return await this.handleGetCpuCount(args);
         case 'add_sub_viewport_container_to_scene':
-          return await this.handleAddSubViewportContainerToScene(request.params.arguments);
+          return await this.handleAddSubViewportContainerToScene(args);
         case 'add_sub_viewport_to_scene':
-          return await this.handleAddSubViewportToScene(request.params.arguments);
+          return await this.handleAddSubViewportToScene(args);
         case 'add_visible_on_screen_notifier_2d':
-          return await this.handleAddVisibleOnScreenNotifier2d(request.params.arguments);
+          return await this.handleAddVisibleOnScreenNotifier2d(args);
         case 'add_voxel_gi_to_scene':
-          return await this.handleAddVoxelGiToScene(request.params.arguments);
+          return await this.handleAddVoxelGiToScene(args);
         case 'get_particles_amount':
-          return await this.handleGetParticlesAmount(request.params.arguments);
+          return await this.handleGetParticlesAmount(args);
         case 'set_particles_amount':
-          return await this.handleSetParticlesAmount(request.params.arguments);
+          return await this.handleSetParticlesAmount(args);
         case 'get_environment_property':
-          return await this.handleGetEnvironmentProperty(request.params.arguments);
+          return await this.handleGetEnvironmentProperty(args);
         case 'get_skeleton_bone_count':
-          return await this.handleGetSkeletonBoneCount(request.params.arguments);
+          return await this.handleGetSkeletonBoneCount(args);
         case 'get_skeleton_bone_names':
-          return await this.handleGetSkeletonBoneNames(request.params.arguments);
+          return await this.handleGetSkeletonBoneNames(args);
         case 'set_skeleton_bone_pose_rotation':
-          return await this.handleSetSkeletonBonePoseRotation(request.params.arguments);
+          return await this.handleSetSkeletonBonePoseRotation(args);
         case 'reset_skeleton_pose':
-          return await this.handleResetSkeletonPose(request.params.arguments);
+          return await this.handleResetSkeletonPose(args);
         case 'get_node_class':
-          return await this.handleGetNodeClass(request.params.arguments);
+          return await this.handleGetNodeClass(args);
         case 'add_ray_cast_2d_to_scene':
-          return await this.handleAddRayCast2dToScene(request.params.arguments);
+          return await this.handleAddRayCast2dToScene(args);
         case 'add_shape_cast_2d_to_scene':
-          return await this.handleAddShapeCast2dToScene(request.params.arguments);
+          return await this.handleAddShapeCast2dToScene(args);
         case 'add_collision_polygon_2d_to_scene':
-          return await this.handleAddCollisionPolygon2dToScene(request.params.arguments);
+          return await this.handleAddCollisionPolygon2dToScene(args);
         case 'add_collision_polygon_3d_to_scene':
-          return await this.handleAddCollisionPolygon3dToScene(request.params.arguments);
+          return await this.handleAddCollisionPolygon3dToScene(args);
         case 'cast_ray_in_game':
-          return await this.handleCastRayInGame(request.params.arguments);
+          return await this.handleCastRayInGame(args);
         case 'cast_ray_2d_in_game':
-          return await this.handleCastRay2dInGame(request.params.arguments);
+          return await this.handleCastRay2dInGame(args);
         case 'get_physics_bodies_at_point':
-          return await this.handleGetPhysicsBodiesAtPoint(request.params.arguments);
+          return await this.handleGetPhysicsBodiesAtPoint(args);
         case 'get_overlapping_bodies':
-          return await this.handleGetOverlappingBodies(request.params.arguments);
+          return await this.handleGetOverlappingBodies(args);
         case 'get_overlapping_areas':
-          return await this.handleGetOverlappingAreas(request.params.arguments);
+          return await this.handleGetOverlappingAreas(args);
         case 'set_ray_cast_enabled':
-          return await this.handleSetRayCastEnabled(request.params.arguments);
+          return await this.handleSetRayCastEnabled(args);
         case 'is_ray_cast_colliding':
-          return await this.handleIsRayCastColliding(request.params.arguments);
+          return await this.handleIsRayCastColliding(args);
         case 'get_ray_cast_collider':
-          return await this.handleGetRayCastCollider(request.params.arguments);
+          return await this.handleGetRayCastCollider(args);
         case 'set_camera_current':
-          return await this.handleSetCameraCurrent(request.params.arguments);
+          return await this.handleSetCameraCurrent(args);
         case 'get_current_camera':
-          return await this.handleGetCurrentCamera(request.params.arguments);
+          return await this.handleGetCurrentCamera(args);
         case 'add_navigation_agent_2d_to_scene':
-          return await this.handleAddNavigationAgent2dToScene(request.params.arguments);
+          return await this.handleAddNavigationAgent2dToScene(args);
         case 'add_navigation_agent_3d_to_scene':
-          return await this.handleAddNavigationAgent3dToScene(request.params.arguments);
+          return await this.handleAddNavigationAgent3dToScene(args);
         case 'add_joint_3d_to_scene':
-          return await this.handleAddJoint3dToScene(request.params.arguments);
+          return await this.handleAddJoint3dToScene(args);
         case 'add_hinge_joint_3d_to_scene':
-          return await this.handleAddHingeJoint3dToScene(request.params.arguments);
+          return await this.handleAddHingeJoint3dToScene(args);
         case 'add_groove_joint_2d_to_scene':
-          return await this.handleAddGrooveJoint2dToScene(request.params.arguments);
+          return await this.handleAddGrooveJoint2dToScene(args);
         case 'add_pin_joint_2d_to_scene':
-          return await this.handleAddPinJoint2dToScene(request.params.arguments);
+          return await this.handleAddPinJoint2dToScene(args);
         case 'set_navigation_agent_target':
-          return await this.handleSetNavigationAgentTarget(request.params.arguments);
+          return await this.handleSetNavigationAgentTarget(args);
         case 'is_navigation_finished':
-          return await this.handleIsNavigationFinished(request.params.arguments);
+          return await this.handleIsNavigationFinished(args);
         case 'get_next_path_position':
-          return await this.handleGetNextPathPosition(request.params.arguments);
+          return await this.handleGetNextPathPosition(args);
         case 'set_rigid_body_sleeping':
-          return await this.handleSetRigidBodySleeping(request.params.arguments);
+          return await this.handleSetRigidBodySleeping(args);
         case 'apply_force_to_rigid_body':
-          return await this.handleApplyForceToRigidBody(request.params.arguments);
+          return await this.handleApplyForceToRigidBody(args);
         case 'get_rigid_body_linear_velocity':
-          return await this.handleGetRigidBodyLinearVelocity(request.params.arguments);
+          return await this.handleGetRigidBodyLinearVelocity(args);
         case 'set_rigid_body_linear_velocity':
-          return await this.handleSetRigidBodyLinearVelocity(request.params.arguments);
+          return await this.handleSetRigidBodyLinearVelocity(args);
         case 'get_vehicle_body_speed':
-          return await this.handleGetVehicleBodySpeed(request.params.arguments);
+          return await this.handleGetVehicleBodySpeed(args);
         case 'set_vehicle_engine_force':
-          return await this.handleSetVehicleEngineForce(request.params.arguments);
+          return await this.handleSetVehicleEngineForce(args);
         case 'add_http_request_to_scene':
-          return await this.handleAddHttpRequestToScene(request.params.arguments);
+          return await this.handleAddHttpRequestToScene(args);
         case 'add_multiplayer_spawner_to_scene':
-          return await this.handleAddMultiplayerSpawnerToScene(request.params.arguments);
+          return await this.handleAddMultiplayerSpawnerToScene(args);
         case 'add_multiplayer_synchronizer_to_scene':
-          return await this.handleAddMultiplayerSynchronizerToScene(request.params.arguments);
+          return await this.handleAddMultiplayerSynchronizerToScene(args);
         case 'add_scene_tree_timer_via_code':
-          return await this.handleAddSceneTreeTimerViaCode(request.params.arguments);
+          return await this.handleAddSceneTreeTimerViaCode(args);
         case 'get_time_since_start':
-          return await this.handleGetTimeSinceStart(request.params.arguments);
+          return await this.handleGetTimeSinceStart(args);
         case 'get_engine_version':
-          return await this.handleGetEngineVersion(request.params.arguments);
+          return await this.handleGetEngineVersion(args);
         case 'get_time_scale':
-          return await this.handleGetTimeScale(request.params.arguments);
+          return await this.handleGetTimeScale(args);
         case 'get_physics_fps':
-          return await this.handleGetPhysicsFps(request.params.arguments);
+          return await this.handleGetPhysicsFps(args);
         case 'list_signals_on_node':
-          return await this.handleListSignalsOnNode(request.params.arguments);
+          return await this.handleListSignalsOnNode(args);
         case 'has_node_metadata':
-          return await this.handleHasNodeMetadata(request.params.arguments);
+          return await this.handleHasNodeMetadata(args);
         case 'get_node_custom_minimum_size':
-          return await this.handleGetNodeCustomMinimumSize(request.params.arguments);
+          return await this.handleGetNodeCustomMinimumSize(args);
         case 'set_node_custom_minimum_size':
-          return await this.handleSetNodeCustomMinimumSize(request.params.arguments);
+          return await this.handleSetNodeCustomMinimumSize(args);
         case 'get_label_text':
-          return await this.handleGetLabelText(request.params.arguments);
+          return await this.handleGetLabelText(args);
         case 'set_label_text':
-          return await this.handleSetLabelText(request.params.arguments);
+          return await this.handleSetLabelText(args);
         case 'get_progress_bar_value':
-          return await this.handleGetProgressBarValue(request.params.arguments);
+          return await this.handleGetProgressBarValue(args);
         case 'get_slider_value':
-          return await this.handleGetSliderValue(request.params.arguments);
+          return await this.handleGetSliderValue(args);
         case 'is_button_pressed':
-          return await this.handleIsButtonPressed(request.params.arguments);
+          return await this.handleIsButtonPressed(args);
         case 'set_button_pressed':
-          return await this.handleSetButtonPressed(request.params.arguments);
+          return await this.handleSetButtonPressed(args);
         case 'click_button':
-          return await this.handleClickButton(request.params.arguments);
+          return await this.handleClickButton(args);
         case 'get_tab_container_tab':
-          return await this.handleGetTabContainerTab(request.params.arguments);
+          return await this.handleGetTabContainerTab(args);
         case 'set_tab_container_tab':
-          return await this.handleSetTabContainerTab(request.params.arguments);
+          return await this.handleSetTabContainerTab(args);
         case 'get_texture_rect_texture':
-          return await this.handleGetTextureRectTexture(request.params.arguments);
+          return await this.handleGetTextureRectTexture(args);
         case 'set_texture_rect_texture':
-          return await this.handleSetTextureRectTexture(request.params.arguments);
+          return await this.handleSetTextureRectTexture(args);
         case 'get_color_rect_color':
-          return await this.handleGetColorRectColor(request.params.arguments);
+          return await this.handleGetColorRectColor(args);
         case 'set_color_rect_color':
-          return await this.handleSetColorRectColor(request.params.arguments);
+          return await this.handleSetColorRectColor(args);
         case 'get_panel_stylebox':
-          return await this.handleGetPanelStylebox(request.params.arguments);
+          return await this.handleGetPanelStylebox(args);
         case 'get_control_size':
-          return await this.handleGetControlSize(request.params.arguments);
+          return await this.handleGetControlSize(args);
         case 'set_control_position':
-          return await this.handleSetControlPosition(request.params.arguments);
+          return await this.handleSetControlPosition(args);
         case 'set_control_size':
-          return await this.handleSetControlSize(request.params.arguments);
+          return await this.handleSetControlSize(args);
         case 'get_children_of_node':
-          return await this.handleGetChildrenOfNode(request.params.arguments);
+          return await this.handleGetChildrenOfNode(args);
         case 'get_parent_of_node':
-          return await this.handleGetParentOfNode(request.params.arguments);
+          return await this.handleGetParentOfNode(args);
         case 'count_nodes_by_class':
-          return await this.handleCountNodesByClass(request.params.arguments);
+          return await this.handleCountNodesByClass(args);
         case 'find_nodes_by_class':
-          return await this.handleFindNodesByClass(request.params.arguments);
+          return await this.handleFindNodesByClass(args);
         case 'get_node_property':
-          return await this.handleGetNodeProperty(request.params.arguments);
+          return await this.handleGetNodeProperty(args);
         case 'remove_node_from_game':
-          return await this.handleRemoveNodeFromGame(request.params.arguments);
+          return await this.handleRemoveNodeFromGame(args);
         case 'add_child_node_in_game':
-          return await this.handleAddChildNodeInGame(request.params.arguments);
+          return await this.handleAddChildNodeInGame(args);
         case 'change_scene_to':
-          return await this.handleChangeSceneTo(request.params.arguments);
+          return await this.handleChangeSceneTo(args);
         case 'reload_current_scene':
-          return await this.handleReloadCurrentScene(request.params.arguments);
+          return await this.handleReloadCurrentScene(args);
         case 'quit_game':
-          return await this.handleQuitGame(request.params.arguments);
+          return await this.handleQuitGame(args);
         case 'set_vehicle_steering':
-          return await this.handleSetVehicleSteering(request.params.arguments);
+          return await this.handleSetVehicleSteering(args);
         case 'set_vehicle_brake':
-          return await this.handleSetVehicleBrake(request.params.arguments);
+          return await this.handleSetVehicleBrake(args);
         case 'get_audio_bus_count':
-          return await this.handleGetAudioBusCount(request.params.arguments);
+          return await this.handleGetAudioBusCount(args);
         case 'get_audio_bus_name':
-          return await this.handleGetAudioBusName(request.params.arguments);
+          return await this.handleGetAudioBusName(args);
         case 'set_audio_bus_volume_db':
-          return await this.handleSetAudioBusVolumeDb(request.params.arguments);
+          return await this.handleSetAudioBusVolumeDb(args);
         case 'get_audio_bus_volume_db':
-          return await this.handleGetAudioBusVolumeDb(request.params.arguments);
+          return await this.handleGetAudioBusVolumeDb(args);
         case 'set_audio_bus_muted':
-          return await this.handleSetAudioBusMuted(request.params.arguments);
+          return await this.handleSetAudioBusMuted(args);
         case 'is_audio_bus_muted':
-          return await this.handleIsAudioBusMuted(request.params.arguments);
+          return await this.handleIsAudioBusMuted(args);
         case 'set_audio_stream_player_bus':
-          return await this.handleSetAudioStreamPlayerBus(request.params.arguments);
+          return await this.handleSetAudioStreamPlayerBus(args);
         case 'create_gdscript_resource':
-          return await this.handleCreateGdscriptResource(request.params.arguments);
+          return await this.handleCreateGdscriptResource(args);
         case 'list_project_gdscript_files':
-          return await this.handleListProjectGdscriptFiles(request.params.arguments);
+          return await this.handleListProjectGdscriptFiles(args);
         case 'list_project_shaders_glsl':
-          return await this.handleListProjectShadersGlsl(request.params.arguments);
+          return await this.handleListProjectShadersGlsl(args);
         case 'get_project_directory_structure':
-          return await this.handleGetProjectDirectoryStructure(request.params.arguments);
+          return await this.handleGetProjectDirectoryStructure(args);
         case 'get_file_content':
-          return await this.handleGetFileContent(request.params.arguments);
+          return await this.handleGetFileContent(args);
         case 'write_file_content':
-          return await this.handleWriteFileContent(request.params.arguments);
+          return await this.handleWriteFileContent(args);
         case 'copy_file':
-          return await this.handleCopyFile(request.params.arguments);
+          return await this.handleCopyFile(args);
         case 'file_exists_in_project':
-          return await this.handleFileExistsInProject(request.params.arguments);
+          return await this.handleFileExistsInProject(args);
         case 'get_file_size':
-          return await this.handleGetFileSize(request.params.arguments);
+          return await this.handleGetFileSize(args);
         case 'search_in_file':
-          return await this.handleSearchInFile(request.params.arguments);
+          return await this.handleSearchInFile(args);
         case 'replace_in_file':
-          return await this.handleReplaceInFile(request.params.arguments);
+          return await this.handleReplaceInFile(args);
         case 'get_godot_project_settings':
-          return await this.handleGetGodotProjectSettings(request.params.arguments);
+          return await this.handleGetGodotProjectSettings(args);
         case 'list_project_import_files':
-          return await this.handleListProjectImportFiles(request.params.arguments);
+          return await this.handleListProjectImportFiles(args);
         case 'append_to_file':
-          return await this.handleAppendToFile(request.params.arguments);
+          return await this.handleAppendToFile(args);
         case 'get_node_count_in_scene_file':
-          return await this.handleGetNodeCountInSceneFile(request.params.arguments);
+          return await this.handleGetNodeCountInSceneFile(args);
         case 'get_scene_file_connections':
-          return await this.handleGetSceneFileConnections(request.params.arguments);
+          return await this.handleGetSceneFileConnections(args);
         case 'get_project_export_presets':
-          return await this.handleGetProjectExportPresets(request.params.arguments);
+          return await this.handleGetProjectExportPresets(args);
         case 'add_spring_joint_2d_to_scene':
-          return await this.handleAddSpringJoint2dToScene(request.params.arguments);
+          return await this.handleAddSpringJoint2dToScene(args);
         case 'add_remote_transform_2d_to_scene':
-          return await this.handleAddRemoteTransform2dToScene(request.params.arguments);
+          return await this.handleAddRemoteTransform2dToScene(args);
         case 'add_node_3d_to_scene':
-          return await this.handleAddNode3dToScene(request.params.arguments);
+          return await this.handleAddNode3dToScene(args);
         case 'add_node_2d_to_scene':
-          return await this.handleAddNode2dToScene(request.params.arguments);
+          return await this.handleAddNode2dToScene(args);
         case 'add_path_follow_2d_to_scene':
-          return await this.handleAddPathFollow2dToScene(request.params.arguments);
+          return await this.handleAddPathFollow2dToScene(args);
         case 'add_path_follow_3d_to_scene':
-          return await this.handleAddPathFollow3dToScene(request.params.arguments);
+          return await this.handleAddPathFollow3dToScene(args);
         case 'add_mesh_instance_2d_to_scene':
-          return await this.handleAddMeshInstance2dToScene(request.params.arguments);
+          return await this.handleAddMeshInstance2dToScene(args);
         case 'add_occluder_instance_3d_to_scene':
-          return await this.handleAddOccluderInstance3dToScene(request.params.arguments);
+          return await this.handleAddOccluderInstance3dToScene(args);
         case 'add_xr_origin_3d_to_scene':
-          return await this.handleAddXrOrigin3dToScene(request.params.arguments);
+          return await this.handleAddXrOrigin3dToScene(args);
         case 'add_xr_camera_3d_to_scene':
-          return await this.handleAddXrCamera3dToScene(request.params.arguments);
+          return await this.handleAddXrCamera3dToScene(args);
         case 'add_xr_controller_3d_to_scene':
-          return await this.handleAddXrController3dToScene(request.params.arguments);
+          return await this.handleAddXrController3dToScene(args);
         case 'add_open_xr_hand_to_scene':
-          return await this.handleAddOpenXrHandToScene(request.params.arguments);
+          return await this.handleAddOpenXrHandToScene(args);
         case 'get_animation_tree_active':
-          return await this.handleGetAnimationTreeActive(request.params.arguments);
+          return await this.handleGetAnimationTreeActive(args);
         case 'set_animation_tree_active':
-          return await this.handleSetAnimationTreeActive(request.params.arguments);
+          return await this.handleSetAnimationTreeActive(args);
         case 'get_animation_tree_parameter':
-          return await this.handleGetAnimationTreeParameter(request.params.arguments);
+          return await this.handleGetAnimationTreeParameter(args);
         case 'set_animation_tree_parameter':
-          return await this.handleSetAnimationTreeParameter(request.params.arguments);
+          return await this.handleSetAnimationTreeParameter(args);
         case 'get_blend_shape_count':
-          return await this.handleGetBlendShapeCount(request.params.arguments);
+          return await this.handleGetBlendShapeCount(args);
         case 'get_blend_shape_value':
-          return await this.handleGetBlendShapeValue(request.params.arguments);
+          return await this.handleGetBlendShapeValue(args);
         case 'set_blend_shape_value':
-          return await this.handleSetBlendShapeValue(request.params.arguments);
+          return await this.handleSetBlendShapeValue(args);
         case 'get_material_property':
-          return await this.handleGetMaterialProperty(request.params.arguments);
+          return await this.handleGetMaterialProperty(args);
         case 'create_material_override':
-          return await this.handleCreateMaterialOverride(request.params.arguments);
+          return await this.handleCreateMaterialOverride(args);
         case 'get_shader_global_parameter':
-          return await this.handleGetShaderGlobalParameter(request.params.arguments);
+          return await this.handleGetShaderGlobalParameter(args);
         case 'set_shader_global_parameter':
-          return await this.handleSetShaderGlobalParameter(request.params.arguments);
+          return await this.handleSetShaderGlobalParameter(args);
         case 'get_tilemap_used_rect':
-          return await this.handleGetTilemapUsedRect(request.params.arguments);
+          return await this.handleGetTilemapUsedRect(args);
         case 'get_tilemap_cell_at':
-          return await this.handleGetTilemapCellAt(request.params.arguments);
+          return await this.handleGetTilemapCellAt(args);
         case 'set_tilemap_cell':
-          return await this.handleSetTilemapCell(request.params.arguments);
+          return await this.handleSetTilemapCell(args);
         case 'clear_tilemap_layer':
-          return await this.handleClearTilemapLayer(request.params.arguments);
+          return await this.handleClearTilemapLayer(args);
         case 'get_tilemap_layer_count':
-          return await this.handleGetTilemapLayerCount(request.params.arguments);
+          return await this.handleGetTilemapLayerCount(args);
         case 'set_tilemap_layer_enabled':
-          return await this.handleSetTilemapLayerEnabled(request.params.arguments);
+          return await this.handleSetTilemapLayerEnabled(args);
         case 'world_to_map':
-          return await this.handleWorldToMap(request.params.arguments);
+          return await this.handleWorldToMap(args);
         case 'map_to_world':
-          return await this.handleMapToWorld(request.params.arguments);
+          return await this.handleMapToWorld(args);
         case 'get_sprite_frame':
-          return await this.handleGetSpriteFrame(request.params.arguments);
+          return await this.handleGetSpriteFrame(args);
         case 'set_sprite_frame':
-          return await this.handleSetSpriteFrame(request.params.arguments);
+          return await this.handleSetSpriteFrame(args);
         case 'get_sprite_texture':
-          return await this.handleGetSpriteTexture(request.params.arguments);
+          return await this.handleGetSpriteTexture(args);
         case 'set_sprite_texture':
-          return await this.handleSetSpriteTexture(request.params.arguments);
+          return await this.handleSetSpriteTexture(args);
         case 'flip_sprite':
-          return await this.handleFlipSprite(request.params.arguments);
+          return await this.handleFlipSprite(args);
         case 'get_label_font_size':
-          return await this.handleGetLabelFontSize(request.params.arguments);
+          return await this.handleGetLabelFontSize(args);
         case 'set_label_font_size':
-          return await this.handleSetLabelFontSize(request.params.arguments);
+          return await this.handleSetLabelFontSize(args);
         case 'set_label_color':
-          return await this.handleSetLabelColor(request.params.arguments);
+          return await this.handleSetLabelColor(args);
         case 'get_button_text':
-          return await this.handleGetButtonText(request.params.arguments);
+          return await this.handleGetButtonText(args);
         case 'set_button_text':
-          return await this.handleSetButtonText(request.params.arguments);
+          return await this.handleSetButtonText(args);
         case 'list_tool_categories':
-          return await this.handleListToolCategories(request.params.arguments);
+          return await this.handleListToolCategories(args);
         case 'search_tools':
-          return await this.handleSearchTools(request.params.arguments);
+          return await this.handleSearchTools(args);
         case 'list_tools_in_category':
-          return await this.handleListToolsInCategory(request.params.arguments);
+          return await this.handleListToolsInCategory(args);
         case 'get_beginner_guide':
-          return await this.handleGetBeginnerGuide(request.params.arguments);
+          return await this.handleGetBeginnerGuide(args);
         case 'get_workflow':
-          return await this.handleGetWorkflow(request.params.arguments);
+          return await this.handleGetWorkflow(args);
         // Batch 51 switch cases — Group A: 3D physics runtime tools
         case 'set_physics_body_3d_collision_layer':
-          return await this.handleSetPhysicsBody3dCollisionLayer(request.params.arguments);
+          return await this.handleSetPhysicsBody3dCollisionLayer(args);
         case 'get_physics_body_3d_collision_layer':
-          return await this.handleGetPhysicsBody3dCollisionLayer(request.params.arguments);
+          return await this.handleGetPhysicsBody3dCollisionLayer(args);
         case 'set_physics_body_3d_collision_mask':
-          return await this.handleSetPhysicsBody3dCollisionMask(request.params.arguments);
+          return await this.handleSetPhysicsBody3dCollisionMask(args);
         case 'get_physics_body_3d_collision_mask':
-          return await this.handleGetPhysicsBody3dCollisionMask(request.params.arguments);
+          return await this.handleGetPhysicsBody3dCollisionMask(args);
         case 'set_rigid_body_3d_sleeping':
-          return await this.handleSetRigidBody3dSleeping(request.params.arguments);
+          return await this.handleSetRigidBody3dSleeping(args);
         case 'get_rigid_body_3d_state':
-          return await this.handleGetRigidBody3dState(request.params.arguments);
+          return await this.handleGetRigidBody3dState(args);
         case 'set_character_body_3d_velocity':
-          return await this.handleSetCharacterBody3dVelocity(request.params.arguments);
+          return await this.handleSetCharacterBody3dVelocity(args);
         case 'get_character_body_3d_velocity':
-          return await this.handleGetCharacterBody3dVelocity(request.params.arguments);
+          return await this.handleGetCharacterBody3dVelocity(args);
         case 'is_character_body_3d_on_floor':
-          return await this.handleIsCharacterBody3dOnFloor(request.params.arguments);
+          return await this.handleIsCharacterBody3dOnFloor(args);
         case 'apply_impulse_3d':
-          return await this.handleApplyImpulse3d(request.params.arguments);
+          return await this.handleApplyImpulse3d(args);
         // Batch 51 switch cases — Group B: Environment & rendering tools
         case 'get_environment_info':
-          return await this.handleGetEnvironmentInfo(request.params.arguments);
+          return await this.handleGetEnvironmentInfo(args);
         case 'set_environment_brightness':
-          return await this.handleSetEnvironmentBrightness(request.params.arguments);
+          return await this.handleSetEnvironmentBrightness(args);
         case 'set_directional_light_energy':
-          return await this.handleSetDirectionalLightEnergy(request.params.arguments);
+          return await this.handleSetDirectionalLightEnergy(args);
         case 'set_directional_light_color':
-          return await this.handleSetDirectionalLightColor(request.params.arguments);
+          return await this.handleSetDirectionalLightColor(args);
         case 'set_omni_light_energy':
-          return await this.handleSetOmniLightEnergy(request.params.arguments);
+          return await this.handleSetOmniLightEnergy(args);
         case 'set_omni_light_range':
-          return await this.handleSetOmniLightRange(request.params.arguments);
+          return await this.handleSetOmniLightRange(args);
         case 'set_spot_light_energy':
-          return await this.handleSetSpotLightEnergy(request.params.arguments);
+          return await this.handleSetSpotLightEnergy(args);
         // Batch 51 switch cases — Group C: Diagnostic / validation tools
         case 'validate_scene_physics':
-          return await this.handleValidateScenePhysics(request.params.arguments);
+          return await this.handleValidateScenePhysics(args);
         case 'find_node_by_type_in_scene':
-          return await this.handleFindNodeByTypeInScene(request.params.arguments);
+          return await this.handleFindNodeByTypeInScene(args);
         case 'list_nodes_without_scripts':
-          return await this.handleListNodesWithoutScripts(request.params.arguments);
+          return await this.handleListNodesWithoutScripts(args);
         case 'get_scene_root_type':
-          return await this.handleGetSceneRootType(request.params.arguments);
+          return await this.handleGetSceneRootType(args);
         case 'list_scene_signals':
-          return await this.handleListSceneSignals(request.params.arguments);
+          return await this.handleListSceneSignals(args);
         case 'check_node_has_children':
-          return await this.handleCheckNodeHasChildren(request.params.arguments);
+          return await this.handleCheckNodeHasChildren(args);
         case 'get_scene_resource_dependencies':
-          return await this.handleGetSceneResourceDependencies(request.params.arguments);
+          return await this.handleGetSceneResourceDependencies(args);
         // Batch 51 switch cases — Group D: Viewport & Camera 3D runtime tools
         case 'get_3d_camera_info':
-          return await this.handleGet3dCameraInfo(request.params.arguments);
+          return await this.handleGet3dCameraInfo(args);
         case 'set_camera_3d_fov':
-          return await this.handleSetCamera3dFov(request.params.arguments);
+          return await this.handleSetCamera3dFov(args);
         case 'set_camera_3d_near':
-          return await this.handleSetCamera3dNear(request.params.arguments);
+          return await this.handleSetCamera3dNear(args);
         case 'set_camera_3d_far':
-          return await this.handleSetCamera3dFar(request.params.arguments);
+          return await this.handleSetCamera3dFar(args);
         case 'make_camera_current':
-          return await this.handleMakeCameraCurrent(request.params.arguments);
+          return await this.handleMakeCameraCurrent(args);
         case 'get_visible_rect':
-          return await this.handleGetVisibleRect(request.params.arguments);
+          return await this.handleGetVisibleRect(args);
         // Batch 52 switch cases — Group A: 2D node adders
         case 'add_path_2d_to_scene':
-          return await this.handleAddPath2dToScene(request.params.arguments);
+          return await this.handleAddPath2dToScene(args);
         case 'add_tile_map_to_scene':
-          return await this.handleAddTileMapToScene(request.params.arguments);
+          return await this.handleAddTileMapToScene(args);
         case 'add_visibility_notifier_2d_to_scene':
-          return await this.handleAddVisibilityNotifier2dToScene(request.params.arguments);
+          return await this.handleAddVisibilityNotifier2dToScene(args);
         // Batch 52 switch cases — Group B: 3D node adders
         case 'add_visual_instance_3d_to_scene':
-          return await this.handleAddVisualInstance3dToScene(request.params.arguments);
+          return await this.handleAddVisualInstance3dToScene(args);
         // Batch 52 switch cases — Group C: UI / Control node adders
         case 'add_panel_to_scene':
-          return await this.handleAddPanelToScene(request.params.arguments);
+          return await this.handleAddPanelToScene(args);
         case 'add_h_split_container_to_scene':
-          return await this.handleAddHSplitContainerToScene(request.params.arguments);
+          return await this.handleAddHSplitContainerToScene(args);
         case 'add_v_split_container_to_scene':
-          return await this.handleAddVSplitContainerToScene(request.params.arguments);
+          return await this.handleAddVSplitContainerToScene(args);
         case 'add_grid_container_to_scene':
-          return await this.handleAddGridContainerToScene(request.params.arguments);
+          return await this.handleAddGridContainerToScene(args);
         // Batch 52 switch cases — Group D: Beginner setup guides
         case 'get_platformer_2d_setup_guide':
-          return await this.handleGetPlatformer2dSetupGuide(request.params.arguments);
+          return await this.handleGetPlatformer2dSetupGuide(args);
         case 'get_fps_3d_setup_guide':
-          return await this.handleGetFps3dSetupGuide(request.params.arguments);
+          return await this.handleGetFps3dSetupGuide(args);
         case 'get_top_down_2d_setup_guide':
-          return await this.handleGetTopDown2dSetupGuide(request.params.arguments);
+          return await this.handleGetTopDown2dSetupGuide(args);
         case 'get_ui_scene_setup_guide':
-          return await this.handleGetUiSceneSetupGuide(request.params.arguments);
+          return await this.handleGetUiSceneSetupGuide(args);
         case 'get_audio_setup_guide':
-          return await this.handleGetAudioSetupGuide(request.params.arguments);
+          return await this.handleGetAudioSetupGuide(args);
         // Batch 53 switch cases — Group A: AnimationPlayer runtime tools
         case 'get_animation_current':
-          return await this.handleGetAnimationCurrent(request.params.arguments);
+          return await this.handleGetAnimationCurrent(args);
         case 'set_animation_loop':
-          return await this.handleSetAnimationLoop(request.params.arguments);
+          return await this.handleSetAnimationLoop(args);
         // Batch 53 switch cases — Group B: AnimationTree runtime tools
         case 'get_animation_tree_state':
-          return await this.handleGetAnimationTreeState(request.params.arguments);
+          return await this.handleGetAnimationTreeState(args);
         case 'set_blend_parameter':
-          return await this.handleSetBlendParameter(request.params.arguments);
+          return await this.handleSetBlendParameter(args);
         case 'get_blend_parameter':
-          return await this.handleGetBlendParameter(request.params.arguments);
+          return await this.handleGetBlendParameter(args);
         case 'travel_animation_state':
-          return await this.handleTravelAnimationState(request.params.arguments);
+          return await this.handleTravelAnimationState(args);
         // Batch 53 switch cases — Group C: Material / Shader runtime tools
         case 'set_shader_parameter':
-          return await this.handleSetShaderParameter(request.params.arguments);
+          return await this.handleSetShaderParameter(args);
         case 'get_shader_parameter':
-          return await this.handleGetShaderParameter(request.params.arguments);
+          return await this.handleGetShaderParameter(args);
         case 'set_material_albedo_color':
-          return await this.handleSetMaterialAlbedoColor(request.params.arguments);
+          return await this.handleSetMaterialAlbedoColor(args);
         case 'set_material_emission_color':
-          return await this.handleSetMaterialEmissionColor(request.params.arguments);
+          return await this.handleSetMaterialEmissionColor(args);
         case 'set_material_transparency':
-          return await this.handleSetMaterialTransparency(request.params.arguments);
+          return await this.handleSetMaterialTransparency(args);
         case 'get_node_material':
-          return await this.handleGetNodeMaterial(request.params.arguments);
+          return await this.handleGetNodeMaterial(args);
         case 'set_material_roughness_metallic':
-          return await this.handleSetMaterialRoughnessMetallic(request.params.arguments);
+          return await this.handleSetMaterialRoughnessMetallic(args);
         // Batch 53 switch cases — Group D: Input system runtime tools
         case 'is_input_action_pressed':
-          return await this.handleIsInputActionPressed(request.params.arguments);
+          return await this.handleIsInputActionPressed(args);
         case 'get_input_action_strength':
-          return await this.handleGetInputActionStrength(request.params.arguments);
+          return await this.handleGetInputActionStrength(args);
         case 'get_connected_joypads':
-          return await this.handleGetConnectedJoypads(request.params.arguments);
+          return await this.handleGetConnectedJoypads(args);
         // Batch 53 switch cases — Group E: Scene node editing headlessOp tools
         case 'rename_node_in_scene':
-          return await this.handleRenameNodeInScene(request.params.arguments);
+          return await this.handleRenameNodeInScene(args);
         case 'delete_node_from_scene':
-          return await this.handleDeleteNodeFromScene(request.params.arguments);
+          return await this.handleDeleteNodeFromScene(args);
         case 'reparent_node_in_scene':
-          return await this.handleReparentNodeInScene(request.params.arguments);
+          return await this.handleReparentNodeInScene(args);
         case 'set_node_property_in_scene':
-          return await this.handleSetNodePropertyInScene(request.params.arguments);
+          return await this.handleSetNodePropertyInScene(args);
         case 'get_node_property_in_scene':
-          return await this.handleGetNodePropertyInScene(request.params.arguments);
+          return await this.handleGetNodePropertyInScene(args);
         case 'duplicate_node_in_scene':
-          return await this.handleDuplicateNodeInScene(request.params.arguments);
+          return await this.handleDuplicateNodeInScene(args);
         case 'set_node_position_in_scene':
-          return await this.handleSetNodePositionInScene(request.params.arguments);
+          return await this.handleSetNodePositionInScene(args);
         case 'set_node_scale_in_scene':
-          return await this.handleSetNodeScaleInScene(request.params.arguments);
+          return await this.handleSetNodeScaleInScene(args);
         case 'set_node_rotation_in_scene':
-          return await this.handleSetNodeRotationInScene(request.params.arguments);
+          return await this.handleSetNodeRotationInScene(args);
         case 'list_node_properties_in_scene':
-          return await this.handleListNodePropertiesInScene(request.params.arguments);
+          return await this.handleListNodePropertiesInScene(args);
         // Batch 54 — Group A: Navigation/Pathfinding runtime
         case 'get_navigation_agent_2d_path':
-          return await this.handleGetNavigationAgent2dPath(request.params.arguments);
+          return await this.handleGetNavigationAgent2dPath(args);
         case 'set_navigation_agent_2d_target':
-          return await this.handleSetNavigationAgent2dTarget(request.params.arguments);
+          return await this.handleSetNavigationAgent2dTarget(args);
         case 'get_navigation_agent_3d_path':
-          return await this.handleGetNavigationAgent3dPath(request.params.arguments);
+          return await this.handleGetNavigationAgent3dPath(args);
         case 'set_navigation_agent_3d_target':
-          return await this.handleSetNavigationAgent3dTarget(request.params.arguments);
+          return await this.handleSetNavigationAgent3dTarget(args);
         case 'is_navigation_agent_2d_finished':
-          return await this.handleIsNavigationAgent2dFinished(request.params.arguments);
+          return await this.handleIsNavigationAgent2dFinished(args);
         case 'is_navigation_agent_3d_finished':
-          return await this.handleIsNavigationAgent3dFinished(request.params.arguments);
+          return await this.handleIsNavigationAgent3dFinished(args);
         case 'get_navigation_map_rid':
-          return await this.handleGetNavigationMapRid(request.params.arguments);
+          return await this.handleGetNavigationMapRid(args);
         case 'get_navigation_agent_velocity':
-          return await this.handleGetNavigationAgentVelocity(request.params.arguments);
+          return await this.handleGetNavigationAgentVelocity(args);
         // Batch 54 — Group B: Multiplayer / Network stubs
         case 'get_multiplayer_authority':
-          return await this.handleGetMultiplayerAuthority(request.params.arguments);
+          return await this.handleGetMultiplayerAuthority(args);
         case 'set_multiplayer_authority':
-          return await this.handleSetMultiplayerAuthority(request.params.arguments);
+          return await this.handleSetMultiplayerAuthority(args);
         case 'is_multiplayer_authority':
-          return await this.handleIsMultiplayerAuthority(request.params.arguments);
+          return await this.handleIsMultiplayerAuthority(args);
         case 'get_network_latency':
-          return await this.handleGetNetworkLatency(request.params.arguments);
+          return await this.handleGetNetworkLatency(args);
         // Batch 54 — Group C: Node visibility
         case 'set_node_visible':
-          return await this.handleSetNodeVisible(request.params.arguments);
+          return await this.handleSetNodeVisible(args);
         case 'get_node_visible':
-          return await this.handleGetNodeVisible(request.params.arguments);
+          return await this.handleGetNodeVisible(args);
         // Batch 54 — Group D: Sprite / TextureRect runtime
         case 'set_sprite_2d_frame':
-          return await this.handleSetSprite2dFrame(request.params.arguments);
+          return await this.handleSetSprite2dFrame(args);
         case 'get_sprite_2d_frame_count':
-          return await this.handleGetSprite2dFrameCount(request.params.arguments);
+          return await this.handleGetSprite2dFrameCount(args);
         case 'set_sprite_2d_hframes':
-          return await this.handleSetSprite2dHframes(request.params.arguments);
+          return await this.handleSetSprite2dHframes(args);
         case 'set_sprite_2d_vframes':
-          return await this.handleSetSprite2dVframes(request.params.arguments);
+          return await this.handleSetSprite2dVframes(args);
         case 'set_sprite_2d_flip':
-          return await this.handleSetSprite2dFlip(request.params.arguments);
+          return await this.handleSetSprite2dFlip(args);
         case 'set_animated_sprite_2d_speed':
-          return await this.handleSetAnimatedSprite2dSpeed(request.params.arguments);
+          return await this.handleSetAnimatedSprite2dSpeed(args);
         case 'get_animated_sprite_2d_frame':
-          return await this.handleGetAnimatedSprite2dFrame(request.params.arguments);
+          return await this.handleGetAnimatedSprite2dFrame(args);
         // Batch 54 — Group E: Resource creation headlessOp
         case 'create_standard_material_3d':
-          return await this.handleCreateStandardMaterial3d(request.params.arguments);
+          return await this.handleCreateStandardMaterial3d(args);
         case 'create_audio_stream_ogg':
-          return await this.handleCreateAudioStreamOgg(request.params.arguments);
+          return await this.handleCreateAudioStreamOgg(args);
         // ── Editor tool cases ──────────────────────────────────────────────────
         case 'connect_to_godot_editor':
-          return await this.handleConnectToGodotEditor(request.params.arguments);
+          return await this.handleConnectToGodotEditor(args);
         case 'disconnect_from_godot_editor':
-          return await this.handleDisconnectFromGodotEditor(request.params.arguments);
+          return await this.handleDisconnectFromGodotEditor(args);
         case 'editor_get_scene_info':
-          return await this.handleEditorGetSceneInfo(request.params.arguments);
+          return await this.handleEditorGetSceneInfo(args);
         case 'editor_get_selected_node':
-          return await this.handleEditorGetSelectedNode(request.params.arguments);
+          return await this.handleEditorGetSelectedNode(args);
         case 'editor_select_node':
-          return await this.handleEditorSelectNode(request.params.arguments);
+          return await this.handleEditorSelectNode(args);
         case 'editor_add_node':
-          return await this.handleEditorAddNode(request.params.arguments);
+          return await this.handleEditorAddNode(args);
         case 'editor_delete_node':
-          return await this.handleEditorDeleteNode(request.params.arguments);
+          return await this.handleEditorDeleteNode(args);
         case 'editor_duplicate_node':
-          return await this.handleEditorDuplicateNode(request.params.arguments);
+          return await this.handleEditorDuplicateNode(args);
         case 'editor_move_node':
-          return await this.handleEditorMoveNode(request.params.arguments);
+          return await this.handleEditorMoveNode(args);
         case 'editor_set_node_property':
-          return await this.handleEditorSetNodeProperty(request.params.arguments);
+          return await this.handleEditorSetNodeProperty(args);
         case 'editor_get_node_property':
-          return await this.handleEditorGetNodeProperty(request.params.arguments);
+          return await this.handleEditorGetNodeProperty(args);
         case 'editor_open_scene':
-          return await this.handleEditorOpenScene(request.params.arguments);
+          return await this.handleEditorOpenScene(args);
         case 'editor_save_scene':
-          return await this.handleEditorSaveScene(request.params.arguments);
+          return await this.handleEditorSaveScene(args);
         case 'editor_create_scene':
-          return await this.handleEditorCreateScene(request.params.arguments);
+          return await this.handleEditorCreateScene(args);
         case 'editor_undo':
-          return await this.handleEditorUndo(request.params.arguments);
+          return await this.handleEditorUndo(args);
         case 'editor_redo':
-          return await this.handleEditorRedo(request.params.arguments);
+          return await this.handleEditorRedo(args);
         case 'editor_get_filesystem_files':
-          return await this.handleEditorGetFilesystemFiles(request.params.arguments);
+          return await this.handleEditorGetFilesystemFiles(args);
         case 'editor_focus_node':
-          return await this.handleEditorFocusNode(request.params.arguments);
+          return await this.handleEditorFocusNode(args);
         case 'editor_get_scene_tree':
-          return await this.handleEditorGetSceneTree(request.params.arguments);
+          return await this.handleEditorGetSceneTree(args);
         case 'editor_run_scene':
-          return await this.handleEditorRunScene(request.params.arguments);
+          return await this.handleEditorRunScene(args);
         case 'editor_stop_scene':
-          return await this.handleEditorStopScene(request.params.arguments);
+          return await this.handleEditorStopScene(args);
         case 'editor_create_script':
-          return await this.handleEditorCreateScript(request.params.arguments);
+          return await this.handleEditorCreateScript(args);
         case 'editor_attach_script':
-          return await this.handleEditorAttachScript(request.params.arguments);
+          return await this.handleEditorAttachScript(args);
         case 'editor_reimport_file':
-          return await this.handleEditorReimportFile(request.params.arguments);
+          return await this.handleEditorReimportFile(args);
         // Batch 56 — Group A: Node3D runtime transform tools
         case 'look_at_3d':
-          return await this.handleLookAt3d(request.params.arguments);
+          return await this.handleLookAt3d(args);
         case 'rotate_node_x':
-          return await this.handleRotateNodeX(request.params.arguments);
+          return await this.handleRotateNodeX(args);
         case 'rotate_node_y':
-          return await this.handleRotateNodeY(request.params.arguments);
+          return await this.handleRotateNodeY(args);
         case 'rotate_node_z':
-          return await this.handleRotateNodeZ(request.params.arguments);
+          return await this.handleRotateNodeZ(args);
         case 'translate_node_local':
-          return await this.handleTranslateNodeLocal(request.params.arguments);
+          return await this.handleTranslateNodeLocal(args);
         case 'translate_node_global':
-          return await this.handleTranslateNodeGlobal(request.params.arguments);
+          return await this.handleTranslateNodeGlobal(args);
         case 'get_node_3d_global_position':
-          return await this.handleGetNode3dGlobalPosition(request.params.arguments);
+          return await this.handleGetNode3dGlobalPosition(args);
         case 'get_node_3d_global_rotation':
-          return await this.handleGetNode3dGlobalRotation(request.params.arguments);
+          return await this.handleGetNode3dGlobalRotation(args);
         case 'reset_node_3d_transform':
-          return await this.handleResetNode3dTransform(request.params.arguments);
+          return await this.handleResetNode3dTransform(args);
         case 'get_distance_to_3d':
-          return await this.handleGetDistanceTo3d(request.params.arguments);
+          return await this.handleGetDistanceTo3d(args);
         // Batch 56 — Group B: Particles runtime tools
         case 'set_particle_amount':
-          return await this.handleSetParticleAmount(request.params.arguments);
+          return await this.handleSetParticleAmount(args);
         case 'get_particle_info':
-          return await this.handleGetParticleInfo(request.params.arguments);
+          return await this.handleGetParticleInfo(args);
         case 'set_particle_speed_scale':
-          return await this.handleSetParticleSpeedScale(request.params.arguments);
+          return await this.handleSetParticleSpeedScale(args);
         case 'set_particle_explosiveness':
-          return await this.handleSetParticleExplosiveness(request.params.arguments);
+          return await this.handleSetParticleExplosiveness(args);
         case 'set_particle_randomness':
-          return await this.handleSetParticleRandomness(request.params.arguments);
+          return await this.handleSetParticleRandomness(args);
         case 'set_particle_lifetime':
-          return await this.handleSetParticleLifetime(request.params.arguments);
+          return await this.handleSetParticleLifetime(args);
         case 'set_particle_one_shot':
-          return await this.handleSetParticleOneShot(request.params.arguments);
+          return await this.handleSetParticleOneShot(args);
         // Batch 56 — Group C: GDScript template writers
         case 'write_player_controller_script':
-          return await this.handleWritePlayerControllerScript(request.params.arguments);
+          return await this.handleWritePlayerControllerScript(args);
         case 'write_player_3d_controller_script':
-          return await this.handleWritePlayer3dControllerScript(request.params.arguments);
+          return await this.handleWritePlayer3dControllerScript(args);
         case 'write_health_system_script':
-          return await this.handleWriteHealthSystemScript(request.params.arguments);
+          return await this.handleWriteHealthSystemScript(args);
         case 'write_enemy_patrol_script':
-          return await this.handleWriteEnemyPatrolScript(request.params.arguments);
+          return await this.handleWriteEnemyPatrolScript(args);
         case 'write_save_load_script':
-          return await this.handleWriteSaveLoadScript(request.params.arguments);
+          return await this.handleWriteSaveLoadScript(args);
         case 'write_singleton_autoload_script':
-          return await this.handleWriteSingletonAutoloadScript(request.params.arguments);
+          return await this.handleWriteSingletonAutoloadScript(args);
         case 'write_state_machine_script':
-          return await this.handleWriteStateMachineScript(request.params.arguments);
+          return await this.handleWriteStateMachineScript(args);
         // Batch 56 — Group D: More node adders
         case 'add_anchor_3d_to_scene':
-          return await this.handleAddAnchor3dToScene(request.params.arguments);
+          return await this.handleAddAnchor3dToScene(args);
         // Batch 57 — Group A: Control node layout runtime
         case 'set_control_anchor':
-          return await this.handleSetControlAnchor(request.params.arguments);
+          return await this.handleSetControlAnchor(args);
         case 'get_control_rect':
-          return await this.handleGetControlRect(request.params.arguments);
+          return await this.handleGetControlRect(args);
         case 'get_control_focus':
-          return await this.handleGetControlFocus(request.params.arguments);
+          return await this.handleGetControlFocus(args);
         case 'set_control_focus':
-          return await this.handleSetControlFocus(request.params.arguments);
+          return await this.handleSetControlFocus(args);
         // Batch 57 — Group B: Signal introspection runtime
         case 'get_node_signal_list':
-          return await this.handleGetNodeSignalList(request.params.arguments);
+          return await this.handleGetNodeSignalList(args);
         case 'has_signal':
-          return await this.handleHasSignal(request.params.arguments);
+          return await this.handleHasSignal(args);
         case 'get_signal_connection_list':
-          return await this.handleGetSignalConnectionList(request.params.arguments);
+          return await this.handleGetSignalConnectionList(args);
         case 'disconnect_signal':
-          return await this.handleDisconnectSignal(request.params.arguments);
+          return await this.handleDisconnectSignal(args);
         case 'get_node_connections_count':
-          return await this.handleGetNodeConnectionsCount(request.params.arguments);
+          return await this.handleGetNodeConnectionsCount(args);
         case 'list_all_signal_connections':
-          return await this.handleListAllSignalConnections(request.params.arguments);
+          return await this.handleListAllSignalConnections(args);
         // Batch 57 — Group C: Node introspection runtime
         case 'get_node_path':
-          return await this.handleGetNodePath(request.params.arguments);
+          return await this.handleGetNodePath(args);
         case 'get_node_parent_path':
-          return await this.handleGetNodeParentPath(request.params.arguments);
+          return await this.handleGetNodeParentPath(args);
         case 'get_node_child_paths':
-          return await this.handleGetNodeChildPaths(request.params.arguments);
+          return await this.handleGetNodeChildPaths(args);
         case 'is_node_in_group':
-          return await this.handleIsNodeInGroup(request.params.arguments);
+          return await this.handleIsNodeInGroup(args);
         // Batch 57 — Group D: Light2D runtime tools
         case 'set_light_2d_energy':
-          return await this.handleSetLight2dEnergy(request.params.arguments);
+          return await this.handleSetLight2dEnergy(args);
         case 'get_light_2d_info':
-          return await this.handleGetLight2dInfo(request.params.arguments);
+          return await this.handleGetLight2dInfo(args);
         case 'set_light_2d_color':
-          return await this.handleSetLight2dColor(request.params.arguments);
+          return await this.handleSetLight2dColor(args);
         case 'set_light_2d_texture_scale':
-          return await this.handleSetLight2dTextureScale(request.params.arguments);
+          return await this.handleSetLight2dTextureScale(args);
         case 'toggle_light_2d':
-          return await this.handleToggleLight2d(request.params.arguments);
+          return await this.handleToggleLight2d(args);
         // Batch 57 — Group E: GDScript template writers
         case 'write_gdshader_file':
-          return await this.handleWriteGdshaderFile(request.params.arguments);
+          return await this.handleWriteGdshaderFile(args);
         case 'write_inventory_script':
-          return await this.handleWriteInventoryScript(request.params.arguments);
+          return await this.handleWriteInventoryScript(args);
         case 'write_dialogue_script':
-          return await this.handleWriteDialogueScript(request.params.arguments);
+          return await this.handleWriteDialogueScript(args);
         case 'write_event_bus_script':
-          return await this.handleWriteEventBusScript(request.params.arguments);
+          return await this.handleWriteEventBusScript(args);
         case 'write_object_pool_script':
-          return await this.handleWriteObjectPoolScript(request.params.arguments);
+          return await this.handleWriteObjectPoolScript(args);
         case 'write_camera_follow_script':
-          return await this.handleWriteCameraFollowScript(request.params.arguments);
+          return await this.handleWriteCameraFollowScript(args);
         case 'write_pickup_script':
-          return await this.handleWritePickupScript(request.params.arguments);
+          return await this.handleWritePickupScript(args);
         // Batch 58 — Group A: Skeleton3D / Bone runtime
         case 'get_skeleton_bone_pose':
-          return await this.handleGetSkeletonBonePose(request.params.arguments);
+          return await this.handleGetSkeletonBonePose(args);
         case 'set_skeleton_bone_pose_position':
-          return await this.handleSetSkeletonBonePosePosition(request.params.arguments);
+          return await this.handleSetSkeletonBonePosePosition(args);
         case 'get_bone_rest_transform':
-          return await this.handleGetBoneRestTransform(request.params.arguments);
+          return await this.handleGetBoneRestTransform(args);
         case 'get_bone_index':
-          return await this.handleGetBoneIndex(request.params.arguments);
+          return await this.handleGetBoneIndex(args);
         // Batch 58 — Group B: Collision shape manipulation
         case 'set_collision_shape_2d_type':
-          return await this.handleSetCollisionShape2DType(request.params.arguments);
+          return await this.handleSetCollisionShape2DType(args);
         case 'set_collision_shape_3d_type':
-          return await this.handleSetCollisionShape3DType(request.params.arguments);
+          return await this.handleSetCollisionShape3DType(args);
         case 'set_collision_shape_2d_radius':
-          return await this.handleSetCollisionShape2DRadius(request.params.arguments);
+          return await this.handleSetCollisionShape2DRadius(args);
         case 'set_collision_rect_extents':
-          return await this.handleSetCollisionRectExtents(request.params.arguments);
+          return await this.handleSetCollisionRectExtents(args);
         case 'set_collision_capsule_2d':
-          return await this.handleSetCollisionCapsule2D(request.params.arguments);
+          return await this.handleSetCollisionCapsule2D(args);
         case 'set_collision_box_3d_size':
-          return await this.handleSetCollisionBox3DSize(request.params.arguments);
+          return await this.handleSetCollisionBox3DSize(args);
         case 'set_collision_sphere_3d_radius':
-          return await this.handleSetCollisionSphere3DRadius(request.params.arguments);
+          return await this.handleSetCollisionSphere3DRadius(args);
         case 'set_collision_capsule_3d':
-          return await this.handleSetCollisionCapsule3D(request.params.arguments);
+          return await this.handleSetCollisionCapsule3D(args);
         // Batch 58 — Group C: Resource loading/checking tools
         case 'check_resource_exists':
-          return await this.handleCheckResourceExists(request.params.arguments);
+          return await this.handleCheckResourceExists(args);
         case 'list_project_audio_files':
-          return await this.handleListProjectAudioFiles(request.params.arguments);
+          return await this.handleListProjectAudioFiles(args);
         // Batch 58 — Group D: GDScript template writers
         case 'write_platformer_ground_script':
-          return await this.handleWritePlatformerGroundScript(request.params.arguments);
+          return await this.handleWritePlatformerGroundScript(args);
         case 'write_top_down_player_script':
-          return await this.handleWriteTopDownPlayerScript(request.params.arguments);
+          return await this.handleWriteTopDownPlayerScript(args);
         case 'write_score_manager_script':
-          return await this.handleWriteScoreManagerScript(request.params.arguments);
+          return await this.handleWriteScoreManagerScript(args);
         case 'write_hud_script':
-          return await this.handleWriteHudScript(request.params.arguments);
+          return await this.handleWriteHudScript(args);
         case 'write_timer_helper_script':
-          return await this.handleWriteTimerHelperScript(request.params.arguments);
+          return await this.handleWriteTimerHelperScript(args);
         case 'write_scene_transition_script':
-          return await this.handleWriteSceneTransitionScript(request.params.arguments);
+          return await this.handleWriteSceneTransitionScript(args);
         case 'write_input_handler_script':
-          return await this.handleWriteInputHandlerScript(request.params.arguments);
+          return await this.handleWriteInputHandlerScript(args);
         case 'write_spawner_script':
-          return await this.handleWriteSpawnerScript(request.params.arguments);
+          return await this.handleWriteSpawnerScript(args);
         // Batch 58 — Group E: More runtime gameCommand tools
         case 'get_game_resolution':
-          return await this.handleGetGameResolution(request.params.arguments);
+          return await this.handleGetGameResolution(args);
         case 'set_2d_speed_scale':
-          return await this.handleSet2DSpeedScale(request.params.arguments);
+          return await this.handleSet2DSpeedScale(args);
         case 'get_scene_current_fps':
-          return await this.handleGetSceneCurrentFps(request.params.arguments);
+          return await this.handleGetSceneCurrentFps(args);
         case 'set_canvas_item_clip':
-          return await this.handleSetCanvasItemClip(request.params.arguments);
+          return await this.handleSetCanvasItemClip(args);
         case 'get_node_rid':
-          return await this.handleGetNodeRid(request.params.arguments);
+          return await this.handleGetNodeRid(args);
         case 'set_node_owner':
-          return await this.handleSetNodeOwner(request.params.arguments);
+          return await this.handleSetNodeOwner(args);
         case 'get_physics_interpolation_mode':
-          return await this.handleGetPhysicsInterpolationMode(request.params.arguments);
+          return await this.handleGetPhysicsInterpolationMode(args);
         case 'get_memory_usage':
-          return await this.handleGetMemoryUsage(request.params.arguments);
+          return await this.handleGetMemoryUsage(args);
         // Batch 59 switch cases — Group A: RayCast runtime tools
         case 'enable_ray_cast_2d':
-          return await this.handleEnableRayCast2d(request.params.arguments);
+          return await this.handleEnableRayCast2d(args);
         case 'set_ray_cast_2d_target':
-          return await this.handleSetRayCast2dTarget(request.params.arguments);
+          return await this.handleSetRayCast2dTarget(args);
         case 'get_ray_cast_2d_collision':
-          return await this.handleGetRayCast2dCollision(request.params.arguments);
+          return await this.handleGetRayCast2dCollision(args);
         case 'enable_ray_cast_3d':
-          return await this.handleEnableRayCast3d(request.params.arguments);
+          return await this.handleEnableRayCast3d(args);
         case 'set_ray_cast_3d_target':
-          return await this.handleSetRayCast3dTarget(request.params.arguments);
+          return await this.handleSetRayCast3dTarget(args);
         case 'get_ray_cast_3d_collision':
-          return await this.handleGetRayCast3dCollision(request.params.arguments);
+          return await this.handleGetRayCast3dCollision(args);
         case 'force_ray_cast_update':
-          return await this.handleForceRayCastUpdate(request.params.arguments);
+          return await this.handleForceRayCastUpdate(args);
         // Batch 59 switch cases — Group B: Physics direct space query
         case 'cast_ray_from_camera':
-          return await this.handleCastRayFromCamera(request.params.arguments);
+          return await this.handleCastRayFromCamera(args);
         case 'get_overlapping_bodies_2d':
-          return await this.handleGetOverlappingBodies2d(request.params.arguments);
+          return await this.handleGetOverlappingBodies2d(args);
         case 'get_overlapping_areas_2d':
-          return await this.handleGetOverlappingAreas2d(request.params.arguments);
+          return await this.handleGetOverlappingAreas2d(args);
         case 'get_overlapping_bodies_3d':
-          return await this.handleGetOverlappingBodies3d(request.params.arguments);
+          return await this.handleGetOverlappingBodies3d(args);
         case 'get_overlapping_areas_3d':
-          return await this.handleGetOverlappingAreas3d(request.params.arguments);
+          return await this.handleGetOverlappingAreas3d(args);
         case 'check_area_2d_monitoring':
-          return await this.handleCheckArea2dMonitoring(request.params.arguments);
+          return await this.handleCheckArea2dMonitoring(args);
         // Batch 59 switch cases — Group C: AudioStream / bus advanced
         case 'get_audio_bus_info':
-          return await this.handleGetAudioBusInfo(request.params.arguments);
+          return await this.handleGetAudioBusInfo(args);
         case 'set_audio_bus_effect_enabled':
-          return await this.handleSetAudioBusEffectEnabled(request.params.arguments);
+          return await this.handleSetAudioBusEffectEnabled(args);
         case 'get_audio_stream_player_position':
-          return await this.handleGetAudioStreamPlayerPosition(request.params.arguments);
+          return await this.handleGetAudioStreamPlayerPosition(args);
         case 'set_audio_stream_player_position':
-          return await this.handleSetAudioStreamPlayerPosition(request.params.arguments);
+          return await this.handleSetAudioStreamPlayerPosition(args);
         case 'get_audio_stream_length':
-          return await this.handleGetAudioStreamLength(request.params.arguments);
+          return await this.handleGetAudioStreamLength(args);
         case 'set_audio_pitch_scale':
-          return await this.handleSetAudioPitchScale(request.params.arguments);
+          return await this.handleSetAudioPitchScale(args);
         // Batch 59 switch cases — Group D: Viewport / SubViewport runtime
         case 'get_sub_viewport_texture_rid':
-          return await this.handleGetSubViewportTextureRid(request.params.arguments);
+          return await this.handleGetSubViewportTextureRid(args);
         case 'set_sub_viewport_size':
-          return await this.handleSetSubViewportSize(request.params.arguments);
+          return await this.handleSetSubViewportSize(args);
         case 'set_sub_viewport_update_mode':
-          return await this.handleSetSubViewportUpdateMode(request.params.arguments);
+          return await this.handleSetSubViewportUpdateMode(args);
         case 'get_viewport_textures':
-          return await this.handleGetViewportTextures(request.params.arguments);
+          return await this.handleGetViewportTextures(args);
         case 'set_viewport_msaa':
-          return await this.handleSetViewportMsaa(request.params.arguments);
+          return await this.handleSetViewportMsaa(args);
         // Batch 59 switch cases — Group E: Project metadata / settings
         case 'get_project_godot_version':
-          return await this.handleGetProjectGodotVersion(request.params.arguments);
+          return await this.handleGetProjectGodotVersion(args);
         case 'count_gdscript_lines':
-          return await this.handleCountGdscriptLines(request.params.arguments);
+          return await this.handleCountGdscriptLines(args);
         case 'get_project_structure':
-          return await this.handleGetProjectStructure(request.params.arguments);
+          return await this.handleGetProjectStructure(args);
         case 'find_gdscript_function':
-          return await this.handleFindGdscriptFunction(request.params.arguments);
+          return await this.handleFindGdscriptFunction(args);
         case 'find_gdscript_signal_usage':
-          return await this.handleFindGdscriptSignalUsage(request.params.arguments);
+          return await this.handleFindGdscriptSignalUsage(args);
         case 'get_project_autoloads':
-          return await this.handleGetProjectAutoloads(request.params.arguments);
+          return await this.handleGetProjectAutoloads(args);
         // Batch 59 switch cases — Group F: GDScript template writers
         case 'write_area_2d_detector_script':
-          return await this.handleWriteArea2dDetectorScript(request.params.arguments);
+          return await this.handleWriteArea2dDetectorScript(args);
         case 'write_projectile_script':
-          return await this.handleWriteProjectileScript(request.params.arguments);
+          return await this.handleWriteProjectileScript(args);
         case 'write_hitbox_script':
-          return await this.handleWriteHitboxScript(request.params.arguments);
+          return await this.handleWriteHitboxScript(args);
         case 'write_interactable_script':
-          return await this.handleWriteInteractableScript(request.params.arguments);
+          return await this.handleWriteInteractableScript(args);
         case 'write_door_script':
-          return await this.handleWriteDoorScript(request.params.arguments);
+          return await this.handleWriteDoorScript(args);
         // Batch 60 — Group A: ClassDB introspection
         case 'get_class_property_list':
-          return await this.handleGetClassPropertyList(request.params.arguments);
+          return await this.handleGetClassPropertyList(args);
         case 'get_class_method_list':
-          return await this.handleGetClassMethodList(request.params.arguments);
+          return await this.handleGetClassMethodList(args);
         case 'get_class_signal_list':
-          return await this.handleGetClassSignalList(request.params.arguments);
+          return await this.handleGetClassSignalList(args);
         case 'class_exists':
-          return await this.handleClassExists(request.params.arguments);
+          return await this.handleClassExists(args);
         case 'get_class_inheritance':
-          return await this.handleGetClassInheritance(request.params.arguments);
+          return await this.handleGetClassInheritance(args);
         case 'instantiate_class_check':
-          return await this.handleInstantiateClassCheck(request.params.arguments);
+          return await this.handleInstantiateClassCheck(args);
         // Batch 60 — Group B: Mesh / geometry tools
         case 'get_mesh_aabb':
-          return await this.handleGetMeshAabb(request.params.arguments);
+          return await this.handleGetMeshAabb(args);
         case 'get_mesh_vertex_count':
-          return await this.handleGetMeshVertexCount(request.params.arguments);
+          return await this.handleGetMeshVertexCount(args);
         case 'set_mesh_instance_cast_shadow':
-          return await this.handleSetMeshInstanceCastShadow(request.params.arguments);
+          return await this.handleSetMeshInstanceCastShadow(args);
         case 'get_mesh_surface_count_rt':
-          return await this.handleGetMeshSurfaceCountRt(request.params.arguments);
+          return await this.handleGetMeshSurfaceCountRt(args);
         case 'set_mesh_lod_bias':
-          return await this.handleSetMeshLodBias(request.params.arguments);
+          return await this.handleSetMeshLodBias(args);
         case 'get_mesh_instance_bounds':
-          return await this.handleGetMeshInstanceBounds(request.params.arguments);
+          return await this.handleGetMeshInstanceBounds(args);
         case 'set_mesh_transparency':
-          return await this.handleSetMeshTransparency(request.params.arguments);
+          return await this.handleSetMeshTransparency(args);
         // Batch 60 — Group C: Node name / meta operations
         case 'rename_node_runtime':
-          return await this.handleRenameNodeRuntime(request.params.arguments);
+          return await this.handleRenameNodeRuntime(args);
         case 'list_node_metadata':
-          return await this.handleListNodeMetadata(request.params.arguments);
+          return await this.handleListNodeMetadata(args);
         case 'remove_node_metadata':
-          return await this.handleRemoveNodeMetadata(request.params.arguments);
+          return await this.handleRemoveNodeMetadata(args);
         // Batch 60 — Group D: Project configuration tools
         case 'add_input_action_to_project':
-          return await this.handleAddInputActionToProject(request.params.arguments);
+          return await this.handleAddInputActionToProject(args);
         case 'get_input_map_from_project':
-          return await this.handleGetInputMapFromProject(request.params.arguments);
+          return await this.handleGetInputMapFromProject(args);
         case 'set_project_window_mode':
-          return await this.handleSetProjectWindowMode(request.params.arguments);
+          return await this.handleSetProjectWindowMode(args);
         case 'set_project_physics_fps':
-          return await this.handleSetProjectPhysicsFps(request.params.arguments);
+          return await this.handleSetProjectPhysicsFps(args);
         case 'set_project_gravity':
-          return await this.handleSetProjectGravity(request.params.arguments);
+          return await this.handleSetProjectGravity(args);
         case 'create_project_directory':
-          return await this.handleCreateProjectDirectory(request.params.arguments);
+          return await this.handleCreateProjectDirectory(args);
         // Batch 60 — Group E: GDScript template writers
         case 'write_level_manager_script':
-          return await this.handleWriteLevelManagerScript(request.params.arguments);
+          return await this.handleWriteLevelManagerScript(args);
         case 'write_coin_script':
-          return await this.handleWriteCoinScript(request.params.arguments);
+          return await this.handleWriteCoinScript(args);
         case 'write_checkpoint_script':
-          return await this.handleWriteCheckpointScript(request.params.arguments);
+          return await this.handleWriteCheckpointScript(args);
         case 'write_platform_moving_script':
-          return await this.handleWritePlatformMovingScript(request.params.arguments);
+          return await this.handleWritePlatformMovingScript(args);
         case 'write_destructible_object_script':
-          return await this.handleWriteDestructibleObjectScript(request.params.arguments);
+          return await this.handleWriteDestructibleObjectScript(args);
         case 'write_gravity_zone_script':
-          return await this.handleWriteGravityZoneScript(request.params.arguments);
+          return await this.handleWriteGravityZoneScript(args);
         case 'write_speed_boost_script':
-          return await this.handleWriteSpeedBoostScript(request.params.arguments);
+          return await this.handleWriteSpeedBoostScript(args);
         case 'write_follow_camera_3d_script':
-          return await this.handleWriteFollowCamera3dScript(request.params.arguments);
+          return await this.handleWriteFollowCamera3dScript(args);
         case 'write_water_surface_shader':
-          return await this.handleWriteWaterSurfaceShader(request.params.arguments);
+          return await this.handleWriteWaterSurfaceShader(args);
         case 'write_outline_shader':
-          return await this.handleWriteOutlineShader(request.params.arguments);
+          return await this.handleWriteOutlineShader(args);
         // Batch 61 — Group A: TileMap runtime tools
         case 'get_tilemap_cell_source_id':
-          return await this.handleGetTilemapCellSourceId(request.params.arguments);
+          return await this.handleGetTilemapCellSourceId(args);
         case 'erase_tilemap_cell':
-          return await this.handleEraseTilemapCell(request.params.arguments);
+          return await this.handleEraseTilemapCell(args);
         case 'get_tilemap_used_cells':
-          return await this.handleGetTilemapUsedCells(request.params.arguments);
+          return await this.handleGetTilemapUsedCells(args);
         case 'map_to_local_tilemap':
-          return await this.handleMapToLocalTilemap(request.params.arguments);
+          return await this.handleMapToLocalTilemap(args);
         // Batch 61 — Group B: GridMap runtime tools
         case 'get_gridmap_cell_item':
-          return await this.handleGetGridmapCellItem(request.params.arguments);
+          return await this.handleGetGridmapCellItem(args);
         case 'set_gridmap_cell_item':
-          return await this.handleSetGridmapCellItem(request.params.arguments);
+          return await this.handleSetGridmapCellItem(args);
         case 'get_gridmap_used_cells':
-          return await this.handleGetGridmapUsedCells(request.params.arguments);
+          return await this.handleGetGridmapUsedCells(args);
         case 'clear_gridmap':
-          return await this.handleClearGridmap(request.params.arguments);
+          return await this.handleClearGridmap(args);
         case 'get_gridmap_cell_size':
-          return await this.handleGetGridmapCellSize(request.params.arguments);
+          return await this.handleGetGridmapCellSize(args);
         case 'get_gridmap_mesh_library_items':
-          return await this.handleGetGridmapMeshLibraryItems(request.params.arguments);
+          return await this.handleGetGridmapMeshLibraryItems(args);
         case 'get_gridmap_bake_mesh':
-          return await this.handleGetGridmapBakeMesh(request.params.arguments);
+          return await this.handleGetGridmapBakeMesh(args);
         // Batch 61 — Group C: AStar2D / AStar3D pathfinding tools
         case 'get_astar2d_point_count':
-          return await this.handleGetAstar2dPointCount(request.params.arguments);
+          return await this.handleGetAstar2dPointCount(args);
         case 'add_astar2d_point':
-          return await this.handleAddAstar2dPoint(request.params.arguments);
+          return await this.handleAddAstar2dPoint(args);
         case 'connect_astar2d_points':
-          return await this.handleConnectAstar2dPoints(request.params.arguments);
+          return await this.handleConnectAstar2dPoints(args);
         case 'get_astar2d_id_path':
-          return await this.handleGetAstar2dIdPath(request.params.arguments);
+          return await this.handleGetAstar2dIdPath(args);
         case 'get_astar2d_point_path':
-          return await this.handleGetAstar2dPointPath(request.params.arguments);
+          return await this.handleGetAstar2dPointPath(args);
         case 'get_astar3d_point_path':
-          return await this.handleGetAstar3dPointPath(request.params.arguments);
+          return await this.handleGetAstar3dPointPath(args);
         // Batch 61 — Group D: VideoStreamPlayer runtime tools
         case 'play_video_stream':
-          return await this.handlePlayVideoStream(request.params.arguments);
+          return await this.handlePlayVideoStream(args);
         case 'stop_video_stream':
-          return await this.handleStopVideoStream(request.params.arguments);
+          return await this.handleStopVideoStream(args);
         case 'get_video_stream_position':
-          return await this.handleGetVideoStreamPosition(request.params.arguments);
+          return await this.handleGetVideoStreamPosition(args);
         case 'set_video_stream_volume':
-          return await this.handleSetVideoStreamVolume(request.params.arguments);
+          return await this.handleSetVideoStreamVolume(args);
         case 'is_video_stream_playing':
-          return await this.handleIsVideoStreamPlaying(request.params.arguments);
+          return await this.handleIsVideoStreamPlaying(args);
         // Batch 61 — Group E: Shader / resource writers
         case 'write_dissolve_shader':
-          return await this.handleWriteDissolveShader(request.params.arguments);
+          return await this.handleWriteDissolveShader(args);
         case 'write_pixelate_shader':
-          return await this.handleWritePixelateShader(request.params.arguments);
+          return await this.handleWritePixelateShader(args);
         case 'write_vignette_shader':
-          return await this.handleWriteVignetteShader(request.params.arguments);
+          return await this.handleWriteVignetteShader(args);
         case 'write_simple_enemy_patrol_script':
-          return await this.handleWriteSimpleEnemyPatrolScript(request.params.arguments);
+          return await this.handleWriteSimpleEnemyPatrolScript(args);
         case 'write_inventory_system_script':
-          return await this.handleWriteInventorySystemScript(request.params.arguments);
+          return await this.handleWriteInventorySystemScript(args);
         case 'write_dialogue_system_script':
-          return await this.handleWriteDialogueSystemScript(request.params.arguments);
+          return await this.handleWriteDialogueSystemScript(args);
         // Batch 62 switch cases — Group A: Animation track editing
         case 'add_animation_track':
-          return await this.handleAddAnimationTrack(request.params.arguments);
+          return await this.handleAddAnimationTrack(args);
         case 'set_animation_loop_mode':
-          return await this.handleSetAnimationLoopMode(request.params.arguments);
+          return await this.handleSetAnimationLoopMode(args);
         case 'add_animation_key_value':
-          return await this.handleAddAnimationKeyValue(request.params.arguments);
+          return await this.handleAddAnimationKeyValue(args);
         case 'get_animation_key_count':
-          return await this.handleGetAnimationKeyCount(request.params.arguments);
+          return await this.handleGetAnimationKeyCount(args);
         // Batch 62 switch cases — Group B: Environment3D tools
         case 'get_world_environment_info':
-          return await this.handleGetWorldEnvironmentInfo(request.params.arguments);
+          return await this.handleGetWorldEnvironmentInfo(args);
         case 'set_environment_ambient_light':
-          return await this.handleSetEnvironmentAmbientLight(request.params.arguments);
+          return await this.handleSetEnvironmentAmbientLight(args);
         case 'set_environment_sky_color':
-          return await this.handleSetEnvironmentSkyColor(request.params.arguments);
+          return await this.handleSetEnvironmentSkyColor(args);
         case 'set_environment_bloom':
-          return await this.handleSetEnvironmentBloom(request.params.arguments);
+          return await this.handleSetEnvironmentBloom(args);
         case 'set_environment_tonemap':
-          return await this.handleSetEnvironmentTonemap(request.params.arguments);
+          return await this.handleSetEnvironmentTonemap(args);
         // Batch 62 switch cases — Group C: Particles tools
         case 'set_particles_lifetime':
-          return await this.handleSetParticlesLifetime(request.params.arguments);
+          return await this.handleSetParticlesLifetime(args);
         case 'set_particles_explosiveness':
-          return await this.handleSetParticlesExplosiveness(request.params.arguments);
+          return await this.handleSetParticlesExplosiveness(args);
         case 'set_particles_one_shot':
-          return await this.handleSetParticlesOneShot(request.params.arguments);
+          return await this.handleSetParticlesOneShot(args);
         // Batch 62 switch cases — Group D: Light3D tools
         case 'set_light_energy':
-          return await this.handleSetLightEnergy(request.params.arguments);
+          return await this.handleSetLightEnergy(args);
         case 'set_light_color':
-          return await this.handleSetLightColor(request.params.arguments);
+          return await this.handleSetLightColor(args);
         case 'set_directional_light_shadow':
-          return await this.handleSetDirectionalLightShadow(request.params.arguments);
+          return await this.handleSetDirectionalLightShadow(args);
         case 'get_light_info':
-          return await this.handleGetLightInfo(request.params.arguments);
+          return await this.handleGetLightInfo(args);
         // Batch 62 switch cases — Group E: GDScript templates
         case 'write_timer_manager_script':
-          return await this.handleWriteTimerManagerScript(request.params.arguments);
+          return await this.handleWriteTimerManagerScript(args);
         case 'write_screen_shake_script':
-          return await this.handleWriteScreenShakeScript(request.params.arguments);
+          return await this.handleWriteScreenShakeScript(args);
         case 'write_resource_preloader_script':
-          return await this.handleWriteResourcePreloaderScript(request.params.arguments);
+          return await this.handleWriteResourcePreloaderScript(args);
         case 'write_tween_helper_script':
-          return await this.handleWriteTweenHelperScript(request.params.arguments);
+          return await this.handleWriteTweenHelperScript(args);
         case 'write_game_settings_script':
-          return await this.handleWriteGameSettingsScript(request.params.arguments);
+          return await this.handleWriteGameSettingsScript(args);
         case 'write_achievement_system_script':
-          return await this.handleWriteAchievementSystemScript(request.params.arguments);
+          return await this.handleWriteAchievementSystemScript(args);
         case 'write_notifications_ui_script':
-          return await this.handleWriteNotificationsUiScript(request.params.arguments);
+          return await this.handleWriteNotificationsUiScript(args);
         case 'write_minimap_script':
-          return await this.handleWriteMinimapScript(request.params.arguments);
+          return await this.handleWriteMinimapScript(args);
         // Batch 63 switch cases — Group A: CharacterBody2D / RigidBody2D
         case 'get_character_body_2d_info':
-          return await this.handleGetCharacterBody2dInfo(request.params.arguments);
+          return await this.handleGetCharacterBody2dInfo(args);
         case 'set_rigid_body_2d_mass':
-          return await this.handleSetRigidBody2dMass(request.params.arguments);
+          return await this.handleSetRigidBody2dMass(args);
         case 'set_rigid_body_2d_gravity_scale':
-          return await this.handleSetRigidBody2dGravityScale(request.params.arguments);
+          return await this.handleSetRigidBody2dGravityScale(args);
         case 'apply_central_impulse_2d':
-          return await this.handleApplyCentralImpulse2d(request.params.arguments);
+          return await this.handleApplyCentralImpulse2d(args);
         case 'set_rigid_body_2d_freeze':
-          return await this.handleSetRigidBody2dFreeze(request.params.arguments);
+          return await this.handleSetRigidBody2dFreeze(args);
         case 'get_rigid_body_2d_info':
-          return await this.handleGetRigidBody2dInfo(request.params.arguments);
+          return await this.handleGetRigidBody2dInfo(args);
         case 'set_character_body_2d_velocity':
-          return await this.handleSetCharacterBody2dVelocity(request.params.arguments);
+          return await this.handleSetCharacterBody2dVelocity(args);
         // Batch 63 switch cases — Group B: CharacterBody3D / RigidBody3D
         case 'get_character_body_3d_info':
-          return await this.handleGetCharacterBody3dInfo(request.params.arguments);
+          return await this.handleGetCharacterBody3dInfo(args);
         case 'set_rigid_body_3d_mass':
-          return await this.handleSetRigidBody3dMass(request.params.arguments);
+          return await this.handleSetRigidBody3dMass(args);
         case 'apply_central_impulse_3d':
-          return await this.handleApplyCentralImpulse3d(request.params.arguments);
+          return await this.handleApplyCentralImpulse3d(args);
         case 'set_rigid_body_3d_gravity_scale':
-          return await this.handleSetRigidBody3dGravityScale(request.params.arguments);
+          return await this.handleSetRigidBody3dGravityScale(args);
         case 'set_rigid_body_3d_freeze':
-          return await this.handleSetRigidBody3dFreeze(request.params.arguments);
+          return await this.handleSetRigidBody3dFreeze(args);
         case 'get_rigid_body_3d_info':
-          return await this.handleGetRigidBody3dInfo(request.params.arguments);
+          return await this.handleGetRigidBody3dInfo(args);
         // Batch 63 switch cases — Group C: StandardMaterial3D
         case 'set_material_metallic':
-          return await this.handleSetMaterialMetallic(request.params.arguments);
+          return await this.handleSetMaterialMetallic(args);
         case 'set_material_roughness':
-          return await this.handleSetMaterialRoughness(request.params.arguments);
+          return await this.handleSetMaterialRoughness(args);
         case 'set_material_emission':
-          return await this.handleSetMaterialEmission63(request.params.arguments);
+          return await this.handleSetMaterialEmission63(args);
         case 'set_material_alpha_mode':
-          return await this.handleSetMaterialAlphaMode(request.params.arguments);
+          return await this.handleSetMaterialAlphaMode(args);
         case 'get_material_info':
-          return await this.handleGetMaterialInfo63(request.params.arguments);
+          return await this.handleGetMaterialInfo63(args);
         case 'set_material_cull_mode':
-          return await this.handleSetMaterialCullMode(request.params.arguments);
+          return await this.handleSetMaterialCullMode(args);
         // Batch 63 switch cases — Group D: CollisionShape manipulation
         case 'set_collision_shape_disabled':
-          return await this.handleSetCollisionShapeDisabled(request.params.arguments);
+          return await this.handleSetCollisionShapeDisabled(args);
         case 'set_circle_shape_radius':
-          return await this.handleSetCircleShapeRadius(request.params.arguments);
+          return await this.handleSetCircleShapeRadius(args);
         case 'set_rect_shape_size':
-          return await this.handleSetRectShapeSize(request.params.arguments);
+          return await this.handleSetRectShapeSize(args);
         case 'set_capsule_shape_size':
-          return await this.handleSetCapsuleShapeSize(request.params.arguments);
+          return await this.handleSetCapsuleShapeSize(args);
         case 'set_box_shape_size_3d':
-          return await this.handleSetBoxShapeSize3d(request.params.arguments);
+          return await this.handleSetBoxShapeSize3d(args);
         case 'get_collision_layer_mask':
-          return await this.handleGetCollisionLayerMask(request.params.arguments);
+          return await this.handleGetCollisionLayerMask(args);
         // Batch 63 switch cases — Group E: GDScript templates
         case 'write_fps_counter_script':
-          return await this.handleWriteFpsCounterScript(request.params.arguments);
+          return await this.handleWriteFpsCounterScript(args);
         case 'write_health_bar_script':
-          return await this.handleWriteHealthBarScript(request.params.arguments);
+          return await this.handleWriteHealthBarScript(args);
         case 'write_crosshair_script':
-          return await this.handleWriteCrosshairScript(request.params.arguments);
+          return await this.handleWriteCrosshairScript(args);
         case 'write_respawn_system_script':
-          return await this.handleWriteRespawnSystemScript(request.params.arguments);
+          return await this.handleWriteRespawnSystemScript(args);
         case 'write_wave_spawner_script':
-          return await this.handleWriteWaveSpawnerScript(request.params.arguments);
+          return await this.handleWriteWaveSpawnerScript(args);
         case 'write_day_night_cycle_script':
-          return await this.handleWriteDayNightCycleScript(request.params.arguments);
+          return await this.handleWriteDayNightCycleScript(args);
         case 'write_pathfinding_agent_script':
-          return await this.handleWritePathfindingAgentScript(request.params.arguments);
+          return await this.handleWritePathfindingAgentScript(args);
         // Batch 64 switch cases — Group A: Input system runtime tools
         case 'is_key_pressed':
-          return await this.handleIsKeyPressed(request.params.arguments);
+          return await this.handleIsKeyPressed(args);
         case 'get_mouse_button_state':
-          return await this.handleGetMouseButtonState(request.params.arguments);
+          return await this.handleGetMouseButtonState(args);
         case 'get_joy_axis':
-          return await this.handleGetJoyAxis(request.params.arguments);
+          return await this.handleGetJoyAxis(args);
         // Batch 64 switch cases — Group B: Control node (UI) property setters
         case 'set_control_offset':
-          return await this.handleSetControlOffset(request.params.arguments);
+          return await this.handleSetControlOffset(args);
         case 'set_control_focus_mode':
-          return await this.handleSetControlFocusMode(request.params.arguments);
+          return await this.handleSetControlFocusMode(args);
         case 'release_focus':
-          return await this.handleReleaseFocus(request.params.arguments);
+          return await this.handleReleaseFocus(args);
         // Batch 64 switch cases — Group C: Label / RichTextLabel / TextEdit
         case 'set_rich_text_bbcode':
-          return await this.handleSetRichTextBbcode(request.params.arguments);
+          return await this.handleSetRichTextBbcode(args);
         // Batch 64 switch cases — Group D: Button / CheckButton / OptionButton
         case 'set_button_disabled':
-          return await this.handleSetButtonDisabled(request.params.arguments);
+          return await this.handleSetButtonDisabled(args);
         case 'get_check_button_state':
-          return await this.handleGetCheckButtonState(request.params.arguments);
+          return await this.handleGetCheckButtonState(args);
         case 'set_check_button_state':
-          return await this.handleSetCheckButtonState(request.params.arguments);
+          return await this.handleSetCheckButtonState(args);
         // Batch 64 switch cases — Group E: ProgressBar / Slider / SpinBox
         case 'set_range_value':
-          return await this.handleSetRangeValue(request.params.arguments);
+          return await this.handleSetRangeValue(args);
         case 'get_range_value':
-          return await this.handleGetRangeValue(request.params.arguments);
+          return await this.handleGetRangeValue(args);
         case 'set_range_min_max':
-          return await this.handleSetRangeMinMax(request.params.arguments);
+          return await this.handleSetRangeMinMax(args);
         case 'set_h_slider_value':
-          return await this.handleSetHSliderValue(request.params.arguments);
+          return await this.handleSetHSliderValue(args);
         case 'get_h_slider_value':
-          return await this.handleGetHSliderValue(request.params.arguments);
+          return await this.handleGetHSliderValue(args);
         // Batch 65 switch cases — Group A: Theme / StyleBox UI tools
         case 'get_theme_info':
-          return await this.handleGetThemeInfo(request.params.arguments);
+          return await this.handleGetThemeInfo(args);
         case 'set_theme_font_size':
-          return await this.handleSetThemeFontSize(request.params.arguments);
+          return await this.handleSetThemeFontSize(args);
         case 'set_theme_color':
-          return await this.handleSetThemeColor(request.params.arguments);
+          return await this.handleSetThemeColor(args);
         case 'set_panel_stylebox_color':
-          return await this.handleSetPanelStyleboxColor(request.params.arguments);
+          return await this.handleSetPanelStyleboxColor(args);
         case 'set_panel_border_color':
-          return await this.handleSetPanelBorderColor(request.params.arguments);
+          return await this.handleSetPanelBorderColor(args);
         case 'get_control_theme_type':
-          return await this.handleGetControlThemeType(request.params.arguments);
+          return await this.handleGetControlThemeType(args);
         case 'set_control_theme_type':
-          return await this.handleSetControlThemeType(request.params.arguments);
+          return await this.handleSetControlThemeType(args);
         // Batch 65 switch cases — Group B: Tween animation at runtime
         case 'create_property_tween':
-          return await this.handleCreatePropertyTween(request.params.arguments);
+          return await this.handleCreatePropertyTween(args);
         case 'create_color_tween':
-          return await this.handleCreateColorTween(request.params.arguments);
+          return await this.handleCreateColorTween(args);
         case 'tween_node_position_2d':
-          return await this.handleTweenNodePosition2d(request.params.arguments);
+          return await this.handleTweenNodePosition2d(args);
         case 'tween_node_scale':
-          return await this.handleTweenNodeScale(request.params.arguments);
+          return await this.handleTweenNodeScale(args);
         case 'tween_node_alpha':
-          return await this.handleTweenNodeAlpha(request.params.arguments);
+          return await this.handleTweenNodeAlpha(args);
         case 'tween_node_rotation':
-          return await this.handleTweenNodeRotation(request.params.arguments);
+          return await this.handleTweenNodeRotation(args);
         case 'flash_node_color':
-          return await this.handleFlashNodeColor(request.params.arguments);
+          return await this.handleFlashNodeColor(args);
         // Batch 65 switch cases — Group C: OS / system runtime tools
         case 'get_system_memory_info':
-          return await this.handleGetSystemMemoryInfo(request.params.arguments);
+          return await this.handleGetSystemMemoryInfo(args);
         case 'get_processor_name':
-          return await this.handleGetProcessorName(request.params.arguments);
+          return await this.handleGetProcessorName(args);
         case 'get_locale':
-          return await this.handleGetLocale(request.params.arguments);
+          return await this.handleGetLocale(args);
         case 'get_screen_resolution':
-          return await this.handleGetScreenResolution(request.params.arguments);
+          return await this.handleGetScreenResolution(args);
         // Batch 65 switch cases — Group D: Navigation tools
         case 'get_navigation_agent_2d_target':
-          return await this.handleGetNavigationAgent2dTarget(request.params.arguments);
+          return await this.handleGetNavigationAgent2dTarget(args);
         case 'get_navigation_region_3d_baked':
-          return await this.handleGetNavigationRegion3dBaked(request.params.arguments);
+          return await this.handleGetNavigationRegion3dBaked(args);
         // Batch 65 switch cases — Group E: GDScript templates
         case 'write_bullet_pool_script':
-          return await this.handleWriteBulletPoolScript(request.params.arguments);
+          return await this.handleWriteBulletPoolScript(args);
         case 'write_game_over_screen_script':
-          return await this.handleWriteGameOverScreenScript(request.params.arguments);
+          return await this.handleWriteGameOverScreenScript(args);
         case 'write_pause_menu_script':
-          return await this.handleWritePauseMenuScript(request.params.arguments);
+          return await this.handleWritePauseMenuScript(args);
         case 'write_floating_text_script':
-          return await this.handleWriteFloatingTextScript(request.params.arguments);
+          return await this.handleWriteFloatingTextScript(args);
         case 'write_camera_2d_smooth_script':
-          return await this.handleWriteCamera2dSmoothScript(request.params.arguments);
+          return await this.handleWriteCamera2dSmoothScript(args);
         case 'write_consumable_item_script':
-          return await this.handleWriteConsumableItemScript(request.params.arguments);
+          return await this.handleWriteConsumableItemScript(args);
         // Batch 66 — Group A: Sprite2D animation frame control
         case 'get_sprite_frame_info':
-          return await this.handleGetSpriteFrameInfo(request.params.arguments);
+          return await this.handleGetSpriteFrameInfo(args);
         case 'set_sprite_hframes':
-          return await this.handleSetSpriteHframes(request.params.arguments);
+          return await this.handleSetSpriteHframes(args);
         case 'set_sprite_vframes':
-          return await this.handleSetSpriteVframes(request.params.arguments);
+          return await this.handleSetSpriteVframes(args);
         case 'set_sprite_region_rect':
-          return await this.handleSetSpriteRegionRect(request.params.arguments);
+          return await this.handleSetSpriteRegionRect(args);
         case 'set_sprite_region_enabled':
-          return await this.handleSetSpriteRegionEnabled(request.params.arguments);
+          return await this.handleSetSpriteRegionEnabled(args);
         // Batch 66 — Group B: TextureRect / NinePatchRect
         case 'set_texture_rect_stretch':
-          return await this.handleSetTextureRectStretch(request.params.arguments);
+          return await this.handleSetTextureRectStretch(args);
         case 'set_texture_rect_flip':
-          return await this.handleSetTextureRectFlip(request.params.arguments);
+          return await this.handleSetTextureRectFlip(args);
         case 'get_texture_rect_info':
-          return await this.handleGetTextureRectInfo(request.params.arguments);
+          return await this.handleGetTextureRectInfo(args);
         case 'set_nine_patch_margins':
-          return await this.handleSetNinePatchMargins(request.params.arguments);
+          return await this.handleSetNinePatchMargins(args);
         case 'set_nine_patch_draw_center':
-          return await this.handleSetNinePatchDrawCenter(request.params.arguments);
+          return await this.handleSetNinePatchDrawCenter(args);
         case 'get_nine_patch_info':
-          return await this.handleGetNinePatchInfo(request.params.arguments);
+          return await this.handleGetNinePatchInfo(args);
         // Batch 66 — Group C: Camera2D advanced controls
         case 'set_camera_2d_limits':
-          return await this.handleSetCamera2dLimits(request.params.arguments);
+          return await this.handleSetCamera2dLimits(args);
         case 'set_camera_2d_drag_margins':
-          return await this.handleSetCamera2dDragMargins(request.params.arguments);
+          return await this.handleSetCamera2dDragMargins(args);
         case 'reset_camera_2d':
-          return await this.handleResetCamera2d(request.params.arguments);
+          return await this.handleResetCamera2d(args);
         case 'set_camera_2d_process_callback':
-          return await this.handleSetCamera2dProcessCallback(request.params.arguments);
+          return await this.handleSetCamera2dProcessCallback(args);
         case 'get_camera_2d_screen_center':
-          return await this.handleGetCamera2dScreenCenter(request.params.arguments);
+          return await this.handleGetCamera2dScreenCenter(args);
         case 'shake_camera_2d':
-          return await this.handleShakeCamera2d(request.params.arguments);
+          return await this.handleShakeCamera2d(args);
         // Batch 66 — Group D: JSON / config file tools
         case 'read_json_file':
-          return await this.handleReadJsonFile(request.params.arguments);
+          return await this.handleReadJsonFile(args);
         case 'write_json_file':
-          return await this.handleWriteJsonFile(request.params.arguments);
+          return await this.handleWriteJsonFile(args);
         case 'merge_json_file':
-          return await this.handleMergeJsonFile(request.params.arguments);
+          return await this.handleMergeJsonFile(args);
         case 'list_project_files_by_extension':
-          return await this.handleListProjectFilesByExtension(request.params.arguments);
+          return await this.handleListProjectFilesByExtension(args);
         case 'get_file_stats':
-          return await this.handleGetFileStats(request.params.arguments);
+          return await this.handleGetFileStats(args);
         case 'delete_project_file':
-          return await this.handleDeleteProjectFile(request.params.arguments);
+          return await this.handleDeleteProjectFile(args);
         case 'copy_project_file':
-          return await this.handleCopyProjectFile(request.params.arguments);
+          return await this.handleCopyProjectFile(args);
         // Batch 66 — Group E: GDScript templates
         case 'write_hit_flash_script':
-          return await this.handleWriteHitFlashScript(request.params.arguments);
+          return await this.handleWriteHitFlashScript(args);
         case 'write_parallax_layer_script':
-          return await this.handleWriteParallaxLayerScript(request.params.arguments);
+          return await this.handleWriteParallaxLayerScript(args);
         case 'write_trigger_zone_script':
-          return await this.handleWriteTriggerZoneScript(request.params.arguments);
+          return await this.handleWriteTriggerZoneScript(args);
         case 'write_loot_drop_script':
-          return await this.handleWriteLootDropScript(request.params.arguments);
+          return await this.handleWriteLootDropScript(args);
         case 'write_combo_system_script':
-          return await this.handleWriteComboSystemScript(request.params.arguments);
+          return await this.handleWriteComboSystemScript(args);
         case 'write_status_effect_script':
-          return await this.handleWriteStatusEffectScript(request.params.arguments);
+          return await this.handleWriteStatusEffectScript(args);
         case 'write_xp_level_system_script':
-          return await this.handleWriteXpLevelSystemScript(request.params.arguments);
+          return await this.handleWriteXpLevelSystemScript(args);
         case 'write_grid_movement_script':
-          return await this.handleWriteGridMovementScript(request.params.arguments);
+          return await this.handleWriteGridMovementScript(args);
         case 'write_shop_system_script':
-          return await this.handleWriteShopSystemScript(request.params.arguments);
+          return await this.handleWriteShopSystemScript(args);
         case 'write_input_remapping_script':
-          return await this.handleWriteInputRemappingScript(request.params.arguments);
+          return await this.handleWriteInputRemappingScript(args);
         // Batch 67 — Group A: AudioStreamPlayer3D tools
         case 'get_audio_player_3d_info':
-          return await this.handleGetAudioPlayer3dInfo(request.params.arguments);
+          return await this.handleGetAudioPlayer3dInfo(args);
         case 'set_audio_player_3d_volume':
-          return await this.handleSetAudioPlayer3dVolume(request.params.arguments);
+          return await this.handleSetAudioPlayer3dVolume(args);
         case 'set_audio_player_3d_max_distance':
-          return await this.handleSetAudioPlayer3dMaxDistance(request.params.arguments);
+          return await this.handleSetAudioPlayer3dMaxDistance(args);
         case 'set_audio_player_3d_unit_size':
-          return await this.handleSetAudioPlayer3dUnitSize(request.params.arguments);
+          return await this.handleSetAudioPlayer3dUnitSize(args);
         case 'set_audio_player_3d_doppler':
-          return await this.handleSetAudioPlayer3dDoppler(request.params.arguments);
+          return await this.handleSetAudioPlayer3dDoppler(args);
         case 'play_audio_player_3d_at_position':
-          return await this.handlePlayAudioPlayer3dAtPosition(request.params.arguments);
+          return await this.handlePlayAudioPlayer3dAtPosition(args);
         // Batch 67 — Group B: ShaderMaterial property setters
         case 'get_shader_param':
-          return await this.handleGetShaderParam(request.params.arguments);
+          return await this.handleGetShaderParam(args);
         case 'set_shader_param_color':
-          return await this.handleSetShaderParamColor(request.params.arguments);
+          return await this.handleSetShaderParamColor(args);
         case 'set_shader_param_vec2':
-          return await this.handleSetShaderParamVec2(request.params.arguments);
+          return await this.handleSetShaderParamVec2(args);
         case 'set_shader_param_vec3':
-          return await this.handleSetShaderParamVec3(request.params.arguments);
+          return await this.handleSetShaderParamVec3(args);
         case 'list_shader_params':
-          return await this.handleListShaderParams(request.params.arguments);
+          return await this.handleListShaderParams(args);
         case 'assign_shader_to_mesh':
-          return await this.handleAssignShaderToMesh(request.params.arguments);
+          return await this.handleAssignShaderToMesh(args);
         // Batch 67 — Group C: Curve2D / Path2D tools
         case 'get_path_2d_point_count':
-          return await this.handleGetPath2dPointCount(request.params.arguments);
+          return await this.handleGetPath2dPointCount(args);
         case 'add_path_2d_point':
-          return await this.handleAddPath2dPoint(request.params.arguments);
+          return await this.handleAddPath2dPoint(args);
         case 'get_path_2d_baked_length':
-          return await this.handleGetPath2dBakedLength(request.params.arguments);
+          return await this.handleGetPath2dBakedLength(args);
         case 'sample_path_2d_baked':
-          return await this.handleSamplePath2dBaked(request.params.arguments);
+          return await this.handleSamplePath2dBaked(args);
         case 'clear_path_2d':
-          return await this.handleClearPath2d(request.params.arguments);
+          return await this.handleClearPath2d(args);
         case 'get_path_follower_2d_offset':
-          return await this.handleGetPathFollower2dOffset(request.params.arguments);
+          return await this.handleGetPathFollower2dOffset(args);
         // Batch 67 — Group D: MultiMeshInstance / performance
         case 'get_multimesh_instance_count':
-          return await this.handleGetMultimeshInstanceCount(request.params.arguments);
+          return await this.handleGetMultimeshInstanceCount(args);
         case 'set_multimesh_instance_count':
-          return await this.handleSetMultimeshInstanceCount(request.params.arguments);
+          return await this.handleSetMultimeshInstanceCount(args);
         case 'set_multimesh_instance_transform_3d':
-          return await this.handleSetMultimeshInstanceTransform3d(request.params.arguments);
+          return await this.handleSetMultimeshInstanceTransform3d(args);
         case 'set_multimesh_instance_color':
-          return await this.handleSetMultimeshInstanceColor(request.params.arguments);
+          return await this.handleSetMultimeshInstanceColor(args);
         case 'get_physics_server_info':
-          return await this.handleGetPhysicsServerInfo(request.params.arguments);
+          return await this.handleGetPhysicsServerInfo(args);
         // Batch 67 — Group E: GDScript templates
         case 'write_boss_enemy_script':
-          return await this.handleWriteBossEnemyScript(request.params.arguments);
+          return await this.handleWriteBossEnemyScript(args);
         case 'write_dialogue_npc_script':
-          return await this.handleWriteDialogueNpcScript(request.params.arguments);
+          return await this.handleWriteDialogueNpcScript(args);
         case 'write_rpg_stats_script':
-          return await this.handleWriteRpgStatsScript(request.params.arguments);
+          return await this.handleWriteRpgStatsScript(args);
         case 'write_resource_gathering_script':
-          return await this.handleWriteResourceGatheringScript(request.params.arguments);
+          return await this.handleWriteResourceGatheringScript(args);
         case 'write_crafting_system_script':
-          return await this.handleWriteCraftingSystemScript(request.params.arguments);
+          return await this.handleWriteCraftingSystemScript(args);
         case 'write_minimap_icon_script':
-          return await this.handleWriteMinimapIconScript(request.params.arguments);
+          return await this.handleWriteMinimapIconScript(args);
         case 'write_ability_cooldown_script':
-          return await this.handleWriteAbilityCooldownScript(request.params.arguments);
+          return await this.handleWriteAbilityCooldownScript(args);
         case 'write_ai_follow_player_script':
-          return await this.handleWriteAiFollowPlayerScript(request.params.arguments);
+          return await this.handleWriteAiFollowPlayerScript(args);
         case 'write_game_manager_script':
-          return await this.handleWriteGameManagerScript(request.params.arguments);
+          return await this.handleWriteGameManagerScript(args);
         case 'write_debug_overlay_script':
-          return await this.handleWriteDebugOverlayScript(request.params.arguments);
+          return await this.handleWriteDebugOverlayScript(args);
         // Batch 68 — Group A: HTTP client tools
         case 'http_request_get':
-          return await this.handleHttpRequestGet(request.params.arguments);
+          return await this.handleHttpRequestGet(args);
         case 'http_request_post':
-          return await this.handleHttpRequestPost(request.params.arguments);
+          return await this.handleHttpRequestPost(args);
         case 'get_http_client_status':
-          return await this.handleGetHttpClientStatus(request.params.arguments);
+          return await this.handleGetHttpClientStatus(args);
         case 'create_http_request_node':
-          return await this.handleCreateHttpRequestNode(request.params.arguments);
+          return await this.handleCreateHttpRequestNode(args);
         case 'get_last_http_response':
-          return await this.handleGetLastHttpResponse(request.params.arguments);
+          return await this.handleGetLastHttpResponse(args);
         case 'download_file_via_http':
-          return await this.handleDownloadFileViaHttp(request.params.arguments);
+          return await this.handleDownloadFileViaHttp(args);
         // Batch 68 — Group B: Audio effect parameter setters
         case 'get_audio_bus_effect_count':
-          return await this.handleGetAudioBusEffectCount(request.params.arguments);
+          return await this.handleGetAudioBusEffectCount(args);
         case 'set_reverb_room_size':
-          return await this.handleSetReverbRoomSize(request.params.arguments);
+          return await this.handleSetReverbRoomSize(args);
         case 'set_reverb_wet':
-          return await this.handleSetReverbWet(request.params.arguments);
+          return await this.handleSetReverbWet(args);
         case 'set_delay_dry':
-          return await this.handleSetDelayDry(request.params.arguments);
+          return await this.handleSetDelayDry(args);
         case 'set_compressor_threshold':
-          return await this.handleSetCompressorThreshold(request.params.arguments);
+          return await this.handleSetCompressorThreshold(args);
         case 'set_eq_band_gain':
-          return await this.handleSetEqBandGain(request.params.arguments);
+          return await this.handleSetEqBandGain(args);
         case 'get_audio_effect_info':
-          return await this.handleGetAudioEffectInfo(request.params.arguments);
+          return await this.handleGetAudioEffectInfo(args);
         // Batch 68 — Group C: Window management tools
         case 'set_window_fullscreen':
-          return await this.handleSetWindowFullscreen(request.params.arguments);
+          return await this.handleSetWindowFullscreen(args);
         case 'get_window_info':
-          return await this.handleGetWindowInfo(request.params.arguments);
+          return await this.handleGetWindowInfo(args);
         case 'set_window_position':
-          return await this.handleSetWindowPosition(request.params.arguments);
+          return await this.handleSetWindowPosition(args);
         case 'set_window_borderless':
-          return await this.handleSetWindowBorderless(request.params.arguments);
+          return await this.handleSetWindowBorderless(args);
         case 'set_window_always_on_top':
-          return await this.handleSetWindowAlwaysOnTop(request.params.arguments);
+          return await this.handleSetWindowAlwaysOnTop(args);
         // Batch 68 — Group D: Tree node batch operations
         case 'find_nodes_by_group':
-          return await this.handleFindNodesByGroup(request.params.arguments);
+          return await this.handleFindNodesByGroup(args);
         case 'set_all_nodes_in_group_visible':
-          return await this.handleSetAllNodesInGroupVisible(request.params.arguments);
+          return await this.handleSetAllNodesInGroupVisible(args);
         case 'get_node_count_in_scene':
-          return await this.handleGetNodeCountInScene(request.params.arguments);
+          return await this.handleGetNodeCountInScene(args);
         case 'get_nodes_with_script':
-          return await this.handleGetNodesWithScript(request.params.arguments);
+          return await this.handleGetNodesWithScript(args);
         case 'set_group_process':
-          return await this.handleSetGroupProcess(request.params.arguments);
+          return await this.handleSetGroupProcess(args);
         // Batch 68 — Group E: GDScript templates
         case 'write_turn_based_battle_script':
-          return await this.handleWriteTurnBasedBattleScript(request.params.arguments);
+          return await this.handleWriteTurnBasedBattleScript(args);
         case 'write_quest_system_script':
-          return await this.handleWriteQuestSystemScript(request.params.arguments);
+          return await this.handleWriteQuestSystemScript(args);
         case 'write_skill_tree_script':
-          return await this.handleWriteSkillTreeScript(request.params.arguments);
+          return await this.handleWriteSkillTreeScript(args);
         case 'write_weather_system_script':
-          return await this.handleWriteWeatherSystemScript(request.params.arguments);
+          return await this.handleWriteWeatherSystemScript(args);
         case 'write_2d_lighting_controller':
-          return await this.handleWrite2dLightingController(request.params.arguments);
+          return await this.handleWrite2dLightingController(args);
         case 'write_footstep_system_script':
-          return await this.handleWriteFootstepSystemScript(request.params.arguments);
+          return await this.handleWriteFootstepSystemScript(args);
         case 'write_leaderboard_script':
-          return await this.handleWriteLeaderboardScript(request.params.arguments);
+          return await this.handleWriteLeaderboardScript(args);
         case 'write_vfx_manager_script':
-          return await this.handleWriteVfxManagerScript(request.params.arguments);
+          return await this.handleWriteVfxManagerScript(args);
         case 'write_ui_animation_script':
-          return await this.handleWriteUiAnimationScript(request.params.arguments);
+          return await this.handleWriteUiAnimationScript(args);
         // Batch 69 switch cases
         case 'find_gdscript_classes':
-          return await this.handleFindGdscriptClasses(request.params.arguments);
+          return await this.handleFindGdscriptClasses(args);
         case 'find_gdscript_exports':
-          return await this.handleFindGdscriptExports(request.params.arguments);
+          return await this.handleFindGdscriptExports(args);
         case 'find_gdscript_signals_defined':
-          return await this.handleFindGdscriptSignalsDefined(request.params.arguments);
+          return await this.handleFindGdscriptSignalsDefined(args);
         case 'count_scene_nodes':
-          return await this.handleCountSceneNodes(request.params.arguments);
+          return await this.handleCountSceneNodes(args);
         case 'find_orphaned_gdscript_files':
-          return await this.handleFindOrphanedGdscriptFiles(request.params.arguments);
+          return await this.handleFindOrphanedGdscriptFiles(args);
         case 'get_project_scene_list':
-          return await this.handleGetProjectSceneList(request.params.arguments);
+          return await this.handleGetProjectSceneList(args);
         case 'get_scene_script_assignments':
-          return await this.handleGetSceneScriptAssignments(request.params.arguments);
+          return await this.handleGetSceneScriptAssignments(args);
         case 'search_in_gdscript_files':
-          return await this.handleSearchInGdscriptFiles(request.params.arguments);
+          return await this.handleSearchInGdscriptFiles(args);
         case 'read_scene_file_raw':
-          return await this.handleReadSceneFileRaw(request.params.arguments);
+          return await this.handleReadSceneFileRaw(args);
         case 'get_scene_node_list':
-          return await this.handleGetSceneNodeList(request.params.arguments);
+          return await this.handleGetSceneNodeList(args);
         case 'get_resource_file_info':
-          return await this.handleGetResourceFileInfo(request.params.arguments);
+          return await this.handleGetResourceFileInfo(args);
         case 'duplicate_scene_file':
-          return await this.handleDuplicateSceneFile(request.params.arguments);
+          return await this.handleDuplicateSceneFile(args);
         case 'append_to_gdscript_file':
-          return await this.handleAppendToGdscriptFile(request.params.arguments);
+          return await this.handleAppendToGdscriptFile(args);
         case 'read_gdscript_file':
-          return await this.handleReadGdscriptFile(request.params.arguments);
+          return await this.handleReadGdscriptFile(args);
         case 'get_skeleton_3d_info':
-          return await this.handleGetSkeleton3dInfo(request.params.arguments);
+          return await this.handleGetSkeleton3dInfo(args);
         case 'set_skeleton_3d_bone_pose_position':
-          return await this.handleSetSkeleton3dBonePosePosition(request.params.arguments);
+          return await this.handleSetSkeleton3dBonePosePosition(args);
         case 'get_skeleton_3d_bone_global_pose':
-          return await this.handleGetSkeleton3dBoneGlobalPose(request.params.arguments);
+          return await this.handleGetSkeleton3dBoneGlobalPose(args);
         case 'reset_skeleton_3d_pose':
-          return await this.handleResetSkeleton3dPose(request.params.arguments);
+          return await this.handleResetSkeleton3dPose(args);
         case 'get_skeleton_3d_bone_name':
-          return await this.handleGetSkeleton3dBoneName(request.params.arguments);
+          return await this.handleGetSkeleton3dBoneName(args);
         case 'find_skeleton_3d_bone_by_name':
-          return await this.handleFindSkeleton3dBoneByName(request.params.arguments);
+          return await this.handleFindSkeleton3dBoneByName(args);
         case 'set_skeleton_3d_bone_enabled':
-          return await this.handleSetSkeleton3dBoneEnabled(request.params.arguments);
+          return await this.handleSetSkeleton3dBoneEnabled(args);
         case 'write_save_screenshot_script':
-          return await this.handleWriteSaveScreenshotScript(request.params.arguments);
+          return await this.handleWriteSaveScreenshotScript(args);
         case 'write_cutscene_player_script':
-          return await this.handleWriteCutscenePlayerScript(request.params.arguments);
+          return await this.handleWriteCutscenePlayerScript(args);
         case 'write_random_map_generator_script':
-          return await this.handleWriteRandomMapGeneratorScript(request.params.arguments);
+          return await this.handleWriteRandomMapGeneratorScript(args);
         case 'write_fov_cone_script':
-          return await this.handleWriteFovConeScript(request.params.arguments);
+          return await this.handleWriteFovConeScript(args);
         case 'write_enemy_spawner_wave_script':
-          return await this.handleWriteEnemySpawnerWaveScript(request.params.arguments);
+          return await this.handleWriteEnemySpawnerWaveScript(args);
         case 'write_homing_missile_script':
-          return await this.handleWriteHomingMissileScript(request.params.arguments);
+          return await this.handleWriteHomingMissileScript(args);
         case 'write_boomerang_script':
-          return await this.handleWriteBoomerangScript(request.params.arguments);
+          return await this.handleWriteBoomerangScript(args);
         case 'write_stealth_detection_script':
-          return await this.handleWriteStealthDetectionScript(request.params.arguments);
+          return await this.handleWriteStealthDetectionScript(args);
         case 'write_pushback_script':
-          return await this.handleWritePushbackScript(request.params.arguments);
+          return await this.handleWritePushbackScript(args);
         case 'write_magnet_attract_script':
-          return await this.handleWriteMagnetAttractScript(request.params.arguments);
+          return await this.handleWriteMagnetAttractScript(args);
         case 'write_slide_puzzle_script':
-          return await this.handleWriteSlidePuzzleScript(request.params.arguments);
+          return await this.handleWriteSlidePuzzleScript(args);
         case 'write_match_3_board_script':
-          return await this.handleWriteMatch3BoardScript(request.params.arguments);
+          return await this.handleWriteMatch3BoardScript(args);
         case 'write_tower_defense_base_script':
-          return await this.handleWriteTowerDefenseBaseScript(request.params.arguments);
+          return await this.handleWriteTowerDefenseBaseScript(args);
         // Batch 70 — Group A: Time / Date runtime tools
         case 'get_unix_time':
-          return await this.handleGetUnixTime(request.params.arguments);
+          return await this.handleGetUnixTime(args);
         case 'get_datetime_dict':
-          return await this.handleGetDatetimeDict(request.params.arguments);
+          return await this.handleGetDatetimeDict(args);
         case 'get_ticks_msec':
-          return await this.handleGetTicksMsec(request.params.arguments);
+          return await this.handleGetTicksMsec(args);
         case 'get_ticks_usec':
-          return await this.handleGetTicksUsec(request.params.arguments);
+          return await this.handleGetTicksUsec(args);
         case 'unix_time_to_datetime':
-          return await this.handleUnixTimeToDatetime(request.params.arguments);
+          return await this.handleUnixTimeToDatetime(args);
         case 'datetime_to_unix_time':
-          return await this.handleDatetimeToUnixTime(request.params.arguments);
+          return await this.handleDatetimeToUnixTime(args);
         // Batch 70 — Group B: Crypto / hashing tools
         case 'hash_string_sha256':
-          return await this.handleHashStringSha256(request.params.arguments);
+          return await this.handleHashStringSha256(args);
         case 'hash_string_md5':
-          return await this.handleHashStringMd5(request.params.arguments);
+          return await this.handleHashStringMd5(args);
         case 'generate_uuid_v4':
-          return await this.handleGenerateUuidV4(request.params.arguments);
+          return await this.handleGenerateUuidV4(args);
         case 'base64_encode':
-          return await this.handleBase64Encode(request.params.arguments);
+          return await this.handleBase64Encode(args);
         case 'base64_decode':
-          return await this.handleBase64Decode(request.params.arguments);
+          return await this.handleBase64Decode(args);
         case 'get_random_int':
-          return await this.handleGetRandomInt(request.params.arguments);
+          return await this.handleGetRandomInt(args);
         // Batch 70 — Group C: InputMap runtime tools
         case 'get_input_map_actions':
-          return await this.handleGetInputMapActions(request.params.arguments);
+          return await this.handleGetInputMapActions(args);
         case 'action_has_event':
-          return await this.handleActionHasEvent(request.params.arguments);
+          return await this.handleActionHasEvent(args);
         case 'erase_input_action':
-          return await this.handleEraseInputAction(request.params.arguments);
+          return await this.handleEraseInputAction(args);
         case 'action_get_deadzone':
-          return await this.handleActionGetDeadzone(request.params.arguments);
+          return await this.handleActionGetDeadzone(args);
         case 'get_actions_for_key':
-          return await this.handleGetActionsForKey(request.params.arguments);
+          return await this.handleGetActionsForKey(args);
         // Batch 70 — Group D: String / text manipulation
         case 'gdscript_string_format':
-          return await this.handleGdscriptStringFormat(request.params.arguments);
+          return await this.handleGdscriptStringFormat(args);
         case 'json_stringify_in_godot':
-          return await this.handleJsonStringifyInGodot(request.params.arguments);
+          return await this.handleJsonStringifyInGodot(args);
         case 'json_parse_in_godot':
-          return await this.handleJsonParseInGodot(request.params.arguments);
+          return await this.handleJsonParseInGodot(args);
         case 'evaluate_gdscript_expression':
-          return await this.handleEvaluateGdscriptExpression(request.params.arguments);
+          return await this.handleEvaluateGdscriptExpression(args);
         case 'get_string_length':
-          return await this.handleGetStringLength(request.params.arguments);
+          return await this.handleGetStringLength(args);
         // Batch 70 — Group E: GDScript templates
         case 'write_top_down_shooter_script':
-          return await this.handleWriteTopDownShooterScript(request.params.arguments);
+          return await this.handleWriteTopDownShooterScript(args);
         case 'write_platformer_player_script':
-          return await this.handleWritePlatformerPlayerScript(request.params.arguments);
+          return await this.handleWritePlatformerPlayerScript(args);
         case 'write_enemy_state_machine_script':
-          return await this.handleWriteEnemyStateMachineScript(request.params.arguments);
+          return await this.handleWriteEnemyStateMachineScript(args);
         case 'write_resource_class_script':
-          return await this.handleWriteResourceClassScript(request.params.arguments);
+          return await this.handleWriteResourceClassScript(args);
         case 'write_singleton_with_events_script':
-          return await this.handleWriteSingletonWithEventsScript(request.params.arguments);
+          return await this.handleWriteSingletonWithEventsScript(args);
         case 'write_data_persistence_script':
-          return await this.handleWriteDataPersistenceScript(request.params.arguments);
+          return await this.handleWriteDataPersistenceScript(args);
         case 'write_camera_shake_3d_script':
-          return await this.handleWriteCameraShake3dScript(request.params.arguments);
+          return await this.handleWriteCameraShake3dScript(args);
         case 'write_explosion_script':
-          return await this.handleWriteExplosionScript(request.params.arguments);
+          return await this.handleWriteExplosionScript(args);
         case 'write_ragdoll_setup_script':
-          return await this.handleWriteRagdollSetupScript(request.params.arguments);
+          return await this.handleWriteRagdollSetupScript(args);
         case 'write_climbing_system_script':
-          return await this.handleWriteClimbingSystemScript(request.params.arguments);
+          return await this.handleWriteClimbingSystemScript(args);
         case 'write_grappling_hook_script':
-          return await this.handleWriteGrapplingHookScript(request.params.arguments);
+          return await this.handleWriteGrapplingHookScript(args);
         case 'write_swimming_controller_script':
-          return await this.handleWriteSwimmingControllerScript(request.params.arguments);
+          return await this.handleWriteSwimmingControllerScript(args);
         // Batch 71 — Group A: AnimationTree/StateMachine
         case 'start_animation_state':
-          return await this.handleStartAnimationState(request.params.arguments);
+          return await this.handleStartAnimationState(args);
         case 'stop_animation_state_machine':
-          return await this.handleStopAnimationStateMachine(request.params.arguments);
+          return await this.handleStopAnimationStateMachine(args);
         case 'get_current_animation_state':
-          return await this.handleGetCurrentAnimationState(request.params.arguments);
+          return await this.handleGetCurrentAnimationState(args);
         // Batch 71 — Group B: Path3D / Curve3D
         case 'get_path_3d_baked_length':
-          return await this.handleGetPath3DBakedLength(request.params.arguments);
+          return await this.handleGetPath3DBakedLength(args);
         case 'get_path_3d_point_count':
-          return await this.handleGetPath3DPointCount(request.params.arguments);
+          return await this.handleGetPath3DPointCount(args);
         case 'add_path_3d_point':
-          return await this.handleAddPath3DPoint(request.params.arguments);
+          return await this.handleAddPath3DPoint(args);
         case 'remove_path_3d_point':
-          return await this.handleRemovePath3DPoint(request.params.arguments);
+          return await this.handleRemovePath3DPoint(args);
         case 'get_path_3d_point_position':
-          return await this.handleGetPath3DPointPosition(request.params.arguments);
+          return await this.handleGetPath3DPointPosition(args);
         case 'sample_path_3d_at_offset':
-          return await this.handleSamplePath3DAtOffset(request.params.arguments);
+          return await this.handleSamplePath3DAtOffset(args);
         // Batch 71 — Group C: Physics joints 2D
         case 'get_pin_joint_2d_info':
-          return await this.handleGetPinJoint2DInfo(request.params.arguments);
+          return await this.handleGetPinJoint2DInfo(args);
         case 'set_pin_joint_2d_softness':
-          return await this.handleSetPinJoint2DSoftness(request.params.arguments);
+          return await this.handleSetPinJoint2DSoftness(args);
         case 'get_groove_joint_2d_info':
-          return await this.handleGetGrooveJoint2DInfo(request.params.arguments);
+          return await this.handleGetGrooveJoint2DInfo(args);
         case 'get_damped_spring_joint_2d_info':
-          return await this.handleGetDampedSpringJoint2DInfo(request.params.arguments);
+          return await this.handleGetDampedSpringJoint2DInfo(args);
         case 'set_damped_spring_joint_2d_stiffness':
-          return await this.handleSetDampedSpringJoint2DStiffness(request.params.arguments);
+          return await this.handleSetDampedSpringJoint2DStiffness(args);
         // Batch 71 — Group D: Physics joints 3D
         case 'get_hinge_joint_3d_info':
-          return await this.handleGetHingeJoint3DInfo(request.params.arguments);
+          return await this.handleGetHingeJoint3DInfo(args);
         case 'get_slider_joint_3d_info':
-          return await this.handleGetSliderJoint3DInfo(request.params.arguments);
+          return await this.handleGetSliderJoint3DInfo(args);
         case 'get_cone_twist_joint_3d_info':
-          return await this.handleGetConeTwistJoint3DInfo(request.params.arguments);
+          return await this.handleGetConeTwistJoint3DInfo(args);
         case 'get_generic_6dof_joint_info':
-          return await this.handleGetGeneric6DOFJointInfo(request.params.arguments);
+          return await this.handleGetGeneric6DOFJointInfo(args);
         case 'set_joint_3d_node_paths':
-          return await this.handleSetJoint3DNodePaths(request.params.arguments);
+          return await this.handleSetJoint3DNodePaths(args);
         // Batch 71 — Group E: VehicleBody3D / SpringArm3D
         case 'get_vehicle_body_3d_info':
-          return await this.handleGetVehicleBody3DInfo(request.params.arguments);
+          return await this.handleGetVehicleBody3DInfo(args);
         case 'set_vehicle_body_3d_engine_force':
-          return await this.handleSetVehicleBody3DEngineForce(request.params.arguments);
+          return await this.handleSetVehicleBody3DEngineForce(args);
         case 'get_spring_arm_3d_info':
-          return await this.handleGetSpringArm3DInfo(request.params.arguments);
+          return await this.handleGetSpringArm3DInfo(args);
         case 'set_spring_arm_3d_length':
-          return await this.handleSetSpringArm3DLength(request.params.arguments);
+          return await this.handleSetSpringArm3DLength(args);
         // Batch 71 — Group F: GDScript templates
         case 'write_vehicle_controller_script':
-          return await this.handleWriteVehicleControllerScript(request.params.arguments);
+          return await this.handleWriteVehicleControllerScript(args);
         case 'write_quest_manager_script':
-          return await this.handleWriteQuestManagerScript(request.params.arguments);
+          return await this.handleWriteQuestManagerScript(args);
         case 'write_loot_table_script':
-          return await this.handleWriteLootTableScript(request.params.arguments);
+          return await this.handleWriteLootTableScript(args);
         case 'write_grid_based_movement_script':
-          return await this.handleWriteGridBasedMovementScript(request.params.arguments);
+          return await this.handleWriteGridBasedMovementScript(args);
         // Batch 72 switch cases — Group A: BoneAttachment3D / PhysicalBone3D
         case 'get_bone_attachment_3d_info':
-          return await this.handleGetBoneAttachment3dInfo(request.params.arguments);
+          return await this.handleGetBoneAttachment3dInfo(args);
         case 'set_bone_attachment_3d_bone_name':
-          return await this.handleSetBoneAttachment3dBoneName(request.params.arguments);
+          return await this.handleSetBoneAttachment3dBoneName(args);
         case 'get_physical_bone_3d_info':
-          return await this.handleGetPhysicalBone3dInfo(request.params.arguments);
+          return await this.handleGetPhysicalBone3dInfo(args);
         case 'apply_physical_bone_impulse':
-          return await this.handleApplyPhysicalBoneImpulse(request.params.arguments);
+          return await this.handleApplyPhysicalBoneImpulse(args);
         case 'get_skeleton_physical_bones_simulating':
-          return await this.handleGetSkeletonPhysicalBonesSimulating(request.params.arguments);
+          return await this.handleGetSkeletonPhysicalBonesSimulating(args);
         // Batch 72 switch cases — Group B: Decal3D / CSG tools
         case 'get_decal_3d_info':
-          return await this.handleGetDecal3dInfo(request.params.arguments);
+          return await this.handleGetDecal3dInfo(args);
         case 'set_decal_3d_size':
-          return await this.handleSetDecal3dSize(request.params.arguments);
+          return await this.handleSetDecal3dSize(args);
         case 'set_decal_3d_albedo_mix':
-          return await this.handleSetDecal3dAlbedoMix(request.params.arguments);
+          return await this.handleSetDecal3dAlbedoMix(args);
         case 'get_csg_shape_info':
-          return await this.handleGetCsgShapeInfo(request.params.arguments);
+          return await this.handleGetCsgShapeInfo(args);
         case 'set_csg_shape_operation':
-          return await this.handleSetCsgShapeOperation(request.params.arguments);
+          return await this.handleSetCsgShapeOperation(args);
         case 'get_csg_combined_faces':
-          return await this.handleGetCsgCombinedFaces(request.params.arguments);
+          return await this.handleGetCsgCombinedFaces(args);
         // Batch 72 switch cases — Group C: Audio Bus management
         case 'set_audio_bus_name':
-          return await this.handleSetAudioBusName(request.params.arguments);
+          return await this.handleSetAudioBusName(args);
         case 'move_audio_bus':
-          return await this.handleMoveAudioBus(request.params.arguments);
+          return await this.handleMoveAudioBus(args);
         case 'get_audio_bus_send':
-          return await this.handleGetAudioBusSend(request.params.arguments);
+          return await this.handleGetAudioBusSend(args);
         // Batch 72 switch cases — Group D: ENet / WebSocket networking
         case 'create_enet_peer':
-          return await this.handleCreateEnetPeer(request.params.arguments);
+          return await this.handleCreateEnetPeer(args);
         case 'create_enet_server':
-          return await this.handleCreateEnetServer(request.params.arguments);
+          return await this.handleCreateEnetServer(args);
         case 'get_enet_connection_status':
-          return await this.handleGetEnetConnectionStatus(request.params.arguments);
+          return await this.handleGetEnetConnectionStatus(args);
         case 'create_websocket_peer':
-          return await this.handleCreateWebsocketPeer(request.params.arguments);
+          return await this.handleCreateWebsocketPeer(args);
         case 'get_websocket_peer_state':
-          return await this.handleGetWebsocketPeerState(request.params.arguments);
+          return await this.handleGetWebsocketPeerState(args);
         case 'send_websocket_text':
-          return await this.handleSendWebsocketText(request.params.arguments);
+          return await this.handleSendWebsocketText(args);
         // Batch 72 switch cases — Group E: GDScript templates
         case 'write_object_pooling_script':
-          return await this.handleWriteObjectPoolingScript(request.params.arguments);
+          return await this.handleWriteObjectPoolingScript(args);
         case 'write_shield_system_script':
-          return await this.handleWriteShieldSystemScript(request.params.arguments);
+          return await this.handleWriteShieldSystemScript(args);
         case 'write_waypoint_patrol_script':
-          return await this.handleWriteWaypointPatrolScript(request.params.arguments);
+          return await this.handleWriteWaypointPatrolScript(args);
         // Batch 73 switch cases — Group A: VisualShader node graph
         case 'get_visual_shader_info':
-          return await this.handleGetVisualShaderInfo(request.params.arguments);
+          return await this.handleGetVisualShaderInfo(args);
         case 'add_visual_shader_node':
-          return await this.handleAddVisualShaderNode(request.params.arguments);
+          return await this.handleAddVisualShaderNode(args);
         case 'remove_visual_shader_node':
-          return await this.handleRemoveVisualShaderNode(request.params.arguments);
+          return await this.handleRemoveVisualShaderNode(args);
         case 'connect_visual_shader_nodes':
-          return await this.handleConnectVisualShaderNodes(request.params.arguments);
+          return await this.handleConnectVisualShaderNodes(args);
         case 'get_visual_shader_node_list':
-          return await this.handleGetVisualShaderNodeList(request.params.arguments);
+          return await this.handleGetVisualShaderNodeList(args);
         case 'set_visual_shader_node_position':
-          return await this.handleSetVisualShaderNodePosition(request.params.arguments);
+          return await this.handleSetVisualShaderNodePosition(args);
         case 'get_visual_shader_connections':
-          return await this.handleGetVisualShaderConnections(request.params.arguments);
+          return await this.handleGetVisualShaderConnections(args);
         case 'disconnect_visual_shader_nodes':
-          return await this.handleDisconnectVisualShaderNodes(request.params.arguments);
+          return await this.handleDisconnectVisualShaderNodes(args);
         // Batch 73 switch cases — Group B: TileSet configuration
         case 'create_tileset_resource':
-          return await this.handleCreateTilesetResource(request.params.arguments);
+          return await this.handleCreateTilesetResource(args);
         case 'add_tileset_source':
-          return await this.handleAddTilesetSource(request.params.arguments);
+          return await this.handleAddTilesetSource(args);
         case 'get_tileset_source_count':
-          return await this.handleGetTilesetSourceCount(request.params.arguments);
+          return await this.handleGetTilesetSourceCount(args);
         case 'add_tileset_custom_data_layer':
-          return await this.handleAddTilesetCustomDataLayer(request.params.arguments);
+          return await this.handleAddTilesetCustomDataLayer(args);
         case 'add_tileset_physics_layer':
-          return await this.handleAddTilesetPhysicsLayer(request.params.arguments);
+          return await this.handleAddTilesetPhysicsLayer(args);
         case 'add_tileset_terrain_set':
-          return await this.handleAddTilesetTerrainSet(request.params.arguments);
+          return await this.handleAddTilesetTerrainSet(args);
         // Batch 73 switch cases — Group C: Font resource tools
         case 'create_dynamic_font_resource':
-          return await this.handleCreateDynamicFontResource(request.params.arguments);
+          return await this.handleCreateDynamicFontResource(args);
         case 'create_bitmap_font_resource':
-          return await this.handleCreateBitmapFontResource(request.params.arguments);
+          return await this.handleCreateBitmapFontResource(args);
         case 'set_font_default_size':
-          return await this.handleSetFontDefaultSize(request.params.arguments);
+          return await this.handleSetFontDefaultSize(args);
         case 'get_font_glyph_count':
-          return await this.handleGetFontGlyphCount(request.params.arguments);
+          return await this.handleGetFontGlyphCount(args);
         case 'list_system_fonts':
-          return await this.handleListSystemFonts(request.params.arguments);
+          return await this.handleListSystemFonts(args);
         case 'get_screen_dpi':
-          return await this.handleGetScreenDpi(request.params.arguments);
+          return await this.handleGetScreenDpi(args);
         case 'get_display_server_info':
-          return await this.handleGetDisplayServerInfo(request.params.arguments);
+          return await this.handleGetDisplayServerInfo(args);
         case 'get_engine_target_fps':
-          return await this.handleGetEngineTargetFps(request.params.arguments);
+          return await this.handleGetEngineTargetFps(args);
         case 'set_engine_target_fps':
-          return await this.handleSetEngineTargetFps(request.params.arguments);
+          return await this.handleSetEngineTargetFps(args);
         case 'get_locale_info':
-          return await this.handleGetLocaleInfo(request.params.arguments);
+          return await this.handleGetLocaleInfo(args);
         case 'get_environment_variable':
-          return await this.handleGetEnvironmentVariable(request.params.arguments);
+          return await this.handleGetEnvironmentVariable(args);
         // Batch 73 switch cases — Group D: More editor plugin commands
         case 'get_editor_selected_nodes':
-          return await this.handleGetEditorSelectedNodes(request.params.arguments);
+          return await this.handleGetEditorSelectedNodes(args);
         case 'get_editor_current_scene_path':
-          return await this.handleGetEditorCurrentScenePath(request.params.arguments);
+          return await this.handleGetEditorCurrentScenePath(args);
         case 'editor_select_node_by_path':
-          return await this.handleEditorSelectNodeByPath(request.params.arguments);
+          return await this.handleEditorSelectNodeByPath(args);
         case 'get_editor_filesystem_files':
-          return await this.handleGetEditorFilesystemFiles(request.params.arguments);
+          return await this.handleGetEditorFilesystemFiles(args);
         // Batch 73 switch cases — Group E: GDScript templates
         case 'write_state_machine_base_script':
-          return await this.handleWriteStateMachineBaseScript(request.params.arguments);
+          return await this.handleWriteStateMachineBaseScript(args);
         case 'write_health_component_script':
-          return await this.handleWriteHealthComponentScript(request.params.arguments);
+          return await this.handleWriteHealthComponentScript(args);
         case 'write_hitbox_hurtbox_script':
-          return await this.handleWriteHitboxHurtboxScript(request.params.arguments);
+          return await this.handleWriteHitboxHurtboxScript(args);
         case 'write_options_menu_script':
-          return await this.handleWriteOptionsMenuScript(request.params.arguments);
+          return await this.handleWriteOptionsMenuScript(args);
         case 'write_parallax_background_script':
-          return await this.handleWriteParallaxBackgroundScript(request.params.arguments);
+          return await this.handleWriteParallaxBackgroundScript(args);
         case 'write_screen_shake_2d_script':
-          return await this.handleWriteScreenShake2dScript(request.params.arguments);
+          return await this.handleWriteScreenShake2dScript(args);
         case 'write_experience_level_script':
-          return await this.handleWriteExperienceLevelScript(request.params.arguments);
+          return await this.handleWriteExperienceLevelScript(args);
         case 'write_notification_system_script':
-          return await this.handleWriteNotificationSystemScript(request.params.arguments);
+          return await this.handleWriteNotificationSystemScript(args);
         // Batch 74 — Group A: XR / VR / AR runtime tools
         case 'get_xr_interface_list':
-          return await this.handleGetXrInterfaceList(request.params.arguments);
+          return await this.handleGetXrInterfaceList(args);
         case 'initialize_xr_interface':
-          return await this.handleInitializeXrInterface(request.params.arguments);
+          return await this.handleInitializeXrInterface(args);
         case 'get_xr_is_tracking':
-          return await this.handleGetXrIsTracking(request.params.arguments);
+          return await this.handleGetXrIsTracking(args);
         case 'get_xr_controller_input':
-          return await this.handleGetXrControllerInput(request.params.arguments);
+          return await this.handleGetXrControllerInput(args);
         case 'get_xr_camera_transform':
-          return await this.handleGetXrCameraTransform(request.params.arguments);
+          return await this.handleGetXrCameraTransform(args);
         case 'set_xr_world_scale':
-          return await this.handleSetXrWorldScale(request.params.arguments);
+          return await this.handleSetXrWorldScale(args);
         case 'get_xr_anchor_info':
-          return await this.handleGetXrAnchorInfo(request.params.arguments);
+          return await this.handleGetXrAnchorInfo(args);
         // Batch 74 — Group B: NavigationAgent3D / NavigationRegion3D
         case 'get_navigation_agent_3d_info':
-          return await this.handleGetNavigationAgent3dInfo(request.params.arguments);
+          return await this.handleGetNavigationAgent3dInfo(args);
         case 'get_navigation_agent_3d_next_path_pos':
-          return await this.handleGetNavigationAgent3dNextPathPos(request.params.arguments);
+          return await this.handleGetNavigationAgent3dNextPathPos(args);
         case 'is_navigation_agent_3d_target_reachable':
-          return await this.handleIsNavigationAgent3dTargetReachable(request.params.arguments);
+          return await this.handleIsNavigationAgent3dTargetReachable(args);
         case 'get_navigation_region_3d_enabled':
-          return await this.handleGetNavigationRegion3dEnabled(request.params.arguments);
+          return await this.handleGetNavigationRegion3dEnabled(args);
         case 'set_navigation_region_3d_enabled':
-          return await this.handleSetNavigationRegion3dEnabled(request.params.arguments);
+          return await this.handleSetNavigationRegion3dEnabled(args);
         case 'bake_navigation_mesh_3d':
-          return await this.handleBakeNavigationMesh3d(request.params.arguments);
+          return await this.handleBakeNavigationMesh3d(args);
         // Batch 74 — Group C: GPUParticles3D advanced controls
         case 'get_gpu_particles_3d_info':
-          return await this.handleGetGpuParticles3dInfo(request.params.arguments);
+          return await this.handleGetGpuParticles3dInfo(args);
         case 'set_gpu_particles_3d_amount':
-          return await this.handleSetGpuParticles3dAmount(request.params.arguments);
+          return await this.handleSetGpuParticles3dAmount(args);
         case 'set_gpu_particles_3d_lifetime':
-          return await this.handleSetGpuParticles3dLifetime(request.params.arguments);
+          return await this.handleSetGpuParticles3dLifetime(args);
         case 'restart_gpu_particles_3d':
-          return await this.handleRestartGpuParticles3d(request.params.arguments);
+          return await this.handleRestartGpuParticles3d(args);
         case 'set_gpu_particles_3d_one_shot':
-          return await this.handleSetGpuParticles3dOneShot(request.params.arguments);
+          return await this.handleSetGpuParticles3dOneShot(args);
         case 'emit_gpu_particles_3d_subemitter':
-          return await this.handleEmitGpuParticles3dSubemitter(request.params.arguments);
+          return await this.handleEmitGpuParticles3dSubemitter(args);
         // Batch 74 — Group D: More editor plugin commands
         case 'get_editor_undo_redo_history':
-          return await this.handleGetEditorUndoRedoHistory(request.params.arguments);
+          return await this.handleGetEditorUndoRedoHistory(args);
         case 'get_editor_inspector_object':
-          return await this.handleGetEditorInspectorObject(request.params.arguments);
+          return await this.handleGetEditorInspectorObject(args);
         // Batch 74 — Group E: GDScript templates
         case 'write_double_jump_script':
-          return await this.handleWriteDoubleJumpScript(request.params.arguments);
+          return await this.handleWriteDoubleJumpScript(args);
         case 'write_dash_ability_script':
-          return await this.handleWriteDashAbilityScript(request.params.arguments);
+          return await this.handleWriteDashAbilityScript(args);
         case 'write_wall_jump_script':
-          return await this.handleWriteWallJumpScript(request.params.arguments);
+          return await this.handleWriteWallJumpScript(args);
         case 'write_cutscene_trigger_script':
-          return await this.handleWriteCutsceneTriggerScript(request.params.arguments);
+          return await this.handleWriteCutsceneTriggerScript(args);
         case 'write_interactable_object_script':
-          return await this.handleWriteInteractableObjectScript(request.params.arguments);
+          return await this.handleWriteInteractableObjectScript(args);
         case 'write_item_pickup_script':
-          return await this.handleWriteItemPickupScript(request.params.arguments);
+          return await this.handleWriteItemPickupScript(args);
         case 'write_moving_platform_script':
-          return await this.handleWriteMovingPlatformScript(request.params.arguments);
+          return await this.handleWriteMovingPlatformScript(args);
         // Batch 75 switch cases
         case 'get_performance_monitor_value':
-          return await this.handleGetPerformanceMonitorValue(request.params.arguments);
+          return await this.handleGetPerformanceMonitorValue(args);
         case 'get_all_performance_monitors':
-          return await this.handleGetAllPerformanceMonitors(request.params.arguments);
+          return await this.handleGetAllPerformanceMonitors(args);
         case 'set_project_setting_runtime':
-          return await this.handleSetProjectSettingRuntime(request.params.arguments);
+          return await this.handleSetProjectSettingRuntime(args);
         case 'get_rendering_info':
-          return await this.handleGetRenderingInfo(request.params.arguments);
+          return await this.handleGetRenderingInfo(args);
         case 'get_viewport_render_info':
-          return await this.handleGetViewportRenderInfo(request.params.arguments);
+          return await this.handleGetViewportRenderInfo(args);
         case 'get_sky_material_info':
-          return await this.handleGetSkyMaterialInfo(request.params.arguments);
+          return await this.handleGetSkyMaterialInfo(args);
         case 'get_environment_tone_map':
-          return await this.handleGetEnvironmentToneMap(request.params.arguments);
+          return await this.handleGetEnvironmentToneMap(args);
         case 'set_environment_tone_map':
-          return await this.handleSetEnvironmentToneMap(request.params.arguments);
+          return await this.handleSetEnvironmentToneMap(args);
         case 'get_environment_glow':
-          return await this.handleGetEnvironmentGlow(request.params.arguments);
+          return await this.handleGetEnvironmentGlow(args);
         case 'set_environment_glow_enabled':
-          return await this.handleSetEnvironmentGlowEnabled(request.params.arguments);
+          return await this.handleSetEnvironmentGlowEnabled(args);
         case 'set_group_property':
-          return await this.handleSetGroupProperty(request.params.arguments);
+          return await this.handleSetGroupProperty(args);
         case 'get_scene_unique_nodes':
-          return await this.handleGetSceneUniqueNodes(request.params.arguments);
+          return await this.handleGetSceneUniqueNodes(args);
         case 'get_node_incoming_connections':
-          return await this.handleGetNodeIncomingConnections(request.params.arguments);
+          return await this.handleGetNodeIncomingConnections(args);
         case 'inspect_resource_properties':
-          return await this.handleInspectResourceProperties(request.params.arguments);
+          return await this.handleInspectResourceProperties(args);
         case 'get_resource_import_metadata':
-          return await this.handleGetResourceImportMetadata(request.params.arguments);
+          return await this.handleGetResourceImportMetadata(args);
         case 'list_resources_of_type':
-          return await this.handleListResourcesOfType(request.params.arguments);
+          return await this.handleListResourcesOfType(args);
         case 'get_gdscript_class_hierarchy':
-          return await this.handleGetGdscriptClassHierarchy(request.params.arguments);
+          return await this.handleGetGdscriptClassHierarchy(args);
         case 'get_script_exported_properties':
-          return await this.handleGetScriptExportedProperties(request.params.arguments);
+          return await this.handleGetScriptExportedProperties(args);
         case 'write_game_over_screen_script':
-          return await this.handleWriteGameOverScreenScript(request.params.arguments);
+          return await this.handleWriteGameOverScreenScript(args);
         case 'write_fps_counter_script':
-          return await this.handleWriteFpsCounterScript(request.params.arguments);
+          return await this.handleWriteFpsCounterScript(args);
         case 'write_debug_overlay_script':
-          return await this.handleWriteDebugOverlayScript(request.params.arguments);
+          return await this.handleWriteDebugOverlayScript(args);
         case 'write_input_buffer_script':
-          return await this.handleWriteInputBufferScript(request.params.arguments);
+          return await this.handleWriteInputBufferScript(args);
         case 'write_coyote_time_script':
-          return await this.handleWriteCoyoteTimeScript(request.params.arguments);
+          return await this.handleWriteCoyoteTimeScript(args);
         case 'write_camera_follow_3d_script':
-          return await this.handleWriteCameraFollow3dScript(request.params.arguments);
+          return await this.handleWriteCameraFollow3dScript(args);
         case 'write_sprite_outline_script':
-          return await this.handleWriteSpriteOutlineScript(request.params.arguments);
+          return await this.handleWriteSpriteOutlineScript(args);
         case 'write_pathfinding_agent_2d_script':
-          return await this.handleWritePathfindingAgent2dScript(request.params.arguments);
+          return await this.handleWritePathfindingAgent2dScript(args);
         case 'write_grid_snap_script':
-          return await this.handleWriteGridSnapScript(request.params.arguments);
+          return await this.handleWriteGridSnapScript(args);
         case 'write_card_game_base_script':
-          return await this.handleWriteCardGameBaseScript(request.params.arguments);
+          return await this.handleWriteCardGameBaseScript(args);
         case 'write_turn_based_combat_script':
-          return await this.handleWriteTurnBasedCombatScript(request.params.arguments);
+          return await this.handleWriteTurnBasedCombatScript(args);
         // Batch 76 — Group A: Texture2D / ImageTexture
         case 'get_texture_2d_size':
-          return await this.handleGetTexture2dSize(request.params.arguments);
+          return await this.handleGetTexture2dSize(args);
         case 'get_image_info':
-          return await this.handleGetImageInfo(request.params.arguments);
+          return await this.handleGetImageInfo(args);
         case 'set_texture_rect_stretch_mode':
-          return await this.handleSetTextureRectStretchMode(request.params.arguments);
+          return await this.handleSetTextureRectStretchMode(args);
         case 'get_atlas_texture_info':
-          return await this.handleGetAtlasTextureInfo(request.params.arguments);
+          return await this.handleGetAtlasTextureInfo(args);
         case 'create_viewport_texture':
-          return await this.handleCreateViewportTexture(request.params.arguments);
+          return await this.handleCreateViewportTexture(args);
         case 'get_texture_flags':
-          return await this.handleGetTextureFlags(request.params.arguments);
+          return await this.handleGetTextureFlags(args);
         // Batch 76 — Group B: SubViewport / Viewport
         case 'get_sub_viewport_info':
-          return await this.handleGetSubViewportInfo(request.params.arguments);
+          return await this.handleGetSubViewportInfo(args);
         case 'get_viewport_texture_rid':
-          return await this.handleGetViewportTextureRid(request.params.arguments);
+          return await this.handleGetViewportTextureRid(args);
         case 'set_viewport_clear_mode':
-          return await this.handleSetViewportClearMode(request.params.arguments);
+          return await this.handleSetViewportClearMode(args);
         case 'get_viewport_canvas_transform':
-          return await this.handleGetViewportCanvasTransform(request.params.arguments);
+          return await this.handleGetViewportCanvasTransform(args);
         // Batch 76 — Group C: Label3D / TextMesh
         case 'get_label_3d_info':
-          return await this.handleGetLabel3dInfo(request.params.arguments);
+          return await this.handleGetLabel3dInfo(args);
         case 'set_label_3d_text':
-          return await this.handleSetLabel3dText(request.params.arguments);
+          return await this.handleSetLabel3dText(args);
         case 'set_label_3d_font_size':
-          return await this.handleSetLabel3dFontSize(request.params.arguments);
+          return await this.handleSetLabel3dFontSize(args);
         case 'set_label_3d_billboard':
-          return await this.handleSetLabel3dBillboard(request.params.arguments);
+          return await this.handleSetLabel3dBillboard(args);
         case 'get_text_mesh_info':
-          return await this.handleGetTextMeshInfo(request.params.arguments);
+          return await this.handleGetTextMeshInfo(args);
         // Batch 76 — Group D: SoftBody3D
         case 'get_soft_body_3d_info':
-          return await this.handleGetSoftBody3dInfo(request.params.arguments);
+          return await this.handleGetSoftBody3dInfo(args);
         case 'set_soft_body_3d_simulation_precision':
-          return await this.handleSetSoftBody3dSimulationPrecision(request.params.arguments);
+          return await this.handleSetSoftBody3dSimulationPrecision(args);
         case 'pin_soft_body_3d_point':
-          return await this.handlePinSoftBody3dPoint(request.params.arguments);
+          return await this.handlePinSoftBody3dPoint(args);
         case 'unpin_soft_body_3d_point':
-          return await this.handleUnpinSoftBody3dPoint(request.params.arguments);
+          return await this.handleUnpinSoftBody3dPoint(args);
         // Batch 76 — Group E: GDScript templates
         case 'write_save_load_system_script':
-          return await this.handleWriteSaveLoadSystemScript(request.params.arguments);
+          return await this.handleWriteSaveLoadSystemScript(args);
         case 'write_loading_screen_script':
-          return await this.handleWriteLoadingScreenScript(request.params.arguments);
+          return await this.handleWriteLoadingScreenScript(args);
         case 'write_gamepad_rumble_script':
-          return await this.handleWriteGamepadRumbleScript(request.params.arguments);
+          return await this.handleWriteGamepadRumbleScript(args);
         case 'write_localization_helper_script':
-          return await this.handleWriteLocalizationHelperScript(request.params.arguments);
+          return await this.handleWriteLocalizationHelperScript(args);
         case 'write_console_command_script':
-          return await this.handleWriteConsoleCommandScript(request.params.arguments);
+          return await this.handleWriteConsoleCommandScript(args);
         case 'write_signal_bus_script':
-          return await this.handleWriteSignalBusScript(request.params.arguments);
+          return await this.handleWriteSignalBusScript(args);
         case 'write_resource_loader_script':
-          return await this.handleWriteResourceLoaderScript(request.params.arguments);
+          return await this.handleWriteResourceLoaderScript(args);
         case 'write_scene_manager_script':
-          return await this.handleWriteSceneManagerScript(request.params.arguments);
+          return await this.handleWriteSceneManagerScript(args);
         case 'write_audio_manager_script':
-          return await this.handleWriteAudioManagerScript(request.params.arguments);
+          return await this.handleWriteAudioManagerScript(args);
         case 'write_global_events_script':
-          return await this.handleWriteGlobalEventsScript(request.params.arguments);
+          return await this.handleWriteGlobalEventsScript(args);
         case 'write_procedural_dungeon_script':
-          return await this.handleWriteProceduralDungeonScript(request.params.arguments);
+          return await this.handleWriteProceduralDungeonScript(args);
         case 'write_chunk_loading_script':
-          return await this.handleWriteChunkLoadingScript(request.params.arguments);
+          return await this.handleWriteChunkLoadingScript(args);
         // Batch 77 switch cases — Group A: Control / UI advanced
         case 'get_container_children_info':
-          return await this.handleGetContainerChildrenInfo(request.params.arguments);
+          return await this.handleGetContainerChildrenInfo(args);
         case 'set_h_box_container_separation':
-          return await this.handleSetHBoxContainerSeparation(request.params.arguments);
+          return await this.handleSetHBoxContainerSeparation(args);
         case 'get_grid_container_columns':
-          return await this.handleGetGridContainerColumns(request.params.arguments);
+          return await this.handleGetGridContainerColumns(args);
         case 'set_grid_container_columns':
-          return await this.handleSetGridContainerColumns(request.params.arguments);
+          return await this.handleSetGridContainerColumns(args);
         case 'get_split_container_offset':
-          return await this.handleGetSplitContainerOffset(request.params.arguments);
+          return await this.handleGetSplitContainerOffset(args);
         case 'set_split_container_offset':
-          return await this.handleSetSplitContainerOffset(request.params.arguments);
+          return await this.handleSetSplitContainerOffset(args);
         case 'get_tab_container_current_tab':
-          return await this.handleGetTabContainerCurrentTab(request.params.arguments);
+          return await this.handleGetTabContainerCurrentTab(args);
         case 'set_tab_container_current_tab':
-          return await this.handleSetTabContainerCurrentTab(request.params.arguments);
+          return await this.handleSetTabContainerCurrentTab(args);
         // Batch 77 — Group B: RichTextLabel tools
         case 'get_rich_text_label_info':
-          return await this.handleGetRichTextLabelInfo(request.params.arguments);
+          return await this.handleGetRichTextLabelInfo(args);
         case 'append_rich_text_label_bbcode':
-          return await this.handleAppendRichTextLabelBbcode(request.params.arguments);
+          return await this.handleAppendRichTextLabelBbcode(args);
         case 'clear_rich_text_label':
-          return await this.handleClearRichTextLabel(request.params.arguments);
+          return await this.handleClearRichTextLabel(args);
         case 'get_rich_text_label_line_count':
-          return await this.handleGetRichTextLabelLineCount(request.params.arguments);
+          return await this.handleGetRichTextLabelLineCount(args);
         case 'scroll_rich_text_label_to_line':
-          return await this.handleScrollRichTextLabelToLine(request.params.arguments);
+          return await this.handleScrollRichTextLabelToLine(args);
         // Batch 77 — Group C: ItemList / Tree widget tools
         case 'get_item_list_info':
-          return await this.handleGetItemListInfo(request.params.arguments);
+          return await this.handleGetItemListInfo(args);
         case 'remove_item_list_item':
-          return await this.handleRemoveItemListItem(request.params.arguments);
+          return await this.handleRemoveItemListItem(args);
         case 'sort_item_list':
-          return await this.handleSortItemList(request.params.arguments);
+          return await this.handleSortItemList(args);
         // Batch 77 — Group D: ProgressBar / Range tools
         case 'get_range_node_info':
-          return await this.handleGetRangeNodeInfo(request.params.arguments);
+          return await this.handleGetRangeNodeInfo(args);
         case 'set_range_node_value':
-          return await this.handleSetRangeNodeValue(request.params.arguments);
+          return await this.handleSetRangeNodeValue(args);
         case 'set_range_node_min_max':
-          return await this.handleSetRangeNodeMinMax(request.params.arguments);
+          return await this.handleSetRangeNodeMinMax(args);
         case 'get_slider_step':
-          return await this.handleGetSliderStep(request.params.arguments);
+          return await this.handleGetSliderStep(args);
         case 'set_slider_step':
-          return await this.handleSetSliderStep(request.params.arguments);
+          return await this.handleSetSliderStep(args);
         // Batch 77 — Group E: Popup / Dialog tools
         case 'hide_popup':
-          return await this.handleHidePopup(request.params.arguments);
+          return await this.handleHidePopup(args);
         case 'get_popup_menu_item_count':
-          return await this.handleGetPopupMenuItemCount(request.params.arguments);
+          return await this.handleGetPopupMenuItemCount(args);
         // Batch 77 — Group F: Node2D / CanvasItem transform
         case 'get_canvas_item_material':
-          return await this.handleGetCanvasItemMaterial(request.params.arguments);
+          return await this.handleGetCanvasItemMaterial(args);
         case 'set_canvas_item_use_parent_material':
-          return await this.handleSetCanvasItemUseParentMaterial(request.params.arguments);
+          return await this.handleSetCanvasItemUseParentMaterial(args);
         case 'get_node_2d_global_transform':
-          return await this.handleGetNode2dGlobalTransform(request.params.arguments);
+          return await this.handleGetNode2dGlobalTransform(args);
         case 'apply_node_2d_local_transform':
-          return await this.handleApplyNode2dLocalTransform(request.params.arguments);
+          return await this.handleApplyNode2dLocalTransform(args);
         case 'get_node_3d_global_transform':
-          return await this.handleGetNode3dGlobalTransform(request.params.arguments);
+          return await this.handleGetNode3dGlobalTransform(args);
         case 'look_at_from_node':
-          return await this.handleLookAtFromNode(request.params.arguments);
+          return await this.handleLookAtFromNode(args);
         // Batch 77 — Group G: AnimationPlayer advanced
         case 'get_animation_player_blend_time':
-          return await this.handleGetAnimationPlayerBlendTime(request.params.arguments);
+          return await this.handleGetAnimationPlayerBlendTime(args);
         case 'set_animation_player_blend_time':
-          return await this.handleSetAnimationPlayerBlendTime(request.params.arguments);
+          return await this.handleSetAnimationPlayerBlendTime(args);
         case 'get_animation_player_current_position':
-          return await this.handleGetAnimationPlayerCurrentPosition(request.params.arguments);
+          return await this.handleGetAnimationPlayerCurrentPosition(args);
         case 'seek_animation_player':
-          return await this.handleSeekAnimationPlayer(request.params.arguments);
+          return await this.handleSeekAnimationPlayer(args);
         case 'get_animation_player_queue':
-          return await this.handleGetAnimationPlayerQueue(request.params.arguments);
+          return await this.handleGetAnimationPlayerQueue(args);
         // Batch 77 — Group H: Physics3D server queries
         case 'sphere_cast_3d':
-          return await this.handleSphereCast3d(request.params.arguments);
+          return await this.handleSphereCast3d(args);
         case 'get_colliding_bodies_3d':
-          return await this.handleGetCollidingBodies3d(request.params.arguments);
+          return await this.handleGetCollidingBodies3d(args);
         case 'get_physics_direct_body_state_3d':
-          return await this.handleGetPhysicsDirectBodyState3d(request.params.arguments);
+          return await this.handleGetPhysicsDirectBodyState3d(args);
         case 'apply_torque_impulse_3d':
-          return await this.handleApplyTorqueImpulse3d(request.params.arguments);
+          return await this.handleApplyTorqueImpulse3d(args);
         // Batch 77 — Group I: Resource creation headless
         case 'create_audio_stream_wav_resource':
-          return await this.handleCreateAudioStreamWavResource(request.params.arguments);
+          return await this.handleCreateAudioStreamWavResource(args);
         case 'create_image_from_color':
-          return await this.handleCreateImageFromColor(request.params.arguments);
+          return await this.handleCreateImageFromColor(args);
         case 'create_gradient_texture_resource':
-          return await this.handleCreateGradientTextureResource(request.params.arguments);
+          return await this.handleCreateGradientTextureResource(args);
         case 'create_animation_library_resource':
-          return await this.handleCreateAnimationLibraryResource(request.params.arguments);
+          return await this.handleCreateAnimationLibraryResource(args);
         case 'create_packed_scene_from_script':
-          return await this.handleCreatePackedSceneFromScript(request.params.arguments);
+          return await this.handleCreatePackedSceneFromScript(args);
         // Batch 77 — Group J: GDScript templates
         case 'write_rpg_stats_system_script':
-          return await this.handleWriteRpgStatsSystemScript(request.params.arguments);
+          return await this.handleWriteRpgStatsSystemScript(args);
         case 'write_currency_system_script':
-          return await this.handleWriteCurrencySystemScript(request.params.arguments);
+          return await this.handleWriteCurrencySystemScript(args);
         case 'write_buff_debuff_system_script':
-          return await this.handleWriteBuffDebuffSystemScript(request.params.arguments);
+          return await this.handleWriteBuffDebuffSystemScript(args);
         case 'write_area_trigger_script':
-          return await this.handleWriteAreaTriggerScript(request.params.arguments);
+          return await this.handleWriteAreaTriggerScript(args);
         case 'write_freeze_time_script':
-          return await this.handleWriteFreezeTimeScript(request.params.arguments);
+          return await this.handleWriteFreezeTimeScript(args);
         case 'write_screen_border_teleport_script':
-          return await this.handleWriteScreenBorderTeleportScript(request.params.arguments);
+          return await this.handleWriteScreenBorderTeleportScript(args);
         case 'write_double_buff_pickup_script':
-          return await this.handleWriteDoubleBuffPickupScript(request.params.arguments);
+          return await this.handleWriteDoubleBuffPickupScript(args);
         case 'write_key_door_system_script':
-          return await this.handleWriteKeyDoorSystemScript(request.params.arguments);
+          return await this.handleWriteKeyDoorSystemScript(args);
         case 'write_destructible_terrain_script':
-          return await this.handleWriteDestructibleTerrainScript(request.params.arguments);
+          return await this.handleWriteDestructibleTerrainScript(args);
         case 'write_rope_physics_script':
-          return await this.handleWriteRopePhysicsScript(request.params.arguments);
+          return await this.handleWriteRopePhysicsScript(args);
         case 'write_zipline_script':
-          return await this.handleWriteZiplineScript(request.params.arguments);
+          return await this.handleWriteZiplineScript(args);
         case 'write_pressure_plate_script':
-          return await this.handleWritePressurePlateScript(request.params.arguments);
+          return await this.handleWritePressurePlateScript(args);
         case 'write_checkpoint_system_script':
-          return await this.handleWriteCheckpointSystemScript(request.params.arguments);
+          return await this.handleWriteCheckpointSystemScript(args);
         case 'write_bouncy_projectile_script':
-          return await this.handleWriteBouncyProjectileScript(request.params.arguments);
+          return await this.handleWriteBouncyProjectileScript(args);
         case 'write_fan_push_script':
-          return await this.handleWriteFanPushScript(request.params.arguments);
+          return await this.handleWriteFanPushScript(args);
         case 'write_conveyor_belt_script':
-          return await this.handleWriteConveyorBeltScript(request.params.arguments);
+          return await this.handleWriteConveyorBeltScript(args);
         case 'write_ladder_script':
-          return await this.handleWriteLadderScript(request.params.arguments);
+          return await this.handleWriteLadderScript(args);
         case 'write_water_buoyancy_script':
-          return await this.handleWriteWaterBuoyancyScript(request.params.arguments);
+          return await this.handleWriteWaterBuoyancyScript(args);
         case 'write_tornado_force_script':
-          return await this.handleWriteTornadoForceScript(request.params.arguments);
+          return await this.handleWriteTornadoForceScript(args);
         case 'write_speed_boost_pad_script':
-          return await this.handleWriteSpeedBoostPadScript(request.params.arguments);
+          return await this.handleWriteSpeedBoostPadScript(args);
         case 'write_spike_trap_script':
-          return await this.handleWriteSpikeTrapScript(request.params.arguments);
+          return await this.handleWriteSpikeTrapScript(args);
         case 'write_fog_of_war_script':
-          return await this.handleWriteFogOfWarScript(request.params.arguments);
+          return await this.handleWriteFogOfWarScript(args);
         case 'write_minimap_dot_script':
-          return await this.handleWriteMinimapDotScript(request.params.arguments);
+          return await this.handleWriteMinimapDotScript(args);
         case 'write_interaction_prompt_script':
-          return await this.handleWriteInteractionPromptScript(request.params.arguments);
+          return await this.handleWriteInteractionPromptScript(args);
         case 'write_health_regeneration_script':
-          return await this.handleWriteHealthRegenerationScript(request.params.arguments);
+          return await this.handleWriteHealthRegenerationScript(args);
         case 'write_stamina_system_script':
-          return await this.handleWriteStaminaSystemScript(request.params.arguments);
+          return await this.handleWriteStaminaSystemScript(args);
         case 'write_throwable_object_script':
-          return await this.handleWriteThrowableObjectScript(request.params.arguments);
+          return await this.handleWriteThrowableObjectScript(args);
         case 'write_parachute_script':
-          return await this.handleWriteParachuteScript(request.params.arguments);
+          return await this.handleWriteParachuteScript(args);
         case 'write_sticky_bomb_script':
-          return await this.handleWriteStickyBombScript(request.params.arguments);
+          return await this.handleWriteStickyBombScript(args);
         case 'write_shockwave_script':
-          return await this.handleWriteShockwaveScript(request.params.arguments);
+          return await this.handleWriteShockwaveScript(args);
         case 'write_vfx_spawn_script':
-          return await this.handleWriteVfxSpawnScript(request.params.arguments);
+          return await this.handleWriteVfxSpawnScript(args);
         case 'write_screen_flash_script':
-          return await this.handleWriteScreenFlashScript(request.params.arguments);
+          return await this.handleWriteScreenFlashScript(args);
         case 'write_trail_script':
-          return await this.handleWriteTrailScript(request.params.arguments);
+          return await this.handleWriteTrailScript(args);
         case 'write_shadow_clone_script':
-          return await this.handleWriteShadowCloneScript(request.params.arguments);
+          return await this.handleWriteShadowCloneScript(args);
         case 'write_status_bar_ui_script':
-          return await this.handleWriteStatusBarUiScript(request.params.arguments);
+          return await this.handleWriteStatusBarUiScript(args);
         case 'write_hotbar_ui_script':
-          return await this.handleWriteHotbarUiScript(request.params.arguments);
+          return await this.handleWriteHotbarUiScript(args);
         case 'write_minimap_ui_script':
-          return await this.handleWriteMinimapUiScript(request.params.arguments);
+          return await this.handleWriteMinimapUiScript(args);
         case 'write_tooltip_system_script':
-          return await this.handleWriteTooltipSystemScript(request.params.arguments);
+          return await this.handleWriteTooltipSystemScript(args);
         case 'write_drag_drop_slot_script':
-          return await this.handleWriteDragDropSlotScript(request.params.arguments);
+          return await this.handleWriteDragDropSlotScript(args);
         // Batch 77 — Group K: Extra UI gameCommand tools
         case 'get_theme_color':
-          return await this.handleGetThemeColor(request.params.arguments);
+          return await this.handleGetThemeColor(args);
         case 'get_theme_font_size':
-          return await this.handleGetThemeFontSize(request.params.arguments);
+          return await this.handleGetThemeFontSize(args);
         case 'get_control_focus_owner':
-          return await this.handleGetControlFocusOwner(request.params.arguments);
+          return await this.handleGetControlFocusOwner(args);
         case 'set_control_focus_owner':
-          return await this.handleSetControlFocusOwner(request.params.arguments);
+          return await this.handleSetControlFocusOwner(args);
         case 'get_button_group':
-          return await this.handleGetButtonGroup(request.params.arguments);
+          return await this.handleGetButtonGroup(args);
         case 'set_button_group':
-          return await this.handleSetButtonGroup(request.params.arguments);
+          return await this.handleSetButtonGroup(args);
         case 'get_scroll_container_scroll':
-          return await this.handleGetScrollContainerScroll(request.params.arguments);
+          return await this.handleGetScrollContainerScroll(args);
         case 'set_scroll_container_scroll':
-          return await this.handleSetScrollContainerScroll(request.params.arguments);
+          return await this.handleSetScrollContainerScroll(args);
         case 'get_nine_patch_rect_info':
-          return await this.handleGetNinePatchRectInfo(request.params.arguments);
+          return await this.handleGetNinePatchRectInfo(args);
         case 'set_nine_patch_rect_patch_margin':
-          return await this.handleSetNinePatchRectPatchMargin(request.params.arguments);
+          return await this.handleSetNinePatchRectPatchMargin(args);
         case 'explain_godot_concept':
-          return await this.handleExplainGodotConcept(request.params.arguments);
+          return await this.handleExplainGodotConcept(args);
+        case 'godot_start_here':
+          return await this.handleGodotStartHere(args);
+        case 'godot_call':
+          return await this.handleGodotCall(args);
+        case 'godot_suggest':
+          return await this.handleGodotSuggest(args);
         // Batch 50 switch cases — Group A: Tween runtime tools
         case 'tween_property':
-          return await this.handleTweenProperty(request.params.arguments);
+          return await this.handleTweenProperty(args);
         case 'tween_position_2d':
-          return await this.handleTweenPosition2d(request.params.arguments);
+          return await this.handleTweenPosition2d(args);
         case 'tween_rotation_2d':
-          return await this.handleTweenRotation2d(request.params.arguments);
+          return await this.handleTweenRotation2d(args);
         case 'tween_scale_2d':
-          return await this.handleTweenScale2d(request.params.arguments);
+          return await this.handleTweenScale2d(args);
         case 'tween_alpha':
-          return await this.handleTweenAlpha(request.params.arguments);
+          return await this.handleTweenAlpha(args);
         case 'tween_color':
-          return await this.handleTweenColor(request.params.arguments);
+          return await this.handleTweenColor(args);
         case 'flash_node':
-          return await this.handleFlashNode(request.params.arguments);
+          return await this.handleFlashNode(args);
         case 'shake_node':
-          return await this.handleShakeNode(request.params.arguments);
+          return await this.handleShakeNode(args);
         case 'fade_in_node':
-          return await this.handleFadeInNode(request.params.arguments);
+          return await this.handleFadeInNode(args);
         case 'fade_out_node':
-          return await this.handleFadeOutNode(request.params.arguments);
+          return await this.handleFadeOutNode(args);
         // Batch 50 switch cases — Group B: Audio bus effect tools
         case 'get_audio_bus_names':
-          return await this.handleGetAudioBusNames(request.params.arguments);
+          return await this.handleGetAudioBusNames(args);
         case 'add_audio_bus':
-          return await this.handleAddAudioBus(request.params.arguments);
+          return await this.handleAddAudioBus(args);
         case 'remove_audio_bus':
-          return await this.handleRemoveAudioBus(request.params.arguments);
+          return await this.handleRemoveAudioBus(args);
         case 'get_audio_bus_muted':
-          return await this.handleGetAudioBusMuted(request.params.arguments);
+          return await this.handleGetAudioBusMuted(args);
         case 'get_audio_bus_solo':
-          return await this.handleGetAudioBusSolo(request.params.arguments);
+          return await this.handleGetAudioBusSolo(args);
         case 'set_audio_bus_solo':
-          return await this.handleSetAudioBusSolo(request.params.arguments);
+          return await this.handleSetAudioBusSolo(args);
         case 'set_audio_bus_send':
-          return await this.handleSetAudioBusSend(request.params.arguments);
+          return await this.handleSetAudioBusSend(args);
         // Batch 50 switch cases — Group C: Scene tree & node inspection tools
         case 'add_node_to_group_runtime':
-          return await this.handleAddNodeToGroupRuntime(request.params.arguments);
+          return await this.handleAddNodeToGroupRuntime(args);
         case 'remove_node_from_group_runtime':
-          return await this.handleRemoveNodeFromGroupRuntime(request.params.arguments);
+          return await this.handleRemoveNodeFromGroupRuntime(args);
         case 'get_nodes_of_class':
-          return await this.handleGetNodesOfClass(request.params.arguments);
+          return await this.handleGetNodesOfClass(args);
         case 'get_node_owner_path':
-          return await this.handleGetNodeOwnerPath(request.params.arguments);
+          return await this.handleGetNodeOwnerPath(args);
         case 'get_node_unique_name':
-          return await this.handleGetNodeUniqueName(request.params.arguments);
+          return await this.handleGetNodeUniqueName(args);
         // Batch 50 switch cases — Group D: 2D Physics at runtime tools
         case 'get_2d_collision_layers_names':
-          return await this.handleGet2dCollisionLayersNames(request.params.arguments);
+          return await this.handleGet2dCollisionLayersNames(args);
         case 'set_physics_body_collision_layer':
-          return await this.handleSetPhysicsBodyCollisionLayer(request.params.arguments);
+          return await this.handleSetPhysicsBodyCollisionLayer(args);
         case 'get_physics_body_collision_layer':
-          return await this.handleGetPhysicsBodyCollisionLayer(request.params.arguments);
+          return await this.handleGetPhysicsBodyCollisionLayer(args);
         case 'set_physics_body_collision_mask':
-          return await this.handleSetPhysicsBodyCollisionMask(request.params.arguments);
+          return await this.handleSetPhysicsBodyCollisionMask(args);
         case 'get_physics_body_collision_mask':
-          return await this.handleGetPhysicsBodyCollisionMask(request.params.arguments);
+          return await this.handleGetPhysicsBodyCollisionMask(args);
         case 'enable_physics_body':
-          return await this.handleEnablePhysicsBody(request.params.arguments);
+          return await this.handleEnablePhysicsBody(args);
         // Batch 48 switch cases
         case 'get_control_position':
-          return await this.handleGetControlPosition(request.params.arguments);
+          return await this.handleGetControlPosition(args);
         case 'get_control_anchor':
-          return await this.handleGetControlAnchor(request.params.arguments);
+          return await this.handleGetControlAnchor(args);
         case 'set_control_anchor_preset':
-          return await this.handleSetControlAnchorPreset(request.params.arguments);
+          return await this.handleSetControlAnchorPreset(args);
         case 'set_progress_bar_max':
-          return await this.handleSetProgressBarMax(request.params.arguments);
+          return await this.handleSetProgressBarMax(args);
         case 'add_item_list_item_text':
-          return await this.handleAddItemListItemText(request.params.arguments);
+          return await this.handleAddItemListItemText(args);
         case 'get_item_list_count':
-          return await this.handleGetItemListCount(request.params.arguments);
+          return await this.handleGetItemListCount(args);
         case 'set_rich_text_label_text':
-          return await this.handleSetRichTextLabelText(request.params.arguments);
+          return await this.handleSetRichTextLabelText(args);
         case 'get_rich_text_label_text':
-          return await this.handleGetRichTextLabelText(request.params.arguments);
+          return await this.handleGetRichTextLabelText(args);
         case 'append_rich_text':
-          return await this.handleAppendRichText(request.params.arguments);
+          return await this.handleAppendRichText(args);
         case 'clear_rich_text':
-          return await this.handleClearRichText(request.params.arguments);
+          return await this.handleClearRichText(args);
         case 'get_project_name':
-          return await this.handleGetProjectName(request.params.arguments);
+          return await this.handleGetProjectName(args);
         case 'set_project_name':
-          return await this.handleSetProjectName(request.params.arguments);
+          return await this.handleSetProjectName(args);
         case 'get_project_main_scene':
-          return await this.handleGetProjectMainScene(request.params.arguments);
+          return await this.handleGetProjectMainScene(args);
         case 'set_project_main_scene':
-          return await this.handleSetProjectMainScene(request.params.arguments);
+          return await this.handleSetProjectMainScene(args);
         case 'get_project_window_size':
-          return await this.handleGetProjectWindowSize(request.params.arguments);
+          return await this.handleGetProjectWindowSize(args);
         case 'set_project_window_size':
-          return await this.handleSetProjectWindowSize(request.params.arguments);
+          return await this.handleSetProjectWindowSize(args);
         case 'list_project_autoloads':
-          return await this.handleListProjectAutoloads(request.params.arguments);
+          return await this.handleListProjectAutoloads(args);
         case 'set_project_version':
-          return await this.handleSetProjectVersion(request.params.arguments);
+          return await this.handleSetProjectVersion(args);
         case 'get_project_description':
-          return await this.handleGetProjectDescription(request.params.arguments);
+          return await this.handleGetProjectDescription(args);
         // Batch 47 switch cases
         case 'get_node_z_index':
-          return await this.handleGetNodeZIndex(request.params.arguments);
+          return await this.handleGetNodeZIndex(args);
         case 'get_node_modulate':
-          return await this.handleGetNodeModulate(request.params.arguments);
+          return await this.handleGetNodeModulate(args);
         case 'set_node_modulate':
-          return await this.handleSetNodeModulate(request.params.arguments);
+          return await this.handleSetNodeModulate(args);
         case 'get_node_self_modulate':
-          return await this.handleGetNodeSelfModulate(request.params.arguments);
+          return await this.handleGetNodeSelfModulate(args);
         case 'set_node_self_modulate':
-          return await this.handleSetNodeSelfModulate(request.params.arguments);
+          return await this.handleSetNodeSelfModulate(args);
         case 'get_node_process_mode':
-          return await this.handleGetNodeProcessMode(request.params.arguments);
+          return await this.handleGetNodeProcessMode(args);
         case 'set_node_process_mode':
-          return await this.handleSetNodeProcessMode(request.params.arguments);
+          return await this.handleSetNodeProcessMode(args);
         case 'get_node_name':
-          return await this.handleGetNodeName(request.params.arguments);
+          return await this.handleGetNodeName(args);
         case 'get_node_child_count':
-          return await this.handleGetNodeChildCount(request.params.arguments);
+          return await this.handleGetNodeChildCount(args);
         case 'get_node_child_names':
-          return await this.handleGetNodeChildNames(request.params.arguments);
+          return await this.handleGetNodeChildNames(args);
         case 'move_node_child_to_front':
-          return await this.handleMoveNodeChildToFront(request.params.arguments);
+          return await this.handleMoveNodeChildToFront(args);
         case 'move_node_child_to_back':
-          return await this.handleMoveNodeChildToBack(request.params.arguments);
+          return await this.handleMoveNodeChildToBack(args);
         case 'is_node_inside_tree':
-          return await this.handleIsNodeInsideTree(request.params.arguments);
+          return await this.handleIsNodeInsideTree(args);
         case 'start_timer':
-          return await this.handleStartTimer(request.params.arguments);
+          return await this.handleStartTimer(args);
         case 'stop_timer':
-          return await this.handleStopTimer(request.params.arguments);
+          return await this.handleStopTimer(args);
         case 'is_timer_stopped':
-          return await this.handleIsTimerStopped(request.params.arguments);
+          return await this.handleIsTimerStopped(args);
         case 'get_timer_time_left':
-          return await this.handleGetTimerTimeLeft(request.params.arguments);
+          return await this.handleGetTimerTimeLeft(args);
         case 'get_timer_wait_time':
-          return await this.handleGetTimerWaitTime(request.params.arguments);
+          return await this.handleGetTimerWaitTime(args);
         case 'set_timer_wait_time':
-          return await this.handleSetTimerWaitTime(request.params.arguments);
+          return await this.handleSetTimerWaitTime(args);
         case 'get_timer_one_shot':
-          return await this.handleGetTimerOneShot(request.params.arguments);
+          return await this.handleGetTimerOneShot(args);
         case 'set_timer_one_shot':
-          return await this.handleSetTimerOneShot(request.params.arguments);
+          return await this.handleSetTimerOneShot(args);
         case 'get_animation_list':
-          return await this.handleGetAnimationList(request.params.arguments);
+          return await this.handleGetAnimationList(args);
         case 'get_current_animation':
-          return await this.handleGetCurrentAnimation(request.params.arguments);
+          return await this.handleGetCurrentAnimation(args);
         case 'is_animation_playing':
-          return await this.handleIsAnimationPlaying(request.params.arguments);
+          return await this.handleIsAnimationPlaying(args);
         case 'play_animation_from_position':
-          return await this.handlePlayAnimationFromPosition(request.params.arguments);
+          return await this.handlePlayAnimationFromPosition(args);
         case 'set_animation_blend_time':
-          return await this.handleSetAnimationBlendTime(request.params.arguments);
+          return await this.handleSetAnimationBlendTime(args);
         case 'queue_animation':
-          return await this.handleQueueAnimation(request.params.arguments);
+          return await this.handleQueueAnimation(args);
         case 'get_performance_monitor':
-          return await this.handleGetPerformanceMonitor(request.params.arguments);
+          return await this.handleGetPerformanceMonitor(args);
         case 'get_physics_info':
-          return await this.handleGetPhysicsInfo(request.params.arguments);
+          return await this.handleGetPhysicsInfo(args);
         case 'set_max_fps':
-          return await this.handleSetMaxFps(request.params.arguments);
+          return await this.handleSetMaxFps(args);
         case 'get_max_fps':
-          return await this.handleGetMaxFps(request.params.arguments);
+          return await this.handleGetMaxFps(args);
         // Batch 46 switch cases
         case 'add_animatable_body_2d_to_scene':
-          return await this.handleAddAnimatableBody2dToScene(request.params.arguments);
+          return await this.handleAddAnimatableBody2dToScene(args);
         case 'add_animatable_body_3d_to_scene':
-          return await this.handleAddAnimatableBody3dToScene(request.params.arguments);
+          return await this.handleAddAnimatableBody3dToScene(args);
         case 'add_audio_listener_2d_to_scene':
-          return await this.handleAddAudioListener2dToScene(request.params.arguments);
+          return await this.handleAddAudioListener2dToScene(args);
         case 'add_canvas_group_to_scene':
-          return await this.handleAddCanvasGroupToScene(request.params.arguments);
+          return await this.handleAddCanvasGroupToScene(args);
         case 'add_light_occluder_2d_to_scene':
-          return await this.handleAddLightOccluder2dToScene(request.params.arguments);
+          return await this.handleAddLightOccluder2dToScene(args);
         case 'add_navigation_link_2d_to_scene':
-          return await this.handleAddNavigationLink2dToScene(request.params.arguments);
+          return await this.handleAddNavigationLink2dToScene(args);
         case 'add_navigation_link_3d_to_scene':
-          return await this.handleAddNavigationLink3dToScene(request.params.arguments);
+          return await this.handleAddNavigationLink3dToScene(args);
         case 'add_navigation_obstacle_2d_to_scene':
-          return await this.handleAddNavigationObstacle2dToScene(request.params.arguments);
+          return await this.handleAddNavigationObstacle2dToScene(args);
         case 'add_navigation_obstacle_3d_to_scene':
-          return await this.handleAddNavigationObstacle3dToScene(request.params.arguments);
+          return await this.handleAddNavigationObstacle3dToScene(args);
         case 'add_skeleton_2d_to_scene':
-          return await this.handleAddSkeleton2dToScene(request.params.arguments);
+          return await this.handleAddSkeleton2dToScene(args);
         case 'add_bone_2d_to_scene':
-          return await this.handleAddBone2dToScene(request.params.arguments);
+          return await this.handleAddBone2dToScene(args);
         case 'add_physical_bone_2d_to_scene':
-          return await this.handleAddPhysicalBone2dToScene(request.params.arguments);
+          return await this.handleAddPhysicalBone2dToScene(args);
         case 'add_physical_bone_3d_to_scene':
-          return await this.handleAddPhysicalBone3dToScene(request.params.arguments);
+          return await this.handleAddPhysicalBone3dToScene(args);
         case 'add_skeleton_ik_3d_to_scene':
-          return await this.handleAddSkeletonIk3dToScene(request.params.arguments);
+          return await this.handleAddSkeletonIk3dToScene(args);
         case 'add_parallax_2d_to_scene':
-          return await this.handleAddParallax2dToScene(request.params.arguments);
+          return await this.handleAddParallax2dToScene(args);
         case 'add_mesh_instance_3d_to_scene':
-          return await this.handleAddMeshInstance3dToScene(request.params.arguments);
+          return await this.handleAddMeshInstance3dToScene(args);
         case 'add_check_box_to_scene':
-          return await this.handleAddCheckBoxToScene(request.params.arguments);
+          return await this.handleAddCheckBoxToScene(args);
         case 'add_h_slider_to_scene':
-          return await this.handleAddHSliderToScene(request.params.arguments);
+          return await this.handleAddHSliderToScene(args);
         case 'add_v_slider_to_scene':
-          return await this.handleAddVSliderToScene(request.params.arguments);
+          return await this.handleAddVSliderToScene(args);
         case 'add_h_scroll_bar_to_scene':
-          return await this.handleAddHScrollBarToScene(request.params.arguments);
+          return await this.handleAddHScrollBarToScene(args);
         case 'add_v_scroll_bar_to_scene':
-          return await this.handleAddVScrollBarToScene(request.params.arguments);
+          return await this.handleAddVScrollBarToScene(args);
         case 'add_h_separator_to_scene':
-          return await this.handleAddHSeparatorToScene(request.params.arguments);
+          return await this.handleAddHSeparatorToScene(args);
         case 'add_color_picker_to_scene':
-          return await this.handleAddColorPickerToScene(request.params.arguments);
+          return await this.handleAddColorPickerToScene(args);
         case 'add_window_to_scene':
-          return await this.handleAddWindowToScene(request.params.arguments);
+          return await this.handleAddWindowToScene(args);
         case 'get_game_fps':
-          return await this.handleGetGameFps(request.params.arguments);
+          return await this.handleGetGameFps(args);
         case 'get_game_time_elapsed':
-          return await this.handleGetGameTimeElapsed(request.params.arguments);
+          return await this.handleGetGameTimeElapsed(args);
         case 'pause_game':
-          return await this.handlePauseGame(request.params.arguments);
+          return await this.handlePauseGame(args);
         case 'unpause_game':
-          return await this.handleUnpauseGame(request.params.arguments);
+          return await this.handleUnpauseGame(args);
         case 'is_game_paused':
-          return await this.handleIsGamePaused(request.params.arguments);
+          return await this.handleIsGamePaused(args);
         case 'change_scene_to_file':
-          return await this.handleChangeSceneToFile(request.params.arguments);
+          return await this.handleChangeSceneToFile(args);
         case 'get_current_scene_name':
-          return await this.handleGetCurrentSceneName(request.params.arguments);
+          return await this.handleGetCurrentSceneName(args);
         case 'get_node_class_name':
-          return await this.handleGetNodeClassName(request.params.arguments);
+          return await this.handleGetNodeClassName(args);
         case 'set_engine_time_scale':
-          return await this.handleSetEngineTimeScale(request.params.arguments);
+          return await this.handleSetEngineTimeScale(args);
         case 'get_engine_time_scale':
-          return await this.handleGetEngineTimeScale(request.params.arguments);
+          return await this.handleGetEngineTimeScale(args);
         case 'get_game_screen_size':
-          return await this.handleGetGameScreenSize(request.params.arguments);
+          return await this.handleGetGameScreenSize(args);
         case 'get_game_mouse_position':
-          return await this.handleGetGameMousePosition(request.params.arguments);
+          return await this.handleGetGameMousePosition(args);
         // Batch 49 switch cases
         // Group A: Input map
         case 'list_input_actions':
-          return await this.handleListInputActions(request.params.arguments);
+          return await this.handleListInputActions(args);
         case 'is_action_just_pressed':
-          return await this.handleIsActionJustPressed(request.params.arguments);
+          return await this.handleIsActionJustPressed(args);
         case 'is_action_just_released':
-          return await this.handleIsActionJustReleased(request.params.arguments);
+          return await this.handleIsActionJustReleased(args);
         case 'get_action_strength':
-          return await this.handleGetActionStrength(request.params.arguments);
+          return await this.handleGetActionStrength(args);
         case 'simulate_action_press':
-          return await this.handleSimulateActionPress(request.params.arguments);
+          return await this.handleSimulateActionPress(args);
         case 'simulate_action_release':
-          return await this.handleSimulateActionRelease(request.params.arguments);
+          return await this.handleSimulateActionRelease(args);
         case 'set_mouse_mode':
-          return await this.handleSetMouseMode(request.params.arguments);
+          return await this.handleSetMouseMode(args);
         case 'get_mouse_mode':
-          return await this.handleGetMouseMode(request.params.arguments);
+          return await this.handleGetMouseMode(args);
         // Group B: Multiplayer / networking
         case 'get_multiplayer_peer_id':
-          return await this.handleGetMultiplayerPeerId(request.params.arguments);
+          return await this.handleGetMultiplayerPeerId(args);
         case 'is_multiplayer_server':
-          return await this.handleIsMultiplayerServer(request.params.arguments);
+          return await this.handleIsMultiplayerServer(args);
         case 'get_network_peer_count':
-          return await this.handleGetNetworkPeerCount(request.params.arguments);
+          return await this.handleGetNetworkPeerCount(args);
         case 'set_node_multiplayer_authority':
-          return await this.handleSetNodeMultiplayerAuthority(request.params.arguments);
+          return await this.handleSetNodeMultiplayerAuthority(args);
         case 'get_node_multiplayer_authority':
-          return await this.handleGetNodeMultiplayerAuthority(request.params.arguments);
+          return await this.handleGetNodeMultiplayerAuthority(args);
         case 'rpc_call':
-          return await this.handleRpcCall(request.params.arguments);
+          return await this.handleRpcCall(args);
         case 'broadcast_to_group':
-          return await this.handleBroadcastToGroup(request.params.arguments);
+          return await this.handleBroadcastToGroup(args);
         // Group C: Node adders
         case 'add_path_3d_to_scene':
-          return await this.handleAddPath3dToScene(request.params.arguments);
+          return await this.handleAddPath3dToScene(args);
         case 'add_open_xr_camera_3d_to_scene':
-          return await this.handleAddOpenXrCamera3dToScene(request.params.arguments);
+          return await this.handleAddOpenXrCamera3dToScene(args);
         case 'add_open_xr_controller_to_scene':
-          return await this.handleAddOpenXrControllerToScene(request.params.arguments);
+          return await this.handleAddOpenXrControllerToScene(args);
         case 'add_open_xr_origin_to_scene':
-          return await this.handleAddOpenXrOriginToScene(request.params.arguments);
+          return await this.handleAddOpenXrOriginToScene(args);
         case 'add_open_xr_hand_tracker_to_scene':
-          return await this.handleAddOpenXrHandTrackerToScene(request.params.arguments);
+          return await this.handleAddOpenXrHandTrackerToScene(args);
         case 'add_label_3d_to_scene':
-          return await this.handleAddLabel3dToScene(request.params.arguments);
+          return await this.handleAddLabel3dToScene(args);
         case 'add_sprite_3d_to_scene':
-          return await this.handleAddSprite3dToScene(request.params.arguments);
+          return await this.handleAddSprite3dToScene(args);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
-            `Unknown tool: ${request.params.name}`
+            `Unknown tool: "${name}". Use search_tools or list_tool_categories to find valid tools.`
           );
       }
-    });
   }
 
   private async handleConnectToGodotEditor(_args: any) {
@@ -48815,9 +48833,245 @@ func _get_drag_data(_pos: Vector2) -> Variant:
     return this.gameCommand('set_nine_patch_rect_patch_margin', args, a => ({ node_path: a.nodePath ?? '', side: a.side ?? 0, value: a.value ?? 0 }));
   }
 
+  private async handleGodotStartHere(_args: any) {
+    const isDiscovery = this._discoveryMode;
+    const text = `# Godot MCP Server — Start Here
+
+## This server has ${isDiscovery ? '~20 discovery tools + a universal dispatcher' : '1,969 tools'} for Godot 4 game development.
+
+## How to find the right tool (3 approaches):
+
+### Option 1: Describe what you want (BEST for small models)
+  godot_suggest — task="make a character jump"
+  godot_suggest — task="add background music"
+  godot_suggest — task="create an enemy that chases the player"
+
+### Option 2: Browse by category
+  list_tool_categories → see all categories
+  list_tools_in_category → category="physics" → see all physics tools
+  godot_call → name="apply_impulse_to_rigid_body" args={...}
+
+### Option 3: Search by keyword
+  search_tools → query="camera" → returns all camera tool names
+  godot_call → name="set_camera_zoom" args={nodePath: "Camera2D", zoom: 2}
+
+## Quick Start (5 steps for any game):
+1. create_project — make a new Godot project
+2. create_scene — create your first scene
+3. [use godot_suggest or search_tools to find what to add next]
+4. godot_call — call any tool by name
+5. run_project — test your game
+
+## Key concepts:
+- Offline tools (no game running): create_project, create_scene, add_node_to_scene, set_node_property_in_scene, create_script
+- Runtime tools (game must be running first): set_node_position_2d, play_audio_stream, apply_impulse_to_rigid_body
+- Editor tools: require install_editor_plugin first
+
+## Need step-by-step help?
+  get_beginner_guide — full overview
+  get_workflow — goal="platformer" / "fps" / "audio" / "ui" / "physics"
+  explain_godot_concept — concept="CharacterBody2D" / "signals" / "physics"
+`;
+    return { content: [{ type: 'text', text: text }] };
+  }
+
+  private async handleGodotCall(args: any) {
+    args = normalizeParameters(args || {});
+    const name = (args.name || '').trim();
+    const toolArgs = args.args || {};
+    if (!name) return createErrorResponse('name is required. Use search_tools to find a tool name, then call godot_call with that name.');
+    if (name === 'godot_call') return createErrorResponse('Cannot call godot_call recursively.');
+    return this.dispatchTool(name, toolArgs);
+  }
+
+  private async handleGodotSuggest(args: any) {
+    args = normalizeParameters(args || {});
+    const task = (args.task || '').toLowerCase().trim();
+    if (!task) return createErrorResponse('task is required. Example: godot_suggest task="make a character jump"');
+
+    // Keyword → tool recommendations map
+    const suggestions: Array<{ tool: string; reason: string; example_args?: Record<string, any> }> = [];
+    const names = this.getToolNames();
+
+    interface Rule { keywords: string[]; tools: Array<{ tool: string; reason: string; example_args?: Record<string, any> }> }
+    const RULES: Rule[] = [
+      { keywords: ['jump', 'double jump', 'coyote'], tools: [
+        { tool: 'write_double_jump_script', reason: 'Write a ready-to-use double-jump controller', example_args: { projectPath: '/path/to/project', scriptPath: 'res://scripts/player.gd' } },
+        { tool: 'write_coyote_time_script', reason: 'Add coyote time grace period to jumps', example_args: { projectPath: '/path/to/project', scriptPath: 'res://scripts/player.gd' } },
+        { tool: 'set_node_position_2d', reason: 'Directly move a character node at runtime' },
+      ]},
+      { keywords: ['move', 'walk', 'run', 'player', 'character', 'platformer'], tools: [
+        { tool: 'write_platformer_player_script', reason: 'Full platformer player controller script', example_args: { projectPath: '/path/to/project', scriptPath: 'res://scripts/player.gd' } },
+        { tool: 'setup_2d_platformer_character', reason: 'One-call platformer character scene setup' },
+        { tool: 'add_character_body_2d_to_scene', reason: 'Add CharacterBody2D node to a scene file' },
+      ]},
+      { keywords: ['shoot', 'bullet', 'projectile', 'fire'], tools: [
+        { tool: 'write_top_down_shooter_script', reason: 'Top-down shooter with shooting mechanic' },
+        { tool: 'write_projectile_script', reason: 'Projectile with homing and bounce' },
+        { tool: 'spawn_node', reason: 'Spawn a bullet scene instance at runtime' },
+      ]},
+      { keywords: ['save', 'load', 'persist', 'data', 'savegame'], tools: [
+        { tool: 'write_save_load_system_script', reason: 'Complete save/load JSON system', example_args: { projectPath: '/path/to/project', scriptPath: 'res://scripts/save_manager.gd' } },
+        { tool: 'write_data_persistence_script', reason: 'Simpler JSON persistence helper' },
+      ]},
+      { keywords: ['health', 'damage', 'hitbox', 'hurt', 'die', 'death'], tools: [
+        { tool: 'write_health_component_script', reason: 'Reusable health component node' },
+        { tool: 'write_hitbox_hurtbox_script', reason: 'Hitbox + hurtbox Area2D system' },
+        { tool: 'write_health_regeneration_script', reason: 'Health regen over time' },
+      ]},
+      { keywords: ['enemy', 'ai', 'patrol', 'chase', 'state machine'], tools: [
+        { tool: 'write_enemy_state_machine_script', reason: 'Full AI enemy with states' },
+        { tool: 'write_waypoint_patrol_script', reason: 'Enemy waypoint patrol movement' },
+        { tool: 'write_state_machine_base_script', reason: 'Reusable generic state machine' },
+      ]},
+      { keywords: ['camera', 'follow', 'shake', 'zoom'], tools: [
+        { tool: 'write_camera_follow_3d_script', reason: '3D camera that follows a target' },
+        { tool: 'write_screen_shake_2d_script', reason: '2D camera screen shake effect' },
+        { tool: 'write_camera_shake_3d_script', reason: '3D camera shake effect' },
+        { tool: 'set_camera_zoom', reason: 'Set Camera2D zoom at runtime' },
+      ]},
+      { keywords: ['dialog', 'dialogue', 'npc', 'conversation', 'quest'], tools: [
+        { tool: 'write_dialogue_system_script', reason: 'Full dialogue system with choices' },
+        { tool: 'write_quest_manager_script', reason: 'Quest tracking with signals' },
+      ]},
+      { keywords: ['inventory', 'item', 'pickup', 'loot', 'collect'], tools: [
+        { tool: 'write_inventory_system_script', reason: 'Inventory with stacking support' },
+        { tool: 'write_loot_table_script', reason: 'Weighted random loot drops' },
+        { tool: 'write_item_pickup_script', reason: 'Area2D item pickup script' },
+      ]},
+      { keywords: ['ui', 'menu', 'hud', 'score', 'text', 'label', 'button'], tools: [
+        { tool: 'write_pause_menu_script', reason: 'Pause menu with resume/quit' },
+        { tool: 'write_status_bar_ui_script', reason: 'Generic health/XP status bar' },
+        { tool: 'write_hotbar_ui_script', reason: 'Item hotbar slot UI' },
+        { tool: 'set_label_text', reason: 'Update a Label text at runtime' },
+      ]},
+      { keywords: ['audio', 'sound', 'music', 'sfx'], tools: [
+        { tool: 'write_audio_manager_script', reason: 'Singleton audio manager with pooling' },
+        { tool: 'play_audio_stream', reason: 'Play audio at runtime' },
+        { tool: 'set_audio_bus_volume', reason: 'Control audio bus volume' },
+      ]},
+      { keywords: ['scene', 'level', 'transition', 'load', 'switch'], tools: [
+        { tool: 'write_scene_manager_script', reason: 'Named scene manager singleton' },
+        { tool: 'write_scene_transition_script', reason: 'Scene transition with fade' },
+        { tool: 'change_scene', reason: 'Switch to a different scene at runtime' },
+      ]},
+      { keywords: ['physics', 'bounce', 'force', 'gravity', 'rigid', 'collision'], tools: [
+        { tool: 'apply_impulse_to_rigid_body', reason: 'Apply an instant physics impulse' },
+        { tool: 'apply_force_to_rigid_body', reason: 'Apply sustained physics force' },
+        { tool: 'write_explosion_script', reason: 'Explosion area damage script' },
+      ]},
+      { keywords: ['animation', 'animate', 'tween', 'lerp', 'frame'], tools: [
+        { tool: 'play_animation', reason: 'Play an AnimationPlayer animation at runtime' },
+        { tool: 'tween_property', reason: 'Smooth property animation via Tween' },
+        { tool: 'set_animation_speed_scale', reason: 'Speed up or slow down animation' },
+      ]},
+      { keywords: ['particle', 'effect', 'vfx', 'explosion', 'smoke', 'fire'], tools: [
+        { tool: 'set_gpu_particles_emitting', reason: 'Start/stop GPU particle emission' },
+        { tool: 'write_vfx_spawn_script', reason: 'VFX spawner on death/hit' },
+        { tool: 'write_explosion_script', reason: 'Explosion radius damage area' },
+      ]},
+      { keywords: ['minimap', 'map', 'radar'], tools: [
+        { tool: 'write_minimap_ui_script', reason: 'Viewport-based minimap UI panel' },
+        { tool: 'write_minimap_script', reason: 'Minimap tracking control' },
+        { tool: 'write_minimap_dot_script', reason: 'Minimap dot marker component' },
+      ]},
+      { keywords: ['spawn', 'instantiate', 'create node', 'add node', 'instance'], tools: [
+        { tool: 'spawn_node', reason: 'Spawn a PackedScene instance at runtime' },
+        { tool: 'add_node_to_scene', reason: 'Add a node to a .tscn file (offline)' },
+        { tool: 'instance_scene', reason: 'Instance a scene into another scene' },
+      ]},
+      { keywords: ['input', 'key', 'keyboard', 'mouse', 'controller', 'gamepad'], tools: [
+        { tool: 'get_input_map_actions', reason: 'List all registered InputMap actions' },
+        { tool: 'write_gamepad_rumble_script', reason: 'Haptic rumble helper script' },
+        { tool: 'write_input_buffer_script', reason: 'Frame-perfect input buffer' },
+      ]},
+      { keywords: ['tween', 'lerp', 'smooth', 'fade', 'transition'], tools: [
+        { tool: 'tween_property', reason: 'Tween any node property smoothly' },
+        { tool: 'tween_alpha', reason: 'Fade a node in or out' },
+        { tool: 'write_scene_transition_script', reason: 'Scene transition with fade effect' },
+      ]},
+      { keywords: ['raycast', 'ray', 'hit test', 'line of sight', 'visibility'], tools: [
+        { tool: 'raycast_3d', reason: 'Cast a 3D ray and get hit result' },
+        { tool: 'add_ray_cast_2d_to_scene', reason: 'Add RayCast2D node to scene' },
+        { tool: 'add_ray_cast_3d_to_scene', reason: 'Add RayCast3D node to scene' },
+      ]},
+      { keywords: ['time', 'timer', 'delay', 'countdown', 'wait'], tools: [
+        { tool: 'add_timer_to_scene', reason: 'Add a Timer node to a scene' },
+        { tool: 'get_unix_time', reason: 'Get current Unix timestamp' },
+        { tool: 'get_ticks_msec', reason: 'Get engine ticks in milliseconds' },
+      ]},
+      { keywords: ['grid', 'tilemap', 'tile', 'tileset'], tools: [
+        { tool: 'add_tile_map_to_scene', reason: 'Add TileMap node to scene' },
+        { tool: 'write_grid_based_movement_script', reason: 'Grid-based movement controller' },
+        { tool: 'write_grid_snap_script', reason: 'Grid-snap drag-and-drop script' },
+      ]},
+    ];
+
+    for (const rule of RULES) {
+      if (rule.keywords.some(k => task.includes(k))) {
+        for (const s of rule.tools) {
+          if (names.includes(s.tool)) suggestions.push(s);
+        }
+      }
+    }
+
+    // Fallback: keyword match on tool names
+    if (suggestions.length === 0) {
+      const words = task.split(/\s+/).filter((w: string) => w.length > 3);
+      for (const word of words) {
+        const matched = names.filter(n => n.includes(word)).slice(0, 3);
+        matched.forEach(t => suggestions.push({ tool: t, reason: `Tool name matches "${word}"` }));
+      }
+    }
+
+    const unique = suggestions.filter((s, i) => suggestions.findIndex(x => x.tool === s.tool) === i).slice(0, 8);
+
+    if (unique.length === 0) {
+      return { content: [{ type: 'text', text: JSON.stringify({
+        task,
+        suggestions: [],
+        tip: 'No direct match found. Try search_tools with a keyword, or list_tool_categories to browse all categories.',
+      }, null, 2) }] };
+    }
+
+    return { content: [{ type: 'text', text: JSON.stringify({
+      task,
+      suggestions: unique,
+      next_step: 'Call godot_call with the tool name and required args, or use search_tools for more options.',
+    }, null, 2) }] };
+  }
+
+  private getDiscoveryModeTools(): any[] {
+    return [
+      // ── Discovery / Navigation (always present) ──
+      { name: 'godot_start_here', description: 'START HERE: Overview and how to use this MCP server.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'godot_suggest', description: 'Get tool suggestions for a task. Example: task="make a character jump"', inputSchema: { type: 'object', properties: { task: { type: 'string', description: 'What you want to do' } }, required: ['task'] } },
+      { name: 'search_tools', description: 'Search tools by keyword. Returns matching tool names.', inputSchema: { type: 'object', properties: { query: { type: 'string', description: 'Search keyword' } }, required: ['query'] } },
+      { name: 'list_tool_categories', description: 'List all tool categories with counts and examples.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'list_tools_in_category', description: 'List all tools in a category. Call list_tool_categories first.', inputSchema: { type: 'object', properties: { category: { type: 'string', description: 'Category key from list_tool_categories' } }, required: ['category'] } },
+      { name: 'get_beginner_guide', description: 'Get step-by-step beginner guide for Godot MCP.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'get_workflow', description: 'Get step-by-step workflow for a goal.', inputSchema: { type: 'object', properties: { goal: { type: 'string', description: 'e.g. "platformer", "fps", "audio", "ui"' } }, required: ['goal'] } },
+      { name: 'explain_godot_concept', description: 'Explain a Godot concept or node type.', inputSchema: { type: 'object', properties: { concept: { type: 'string', description: 'e.g. "CharacterBody2D", "signals", "physics"' } }, required: ['concept'] } },
+      { name: 'godot_call', description: 'Call any Godot tool by name. Use after discovering tool names.', inputSchema: { type: 'object', properties: { name: { type: 'string', description: 'Tool name from search_tools or list_tools_in_category' }, args: { type: 'object', description: 'Tool arguments' } }, required: ['name'] } },
+      // ── Core always-useful tools ──
+      { name: 'get_godot_version', description: 'Get installed Godot version.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'create_project', description: 'Create a new Godot 4 project.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string', description: 'Absolute path for new project' }, projectName: { type: 'string', description: 'Project name' } }, required: ['projectPath', 'projectName'] } },
+      { name: 'run_project', description: 'Run a Godot project.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string', description: 'Path to project folder' } }, required: ['projectPath'] } },
+      { name: 'stop_project', description: 'Stop the running Godot project.', inputSchema: { type: 'object', properties: {} } },
+      { name: 'get_project_info', description: 'Get info about a Godot project.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string', description: 'Path to project folder' } }, required: ['projectPath'] } },
+      { name: 'create_scene', description: 'Create a new .tscn scene file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' }, rootNodeType: { type: 'string' } }, required: ['projectPath', 'scenePath', 'rootNodeType'] } },
+      { name: 'get_scene_structure', description: 'Get the node tree of a scene file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' } }, required: ['projectPath', 'scenePath'] } },
+      { name: 'add_node_to_scene', description: 'Add a node to a scene file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' }, nodeType: { type: 'string' }, nodeName: { type: 'string' } }, required: ['projectPath', 'scenePath', 'nodeType', 'nodeName'] } },
+      { name: 'set_node_property_in_scene', description: 'Set a node property in a scene file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' }, nodeName: { type: 'string' }, property: { type: 'string' }, value: {} }, required: ['projectPath', 'scenePath', 'nodeName', 'property', 'value'] } },
+      { name: 'create_script', description: 'Create a GDScript file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, content: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'read_script', description: 'Read a GDScript file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+    ];
+  }
+
   // ── Navigation / Discovery helpers ──────────────────────────────────────────
 
   private _toolNamesCache: string[] | null = null;
+  private readonly _discoveryMode: boolean = process.env.GODOT_MCP_DISCOVERY_MODE === 'true' || process.env.GODOT_MCP_DISCOVERY_MODE === '1';
 
   private getToolNames(): string[] {
     if (this._toolNamesCache) return this._toolNamesCache;
