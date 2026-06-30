@@ -12317,6 +12317,182 @@ class GodotServer {
           required: ['nodePath'],
         },
       },
+      {
+        name: 'add_ray_cast_2d_to_scene',
+        description: 'Add a RayCast2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: RayCast2D).' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .).' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_shape_cast_2d_to_scene',
+        description: 'Add a ShapeCast2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: ShapeCast2D).' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .).' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_collision_polygon_2d_to_scene',
+        description: 'Add a CollisionPolygon2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: CollisionPolygon2D).' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .).' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_collision_polygon_3d_to_scene',
+        description: 'Add a CollisionPolygon3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project.' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file.' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: CollisionPolygon3D).' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .).' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'cast_ray_in_game',
+        description: 'Cast a 3D ray in the running game physics world.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            fromX: { type: 'number', description: 'Ray origin X.' },
+            fromY: { type: 'number', description: 'Ray origin Y.' },
+            fromZ: { type: 'number', description: 'Ray origin Z.' },
+            toX: { type: 'number', description: 'Ray destination X.' },
+            toY: { type: 'number', description: 'Ray destination Y.' },
+            toZ: { type: 'number', description: 'Ray destination Z.' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'cast_ray_2d_in_game',
+        description: 'Cast a 2D ray in the running game physics world.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            fromX: { type: 'number', description: 'Ray origin X.' },
+            fromY: { type: 'number', description: 'Ray origin Y.' },
+            toX: { type: 'number', description: 'Ray destination X.' },
+            toY: { type: 'number', description: 'Ray destination Y.' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'get_physics_bodies_at_point',
+        description: 'Get 3D physics bodies at a point in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            x: { type: 'number', description: 'Point X coordinate.' },
+            y: { type: 'number', description: 'Point Y coordinate.' },
+            z: { type: 'number', description: 'Point Z coordinate.' },
+            radius: { type: 'number', description: 'Query radius (default: 0.1).' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'get_overlapping_bodies',
+        description: 'Get overlapping bodies of an Area node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Area2D or Area3D node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_overlapping_areas',
+        description: 'Get overlapping areas of an Area node in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Area2D or Area3D node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_ray_cast_enabled',
+        description: 'Enable or disable a RayCast node in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the RayCast2D or RayCast3D node.' },
+            enabled: { type: 'boolean', description: 'Whether to enable the RayCast (default: true).' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'is_ray_cast_colliding',
+        description: 'Check if a RayCast node is colliding in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the RayCast2D or RayCast3D node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_ray_cast_collider',
+        description: 'Get the collider hit by a RayCast in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the RayCast2D or RayCast3D node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_camera_current',
+        description: 'Make a camera the current active camera in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene path to the Camera2D or Camera3D node.' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_current_camera',
+        description: 'Get the currently active camera in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
       ],
     }));
 
@@ -14114,6 +14290,34 @@ class GodotServer {
           return await this.handleResetSkeletonPose(request.params.arguments);
         case 'get_node_class':
           return await this.handleGetNodeClass(request.params.arguments);
+        case 'add_ray_cast_2d_to_scene':
+          return await this.handleAddRayCast2dToScene(request.params.arguments);
+        case 'add_shape_cast_2d_to_scene':
+          return await this.handleAddShapeCast2dToScene(request.params.arguments);
+        case 'add_collision_polygon_2d_to_scene':
+          return await this.handleAddCollisionPolygon2dToScene(request.params.arguments);
+        case 'add_collision_polygon_3d_to_scene':
+          return await this.handleAddCollisionPolygon3dToScene(request.params.arguments);
+        case 'cast_ray_in_game':
+          return await this.handleCastRayInGame(request.params.arguments);
+        case 'cast_ray_2d_in_game':
+          return await this.handleCastRay2dInGame(request.params.arguments);
+        case 'get_physics_bodies_at_point':
+          return await this.handleGetPhysicsBodiesAtPoint(request.params.arguments);
+        case 'get_overlapping_bodies':
+          return await this.handleGetOverlappingBodies(request.params.arguments);
+        case 'get_overlapping_areas':
+          return await this.handleGetOverlappingAreas(request.params.arguments);
+        case 'set_ray_cast_enabled':
+          return await this.handleSetRayCastEnabled(request.params.arguments);
+        case 'is_ray_cast_colliding':
+          return await this.handleIsRayCastColliding(request.params.arguments);
+        case 'get_ray_cast_collider':
+          return await this.handleGetRayCastCollider(request.params.arguments);
+        case 'set_camera_current':
+          return await this.handleSetCameraCurrent(request.params.arguments);
+        case 'get_current_camera':
+          return await this.handleGetCurrentCamera(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -25490,6 +25694,139 @@ class GodotServer {
     args = normalizeParameters(args || {});
     if (!args.nodePath) return createErrorResponse('nodePath is required.');
     return this.gameCommand('get_node_class', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleAddRayCast2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'RayCast2D',
+        node_type: 'RayCast2D',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddShapeCast2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'ShapeCast2D',
+        node_type: 'ShapeCast2D',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddCollisionPolygon2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'CollisionPolygon2D',
+        node_type: 'CollisionPolygon2D',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleAddCollisionPolygon3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        node_name: a.nodeName || 'CollisionPolygon3D',
+        node_type: 'CollisionPolygon3D',
+        parent_node_path: a.parentNodePath || '.',
+      },
+    }));
+  }
+
+  private async handleCastRayInGame(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('cast_ray_in_game', args, a => ({
+      from_x: a.fromX ?? 0,
+      from_y: a.fromY ?? 0,
+      from_z: a.fromZ ?? 0,
+      to_x: a.toX ?? 0,
+      to_y: a.toY ?? 0,
+      to_z: a.toZ ?? 0,
+    }));
+  }
+
+  private async handleCastRay2dInGame(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('cast_ray_2d_in_game', args, a => ({
+      from_x: a.fromX ?? 0,
+      from_y: a.fromY ?? 0,
+      to_x: a.toX ?? 0,
+      to_y: a.toY ?? 0,
+    }));
+  }
+
+  private async handleGetPhysicsBodiesAtPoint(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_physics_bodies_at_point', args, a => ({
+      x: a.x ?? 0,
+      y: a.y ?? 0,
+      z: a.z ?? 0,
+      radius: a.radius ?? 0.1,
+    }));
+  }
+
+  private async handleGetOverlappingBodies(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_overlapping_bodies', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetOverlappingAreas(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_overlapping_areas', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetRayCastEnabled(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_ray_cast_enabled', args, a => ({ node_path: a.nodePath, enabled: a.enabled ?? true }));
+  }
+
+  private async handleIsRayCastColliding(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('is_ray_cast_colliding', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetRayCastCollider(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_ray_cast_collider', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetCameraCurrent(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_camera_current', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetCurrentCamera(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_current_camera', args, _a => ({}));
   }
 
 }

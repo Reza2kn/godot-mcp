@@ -999,6 +999,26 @@ func _handle_command(json_str: String) -> void:
 			_cmd_reset_skeleton_pose(params)
 		"get_node_class":
 			_cmd_get_node_class(params)
+		"cast_ray_in_game":
+			_cmd_cast_ray_in_game(params)
+		"cast_ray_2d_in_game":
+			_cmd_cast_ray_2d_in_game(params)
+		"get_physics_bodies_at_point":
+			_cmd_get_physics_bodies_at_point(params)
+		"get_overlapping_bodies":
+			_cmd_get_overlapping_bodies(params)
+		"get_overlapping_areas":
+			_cmd_get_overlapping_areas(params)
+		"set_ray_cast_enabled":
+			_cmd_set_ray_cast_enabled(params)
+		"is_ray_cast_colliding":
+			_cmd_is_ray_cast_colliding(params)
+		"get_ray_cast_collider":
+			_cmd_get_ray_cast_collider(params)
+		"set_camera_current":
+			_cmd_set_camera_current(params)
+		"get_current_camera":
+			_cmd_get_current_camera(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -9436,6 +9456,160 @@ func _cmd_get_node_class(params: Dictionary) -> void:
 		_send_response({"error": "Node not found: " + node_path})
 		return
 	_send_response({"success": true, "class": node.get_class(), "script": str(node.get_script()) if node.get_script() != null else null, "is_class_list": ClassDB.get_inheriters_from_class(node.get_class())})
+
+func _cmd_cast_ray_in_game(params: Dictionary) -> void:
+	var from = Vector3(params.get("from_x", 0.0), params.get("from_y", 0.0), params.get("from_z", 0.0))
+	var to = Vector3(params.get("to_x", 0.0), params.get("to_y", 0.0), params.get("to_z", 0.0))
+	var space_state = get_tree().root.get_world_3d().direct_space_state
+	var query = PhysicsRayQueryParameters3D.create(from, to)
+	var result = space_state.intersect_ray(query)
+	if result.is_empty():
+		_send_response({"success": true, "hit": false})
+	else:
+		var collider = result.get("collider")
+		_send_response({"success": true, "hit": true, "position": {"x": result["position"].x, "y": result["position"].y, "z": result["position"].z}, "normal": {"x": result["normal"].x, "y": result["normal"].y, "z": result["normal"].z}, "collider_path": str(collider.get_path()) if collider != null else null, "collider_class": collider.get_class() if collider != null else null})
+
+func _cmd_cast_ray_2d_in_game(params: Dictionary) -> void:
+	var from = Vector2(params.get("from_x", 0.0), params.get("from_y", 0.0))
+	var to = Vector2(params.get("to_x", 0.0), params.get("to_y", 0.0))
+	var space_state = get_tree().root.get_world_2d().direct_space_state
+	var query = PhysicsRayQueryParameters2D.create(from, to)
+	var result = space_state.intersect_ray(query)
+	if result.is_empty():
+		_send_response({"success": true, "hit": false})
+	else:
+		var collider = result.get("collider")
+		_send_response({"success": true, "hit": true, "position": {"x": result["position"].x, "y": result["position"].y}, "normal": {"x": result["normal"].x, "y": result["normal"].y}, "collider_path": str(collider.get_path()) if collider != null else null, "collider_class": collider.get_class() if collider != null else null})
+
+func _cmd_get_physics_bodies_at_point(params: Dictionary) -> void:
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var radius: float = params.get("radius", 0.1)
+	var space_state = get_tree().root.get_world_3d().direct_space_state
+	var sphere = SphereShape3D.new()
+	sphere.radius = radius
+	var query = PhysicsShapeQueryParameters3D.new()
+	query.shape = sphere
+	query.transform = Transform3D(Basis(), Vector3(x, y, z))
+	var results = space_state.intersect_shape(query)
+	var bodies: Array = []
+	for r in results:
+		var collider = r.get("collider")
+		if collider != null:
+			bodies.append({"path": str(collider.get_path()), "class": collider.get_class()})
+	_send_response({"success": true, "count": bodies.size(), "bodies": bodies})
+
+func _cmd_get_overlapping_bodies(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var bodies: Array = []
+	if node is Area3D:
+		for body in (node as Area3D).get_overlapping_bodies():
+			bodies.append({"path": str(body.get_path()), "class": body.get_class()})
+	elif node is Area2D:
+		for body in (node as Area2D).get_overlapping_bodies():
+			bodies.append({"path": str(body.get_path()), "class": body.get_class()})
+	else:
+		_send_response({"error": "Not an Area2D/3D: " + node.get_class()})
+		return
+	_send_response({"success": true, "count": bodies.size(), "bodies": bodies})
+
+func _cmd_get_overlapping_areas(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var areas: Array = []
+	if node is Area3D:
+		for area in (node as Area3D).get_overlapping_areas():
+			areas.append({"path": str(area.get_path()), "class": area.get_class()})
+	elif node is Area2D:
+		for area in (node as Area2D).get_overlapping_areas():
+			areas.append({"path": str(area.get_path()), "class": area.get_class()})
+	else:
+		_send_response({"error": "Not an Area2D/3D: " + node.get_class()})
+		return
+	_send_response({"success": true, "count": areas.size(), "areas": areas})
+
+func _cmd_set_ray_cast_enabled(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var enabled: bool = params.get("enabled", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is RayCast3D:
+		(node as RayCast3D).enabled = enabled
+		_send_response({"success": true, "enabled": enabled})
+	elif node is RayCast2D:
+		(node as RayCast2D).enabled = enabled
+		_send_response({"success": true, "enabled": enabled})
+	else:
+		_send_response({"error": "Not a RayCast2D/3D: " + node.get_class()})
+
+func _cmd_is_ray_cast_colliding(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node is RayCast3D:
+		var rc := node as RayCast3D
+		_send_response({"success": true, "is_colliding": rc.is_colliding(), "collision_point": {"x": rc.get_collision_point().x, "y": rc.get_collision_point().y, "z": rc.get_collision_point().z} if rc.is_colliding() else null})
+	elif node is RayCast2D:
+		var rc := node as RayCast2D
+		_send_response({"success": true, "is_colliding": rc.is_colliding(), "collision_point": {"x": rc.get_collision_point().x, "y": rc.get_collision_point().y} if rc.is_colliding() else null})
+	else:
+		_send_response({"error": "Not a RayCast2D/3D: " + (node.get_class() if node != null else "null")})
+
+func _cmd_get_ray_cast_collider(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node is RayCast3D:
+		var rc := node as RayCast3D
+		if rc.is_colliding():
+			var collider = rc.get_collider()
+			_send_response({"success": true, "is_colliding": true, "collider_path": str(collider.get_path()) if collider != null else null, "collider_class": collider.get_class() if collider != null else null, "collision_point": {"x": rc.get_collision_point().x, "y": rc.get_collision_point().y, "z": rc.get_collision_point().z}, "collision_normal": {"x": rc.get_collision_normal().x, "y": rc.get_collision_normal().y, "z": rc.get_collision_normal().z}})
+		else:
+			_send_response({"success": true, "is_colliding": false})
+	elif node is RayCast2D:
+		var rc := node as RayCast2D
+		if rc.is_colliding():
+			var collider = rc.get_collider()
+			_send_response({"success": true, "is_colliding": true, "collider_path": str(collider.get_path()) if collider != null else null, "collider_class": collider.get_class() if collider != null else null, "collision_point": {"x": rc.get_collision_point().x, "y": rc.get_collision_point().y}})
+		else:
+			_send_response({"success": true, "is_colliding": false})
+	else:
+		_send_response({"error": "Not a RayCast2D/3D: " + (node.get_class() if node != null else "null")})
+
+func _cmd_set_camera_current(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is Camera3D:
+		(node as Camera3D).make_current()
+		_send_response({"success": true, "camera_path": node_path})
+	elif node is Camera2D:
+		(node as Camera2D).make_current()
+		_send_response({"success": true, "camera_path": node_path})
+	else:
+		_send_response({"error": "Not a Camera2D/3D: " + node.get_class()})
+
+func _cmd_get_current_camera(params: Dictionary) -> void:
+	var viewport = get_viewport()
+	var cam3d = viewport.get_camera_3d()
+	var cam2d = viewport.get_camera_2d()
+	var result: Dictionary = {"success": true}
+	if cam3d != null:
+		result["camera_3d"] = str(cam3d.get_path())
+		result["camera_3d_class"] = cam3d.get_class()
+	if cam2d != null:
+		result["camera_2d"] = str(cam2d.get_path())
+	_send_response(result)
 
 func _exit_tree() -> void:
 	_clear_debug_draw()
