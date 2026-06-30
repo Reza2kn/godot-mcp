@@ -8445,6 +8445,271 @@ class GodotServer {
           required: ['projectPath'],
         },
       },
+      {
+        name: 'instantiate_scene_at_runtime',
+        description: 'Instantiate a scene at a position in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            scenePath: { type: 'string', description: 'res:// path to the PackedScene' },
+            parentNodePath: { type: 'string', description: 'Node path to parent (default /root)' },
+            x: { type: 'number', description: 'X position (default 0)' },
+            y: { type: 'number', description: 'Y position (default 0)' },
+            z: { type: 'number', description: 'Z position (default 0)' },
+          },
+          required: ['scenePath'],
+        },
+      },
+      {
+        name: 'save_scene_at_runtime',
+        description: 'Save the current running scene to a .tscn file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            outputPath: { type: 'string', description: 'res:// path for the saved .tscn' },
+          },
+          required: ['outputPath'],
+        },
+      },
+      {
+        name: 'get_script_source',
+        description: 'Get the source code of a script in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path in the running game' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'create_animation_track',
+        description: 'Add a property track to an animation in a scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            animPlayerPath: { type: 'string', description: 'Node path to AnimationPlayer' },
+            animationName: { type: 'string', description: 'Name of the animation' },
+            trackPath: { type: 'string', description: 'Track path e.g. Node:position' },
+            trackType: { type: 'string', description: 'Track type: value|method|bezier' },
+          },
+          required: ['projectPath', 'scenePath', 'animationName', 'trackPath'],
+        },
+      },
+      {
+        name: 'add_animation_keyframe',
+        description: 'Add a keyframe to an animation track in a scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            animPlayerPath: { type: 'string', description: 'Node path to AnimationPlayer' },
+            animationName: { type: 'string', description: 'Name of the animation' },
+            trackIdx: { type: 'integer', description: 'Track index' },
+            time: { type: 'number', description: 'Keyframe time in seconds' },
+            value: { description: 'Keyframe value (string representation)' },
+          },
+          required: ['projectPath', 'scenePath', 'animationName', 'value'],
+        },
+      },
+      {
+        name: 'get_animation_track_count',
+        description: 'Get track count in an animation in a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            animPlayerPath: { type: 'string', description: 'Node path to AnimationPlayer' },
+            animationName: { type: 'string', description: 'Name of the animation' },
+          },
+          required: ['projectPath', 'scenePath', 'animationName'],
+        },
+      },
+      {
+        name: 'set_animation_speed_scale',
+        description: 'Set the speed_scale on an AnimationPlayer in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path to the AnimationPlayer' },
+            speedScale: { type: 'number', description: 'Speed scale (e.g. 2.0 for double speed)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_animation_position',
+        description: 'Get the current playback position of AnimationPlayer.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path to the AnimationPlayer' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'seek_animation',
+        description: 'Seek an AnimationPlayer to a time position in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path to the AnimationPlayer' },
+            position: { type: 'number', description: 'Time position in seconds' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'blend_shape_set_value',
+        description: 'Set a blend shape value on a MeshInstance3D in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path to the MeshInstance3D' },
+            blendShapeIdx: { type: 'integer', description: 'Blend shape index' },
+            value: { type: 'number', description: 'Value between 0.0 and 1.0' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'blend_shape_get_values',
+        description: 'Get all blend shape values from a MeshInstance3D.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path to the MeshInstance3D' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_bone_global_pose',
+        description: 'Get the global pose of a Skeleton3D bone in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path to the Skeleton3D' },
+            boneIdx: { type: 'integer', description: 'Bone index' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_bone_pose',
+        description: 'Set the local pose of a Skeleton3D bone in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path to the Skeleton3D' },
+            boneIdx: { type: 'integer', description: 'Bone index' },
+            x: { type: 'number', description: 'X position' },
+            y: { type: 'number', description: 'Y position' },
+            z: { type: 'number', description: 'Z position' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'list_gdscript_classes',
+        description: 'List all ClassDB class names via headless Godot.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            filter: { type: 'string', description: 'Optional substring filter' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_asset_preload_list',
+        description: 'Find all ResourcePreloader nodes in scene files.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_scene_embedded_scripts',
+        description: 'Find inline GDScript embedded in .tscn scene files.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'batch_create_scenes',
+        description: 'Create multiple empty .tscn files in one batch call.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenes: {
+              type: 'array',
+              description: 'Array of {path, rootType} objects',
+              items: {
+                type: 'object',
+                properties: {
+                  path: { type: 'string' },
+                  rootType: { type: 'string' },
+                },
+                required: ['path'],
+              },
+            },
+          },
+          required: ['projectPath', 'scenes'],
+        },
+      },
+      {
+        name: 'get_node_animation_tracks',
+        description: 'Get animation tracks targeting a node in a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            targetNodeName: { type: 'string', description: 'Node name to search tracks for' },
+          },
+          required: ['projectPath', 'scenePath', 'targetNodeName'],
+        },
+      },
+      {
+        name: 'rename_resource',
+        description: 'Rename or move a resource file within the project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            sourcePath: { type: 'string', description: 'res:// source path' },
+            destPath: { type: 'string', description: 'res:// destination path' },
+          },
+          required: ['projectPath', 'sourcePath', 'destPath'],
+        },
+      },
+      {
+        name: 'find_large_textures',
+        description: 'Find textures larger than a given file size limit.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            maxKb: { type: 'integer', description: 'Size threshold in KB (default 512)' },
+          },
+          required: ['projectPath'],
+        },
+      },
       ],
     }));
 
@@ -9628,6 +9893,46 @@ class GodotServer {
           return await this.handleAddVideoStreamPlayer(request.params.arguments);
         case 'list_project_videos':
           return await this.handleListProjectVideos(request.params.arguments);
+        case 'instantiate_scene_at_runtime':
+          return await this.handleInstantiateSceneAtRuntime(request.params.arguments);
+        case 'save_scene_at_runtime':
+          return await this.handleSaveSceneAtRuntime(request.params.arguments);
+        case 'get_script_source':
+          return await this.handleGetScriptSource(request.params.arguments);
+        case 'create_animation_track':
+          return await this.handleCreateAnimationTrack(request.params.arguments);
+        case 'add_animation_keyframe':
+          return await this.handleAddAnimationKeyframe(request.params.arguments);
+        case 'get_animation_track_count':
+          return await this.handleGetAnimationTrackCount(request.params.arguments);
+        case 'set_animation_speed_scale':
+          return await this.handleSetAnimationSpeedScale(request.params.arguments);
+        case 'get_animation_position':
+          return await this.handleGetAnimationPosition(request.params.arguments);
+        case 'seek_animation':
+          return await this.handleSeekAnimation(request.params.arguments);
+        case 'blend_shape_set_value':
+          return await this.handleBlendShapeSetValue(request.params.arguments);
+        case 'blend_shape_get_values':
+          return await this.handleBlendShapeGetValues(request.params.arguments);
+        case 'get_bone_global_pose':
+          return await this.handleGetBoneGlobalPose(request.params.arguments);
+        case 'set_bone_pose':
+          return await this.handleSetBonePose(request.params.arguments);
+        case 'list_gdscript_classes':
+          return await this.handleListGdscriptClasses(request.params.arguments);
+        case 'get_asset_preload_list':
+          return await this.handleGetAssetPreloadList(request.params.arguments);
+        case 'get_scene_embedded_scripts':
+          return await this.handleGetSceneEmbeddedScripts(request.params.arguments);
+        case 'batch_create_scenes':
+          return await this.handleBatchCreateScenes(request.params.arguments);
+        case 'get_node_animation_tracks':
+          return await this.handleGetNodeAnimationTracks(request.params.arguments);
+        case 'rename_resource':
+          return await this.handleRenameResource(request.params.arguments);
+        case 'find_large_textures':
+          return await this.handleFindLargeTextures(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -18212,6 +18517,266 @@ class GodotServer {
     const videos = this.collectFiles(args.projectPath, ['.ogv', '.mp4', '.webm', '.avi', '.mov']);
     const list = videos.map(f => f.replace(args.projectPath + '/', '')).sort();
     return { content: [{ type: 'text', text: JSON.stringify({ count: list.length, videos: list }, null, 2) }] };
+  }
+
+  private async handleInstantiateSceneAtRuntime(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.scenePath) return createErrorResponse('scenePath is required.');
+    return this.gameCommand('instantiate_scene_at_runtime', args, a => ({
+      scene_path: a.scenePath,
+      parent_node_path: a.parentNodePath || '/root',
+      x: a.x ?? 0,
+      y: a.y ?? 0,
+      z: a.z ?? 0,
+    }));
+  }
+
+  private async handleSaveSceneAtRuntime(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.outputPath) return createErrorResponse('outputPath is required.');
+    return this.gameCommand('save_scene_at_runtime', args, a => ({ output_path: a.outputPath }));
+  }
+
+  private async handleGetScriptSource(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_script_source', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleCreateAnimationTrack(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!args.animationName) return createErrorResponse('animationName is required.');
+    if (!args.trackPath) return createErrorResponse('trackPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('create_animation_track', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        anim_player_path: a.animPlayerPath || 'AnimationPlayer',
+        animation_name: a.animationName,
+        track_path: a.trackPath,
+        track_type: a.trackType || 'value',
+      },
+    }));
+  }
+
+  private async handleAddAnimationKeyframe(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!args.animationName) return createErrorResponse('animationName is required.');
+    if (args.value === undefined) return createErrorResponse('value is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_animation_keyframe', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        anim_player_path: a.animPlayerPath || 'AnimationPlayer',
+        animation_name: a.animationName,
+        track_idx: a.trackIdx ?? 0,
+        time: a.time ?? 0,
+        value: a.value,
+      },
+    }));
+  }
+
+  private async handleGetAnimationTrackCount(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!args.animationName) return createErrorResponse('animationName is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('get_animation_track_count', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scene_path: a.scenePath,
+        anim_player_path: a.animPlayerPath || 'AnimationPlayer',
+        animation_name: a.animationName,
+      },
+    }));
+  }
+
+  private async handleSetAnimationSpeedScale(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_animation_speed_scale', args, a => ({
+      node_path: a.nodePath,
+      speed_scale: a.speedScale ?? 1.0,
+    }));
+  }
+
+  private async handleGetAnimationPosition(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_animation_position', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSeekAnimation(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('seek_animation', args, a => ({
+      node_path: a.nodePath,
+      position: a.position ?? 0,
+    }));
+  }
+
+  private async handleBlendShapeSetValue(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('blend_shape_set_value', args, a => ({
+      node_path: a.nodePath,
+      blend_shape_idx: a.blendShapeIdx ?? 0,
+      value: a.value ?? 0,
+    }));
+  }
+
+  private async handleBlendShapeGetValues(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('blend_shape_get_values', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetBoneGlobalPose(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_bone_global_pose', args, a => ({
+      node_path: a.nodePath,
+      bone_idx: a.boneIdx ?? 0,
+    }));
+  }
+
+  private async handleSetBonePose(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_bone_pose_xyz', args, a => ({
+      node_path: a.nodePath,
+      bone_idx: a.boneIdx ?? 0,
+      x: a.x ?? 0,
+      y: a.y ?? 0,
+      z: a.z ?? 0,
+    }));
+  }
+
+  private async handleListGdscriptClasses(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('list_classdb_classes', args, a => ({
+      projectPath: a.projectPath,
+      params: { filter: a.filter || '' },
+    }));
+  }
+
+  private async handleGetAssetPreloadList(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const scenes = this.collectFiles(args.projectPath, ['.tscn']);
+    const preloaders: Array<{ scene: string; nodeName: string }> = [];
+    for (const scene of scenes) {
+      let content: string;
+      try { content = readFileSync(scene, 'utf8'); } catch { continue; }
+      const matches = content.matchAll(/\[node[^\]]*?type="ResourcePreloader"[^\]]*?name="([^"]+)"/g);
+      for (const m of matches) {
+        preloaders.push({ scene: scene.replace(args.projectPath + '/', ''), nodeName: m[1] });
+      }
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ count: preloaders.length, preloaders }, null, 2) }] };
+  }
+
+  private async handleGetSceneEmbeddedScripts(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const scenes = this.collectFiles(args.projectPath, ['.tscn']);
+    const embedded: Array<{ scene: string; scriptId: string; lineCount: number; preview: string }> = [];
+    for (const scene of scenes) {
+      let content: string;
+      try { content = readFileSync(scene, 'utf8'); } catch { continue; }
+      const matches = content.matchAll(/\[sub_resource[^\]]*?type="GDScript"[^\]]*?id="([^"]+)"/g);
+      for (const m of matches) {
+        const start = content.indexOf(m[0]);
+        const end = content.indexOf('\n[', start + 1);
+        const block = end === -1 ? content.slice(start) : content.slice(start, end);
+        const codeMatch = block.match(/script\/source\s*=\s*"((?:[^"\\]|\\.)*)"/s);
+        const code = codeMatch ? codeMatch[1].replace(/\\n/g, '\n').replace(/\\"/g, '"') : '';
+        embedded.push({ scene: scene.replace(args.projectPath + '/', ''), scriptId: m[1], lineCount: code.split('\n').length, preview: code.slice(0, 100) });
+      }
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ count: embedded.length, embedded }, null, 2) }] };
+  }
+
+  private async handleBatchCreateScenes(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !Array.isArray(args.scenes)) return createErrorResponse('projectPath and scenes array are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const results: Array<{ path: string; success: boolean; error?: string }> = [];
+    for (const sceneSpec of args.scenes) {
+      const rootType = sceneSpec.rootType || 'Node';
+      const absPath = this.resolveResPath(args.projectPath, sceneSpec.path);
+      const content = `[gd_scene format=3]\n\n[node name="${rootType}" type="${rootType}"]\n`;
+      try {
+        writeFileSync(absPath, content, 'utf8');
+        results.push({ path: sceneSpec.path, success: true });
+      } catch (e: any) {
+        results.push({ path: sceneSpec.path, success: false, error: e.message });
+      }
+    }
+    const successCount = results.filter(r => r.success).length;
+    return { content: [{ type: 'text', text: JSON.stringify({ successCount, total: results.length, results }, null, 2) }] };
+  }
+
+  private async handleGetNodeAnimationTracks(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.targetNodeName) return createErrorResponse('projectPath, scenePath, and targetNodeName are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absPath)) return createErrorResponse(`Scene not found: ${absPath}`);
+    let content: string;
+    try { content = readFileSync(absPath, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const tracks: Array<{ trackIdx: number; path: string; type: string }> = [];
+    const trackMatches = content.matchAll(/tracks\/(\d+)\/path\s*=\s*NodePath\("([^"]+)"\)/g);
+    for (const m of trackMatches) {
+      const trackPath = m[2];
+      if (trackPath.includes(args.targetNodeName)) {
+        const trackIdx = parseInt(m[1]);
+        const typeMatch = content.match(new RegExp(`tracks/${trackIdx}/type\\s*=\\s*(\\d+)`));
+        tracks.push({ trackIdx, path: trackPath, type: typeMatch?.[1] || 'unknown' });
+      }
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ targetNodeName: args.targetNodeName, trackCount: tracks.length, tracks }, null, 2) }] };
+  }
+
+  private async handleRenameResource(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.sourcePath || !args.destPath) return createErrorResponse('projectPath, sourcePath, and destPath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absSrc = this.resolveResPath(args.projectPath, args.sourcePath);
+    const absDest = this.resolveResPath(args.projectPath, args.destPath);
+    if (!existsSync(absSrc)) return createErrorResponse(`Source not found: ${absSrc}`);
+    if (existsSync(absDest)) return createErrorResponse(`Destination already exists: ${absDest}`);
+    const { rename } = await import('node:fs/promises');
+    try { await rename(absSrc, absDest); } catch (e: any) { return createErrorResponse(`Rename failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: JSON.stringify({ success: true, sourcePath: args.sourcePath, destPath: args.destPath }) }] };
+  }
+
+  private async handleFindLargeTextures(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const maxBytes = (args.maxKb ?? 512) * 1024;
+    const images = this.collectFiles(args.projectPath, ['.png', '.jpg', '.jpeg', '.webp', '.tga', '.bmp']);
+    const { statSync } = await import('node:fs');
+    const large: Array<{ file: string; sizeKb: number }> = [];
+    for (const img of images) {
+      try {
+        const stat = statSync(img);
+        if (stat.size > maxBytes) {
+          large.push({ file: img.replace(args.projectPath + '/', ''), sizeKb: Math.round(stat.size / 1024) });
+        }
+      } catch {}
+    }
+    large.sort((a, b) => b.sizeKb - a.sizeKb);
+    return { content: [{ type: 'text', text: JSON.stringify({ threshold: `${args.maxKb ?? 512}KB`, count: large.length, textures: large }, null, 2) }] };
   }
 
 }

@@ -645,6 +645,26 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_display_info(params)
 		"set_window_size":
 			_cmd_set_window_size(params)
+		"instantiate_scene_at_runtime":
+			_cmd_instantiate_scene_at_runtime(params)
+		"save_scene_at_runtime":
+			_cmd_save_scene_at_runtime(params)
+		"get_script_source":
+			_cmd_get_script_source(params)
+		"set_animation_speed_scale":
+			_cmd_set_animation_speed_scale(params)
+		"get_animation_position":
+			_cmd_get_animation_position(params)
+		"seek_animation":
+			_cmd_seek_animation(params)
+		"blend_shape_set_value":
+			_cmd_blend_shape_set_value(params)
+		"blend_shape_get_values":
+			_cmd_blend_shape_get_values(params)
+		"get_bone_global_pose":
+			_cmd_get_bone_global_pose(params)
+		"set_bone_pose_xyz":
+			_cmd_set_bone_pose_xyz(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -6963,6 +6983,130 @@ func _cmd_set_window_size(params: Dictionary) -> void:
 	var height: int = params.get("height", 720)
 	DisplayServer.window_set_size(Vector2i(width, height))
 	_send_response({"success": true, "width": width, "height": height})
+
+func _cmd_instantiate_scene_at_runtime(params: Dictionary) -> void:
+	var scene_path: String = params.get("scene_path", "")
+	var parent_node_path: String = params.get("parent_node_path", "/root")
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var packed = load(scene_path) as PackedScene
+	if packed == null:
+		_send_response({"error": "Cannot load scene: " + scene_path})
+		return
+	var instance = packed.instantiate()
+	var parent = get_tree().root.get_node_or_null(NodePath(parent_node_path))
+	if parent == null:
+		parent = get_tree().root
+	parent.add_child(instance)
+	instance.owner = get_tree().root
+	if instance is Node3D:
+		(instance as Node3D).position = Vector3(x, y, z)
+	elif instance is Node2D:
+		(instance as Node2D).position = Vector2(x, y)
+	_send_response({"success": true, "scene_path": scene_path, "instance_path": str(instance.get_path()), "name": instance.name})
+
+func _cmd_save_scene_at_runtime(params: Dictionary) -> void:
+	var output_path: String = params.get("output_path", "")
+	var current_scene = get_tree().current_scene
+	if current_scene == null:
+		_send_response({"error": "No current scene"})
+		return
+	var packed = PackedScene.new()
+	packed.pack(current_scene)
+	var err = ResourceSaver.save(packed, output_path)
+	_send_response({"success": err == OK, "output_path": output_path, "error_code": err})
+
+func _cmd_get_script_source(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var script = node.get_script() as GDScript
+	if script == null:
+		_send_response({"error": "No GDScript attached to node"})
+		return
+	_send_response({"success": true, "source_code": script.source_code, "resource_path": script.resource_path})
+
+func _cmd_set_animation_speed_scale(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var speed_scale: float = params.get("speed_scale", 1.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	(node as AnimationPlayer).speed_scale = speed_scale
+	_send_response({"success": true, "speed_scale": speed_scale})
+
+func _cmd_get_animation_position(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	var ap := node as AnimationPlayer
+	_send_response({"success": true, "current_position": ap.current_animation_position, "length": ap.current_animation_length, "animation": ap.current_animation, "playing": ap.is_playing()})
+
+func _cmd_seek_animation(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var position: float = params.get("position", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationPlayer:
+		_send_response({"error": "AnimationPlayer not found: " + node_path})
+		return
+	(node as AnimationPlayer).seek(position)
+	_send_response({"success": true, "position": position})
+
+func _cmd_blend_shape_set_value(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var blend_shape_idx: int = params.get("blend_shape_idx", 0)
+	var value: float = params.get("value", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	(node as MeshInstance3D).set_blend_shape_value(blend_shape_idx, value)
+	_send_response({"success": true, "blend_shape_idx": blend_shape_idx, "value": value})
+
+func _cmd_blend_shape_get_values(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var mi := node as MeshInstance3D
+	var shapes: Array = []
+	for i in range(mi.get_blend_shape_count()):
+		shapes.append({"idx": i, "name": mi.mesh.get_blend_shape_name(i) if mi.mesh != null else str(i), "value": mi.get_blend_shape_value(i)})
+	_send_response({"success": true, "count": shapes.size(), "blend_shapes": shapes})
+
+func _cmd_get_bone_global_pose(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var bone_idx: int = params.get("bone_idx", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Skeleton3D:
+		_send_response({"error": "Skeleton3D not found: " + node_path})
+		return
+	var skel := node as Skeleton3D
+	var pose = skel.get_bone_global_pose(bone_idx)
+	_send_response({"success": true, "bone_idx": bone_idx, "bone_name": skel.get_bone_name(bone_idx), "position": {"x": pose.origin.x, "y": pose.origin.y, "z": pose.origin.z}})
+
+func _cmd_set_bone_pose_xyz(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var bone_idx: int = params.get("bone_idx", 0)
+	var x: float = params.get("x", 0.0)
+	var y: float = params.get("y", 0.0)
+	var z: float = params.get("z", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Skeleton3D:
+		_send_response({"error": "Skeleton3D not found: " + node_path})
+		return
+	var skel := node as Skeleton3D
+	var pose = skel.get_bone_pose(bone_idx)
+	pose.origin = Vector3(x, y, z)
+	skel.set_bone_pose(bone_idx, pose)
+	_send_response({"success": true, "bone_idx": bone_idx, "position": {"x": x, "y": y, "z": z}})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()

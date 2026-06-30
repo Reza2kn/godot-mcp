@@ -165,6 +165,14 @@ func _init():
             add_sub_viewport(params)
         "add_grid_container":
             add_grid_container(params)
+        "create_animation_track":
+            create_animation_track(params)
+        "add_animation_keyframe":
+            add_animation_keyframe(params)
+        "get_animation_track_count":
+            get_animation_track_count(params)
+        "list_classdb_classes":
+            list_classdb_classes(params)
         _:
             log_error("Unknown operation: " + operation)
             quit(1)
@@ -2820,4 +2828,116 @@ func add_grid_container(params: Dictionary) -> void:
 	ResourceSaver.save(packed, abs_scene)
 	root.queue_free()
 	print(JSON.stringify({"success": true, "node_name": node_name, "columns": columns}))
+	quit()
+
+func create_animation_track(params: Dictionary) -> void:
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var anim_player_path: String = params.get("anim_player_path", "AnimationPlayer")
+	var animation_name: String = params.get("animation_name", "")
+	var track_path: String = params.get("track_path", "")
+	var track_type_str: String = params.get("track_type", "value")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var ap = root.get_node_or_null(anim_player_path) as AnimationPlayer
+	if ap == null:
+		root.queue_free()
+		print(JSON.stringify({"error": "AnimationPlayer not found: " + anim_player_path}))
+		quit()
+		return
+	if not ap.has_animation(animation_name):
+		root.queue_free()
+		print(JSON.stringify({"error": "Animation not found: " + animation_name}))
+		quit()
+		return
+	var anim = ap.get_animation(animation_name)
+	var track_type = Animation.TYPE_VALUE
+	match track_type_str:
+		"method": track_type = Animation.TYPE_METHOD
+		"bezier": track_type = Animation.TYPE_BEZIER
+	var track_idx = anim.add_track(track_type)
+	anim.track_set_path(track_idx, NodePath(track_path))
+	ResourceSaver.save(ap.get_animation_library("").resource_path if ap.get_animation_library("").resource_path != "" else abs_scene, anim)
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "track_idx": track_idx, "track_type": track_type_str}))
+	quit()
+
+func add_animation_keyframe(params: Dictionary) -> void:
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var anim_player_path: String = params.get("anim_player_path", "AnimationPlayer")
+	var animation_name: String = params.get("animation_name", "")
+	var track_idx: int = params.get("track_idx", 0)
+	var time: float = params.get("time", 0.0)
+	var value = params.get("value", null)
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var ap = root.get_node_or_null(anim_player_path) as AnimationPlayer
+	if ap == null or not ap.has_animation(animation_name):
+		root.queue_free()
+		print(JSON.stringify({"error": "AnimationPlayer or animation not found"}))
+		quit()
+		return
+	var anim = ap.get_animation(animation_name)
+	if track_idx >= anim.get_track_count():
+		root.queue_free()
+		print(JSON.stringify({"error": "Track index out of range: " + str(track_idx)}))
+		quit()
+		return
+	anim.track_insert_key(track_idx, time, value)
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "track_idx": track_idx, "time": time}))
+	quit()
+
+func get_animation_track_count(params: Dictionary) -> void:
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var anim_player_path: String = params.get("anim_player_path", "AnimationPlayer")
+	var animation_name: String = params.get("animation_name", "")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var ap = root.get_node_or_null(anim_player_path) as AnimationPlayer
+	if ap == null or not ap.has_animation(animation_name):
+		root.queue_free()
+		print(JSON.stringify({"error": "AnimationPlayer or animation not found"}))
+		quit()
+		return
+	var anim = ap.get_animation(animation_name)
+	var tracks: Array = []
+	for i in range(anim.get_track_count()):
+		tracks.append({"idx": i, "path": str(anim.track_get_path(i)), "type": anim.track_get_type(i), "key_count": anim.track_get_key_count(i)})
+	root.queue_free()
+	print(JSON.stringify({"success": true, "track_count": anim.get_track_count(), "tracks": tracks}))
+	quit()
+
+func list_classdb_classes(params: Dictionary) -> void:
+	var filter: String = params.get("filter", "").to_lower()
+	var all_classes = ClassDB.get_class_list()
+	all_classes.sort()
+	var filtered: Array = []
+	for cls in all_classes:
+		if filter == "" or cls.to_lower().contains(filter):
+			filtered.append(cls)
+	print(JSON.stringify({"success": true, "count": filtered.size(), "classes": filtered}))
 	quit()
