@@ -3188,6 +3188,514 @@ class GodotServer {
             required: ['projectPath', 'action'],
           },
         },
+      // ── Batch & Refactoring ──────────────────────────────────────────────
+      {
+        name: 'find_nodes_by_type',
+        description: 'Find all nodes of a given type/class across all .tscn files in the project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            nodeType: { type: 'string', description: 'Node type or substring to match (e.g. "Sprite2D")' },
+          },
+          required: ['projectPath', 'nodeType'],
+        },
+      },
+      {
+        name: 'find_signal_connections',
+        description: 'Scan all .tscn files for [connection signal=...] lines and return them.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'batch_set_property',
+        description: 'Set a property on all nodes of a given type in a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'Relative path to the .tscn file within the project' },
+            nodeType: { type: 'string', description: 'Node type to target (e.g. "Label")' },
+            propertyKey: { type: 'string', description: 'Property name to set' },
+            propertyValue: { type: 'string', description: 'Value to assign to the property' },
+          },
+          required: ['projectPath', 'scenePath', 'nodeType', 'propertyKey', 'propertyValue'],
+        },
+      },
+      {
+        name: 'find_node_references',
+        description: 'Find all files referencing a given node name or path string.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            nodeName: { type: 'string', description: 'Node name or path string to search for' },
+          },
+          required: ['projectPath', 'nodeName'],
+        },
+      },
+      {
+        name: 'get_scene_dependencies',
+        description: 'Parse a .tscn file\'s [ext_resource lines and return all resource dependencies.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'Relative path to the .tscn file within the project' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'cross_scene_set_property',
+        description: 'Like batch_set_property but across ALL .tscn files in project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            nodeType: { type: 'string', description: 'Node type to target' },
+            propertyKey: { type: 'string', description: 'Property name to set' },
+            propertyValue: { type: 'string', description: 'Value to assign to the property' },
+          },
+          required: ['projectPath', 'nodeType', 'propertyKey', 'propertyValue'],
+        },
+      },
+      {
+        name: 'find_script_references',
+        description: 'Grep all .gd files for a given class name, method name, or string.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            searchTerm: { type: 'string', description: 'Class name, method name, or string to search for' },
+          },
+          required: ['projectPath', 'searchTerm'],
+        },
+      },
+      {
+        name: 'detect_circular_dependencies',
+        description: 'Build a dependency graph from .tscn ext_resource entries and detect cycles.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      // ── Analysis ─────────────────────────────────────────────────────────
+      {
+        name: 'analyze_scene_complexity',
+        description: 'Return complexity metrics for a scene: node count, depth, scripts, signals.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'Relative path to the .tscn file within the project' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'analyze_signal_flow',
+        description: 'Parse a scene and return all signal connections as a graph.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'Relative path to the .tscn file within the project' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'find_unused_resources',
+        description: 'Find resource files not referenced by any scene or script.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_project_statistics',
+        description: 'Return project-wide stats: scenes, scripts, nodes, lines, plugins.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      // ── Import Settings ───────────────────────────────────────────────────
+      {
+        name: 'import_get_config',
+        description: 'Read the .import file next to a resource and return it as parsed JSON.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            resourcePath: { type: 'string', description: 'Relative (or absolute) path to the resource file' },
+          },
+          required: ['projectPath', 'resourcePath'],
+        },
+      },
+      {
+        name: 'import_set_config',
+        description: 'Write/merge settings into the .import file for a resource.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            resourcePath: { type: 'string', description: 'Relative (or absolute) path to the resource file' },
+            settings: { type: 'object', description: 'Key-value pairs to merge into the .import file', additionalProperties: true },
+          },
+          required: ['projectPath', 'resourcePath', 'settings'],
+        },
+      },
+      {
+        name: 'import_list_presets',
+        description: 'Scan project for all .import files, group by importer= type, return summary.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'import_reimport',
+        description: 'Run godot --headless --import to reimport all resources in the project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      // ── Script Management ─────────────────────────────────────────────────
+      {
+        name: 'list_scripts',
+        description: 'Recursively list all .gd files in a project.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            includeExternal: { type: 'boolean', description: 'Include scripts outside res:// (default false)' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'search_in_files',
+        description: 'Grep for a pattern across project files.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            pattern: { type: 'string', description: 'Search pattern (substring)' },
+            fileExtensions: { type: 'array', items: { type: 'string' }, description: 'File extensions to search (default: [".gd",".tscn",".tres"])' },
+            caseSensitive: { type: 'boolean', description: 'Whether the search is case-sensitive (default true)' },
+          },
+          required: ['projectPath', 'pattern'],
+        },
+      },
+      {
+        name: 'validate_script',
+        description: 'Run godot --headless --check-only on a GDScript file to parse-check it.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scriptPath: { type: 'string', description: 'Relative path to the .gd script within the project' },
+          },
+          required: ['projectPath', 'scriptPath'],
+        },
+      },
+      // ── Scene Extras ──────────────────────────────────────────────────────
+      {
+        name: 'delete_scene',
+        description: 'Delete a .tscn scene file. Refuses if it is the project main scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'Relative path to the .tscn file within the project' },
+            deleteUidSidecar: { type: 'boolean', description: 'Also delete the .uid sidecar file if it exists (default true)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'get_scene_file_content',
+        description: 'Return the raw text content of a .tscn file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'Relative path to the .tscn file within the project' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'scene_set_unique_name',
+        description: 'Toggle the unique_name_in_owner flag on a node in a .tscn file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'Relative path to the .tscn file within the project' },
+            nodePath: { type: 'string', description: 'Path of the node within the scene (e.g. "Player/Sprite2D")' },
+            enabled: { type: 'boolean', description: 'Whether to enable (true) or disable (false) unique_name_in_owner' },
+          },
+          required: ['projectPath', 'scenePath', 'nodePath', 'enabled'],
+        },
+      },
+      {
+        name: 'duplicate_node',
+        description: 'Find a node by path in a .tscn file and insert a copy with a new name.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'Relative path to the .tscn file within the project' },
+            nodePath: { type: 'string', description: 'Path of the node to duplicate (e.g. "Player/Sprite2D")' },
+            newName: { type: 'string', description: 'Name for the duplicated node (default: original name + "_copy")' },
+          },
+          required: ['projectPath', 'scenePath', 'nodePath'],
+        },
+      },
+      // ── VCS Integration ───────────────────────────────────────────────────
+      {
+        name: 'vcs_status',
+        description: 'Run git status --short in the projectPath and return parsed output.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project (must be a git repo)' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'vcs_stage',
+        description: 'Run git add on specified files (or "." for all) in the projectPath.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            files: { description: 'Files to stage. Use "." to stage all, or an array of relative paths.', oneOf: [{ type: 'string' }, { type: 'array', items: { type: 'string' } }] },
+          },
+          required: ['projectPath', 'files'],
+        },
+      },
+      {
+        name: 'vcs_commit',
+        description: 'Run git commit -m <message> in the projectPath.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            message: { type: 'string', description: 'Commit message' },
+          },
+          required: ['projectPath', 'message'],
+        },
+      },
+      {
+        name: 'vcs_diff',
+        description: 'Run git diff [file?] in the projectPath.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            filePath: { type: 'string', description: 'Optional file path to diff (relative to project)' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'vcs_branch_list',
+        description: 'Run git branch -a in the projectPath and return array of branch names.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'vcs_checkout',
+        description: 'Run git checkout <branch> in the projectPath.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            branch: { type: 'string', description: 'Branch name to checkout' },
+          },
+          required: ['projectPath', 'branch'],
+        },
+      },
+      // ── Testing & QA ──────────────────────────────────────────────────────
+      {
+        name: 'assert_node_state',
+        description: 'Get a property from a node at runtime and compare to expectedValue.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Node path in the scene tree' },
+            property: { type: 'string', description: 'Property name to read' },
+            expectedValue: { description: 'Expected value to compare against' },
+          },
+          required: ['nodePath', 'property', 'expectedValue'],
+        },
+      },
+      {
+        name: 'assert_screen_text',
+        description: 'Assert that expected text is visible in the running game UI.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            text: { type: 'string', description: 'Text to search for in visible UI nodes' },
+          },
+          required: ['text'],
+        },
+      },
+      {
+        name: 'compare_screenshots',
+        description: 'Compare current screenshot to a reference file by hash.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            referencePath: { type: 'string', description: 'Absolute path to the reference screenshot file' },
+          },
+          required: ['referencePath'],
+        },
+      },
+      {
+        name: 'run_stress_test',
+        description: 'Run the game for N frames and report FPS and node leaks.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            frames: { type: 'number', description: 'Number of frames to run (default 300)' },
+            checkInterval: { type: 'number', description: 'Interval in frames to check for errors (default 60)' },
+          },
+          required: [],
+        },
+      },
+      // ── AnimationPlayer ───────────────────────────────────────────────────
+      {
+        name: 'list_animations',
+        description: 'Scan a .tscn for AnimationPlayer nodes and return their animation names.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'Relative path to the .tscn file within the project' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'remove_animation',
+        description: 'Remove an animation from an AnimationPlayer node in a .tscn file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'Relative path to the .tscn file within the project' },
+            animationPlayerPath: { type: 'string', description: 'Node path of the AnimationPlayer within the scene' },
+            animationName: { type: 'string', description: 'Name of the animation to remove' },
+          },
+          required: ['projectPath', 'scenePath', 'animationPlayerPath', 'animationName'],
+        },
+      },
+      // ── TileSet ───────────────────────────────────────────────────────────
+      {
+        name: 'tileset_create',
+        description: 'Create a new TileSet .tres resource file (uses headless Godot).',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            tilesetPath: { type: 'string', description: 'Relative path within the project for the new TileSet .tres file' },
+          },
+          required: ['projectPath', 'tilesetPath'],
+        },
+      },
+      {
+        name: 'tileset_add_source',
+        description: 'Add a TileSetAtlasSource to an existing TileSet .tres (uses headless Godot).',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            tilesetPath: { type: 'string', description: 'Relative path to the existing TileSet .tres file' },
+            texturePath: { type: 'string', description: 'res:// path to the atlas texture' },
+            tileSize: {
+              type: 'object',
+              description: 'Tile size in pixels (default: {x:16, y:16})',
+              properties: { x: { type: 'number' }, y: { type: 'number' } },
+            },
+          },
+          required: ['projectPath', 'tilesetPath', 'texturePath'],
+        },
+      },
+      // ── SpriteFrames ──────────────────────────────────────────────────────
+      {
+        name: 'spriteframes_create',
+        description: 'Create a SpriteFrames .tres resource file (uses headless Godot).',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            spriteframesPath: { type: 'string', description: 'Relative path within the project for the new SpriteFrames .tres file' },
+          },
+          required: ['projectPath', 'spriteframesPath'],
+        },
+      },
+      {
+        name: 'spriteframes_add_animation',
+        description: 'Add an animation to a SpriteFrames resource (uses headless Godot).',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            spriteframesPath: { type: 'string', description: 'Relative path to the SpriteFrames .tres file' },
+            animationName: { type: 'string', description: 'Name of the animation to add' },
+            fps: { type: 'number', description: 'Frames per second (default 5)' },
+            loop: { type: 'boolean', description: 'Whether the animation loops (default true)' },
+          },
+          required: ['projectPath', 'spriteframesPath', 'animationName'],
+        },
+      },
+      {
+        name: 'spriteframes_add_frame',
+        description: 'Add a frame (texture) to a SpriteFrames animation (uses headless Godot).',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            spriteframesPath: { type: 'string', description: 'Relative path to the SpriteFrames .tres file' },
+            animationName: { type: 'string', description: 'Name of the animation to add the frame to' },
+            texturePath: { type: 'string', description: 'res:// path to the frame texture' },
+            duration: { type: 'number', description: 'Frame duration multiplier (default 1.0)' },
+          },
+          required: ['projectPath', 'spriteframesPath', 'animationName', 'texturePath'],
+        },
+      },
       ],
     }));
 
@@ -3521,6 +4029,96 @@ class GodotServer {
           return await this.handleManageCiPipeline(request.params.arguments);
         case 'manage_docker_export':
           return await this.handleManageDockerExport(request.params.arguments);
+        // ── Batch & Refactoring ──────────────────────────────────────────
+        case 'find_nodes_by_type':
+          return await this.handleFindNodesByType(request.params.arguments);
+        case 'find_signal_connections':
+          return await this.handleFindSignalConnections(request.params.arguments);
+        case 'batch_set_property':
+          return await this.handleBatchSetProperty(request.params.arguments);
+        case 'find_node_references':
+          return await this.handleFindNodeReferences(request.params.arguments);
+        case 'get_scene_dependencies':
+          return await this.handleGetSceneDependencies(request.params.arguments);
+        case 'cross_scene_set_property':
+          return await this.handleCrossSceneSetProperty(request.params.arguments);
+        case 'find_script_references':
+          return await this.handleFindScriptReferences(request.params.arguments);
+        case 'detect_circular_dependencies':
+          return await this.handleDetectCircularDependencies(request.params.arguments);
+        // ── Analysis ─────────────────────────────────────────────────────
+        case 'analyze_scene_complexity':
+          return await this.handleAnalyzeSceneComplexity(request.params.arguments);
+        case 'analyze_signal_flow':
+          return await this.handleAnalyzeSignalFlow(request.params.arguments);
+        case 'find_unused_resources':
+          return await this.handleFindUnusedResources(request.params.arguments);
+        case 'get_project_statistics':
+          return await this.handleGetProjectStatistics(request.params.arguments);
+        // ── Import Settings ───────────────────────────────────────────────
+        case 'import_get_config':
+          return await this.handleImportGetConfig(request.params.arguments);
+        case 'import_set_config':
+          return await this.handleImportSetConfig(request.params.arguments);
+        case 'import_list_presets':
+          return await this.handleImportListPresets(request.params.arguments);
+        case 'import_reimport':
+          return await this.handleImportReiimport(request.params.arguments);
+        // ── Script Management ─────────────────────────────────────────────
+        case 'list_scripts':
+          return await this.handleListScripts(request.params.arguments);
+        case 'search_in_files':
+          return await this.handleSearchInFiles(request.params.arguments);
+        case 'validate_script':
+          return await this.handleValidateScript(request.params.arguments);
+        // ── Scene Extras ──────────────────────────────────────────────────
+        case 'delete_scene':
+          return await this.handleDeleteScene(request.params.arguments);
+        case 'get_scene_file_content':
+          return await this.handleGetSceneFileContent(request.params.arguments);
+        case 'scene_set_unique_name':
+          return await this.handleSceneSetUniqueName(request.params.arguments);
+        case 'duplicate_node':
+          return await this.handleDuplicateNode(request.params.arguments);
+        // ── VCS Integration ───────────────────────────────────────────────
+        case 'vcs_status':
+          return await this.handleVcsStatus(request.params.arguments);
+        case 'vcs_stage':
+          return await this.handleVcsStage(request.params.arguments);
+        case 'vcs_commit':
+          return await this.handleVcsCommit(request.params.arguments);
+        case 'vcs_diff':
+          return await this.handleVcsDiff(request.params.arguments);
+        case 'vcs_branch_list':
+          return await this.handleVcsBranchList(request.params.arguments);
+        case 'vcs_checkout':
+          return await this.handleVcsCheckout(request.params.arguments);
+        // ── Testing & QA ──────────────────────────────────────────────────
+        case 'assert_node_state':
+          return await this.handleAssertNodeState(request.params.arguments);
+        case 'assert_screen_text':
+          return await this.handleAssertScreenText(request.params.arguments);
+        case 'compare_screenshots':
+          return await this.handleCompareScreenshots(request.params.arguments);
+        case 'run_stress_test':
+          return await this.handleRunStressTest(request.params.arguments);
+        // ── AnimationPlayer ───────────────────────────────────────────────
+        case 'list_animations':
+          return await this.handleListAnimations(request.params.arguments);
+        case 'remove_animation':
+          return await this.handleRemoveAnimation(request.params.arguments);
+        // ── TileSet ───────────────────────────────────────────────────────
+        case 'tileset_create':
+          return await this.handleTilesetCreate(request.params.arguments);
+        case 'tileset_add_source':
+          return await this.handleTilesetAddSource(request.params.arguments);
+        // ── SpriteFrames ──────────────────────────────────────────────────
+        case 'spriteframes_create':
+          return await this.handleSpriteframesCreate(request.params.arguments);
+        case 'spriteframes_add_animation':
+          return await this.handleSpriteframesAddAnimation(request.params.arguments);
+        case 'spriteframes_add_frame':
+          return await this.handleSpriteframesAddFrame(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -4087,7 +4685,7 @@ class GodotServer {
       }
 
       // Check if the scene file exists
-      const scenePath = join(args.projectPath, args.scenePath);
+      const scenePath = this.resolveResPath(args.projectPath, args.scenePath);
       if (!existsSync(scenePath)) {
         return createErrorResponse(
           `Scene file does not exist: ${args.scenePath}`
@@ -4168,7 +4766,7 @@ class GodotServer {
       }
 
       // Check if the scene file exists
-      const scenePath = join(args.projectPath, args.scenePath);
+      const scenePath = this.resolveResPath(args.projectPath, args.scenePath);
       if (!existsSync(scenePath)) {
         return createErrorResponse(
           `Scene file does not exist: ${args.scenePath}`
@@ -4247,7 +4845,7 @@ class GodotServer {
       }
 
       // Check if the scene file exists
-      const scenePath = join(args.projectPath, args.scenePath);
+      const scenePath = this.resolveResPath(args.projectPath, args.scenePath);
       if (!existsSync(scenePath)) {
         return createErrorResponse(
           `Scene file does not exist: ${args.scenePath}`
@@ -4325,7 +4923,7 @@ class GodotServer {
       }
 
       // Check if the scene file exists
-      const scenePath = join(args.projectPath, args.scenePath);
+      const scenePath = this.resolveResPath(args.projectPath, args.scenePath);
       if (!existsSync(scenePath)) {
         return createErrorResponse(
           `Scene file does not exist: ${args.scenePath}`
@@ -4406,7 +5004,7 @@ class GodotServer {
       }
 
       // Check if the file exists
-      const filePath = join(args.projectPath, args.filePath);
+      const filePath = this.resolveResPath(args.projectPath, args.filePath);
       if (!existsSync(filePath)) {
         return createErrorResponse(
           `File does not exist: ${args.filePath}`
@@ -4600,7 +5198,7 @@ class GodotServer {
       return createErrorResponse(`Not a valid Godot project: ${args.projectPath}`);
     }
 
-    const scenePath = join(args.projectPath, args.scenePath);
+    const scenePath = this.resolveResPath(args.projectPath, args.scenePath);
     if (!existsSync(scenePath)) {
       return createErrorResponse(`Scene file does not exist: ${args.scenePath}`);
     }
@@ -4932,7 +5530,7 @@ class GodotServer {
     const projectFile = join(args.projectPath, 'project.godot');
     if (!existsSync(projectFile))
       return createErrorResponse(`Not a valid Godot project: ${args.projectPath}`);
-    const fullPath = join(args.projectPath, args.filePath);
+    const fullPath = this.resolveResPath(args.projectPath, args.filePath);
     if (!existsSync(fullPath))
       return createErrorResponse(`File does not exist: ${args.filePath}`);
     try {
@@ -4953,7 +5551,7 @@ class GodotServer {
     if (!existsSync(projectFile))
       return createErrorResponse(`Not a valid Godot project: ${args.projectPath}`);
     try {
-      const fullPath = join(args.projectPath, args.filePath);
+      const fullPath = this.resolveResPath(args.projectPath, args.filePath);
       const parentDir = dirname(fullPath);
       if (!existsSync(parentDir)) {
         mkdirSync(parentDir, { recursive: true });
@@ -4974,7 +5572,7 @@ class GodotServer {
     const projectFile = join(args.projectPath, 'project.godot');
     if (!existsSync(projectFile))
       return createErrorResponse(`Not a valid Godot project: ${args.projectPath}`);
-    const fullPath = join(args.projectPath, args.filePath);
+    const fullPath = this.resolveResPath(args.projectPath, args.filePath);
     if (!existsSync(fullPath))
       return createErrorResponse(`File does not exist: ${args.filePath}`);
     try {
@@ -6060,7 +6658,7 @@ class GodotServer {
     if (!validatePath(args.projectPath) || !validatePath(args.filePath) || !validatePath(args.newPath)) return createErrorResponse('Invalid path.');
     const projectFile = join(args.projectPath, 'project.godot');
     if (!existsSync(projectFile)) return createErrorResponse(`Not a valid Godot project: ${args.projectPath}`);
-    const srcFull = join(args.projectPath, args.filePath);
+    const srcFull = this.resolveResPath(args.projectPath, args.filePath);
     const dstFull = join(args.projectPath, args.newPath);
     if (!existsSync(srcFull)) return createErrorResponse(`File not found: ${args.filePath}`);
     try {
@@ -6677,6 +7275,891 @@ class GodotServer {
       process.exit(1);
     }
   }
+
+  // ── Internal helpers ───────────────────────────────────────────────────────
+
+  private resolveResPath(projectPath: string, resPath: string): string {
+    if (resPath.startsWith('res://')) return join(projectPath, resPath.slice('res://'.length));
+    if (resPath.startsWith('/')) return resPath;
+    return join(projectPath, resPath);
+  }
+
+  private collectFiles(dir: string, extensions: string[]): string[] {
+    const results: string[] = [];
+    const walk = (current: string) => {
+      let entries: string[];
+      try { entries = readdirSync(current, { withFileTypes: true } as any); } catch { return; }
+      for (const e of entries as any[]) {
+        const full = join(current, e.name);
+        if (e.isDirectory()) {
+          if (e.name === '.godot' || e.name === 'node_modules') continue;
+          walk(full);
+        } else if (extensions.some(ext => e.name.endsWith(ext))) {
+          results.push(full);
+        }
+      }
+    };
+    walk(dir);
+    return results;
+  }
+
+  private parseTscnNodes(content: string): Array<{ header: string; body: string; name: string; type: string; parent: string }> {
+    const nodes: Array<{ header: string; body: string; name: string; type: string; parent: string }> = [];
+    const sections = content.split(/(?=\[node )/);
+    for (const sec of sections) {
+      if (!sec.startsWith('[node ')) continue;
+      const headerEnd = sec.indexOf(']');
+      const header = sec.substring(0, headerEnd + 1);
+      const body = sec.substring(headerEnd + 1);
+      const nameMatch = header.match(/name="([^"]+)"/);
+      const typeMatch = header.match(/type="([^"]+)"/);
+      const parentMatch = header.match(/parent="([^"]+)"/);
+      nodes.push({
+        header,
+        body,
+        name: nameMatch ? nameMatch[1] : '',
+        type: typeMatch ? typeMatch[1] : '',
+        parent: parentMatch ? parentMatch[1] : '',
+      });
+    }
+    return nodes;
+  }
+
+  private parseTscnConnections(content: string): Array<{ signal: string; from: string; to: string; method: string }> {
+    const connections: Array<{ signal: string; from: string; to: string; method: string }> = [];
+    const lines = content.split('\n');
+    for (const line of lines) {
+      if (!line.startsWith('[connection ')) continue;
+      const signal = (line.match(/signal="([^"]+)"/) || [])[1] || '';
+      const from = (line.match(/from="([^"]+)"/) || [])[1] || '';
+      const to = (line.match(/to="([^"]+)"/) || [])[1] || '';
+      const method = (line.match(/method="([^"]+)"/) || [])[1] || '';
+      connections.push({ signal, from, to, method });
+    }
+    return connections;
+  }
+
+  private parseIniFile(content: string): Record<string, Record<string, string>> {
+    const result: Record<string, Record<string, string>> = {};
+    let section = '__global__';
+    result[section] = {};
+    for (const rawLine of content.split('\n')) {
+      const line = rawLine.trim();
+      if (!line || line.startsWith(';') || line.startsWith('#')) continue;
+      const sectionMatch = line.match(/^\[(.+)\]$/);
+      if (sectionMatch) { section = sectionMatch[1]; result[section] = {}; continue; }
+      const eqIdx = line.indexOf('=');
+      if (eqIdx === -1) continue;
+      const key = line.substring(0, eqIdx).trim();
+      let val = line.substring(eqIdx + 1).trim();
+      if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+        val = val.slice(1, -1);
+      }
+      result[section][key] = val;
+    }
+    return result;
+  }
+
+  private serializeIniFile(parsed: Record<string, Record<string, string>>): string {
+    const lines: string[] = [];
+    for (const [section, kvs] of Object.entries(parsed)) {
+      if (section !== '__global__') lines.push(`[${section}]`);
+      for (const [k, v] of Object.entries(kvs)) lines.push(`${k}=${v}`);
+      lines.push('');
+    }
+    return lines.join('\n');
+  }
+
+  // ── Batch & Refactoring ────────────────────────────────────────────────────
+
+  private async handleFindNodesByType(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.nodeType) return createErrorResponse('projectPath and nodeType are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const tscnFiles = this.collectFiles(args.projectPath, ['.tscn']);
+    const results: Array<{ scene: string; nodeName: string; nodePath: string }> = [];
+    const searchType = (args.nodeType as string).toLowerCase();
+    for (const file of tscnFiles) {
+      let content: string;
+      try { content = readFileSync(file, 'utf8'); } catch { continue; }
+      const nodes = this.parseTscnNodes(content);
+      const relScene = file.replace(args.projectPath, '').replace(/^\//, '');
+      for (const node of nodes) {
+        if (node.type.toLowerCase().includes(searchType)) {
+          const nodePath = node.parent ? (node.parent === '.' ? node.name : `${node.parent}/${node.name}`) : node.name;
+          results.push({ scene: relScene, nodeName: node.name, nodePath });
+        }
+      }
+    }
+    return { content: [{ type: 'text', text: JSON.stringify(results, null, 2) }] };
+  }
+
+  private async handleFindSignalConnections(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const tscnFiles = this.collectFiles(args.projectPath, ['.tscn']);
+    const results: Array<{ scene: string; signal: string; from: string; to: string; method: string }> = [];
+    for (const file of tscnFiles) {
+      let content: string;
+      try { content = readFileSync(file, 'utf8'); } catch { continue; }
+      const relScene = file.replace(args.projectPath, '').replace(/^\//, '');
+      for (const conn of this.parseTscnConnections(content)) {
+        results.push({ scene: relScene, ...conn });
+      }
+    }
+    return { content: [{ type: 'text', text: JSON.stringify(results, null, 2) }] };
+  }
+
+  private async handleBatchSetProperty(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.nodeType || !args.propertyKey || args.propertyValue === undefined) {
+      return createErrorResponse('projectPath, scenePath, nodeType, propertyKey, and propertyValue are required.');
+    }
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Failed to read scene: ${e.message}`); }
+    const nodes = this.parseTscnNodes(content);
+    const searchType = (args.nodeType as string).toLowerCase();
+    const matchingNames = new Set(nodes.filter(n => n.type.toLowerCase().includes(searchType)).map(n => n.name));
+    if (matchingNames.size === 0) return { content: [{ type: 'text', text: `No nodes of type "${args.nodeType}" found in scene.` }] };
+    let modCount = 0;
+    const newContent = content.replace(/(\[node [^\]]+\])([\s\S]*?)(?=\[node |\[connection |\[sub_resource |\[ext_resource |$)/g, (match, header, body) => {
+      const nameMatch = header.match(/name="([^"]+)"/);
+      if (!nameMatch || !matchingNames.has(nameMatch[1])) return match;
+      modCount++;
+      const propLine = `${args.propertyKey} = ${args.propertyValue}`;
+      const propRegex = new RegExp(`^${args.propertyKey}\\s*=.*$`, 'm');
+      if (propRegex.test(body)) {
+        return header + body.replace(propRegex, propLine);
+      }
+      return header + body.trimEnd() + '\n' + propLine + '\n';
+    });
+    try { writeFileSync(absScene, newContent, 'utf8'); } catch (e: any) { return createErrorResponse(`Failed to write scene: ${e.message}`); }
+    return { content: [{ type: 'text', text: `Set ${args.propertyKey}=${args.propertyValue} on ${modCount} node(s) of type "${args.nodeType}" in ${args.scenePath}.` }] };
+  }
+
+  private async handleFindNodeReferences(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.nodeName) return createErrorResponse('projectPath and nodeName are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const files = this.collectFiles(args.projectPath, ['.tscn', '.gd']);
+    const results: Array<{ file: string; line: number; context: string }> = [];
+    const search = args.nodeName as string;
+    for (const file of files) {
+      let content: string;
+      try { content = readFileSync(file, 'utf8'); } catch { continue; }
+      const relFile = file.replace(args.projectPath, '').replace(/^\//, '');
+      const lines = content.split('\n');
+      lines.forEach((ln, idx) => {
+        if (ln.includes(search)) results.push({ file: relFile, line: idx + 1, context: ln.trim() });
+      });
+    }
+    return { content: [{ type: 'text', text: JSON.stringify(results, null, 2) }] };
+  }
+
+  private async handleGetSceneDependencies(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Failed to read scene: ${e.message}`); }
+    const deps: Array<{ uid: string; type: string; path: string }> = [];
+    for (const line of content.split('\n')) {
+      if (!line.startsWith('[ext_resource')) continue;
+      const uid = (line.match(/uid="([^"]+)"/) || [])[1] || '';
+      const type = (line.match(/type="([^"]+)"/) || [])[1] || '';
+      const path = (line.match(/path="([^"]+)"/) || [])[1] || '';
+      deps.push({ uid, type, path });
+    }
+    return { content: [{ type: 'text', text: JSON.stringify(deps, null, 2) }] };
+  }
+
+  private async handleCrossSceneSetProperty(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.nodeType || !args.propertyKey || args.propertyValue === undefined) {
+      return createErrorResponse('projectPath, nodeType, propertyKey, and propertyValue are required.');
+    }
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const tscnFiles = this.collectFiles(args.projectPath, ['.tscn']);
+    let totalModified = 0;
+    const scenesModified: string[] = [];
+    for (const file of tscnFiles) {
+      let content: string;
+      try { content = readFileSync(file, 'utf8'); } catch { continue; }
+      const nodes = this.parseTscnNodes(content);
+      const searchType = (args.nodeType as string).toLowerCase();
+      const matchingNames = new Set(nodes.filter(n => n.type.toLowerCase().includes(searchType)).map(n => n.name));
+      if (matchingNames.size === 0) continue;
+      let modCount = 0;
+      const newContent = content.replace(/(\[node [^\]]+\])([\s\S]*?)(?=\[node |\[connection |\[sub_resource |\[ext_resource |$)/g, (match, header, body) => {
+        const nameMatch = header.match(/name="([^"]+)"/);
+        if (!nameMatch || !matchingNames.has(nameMatch[1])) return match;
+        modCount++;
+        const propLine = `${args.propertyKey} = ${args.propertyValue}`;
+        const propRegex = new RegExp(`^${args.propertyKey}\\s*=.*$`, 'm');
+        if (propRegex.test(body)) return header + body.replace(propRegex, propLine);
+        return header + body.trimEnd() + '\n' + propLine + '\n';
+      });
+      if (modCount > 0) {
+        try { writeFileSync(file, newContent, 'utf8'); } catch { continue; }
+        totalModified += modCount;
+        scenesModified.push(file.replace(args.projectPath, '').replace(/^\//, ''));
+      }
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ scenesModified, totalNodesModified: totalModified }, null, 2) }] };
+  }
+
+  private async handleFindScriptReferences(args: any) {
+    args = normalizeParameters(args || {});
+    args.searchTerm = args.searchTerm || args.pattern;
+    if (!args.projectPath || !args.searchTerm) return createErrorResponse('projectPath and searchTerm (or pattern) are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const files = this.collectFiles(args.projectPath, ['.gd']);
+    const results: Array<{ file: string; line: number; context: string }> = [];
+    const search = args.searchTerm as string;
+    for (const file of files) {
+      let content: string;
+      try { content = readFileSync(file, 'utf8'); } catch { continue; }
+      const relFile = file.replace(args.projectPath, '').replace(/^\//, '');
+      const lines = content.split('\n');
+      lines.forEach((ln, idx) => {
+        if (ln.includes(search)) results.push({ file: relFile, line: idx + 1, context: ln.trim() });
+      });
+    }
+    return { content: [{ type: 'text', text: JSON.stringify(results, null, 2) }] };
+  }
+
+  private async handleDetectCircularDependencies(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const tscnFiles = this.collectFiles(args.projectPath, ['.tscn']);
+    const graph: Record<string, string[]> = {};
+    for (const file of tscnFiles) {
+      let content: string;
+      try { content = readFileSync(file, 'utf8'); } catch { continue; }
+      const relFile = file.replace(args.projectPath, '').replace(/^\//, '');
+      graph[relFile] = [];
+      for (const line of content.split('\n')) {
+        if (!line.startsWith('[ext_resource')) continue;
+        const pathMatch = line.match(/path="([^"]+)"/);
+        if (pathMatch) {
+          let dep = pathMatch[1].replace('res://', '');
+          graph[relFile].push(dep);
+        }
+      }
+    }
+    const cycles: string[][] = [];
+    const visited = new Set<string>();
+    const inStack = new Set<string>();
+    const dfs = (node: string, path: string[]) => {
+      if (inStack.has(node)) { cycles.push([...path, node]); return; }
+      if (visited.has(node)) return;
+      visited.add(node);
+      inStack.add(node);
+      for (const dep of (graph[node] || [])) dfs(dep, [...path, node]);
+      inStack.delete(node);
+    };
+    for (const node of Object.keys(graph)) dfs(node, []);
+    return { content: [{ type: 'text', text: JSON.stringify({ cycles }, null, 2) }] };
+  }
+
+  // ── Analysis ───────────────────────────────────────────────────────────────
+
+  private async handleAnalyzeSceneComplexity(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Failed to read scene: ${e.message}`); }
+    const nodes = this.parseTscnNodes(content);
+    const connections = this.parseTscnConnections(content);
+    const nodeTypes: Record<string, number> = {};
+    let scriptCount = 0;
+    for (const node of nodes) {
+      if (node.type) nodeTypes[node.type] = (nodeTypes[node.type] || 0) + 1;
+      if (node.body.includes('script = ExtResource')) scriptCount++;
+    }
+    const resourceCount = (content.match(/^\[ext_resource/gm) || []).length;
+    const getDepth = (parent: string): number => {
+      if (!parent || parent === '.') return 0;
+      return parent.split('/').length + 1;
+    };
+    const maxDepth = nodes.reduce((max, n) => Math.max(max, getDepth(n.parent)), 0);
+    return { content: [{ type: 'text', text: JSON.stringify({ nodeCount: nodes.length, maxDepth, scriptCount, resourceCount, signalConnectionCount: connections.length, nodeTypes }, null, 2) }] };
+  }
+
+  private async handleAnalyzeSignalFlow(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Failed to read scene: ${e.message}`); }
+    const connections = this.parseTscnConnections(content);
+    return { content: [{ type: 'text', text: JSON.stringify({ connections }, null, 2) }] };
+  }
+
+  private async handleFindUnusedResources(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const sourceFiles = this.collectFiles(args.projectPath, ['.tscn', '.gd', '.tres']);
+    const referencedPaths = new Set<string>();
+    const resPattern = /res:\/\/([^\s"']+)/g;
+    for (const file of sourceFiles) {
+      let content: string;
+      try { content = readFileSync(file, 'utf8'); } catch { continue; }
+      let m: RegExpExecArray | null;
+      while ((m = resPattern.exec(content)) !== null) referencedPaths.add(m[1]);
+    }
+    const allFiles = this.collectFiles(args.projectPath, ['.png', '.jpg', '.jpeg', '.svg', '.wav', '.ogg', '.mp3', '.tres', '.tscn', '.gd', '.glb', '.obj']);
+    const unreferenced: string[] = [];
+    for (const file of allFiles) {
+      const rel = file.replace(args.projectPath, '').replace(/^\//, '');
+      if (!referencedPaths.has(rel)) unreferenced.push(rel);
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ unreferenced }, null, 2) }] };
+  }
+
+  private async handleGetProjectStatistics(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const tscnFiles = this.collectFiles(args.projectPath, ['.tscn']);
+    const gdFiles = this.collectFiles(args.projectPath, ['.gd']);
+    const tresFiles = this.collectFiles(args.projectPath, ['.tres']);
+    let totalLines = 0;
+    for (const f of gdFiles) {
+      try { totalLines += readFileSync(f, 'utf8').split('\n').length; } catch {}
+    }
+    let totalNodes = 0;
+    for (const f of tscnFiles) {
+      try { totalNodes += this.parseTscnNodes(readFileSync(f, 'utf8')).length; } catch {}
+    }
+    const projectFile = join(args.projectPath, 'project.godot');
+    let pluginCount = 0;
+    let autoloadCount = 0;
+    if (existsSync(projectFile)) {
+      const projContent = readFileSync(projectFile, 'utf8');
+      pluginCount = (projContent.match(/\[plugin\]/gm) || []).length;
+      autoloadCount = (projContent.match(/^autoload\//gm) || []).length;
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ sceneCount: tscnFiles.length, scriptCount: gdFiles.length, resourceCount: tresFiles.length, totalLines, totalNodes, pluginCount, autoloadCount }, null, 2) }] };
+  }
+
+  // ── Import Settings ────────────────────────────────────────────────────────
+
+  private resolveImportPath(projectPath: string, resourcePath: string): string {
+    if (resourcePath.startsWith('res://')) {
+      return join(projectPath, resourcePath.replace('res://', '')) + '.import';
+    }
+    if (!resourcePath.startsWith('/')) {
+      return join(projectPath, resourcePath) + '.import';
+    }
+    return resourcePath + '.import';
+  }
+
+  private async handleImportGetConfig(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.resourcePath) return createErrorResponse('projectPath and resourcePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const importPath = this.resolveImportPath(args.projectPath, args.resourcePath);
+    if (!existsSync(importPath)) return createErrorResponse(`No .import file found at: ${importPath}`);
+    let content: string;
+    try { content = readFileSync(importPath, 'utf8'); } catch (e: any) { return createErrorResponse(`Failed to read .import file: ${e.message}`); }
+    const parsed = this.parseIniFile(content);
+    return { content: [{ type: 'text', text: JSON.stringify(parsed, null, 2) }] };
+  }
+
+  private async handleImportSetConfig(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.resourcePath || !args.settings) return createErrorResponse('projectPath, resourcePath, and settings are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const importPath = this.resolveImportPath(args.projectPath, args.resourcePath);
+    let parsed: Record<string, Record<string, string>> = { __global__: {} };
+    if (existsSync(importPath)) {
+      try { parsed = this.parseIniFile(readFileSync(importPath, 'utf8')); } catch {}
+    }
+    for (const [k, v] of Object.entries(args.settings as Record<string, any>)) {
+      const dotIdx = k.indexOf('.');
+      if (dotIdx !== -1) {
+        const section = k.substring(0, dotIdx);
+        const key = k.substring(dotIdx + 1);
+        if (!parsed[section]) parsed[section] = {};
+        parsed[section][key] = String(v);
+      } else {
+        parsed['__global__'][k] = String(v);
+      }
+    }
+    try { writeFileSync(importPath, this.serializeIniFile(parsed), 'utf8'); } catch (e: any) { return createErrorResponse(`Failed to write .import file: ${e.message}`); }
+    return { content: [{ type: 'text', text: `Updated .import file at: ${importPath}` }] };
+  }
+
+  private async handleImportListPresets(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const importFiles = this.collectFiles(args.projectPath, ['.import']);
+    const byImporter: Record<string, string[]> = {};
+    for (const file of importFiles) {
+      let content: string;
+      try { content = readFileSync(file, 'utf8'); } catch { continue; }
+      const parsed = this.parseIniFile(content);
+      const importer = parsed['__global__']?.importer || parsed['remap']?.importer || 'unknown';
+      if (!byImporter[importer]) byImporter[importer] = [];
+      byImporter[importer].push(file.replace(args.projectPath, '').replace(/^\//, ''));
+    }
+    return { content: [{ type: 'text', text: JSON.stringify(byImporter, null, 2) }] };
+  }
+
+  private async handleImportReiimport(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const projectFile = join(args.projectPath, 'project.godot');
+    if (!existsSync(projectFile)) return createErrorResponse(`Not a valid Godot project: ${args.projectPath}`);
+    if (!this.godotPath) {
+      await this.detectGodotPath();
+      if (!this.godotPath) return createErrorResponse('Could not find a valid Godot executable path.');
+    }
+    try {
+      const { stdout, stderr } = await execFileAsync(this.godotPath!, ['--headless', '--import', '--path', args.projectPath]);
+      return { content: [{ type: 'text', text: `Reimport completed.\n\nstdout: ${stdout}\nstderr: ${stderr}` }] };
+    } catch (e: any) {
+      return createErrorResponse(`Reimport failed: ${e?.message || 'Unknown error'}`);
+    }
+  }
+
+  // ── Script Management ──────────────────────────────────────────────────────
+
+  private async handleListScripts(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const gdFiles = this.collectFiles(args.projectPath, ['.gd']);
+    const scripts: Array<{ path: string; size: number; hasClass: boolean; className: string }> = [];
+    for (const file of gdFiles) {
+      let content: string;
+      let size = 0;
+      try { content = readFileSync(file, 'utf8'); size = Buffer.byteLength(content, 'utf8'); } catch { continue; }
+      const classMatch = content.match(/^class_name\s+(\w+)/m);
+      scripts.push({ path: file.replace(args.projectPath, '').replace(/^\//, ''), size, hasClass: !!classMatch, className: classMatch ? classMatch[1] : '' });
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ scripts }, null, 2) }] };
+  }
+
+  private async handleSearchInFiles(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.pattern) return createErrorResponse('projectPath and pattern are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const extensions: string[] = args.fileExtensions || ['.gd', '.tscn', '.tres'];
+    const caseSensitive: boolean = args.caseSensitive !== false;
+    const files = this.collectFiles(args.projectPath, extensions);
+    const matches: Array<{ file: string; line: number; context: string }> = [];
+    const pattern = caseSensitive ? args.pattern as string : (args.pattern as string).toLowerCase();
+    for (const file of files) {
+      let content: string;
+      try { content = readFileSync(file, 'utf8'); } catch { continue; }
+      const relFile = file.replace(args.projectPath, '').replace(/^\//, '');
+      const lines = content.split('\n');
+      lines.forEach((ln, idx) => {
+        const lineToSearch = caseSensitive ? ln : ln.toLowerCase();
+        if (lineToSearch.includes(pattern)) matches.push({ file: relFile, line: idx + 1, context: ln.trim() });
+      });
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ matches }, null, 2) }] };
+  }
+
+  private async handleValidateScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScript = join(args.projectPath, args.scriptPath);
+    if (!existsSync(absScript)) return createErrorResponse(`Script not found: ${absScript}`);
+    if (!this.godotPath) {
+      await this.detectGodotPath();
+      if (!this.godotPath) return createErrorResponse('Could not find a valid Godot executable path.');
+    }
+    try {
+      const { stdout, stderr } = await execFileAsync(this.godotPath!, ['--headless', '--path', args.projectPath, '--check-only', absScript]);
+      return { content: [{ type: 'text', text: `Validation result for ${args.scriptPath}:\n\nstdout: ${stdout}\nstderr: ${stderr}` }] };
+    } catch (e: any) {
+      return { content: [{ type: 'text', text: `Validation errors for ${args.scriptPath}:\n\n${e?.message || 'Unknown error'}\n\nstdout: ${e?.stdout || ''}\nstderr: ${e?.stderr || ''}` }] };
+    }
+  }
+
+  // ── Scene Extras ───────────────────────────────────────────────────────────
+
+  private async handleDeleteScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    const projectFile = join(args.projectPath, 'project.godot');
+    if (existsSync(projectFile)) {
+      const projContent = readFileSync(projectFile, 'utf8');
+      const sceneResPath = `res://${args.scenePath.replace(/^\//, '')}`;
+      if (projContent.includes(sceneResPath) && projContent.includes('run/main_scene')) {
+        return createErrorResponse(`Refusing to delete: scene "${args.scenePath}" appears to be the main_scene in project.godot.`);
+      }
+    }
+    try {
+      unlinkSync(absScene);
+      const deleteUidSidecar = args.deleteUidSidecar !== false;
+      const uidPath = absScene + '.uid';
+      if (deleteUidSidecar && existsSync(uidPath)) unlinkSync(uidPath);
+      return { content: [{ type: 'text', text: `Deleted scene: ${args.scenePath}` + (deleteUidSidecar && existsSync(uidPath + '.uid') ? ' (and .uid sidecar)' : '') }] };
+    } catch (e: any) {
+      return createErrorResponse(`Failed to delete scene: ${e.message}`);
+    }
+  }
+
+  private async handleGetSceneFileContent(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Failed to read scene: ${e.message}`); }
+    return { content: [{ type: 'text', text: content }] };
+  }
+
+  private async handleSceneSetUniqueName(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.nodePath || args.enabled === undefined) {
+      return createErrorResponse('projectPath, scenePath, nodePath, and enabled are required.');
+    }
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Failed to read scene: ${e.message}`); }
+    const nodeParts = (args.nodePath as string).split('/');
+    const targetName = nodeParts[nodeParts.length - 1];
+    const targetParent = nodeParts.length > 1 ? nodeParts.slice(0, -1).join('/') : '.';
+    const sections = content.split(/(?=\[node )/);
+    let found = false;
+    const newSections = sections.map(sec => {
+      if (!sec.startsWith('[node ')) return sec;
+      const headerEnd = sec.indexOf(']');
+      const header = sec.substring(0, headerEnd + 1);
+      const body = sec.substring(headerEnd + 1);
+      const nameMatch = header.match(/name="([^"]+)"/);
+      const parentMatch = header.match(/parent="([^"]+)"/);
+      const secName = nameMatch ? nameMatch[1] : '';
+      const secParent = parentMatch ? parentMatch[1] : '.';
+      if (secName !== targetName || secParent !== targetParent) return sec;
+      found = true;
+      const enabledStr = args.enabled ? 'true' : 'false';
+      const uniqueLine = `unique_name_in_owner = ${enabledStr}`;
+      const uniqueRegex = /^unique_name_in_owner\s*=.*$/m;
+      if (uniqueRegex.test(body)) {
+        return header + body.replace(uniqueRegex, uniqueLine);
+      }
+      return header + body.trimEnd() + '\n' + uniqueLine + '\n';
+    });
+    if (!found) return createErrorResponse(`Node not found at path "${args.nodePath}" in scene.`);
+    try { writeFileSync(absScene, newSections.join(''), 'utf8'); } catch (e: any) { return createErrorResponse(`Failed to write scene: ${e.message}`); }
+    return { content: [{ type: 'text', text: `Set unique_name_in_owner = ${args.enabled} on node "${args.nodePath}" in ${args.scenePath}.` }] };
+  }
+
+  private async handleDuplicateNode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.nodePath) return createErrorResponse('projectPath, scenePath, and nodePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Failed to read scene: ${e.message}`); }
+    const nodeParts = (args.nodePath as string).split('/');
+    const targetName = nodeParts[nodeParts.length - 1];
+    const targetParent = nodeParts.length > 1 ? nodeParts.slice(0, -1).join('/') : '.';
+    const newName: string = args.newName || `${targetName}_copy`;
+    const sections = content.split(/(?=\[node )/);
+    let foundSection: string | null = null;
+    for (const sec of sections) {
+      if (!sec.startsWith('[node ')) continue;
+      const headerEnd = sec.indexOf(']');
+      const header = sec.substring(0, headerEnd + 1);
+      const nameMatch = header.match(/name="([^"]+)"/);
+      const parentMatch = header.match(/parent="([^"]+)"/);
+      if (nameMatch && nameMatch[1] === targetName && (parentMatch ? parentMatch[1] : '.') === targetParent) {
+        foundSection = sec;
+        break;
+      }
+    }
+    if (!foundSection) return createErrorResponse(`Node not found at path "${args.nodePath}" in scene.`);
+    const copySection = foundSection.replace(`name="${targetName}"`, `name="${newName}"`);
+    const insertAfter = foundSection;
+    const newContent = content.replace(insertAfter, insertAfter + '\n' + copySection);
+    try { writeFileSync(absScene, newContent, 'utf8'); } catch (e: any) { return createErrorResponse(`Failed to write scene: ${e.message}`); }
+    return { content: [{ type: 'text', text: `Duplicated node "${args.nodePath}" as "${newName}" in ${args.scenePath}.` }] };
+  }
+
+  // ── VCS Integration ────────────────────────────────────────────────────────
+
+  private async handleVcsStatus(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    try {
+      const { stdout } = await execFileAsync('git', ['status', '--short'], { cwd: args.projectPath });
+      const lines = stdout.split('\n').filter(l => l.trim());
+      const entries = lines.map(l => ({ status: l.substring(0, 2).trim(), file: l.substring(3).trim() }));
+      return { content: [{ type: 'text', text: JSON.stringify({ entries }, null, 2) }] };
+    } catch (e: any) {
+      return createErrorResponse(`git status failed: ${e?.message || 'Unknown error'}`);
+    }
+  }
+
+  private async handleVcsStage(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.files) return createErrorResponse('projectPath and files are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const files: string[] = Array.isArray(args.files) ? args.files : [args.files];
+    try {
+      const { stdout, stderr } = await execFileAsync('git', ['add', ...files], { cwd: args.projectPath });
+      return { content: [{ type: 'text', text: `git add succeeded.\n\nstdout: ${stdout}\nstderr: ${stderr}` }] };
+    } catch (e: any) {
+      return createErrorResponse(`git add failed: ${e?.message || 'Unknown error'}`);
+    }
+  }
+
+  private async handleVcsCommit(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.message) return createErrorResponse('projectPath and message are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    try {
+      const { stdout, stderr } = await execFileAsync('git', ['commit', '-m', args.message], { cwd: args.projectPath });
+      return { content: [{ type: 'text', text: `git commit succeeded.\n\nstdout: ${stdout}\nstderr: ${stderr}` }] };
+    } catch (e: any) {
+      return createErrorResponse(`git commit failed: ${e?.message || 'Unknown error'}`);
+    }
+  }
+
+  private async handleVcsDiff(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const gitArgs = args.filePath ? ['diff', args.filePath] : ['diff'];
+    try {
+      const { stdout } = await execFileAsync('git', gitArgs, { cwd: args.projectPath });
+      return { content: [{ type: 'text', text: stdout || '(no diff)' }] };
+    } catch (e: any) {
+      return createErrorResponse(`git diff failed: ${e?.message || 'Unknown error'}`);
+    }
+  }
+
+  private async handleVcsBranchList(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    try {
+      const { stdout } = await execFileAsync('git', ['branch', '-a'], { cwd: args.projectPath });
+      const branches = stdout.split('\n').map(b => b.replace(/^\*?\s+/, '').trim()).filter(b => b);
+      return { content: [{ type: 'text', text: JSON.stringify({ branches }, null, 2) }] };
+    } catch (e: any) {
+      return createErrorResponse(`git branch failed: ${e?.message || 'Unknown error'}`);
+    }
+  }
+
+  private async handleVcsCheckout(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.branch) return createErrorResponse('projectPath and branch are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    try {
+      const { stdout, stderr } = await execFileAsync('git', ['checkout', args.branch], { cwd: args.projectPath });
+      return { content: [{ type: 'text', text: `Checked out branch "${args.branch}".\n\nstdout: ${stdout}\nstderr: ${stderr}` }] };
+    } catch (e: any) {
+      return createErrorResponse(`git checkout failed: ${e?.message || 'Unknown error'}`);
+    }
+  }
+
+  // ── Testing & QA ───────────────────────────────────────────────────────────
+
+  private async handleAssertNodeState(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.property || args.expectedValue === undefined) return createErrorResponse('nodePath, property, and expectedValue are required.');
+    if (!this.activeProcess) return createErrorResponse('No active Godot process. Use run_project first.');
+    if (!this.gameConnection.connected) return createErrorResponse('Not connected to game interaction server.');
+    try {
+      const response = await this.sendGameCommand('get_property', { node_path: args.nodePath, property: args.property });
+      if (response.error) return createErrorResponse(`get_property failed: ${response.error}`);
+      const actual = response.value !== undefined ? response.value : response.result;
+      const expected = args.expectedValue;
+      const passed = JSON.stringify(actual) === JSON.stringify(expected);
+      return { content: [{ type: 'text', text: JSON.stringify({ passed, actual, expected, nodePath: args.nodePath, property: args.property }, null, 2) }] };
+    } catch (e: any) {
+      return createErrorResponse(`assert_node_state failed: ${e?.message || 'Unknown error'}`);
+    }
+  }
+
+  private async handleAssertScreenText(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.text) return createErrorResponse('text is required.');
+    if (!this.activeProcess) return createErrorResponse('No active Godot process. Use run_project first.');
+    if (!this.gameConnection.connected) return createErrorResponse('Not connected to game interaction server.');
+    try {
+      const response = await this.sendGameCommand('find_text', { text: args.text });
+      if (response.error) return createErrorResponse(`find_text failed: ${response.error}`);
+      const found = !!(response.found || (response.locations && response.locations.length > 0));
+      return { content: [{ type: 'text', text: JSON.stringify({ found, text: args.text, locations: response.locations || [] }, null, 2) }] };
+    } catch (e: any) {
+      return createErrorResponse(`assert_screen_text failed: ${e?.message || 'Unknown error'}`);
+    }
+  }
+
+  private async handleCompareScreenshots(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.referencePath) return createErrorResponse('referencePath is required.');
+    if (!this.activeProcess) return createErrorResponse('No active Godot process. Use run_project first.');
+    if (!this.gameConnection.connected) return createErrorResponse('Not connected to game interaction server.');
+    if (!existsSync(args.referencePath)) return createErrorResponse(`Reference file not found: ${args.referencePath}`);
+    try {
+      const screenshotResponse = await this.sendGameCommand('screenshot', {});
+      if (screenshotResponse.error) return createErrorResponse(`Screenshot failed: ${screenshotResponse.error}`);
+      const currentHash = screenshotResponse.data || screenshotResponse.base64 || '';
+      const referenceContent = readFileSync(args.referencePath, 'base64');
+      const match = currentHash === referenceContent;
+      const diffPercent = match ? 0 : 100;
+      return { content: [{ type: 'text', text: JSON.stringify({ match, diffPercent }, null, 2) }] };
+    } catch (e: any) {
+      return createErrorResponse(`compare_screenshots failed: ${e?.message || 'Unknown error'}`);
+    }
+  }
+
+  private async handleRunStressTest(args: any) {
+    args = normalizeParameters(args || {});
+    if (!this.activeProcess) return createErrorResponse('No active Godot process. Use run_project first.');
+    if (!this.gameConnection.connected) return createErrorResponse('Not connected to game interaction server.');
+    const frames: number = args.frames ?? 300;
+    const checkInterval: number = args.checkInterval ?? 60;
+    const allErrors: string[] = [];
+    try {
+      let framesRun = 0;
+      while (framesRun < frames) {
+        const batch = Math.min(checkInterval, frames - framesRun);
+        const waitResponse = await this.sendGameCommand('wait_frames', { frames: batch });
+        if (waitResponse.error) { allErrors.push(`Frame ${framesRun + batch}: ${waitResponse.error}`); break; }
+        const errResponse = await this.sendGameCommand('get_errors', {});
+        if (errResponse.errors && Array.isArray(errResponse.errors)) allErrors.push(...errResponse.errors);
+        framesRun += batch;
+      }
+      return { content: [{ type: 'text', text: JSON.stringify({ framesRun, errors: allErrors }, null, 2) }] };
+    } catch (e: any) {
+      return createErrorResponse(`run_stress_test failed: ${e?.message || 'Unknown error'}`);
+    }
+  }
+
+  // ── AnimationPlayer ────────────────────────────────────────────────────────
+
+  private async handleListAnimations(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Failed to read scene: ${e.message}`); }
+    const nodes = this.parseTscnNodes(content);
+    const animPlayers = nodes.filter(n => n.type === 'AnimationPlayer');
+    const result: Array<{ nodeName: string; animations: string[] }> = [];
+    for (const ap of animPlayers) {
+      const animNames: string[] = [];
+      const animMatches = ap.body.matchAll(/anims\/([^\/\s"]+)\/[^=]+=\s*SubResource/g);
+      const seenAnims = new Set<string>();
+      for (const m of animMatches) { if (!seenAnims.has(m[1])) { seenAnims.add(m[1]); animNames.push(m[1]); } }
+      const animMatches2 = ap.body.matchAll(/"([^"]+)":\s*SubResource/g);
+      for (const m of animMatches2) { if (!seenAnims.has(m[1])) { seenAnims.add(m[1]); animNames.push(m[1]); } }
+      result.push({ nodeName: ap.name, animations: animNames });
+    }
+    return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+  }
+
+  private async handleRemoveAnimation(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.animationPlayerPath || !args.animationName) {
+      return createErrorResponse('projectPath, scenePath, animationPlayerPath, and animationName are required.');
+    }
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absScene = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absScene)) return createErrorResponse(`Scene not found: ${absScene}`);
+    let content: string;
+    try { content = readFileSync(absScene, 'utf8'); } catch (e: any) { return createErrorResponse(`Failed to read scene: ${e.message}`); }
+    const animName = args.animationName as string;
+    const escapedName = animName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const lineRegex = new RegExp(`^.*${escapedName}.*$\\n?`, 'gm');
+    const newContent = content.replace(lineRegex, '');
+    if (newContent === content) return createErrorResponse(`Animation "${animName}" not found in scene.`);
+    try { writeFileSync(absScene, newContent, 'utf8'); } catch (e: any) { return createErrorResponse(`Failed to write scene: ${e.message}`); }
+    return { content: [{ type: 'text', text: `Removed animation "${animName}" from AnimationPlayer "${args.animationPlayerPath}" in ${args.scenePath}.` }] };
+  }
+
+  // ── TileSet ────────────────────────────────────────────────────────────────
+
+  private async handleTilesetCreate(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.tilesetPath) return createErrorResponse('projectPath and tilesetPath are required.');
+    // TODO: GDScript implementation for tileset_create must also be updated in the operations script
+    return this.headlessOp('tileset_create', args, a => ({
+      projectPath: a.projectPath,
+      params: { tilesetPath: a.tilesetPath },
+    }));
+  }
+
+  private async handleTilesetAddSource(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.tilesetPath || !args.texturePath) return createErrorResponse('projectPath, tilesetPath, and texturePath are required.');
+    // TODO: GDScript implementation for tileset_add_source must also be updated in the operations script
+    return this.headlessOp('tileset_add_source', args, a => ({
+      projectPath: a.projectPath,
+      params: { tilesetPath: a.tilesetPath, texturePath: a.texturePath, tileSize: a.tileSize || { x: 16, y: 16 } },
+    }));
+  }
+
+  // ── SpriteFrames ───────────────────────────────────────────────────────────
+
+  private async handleSpriteframesCreate(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.spriteframesPath) return createErrorResponse('projectPath and spriteframesPath are required.');
+    // TODO: GDScript implementation for spriteframes_create must also be updated in the operations script
+    return this.headlessOp('spriteframes_create', args, a => ({
+      projectPath: a.projectPath,
+      params: { spriteframesPath: a.spriteframesPath },
+    }));
+  }
+
+  private async handleSpriteframesAddAnimation(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.spriteframesPath || !args.animationName) return createErrorResponse('projectPath, spriteframesPath, and animationName are required.');
+    // TODO: GDScript implementation for spriteframes_add_animation must also be updated in the operations script
+    return this.headlessOp('spriteframes_add_animation', args, a => ({
+      projectPath: a.projectPath,
+      params: { spriteframesPath: a.spriteframesPath, animationName: a.animationName, fps: a.fps ?? 5, loop: a.loop !== false },
+    }));
+  }
+
+  private async handleSpriteframesAddFrame(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.spriteframesPath || !args.animationName || !args.texturePath) return createErrorResponse('projectPath, spriteframesPath, animationName, and texturePath are required.');
+    // TODO: GDScript implementation for spriteframes_add_frame must also be updated in the operations script
+    return this.headlessOp('spriteframes_add_frame', args, a => ({
+      projectPath: a.projectPath,
+      params: { spriteframesPath: a.spriteframesPath, animationName: a.animationName, texturePath: a.texturePath, duration: a.duration ?? 1.0 },
+    }));
+  }
+
 }
 
 // Create and run the server

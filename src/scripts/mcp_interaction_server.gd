@@ -322,6 +322,10 @@ func _handle_command(json_str: String) -> void:
 			_cmd_render_settings(params)
 		"resource":
 			_cmd_resource(params)
+		"find_text":
+			_cmd_find_text(params)
+		"stress_test":
+			await _cmd_stress_test(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -4405,6 +4409,55 @@ func _cmd_resource(params: Dictionary) -> void:
 			_send_response({"success": true, "action": "exists", "path": res_path, "exists": ResourceLoader.exists(res_path)})
 		_:
 			_send_response({"error": "Unknown resource action: %s" % action})
+
+
+func _cmd_find_text(params: Dictionary) -> void:
+	var search: String = params.get("text", "")
+	var results: Array = []
+	var root: Node = get_tree().root
+	_collect_text_nodes(root, search, results)
+	_send_response({"success": true, "found": not results.is_empty(), "matches": results, "search": search})
+
+
+func _collect_text_nodes(node: Node, search: String, results: Array) -> void:
+	var text: String = ""
+	if node is Label:
+		text = (node as Label).text
+	elif node is RichTextLabel:
+		text = (node as RichTextLabel).text
+	elif node is Button:
+		text = (node as Button).text
+	elif node is LineEdit:
+		text = (node as LineEdit).text
+	elif node is TextEdit:
+		text = (node as TextEdit).text
+	if not text.is_empty():
+		if search.is_empty() or text.to_lower().contains(search.to_lower()):
+			results.append({"path": str(node.get_path()), "type": node.get_class(), "text": text})
+	for child in node.get_children():
+		_collect_text_nodes(child, search, results)
+
+
+func _cmd_stress_test(params: Dictionary) -> void:
+	var frames: int = params.get("frames", 300)
+	var start_fps: float = Engine.get_frames_per_second()
+	var min_fps: float = start_fps
+	var node_count_start: int = get_tree().get_node_count()
+	for i in range(frames):
+		await get_tree().process_frame
+		var fps: float = Engine.get_frames_per_second()
+		if fps < min_fps:
+			min_fps = fps
+	var node_count_end: int = get_tree().get_node_count()
+	_send_response({
+		"success": true,
+		"frames_run": frames,
+		"start_fps": start_fps,
+		"min_fps": min_fps,
+		"node_count_start": node_count_start,
+		"node_count_end": node_count_end,
+		"node_leak_suspected": (node_count_end - node_count_start) > 10
+	})
 
 
 func _exit_tree() -> void:

@@ -89,6 +89,20 @@ func _init():
             manage_theme_resource(params)
         "manage_scene_structure":
             manage_scene_structure(params)
+        "tileset_create":
+            tileset_create(params)
+        "tileset_add_source":
+            tileset_add_source(params)
+        "spriteframes_create":
+            spriteframes_create(params)
+        "spriteframes_add_animation":
+            spriteframes_add_animation(params)
+        "spriteframes_add_frame":
+            spriteframes_add_frame(params)
+        "validate_script":
+            validate_script(params)
+        "list_animations":
+            list_animations(params)
         _:
             log_error("Unknown operation: " + operation)
             quit(1)
@@ -1807,3 +1821,172 @@ func manage_scene_structure(params):
     else:
         printerr("Unknown manage_scene_structure action: " + action)
         quit(1)
+
+
+func tileset_create(params):
+    var tileset_path = params.get("tileset_path", "")
+    if tileset_path.is_empty():
+        printerr("tileset_path is required")
+        quit(1)
+    var ts = TileSet.new()
+    var err = ResourceSaver.save(ts, tileset_path)
+    if err != OK:
+        printerr("Failed to save TileSet: " + tileset_path + " error: " + str(err))
+        quit(1)
+    print(JSON.stringify({"success": true, "path": tileset_path}))
+
+
+func tileset_add_source(params):
+    var tileset_path = params.get("tileset_path", "")
+    var texture_path = params.get("texture_path", "")
+    if tileset_path.is_empty() or texture_path.is_empty():
+        printerr("tileset_path and texture_path are required")
+        quit(1)
+    var ts = ResourceLoader.load(tileset_path) as TileSet
+    if ts == null:
+        printerr("Failed to load TileSet: " + tileset_path)
+        quit(1)
+    var tex = ResourceLoader.load(texture_path) as Texture2D
+    if tex == null:
+        printerr("Failed to load texture: " + texture_path)
+        quit(1)
+    var source = TileSetAtlasSource.new()
+    source.texture = tex
+    var tile_x = params.get("tile_size_x", 16)
+    var tile_y = params.get("tile_size_y", 16)
+    source.texture_region_size = Vector2i(tile_x, tile_y)
+    ts.add_source(source)
+    var err = ResourceSaver.save(ts, tileset_path)
+    if err != OK:
+        printerr("Failed to save TileSet after adding source")
+        quit(1)
+    print(JSON.stringify({"success": true, "source_id": ts.get_source_count() - 1}))
+
+
+func spriteframes_create(params):
+    var sf_path = params.get("spriteframes_path", "")
+    if sf_path.is_empty():
+        printerr("spriteframes_path is required")
+        quit(1)
+    var sf = SpriteFrames.new()
+    var err = ResourceSaver.save(sf, sf_path)
+    if err != OK:
+        printerr("Failed to save SpriteFrames: " + sf_path)
+        quit(1)
+    print(JSON.stringify({"success": true, "path": sf_path}))
+
+
+func spriteframes_add_animation(params):
+    var sf_path = params.get("spriteframes_path", "")
+    var anim_name = params.get("animation_name", "")
+    if sf_path.is_empty() or anim_name.is_empty():
+        printerr("spriteframes_path and animation_name are required")
+        quit(1)
+    var sf = ResourceLoader.load(sf_path) as SpriteFrames
+    if sf == null:
+        printerr("Failed to load SpriteFrames: " + sf_path)
+        quit(1)
+    if not sf.has_animation(anim_name):
+        sf.add_animation(anim_name)
+    sf.set_animation_speed(anim_name, float(params.get("fps", 5.0)))
+    sf.set_animation_loop(anim_name, bool(params.get("loop", true)))
+    var err = ResourceSaver.save(sf, sf_path)
+    if err != OK:
+        printerr("Failed to save SpriteFrames")
+        quit(1)
+    print(JSON.stringify({"success": true, "animation": anim_name}))
+
+
+func spriteframes_add_frame(params):
+    var sf_path = params.get("spriteframes_path", "")
+    var anim_name = params.get("animation_name", "")
+    var tex_path = params.get("texture_path", "")
+    if sf_path.is_empty() or anim_name.is_empty() or tex_path.is_empty():
+        printerr("spriteframes_path, animation_name, and texture_path are required")
+        quit(1)
+    var sf = ResourceLoader.load(sf_path) as SpriteFrames
+    if sf == null:
+        printerr("Failed to load SpriteFrames: " + sf_path)
+        quit(1)
+    if not sf.has_animation(anim_name):
+        printerr("Animation not found: " + anim_name)
+        quit(1)
+    var tex = ResourceLoader.load(tex_path) as Texture2D
+    if tex == null:
+        printerr("Failed to load texture: " + tex_path)
+        quit(1)
+    sf.add_frame(anim_name, tex, float(params.get("duration", 1.0)))
+    var err = ResourceSaver.save(sf, sf_path)
+    if err != OK:
+        printerr("Failed to save SpriteFrames after adding frame")
+        quit(1)
+    var frame_count = sf.get_frame_count(anim_name)
+    print(JSON.stringify({"success": true, "frame_index": frame_count - 1}))
+
+
+func validate_script(params):
+    var script_path = params.get("script_path", "")
+    if script_path.is_empty():
+        printerr("script_path is required")
+        quit(1)
+    var script = load(script_path)
+    if script == null:
+        # Try as GDScript
+        var gs = GDScript.new()
+        var fa = FileAccess.open(script_path, FileAccess.READ)
+        if fa == null:
+            printerr("Cannot open script: " + script_path)
+            quit(1)
+        gs.source_code = fa.get_as_text()
+        fa.close()
+        var err = gs.reload()
+        if err != OK:
+            print(JSON.stringify({"valid": false, "error": "Script failed to parse, error code: " + str(err)}))
+        else:
+            print(JSON.stringify({"valid": true}))
+    else:
+        print(JSON.stringify({"valid": true, "class_name": script.get_class() if script else ""}))
+
+
+func list_animations(params):
+    var scene_path = params.get("scene_path", "")
+    if scene_path.is_empty():
+        printerr("scene_path is required")
+        quit(1)
+    var scene = ResourceLoader.load(scene_path) as PackedScene
+    if scene == null:
+        printerr("Failed to load scene: " + scene_path)
+        quit(1)
+    var root = scene.instantiate()
+    add_child(root)
+    var player_path = params.get("animation_player_path", "")
+    var player: AnimationPlayer = null
+    if not player_path.is_empty():
+        player = root.get_node_or_null(player_path) as AnimationPlayer
+    else:
+        # Find first AnimationPlayer in tree
+        for child in root.get_children():
+            if child is AnimationPlayer:
+                player = child
+                break
+            # Check deeper
+            for grandchild in child.get_children():
+                if grandchild is AnimationPlayer:
+                    player = grandchild
+                    break
+            if player:
+                break
+        if not player and root is AnimationPlayer:
+            player = root as AnimationPlayer
+    if player == null:
+        print(JSON.stringify({"animations": [], "note": "No AnimationPlayer found"}))
+        root.queue_free()
+        return
+    var anims = []
+    var lib = player.get_animation_library("")
+    if lib:
+        for anim_name in lib.get_animation_list():
+            var anim = lib.get_animation(anim_name)
+            anims.append({"name": anim_name, "length": anim.length, "loop_mode": anim.loop_mode, "track_count": anim.get_track_count()})
+    print(JSON.stringify({"animations": anims, "player_path": str(player.get_path())}))
+    root.queue_free()
