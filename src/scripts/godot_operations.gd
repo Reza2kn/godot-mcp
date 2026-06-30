@@ -163,6 +163,8 @@ func _init():
             add_label_3d(params)
         "add_sub_viewport":
             add_sub_viewport(params)
+        "add_grid_container":
+            add_grid_container(params)
         _:
             log_error("Unknown operation: " + operation)
             quit(1)
@@ -2790,4 +2792,32 @@ func add_sub_viewport(params: Dictionary) -> void:
 	ResourceSaver.save(packed, abs_scene)
 	root.queue_free()
 	print(JSON.stringify({"success": true, "node_name": node_name, "width": width, "height": height}))
+	quit()
+
+func add_grid_container(params: Dictionary) -> void:
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", "GridContainer")
+	var columns: int = params.get("columns", 2)
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
+	if parent == null:
+		parent = root
+	var gc = GridContainer.new()
+	gc.name = node_name
+	gc.columns = columns
+	parent.add_child(gc)
+	gc.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name, "columns": columns}))
 	quit()

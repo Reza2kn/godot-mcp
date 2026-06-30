@@ -607,6 +607,12 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_mouse_position(params)
 		"warp_mouse":
 			_cmd_warp_mouse(params)
+		"get_color_in_game":
+			_cmd_get_color_in_game(params)
+		"get_light_properties":
+			_cmd_get_light_properties(params)
+		"set_light_property":
+			_cmd_set_light_property(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -6742,6 +6748,51 @@ func _cmd_warp_mouse(params: Dictionary) -> void:
 	var y: float = params.get("y", 0.0)
 	Input.warp_mouse(Vector2(x, y))
 	_send_response({"success": true, "x": x, "y": y})
+
+func _cmd_get_color_in_game(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var property_name: String = params.get("property_name", "modulate")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if not (property_name in node):
+		_send_response({"error": "Property not found: " + property_name})
+		return
+	var color = node.get(property_name)
+	if color is Color:
+		_send_response({"success": true, "property": property_name, "color": {"r": color.r, "g": color.g, "b": color.b, "a": color.a, "html": color.to_html()}})
+	else:
+		_send_response({"error": "Property is not a Color: " + property_name})
+
+func _cmd_get_light_properties(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node is Light2D:
+		var l := node as Light2D
+		_send_response({"success": true, "type": "Light2D", "enabled": l.enabled, "color": {"r": l.color.r, "g": l.color.g, "b": l.color.b}, "energy": l.energy, "shadow_enabled": l.shadow_enabled})
+	elif node is Light3D:
+		var l := node as Light3D
+		_send_response({"success": true, "type": "Light3D", "class": node.get_class(), "color": {"r": l.light_color.r, "g": l.light_color.g, "b": l.light_color.b}, "energy": l.light_energy, "shadow": l.shadow_enabled, "bake_mode": l.light_bake_mode})
+	else:
+		_send_response({"error": "Node is not a Light: " + node.get_class()})
+
+func _cmd_set_light_property(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var property_name: String = params.get("property_name", "")
+	var value = params.get("value", null)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if not (node is Light2D or node is Light3D):
+		_send_response({"error": "Node is not a Light: " + node.get_class()})
+		return
+	node.set(property_name, value)
+	_send_response({"success": true, "property_name": property_name})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()

@@ -7698,6 +7698,252 @@ class GodotServer {
           required: ['x', 'y'],
         },
       },
+      {
+        name: 'add_sub_viewport_container',
+        description: 'Add a SubViewportContainer node to a scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: SubViewportContainer)' },
+            parentNodePath: { type: 'string', description: 'Parent node path in scene (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_texture_progress_bar',
+        description: 'Add a TextureProgressBar node to a scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: TextureProgressBar)' },
+            parentNodePath: { type: 'string', description: 'Parent node path in scene (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_nine_patch_rect',
+        description: 'Add a NinePatchRect node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: NinePatchRect)' },
+            parentNodePath: { type: 'string', description: 'Parent node path in scene (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_color_rect',
+        description: 'Add a ColorRect node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: ColorRect)' },
+            parentNodePath: { type: 'string', description: 'Parent node path in scene (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_scroll_container',
+        description: 'Add a ScrollContainer node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: ScrollContainer)' },
+            parentNodePath: { type: 'string', description: 'Parent node path in scene (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_split_container',
+        description: 'Add an HSplitContainer or VSplitContainer to a scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node' },
+            orientation: { type: 'string', description: 'h for HSplitContainer, v for VSplitContainer (default: h)' },
+            parentNodePath: { type: 'string', description: 'Parent node path in scene (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_tab_container',
+        description: 'Add a TabContainer node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: TabContainer)' },
+            parentNodePath: { type: 'string', description: 'Parent node path in scene (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_grid_container',
+        description: 'Add a GridContainer node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: GridContainer)' },
+            columns: { type: 'integer', description: 'Number of columns in the grid (default: 2)' },
+            parentNodePath: { type: 'string', description: 'Parent node path in scene (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_flow_container',
+        description: 'Add an HFlowContainer or VFlowContainer to a scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node' },
+            orientation: { type: 'string', description: 'h for HFlowContainer, v for VFlowContainer (default: h)' },
+            parentNodePath: { type: 'string', description: 'Parent node path in scene (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_aspect_ratio_container',
+        description: 'Add an AspectRatioContainer node to a scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project' },
+            scenePath: { type: 'string', description: 'Res:// or relative path to scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: AspectRatioContainer)' },
+            parentNodePath: { type: 'string', description: 'Parent node path in scene (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'get_ui_theme_defaults',
+        description: 'Read default theme font/size from project settings.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_rendering_settings',
+        description: 'Read rendering settings from project.godot.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_physics_settings',
+        description: 'Read physics settings from project.godot.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'find_circular_dependencies',
+        description: 'Detect circular extends dependencies in GDScript files.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_gdscript_function_calls',
+        description: 'List all function calls in a GDScript file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project' },
+            scriptPath: { type: 'string', description: 'Res:// or relative path to the GDScript file' },
+          },
+          required: ['projectPath', 'scriptPath'],
+        },
+      },
+      {
+        name: 'get_collision_layers_names',
+        description: 'Read collision layer names from project.godot.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Path to the Godot project' },
+          },
+          required: ['projectPath'],
+        },
+      },
+      {
+        name: 'get_color_in_game',
+        description: 'Get a Color property from a node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the node' },
+            propertyName: { type: 'string', description: 'Color property name (e.g. modulate, self_modulate)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_light_properties',
+        description: 'Get properties of a Light node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the Light2D or Light3D node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_light_property',
+        description: 'Set a property on a Light node in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the Light2D or Light3D node' },
+            propertyName: { type: 'string', description: 'Property name to set on the light' },
+            value: { description: 'Value to assign to the property' },
+          },
+          required: ['nodePath', 'propertyName'],
+        },
+      },
       ],
     }));
 
@@ -8763,6 +9009,44 @@ class GodotServer {
           return await this.handleGetMousePosition(request.params.arguments);
         case 'warp_mouse':
           return await this.handleWarpMouse(request.params.arguments);
+        case 'add_sub_viewport_container':
+          return await this.handleAddSubViewportContainer(request.params.arguments);
+        case 'add_texture_progress_bar':
+          return await this.handleAddTextureProgressBar(request.params.arguments);
+        case 'add_nine_patch_rect':
+          return await this.handleAddNinePatchRect(request.params.arguments);
+        case 'add_color_rect':
+          return await this.handleAddColorRect(request.params.arguments);
+        case 'add_scroll_container':
+          return await this.handleAddScrollContainer(request.params.arguments);
+        case 'add_split_container':
+          return await this.handleAddSplitContainer(request.params.arguments);
+        case 'add_tab_container':
+          return await this.handleAddTabContainer(request.params.arguments);
+        case 'add_grid_container':
+          return await this.handleAddGridContainer(request.params.arguments);
+        case 'add_flow_container':
+          return await this.handleAddFlowContainer(request.params.arguments);
+        case 'add_aspect_ratio_container':
+          return await this.handleAddAspectRatioContainer(request.params.arguments);
+        case 'get_ui_theme_defaults':
+          return await this.handleGetUiThemeDefaults(request.params.arguments);
+        case 'get_rendering_settings':
+          return await this.handleGetRenderingSettings(request.params.arguments);
+        case 'get_physics_settings':
+          return await this.handleGetPhysicsSettings(request.params.arguments);
+        case 'find_circular_dependencies':
+          return await this.handleFindCircularDependencies(request.params.arguments);
+        case 'get_gdscript_function_calls':
+          return await this.handleGetGdscriptFunctionCalls(request.params.arguments);
+        case 'get_collision_layers_names':
+          return await this.handleGetCollisionLayersNames(request.params.arguments);
+        case 'get_color_in_game':
+          return await this.handleGetColorInGame(request.params.arguments);
+        case 'get_light_properties':
+          return await this.handleGetLightProperties(request.params.arguments);
+        case 'set_light_property':
+          return await this.handleSetLightProperty(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -16775,6 +17059,247 @@ class GodotServer {
     args = normalizeParameters(args || {});
     if (args.x === undefined || args.y === undefined) return createErrorResponse('x and y are required.');
     return this.gameCommand('warp_mouse', args, a => ({ x: a.x ?? 0, y: a.y ?? 0 }));
+  }
+
+  private async handleAddSubViewportContainer(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'SubViewportContainer', nodeType: 'SubViewportContainer', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddTextureProgressBar(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'TextureProgressBar', nodeType: 'TextureProgressBar', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddNinePatchRect(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'NinePatchRect', nodeType: 'NinePatchRect', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddColorRect(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'ColorRect', nodeType: 'ColorRect', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddScrollContainer(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'ScrollContainer', nodeType: 'ScrollContainer', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddSplitContainer(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const prefix = args.orientation === 'v' ? 'V' : 'H';
+    const nodeType = `${prefix}SplitContainer`;
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || nodeType, nodeType, parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddTabContainer(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'TabContainer', nodeType: 'TabContainer', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddGridContainer(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_grid_container', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'GridContainer', columns: a.columns ?? 2, parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddFlowContainer(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const prefix = args.orientation === 'v' ? 'V' : 'H';
+    const nodeType = `${prefix}FlowContainer`;
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || nodeType, nodeType, parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddAspectRatioContainer(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scenePath: a.scenePath, nodeName: a.nodeName || 'AspectRatioContainer', nodeType: 'AspectRatioContainer', parentNodePath: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleGetUiThemeDefaults(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const projectFile = join(args.projectPath, 'project.godot');
+    if (!existsSync(projectFile)) return createErrorResponse('project.godot not found.');
+    let content: string;
+    try { content = readFileSync(projectFile, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const themeSection = content.match(/\[gui\]([\s\S]*?)(?=\n\[|$)/)?.[1] || '';
+    const themeFile = themeSection.match(/theme\s*=\s*"([^"]+)"/)?.[1] || null;
+    const fontSizeMatch = themeSection.match(/default_font_size\s*=\s*(\d+)/);
+    return { content: [{ type: 'text', text: JSON.stringify({ themeFile, defaultFontSize: fontSizeMatch ? parseInt(fontSizeMatch[1]) : null, rawGuiSection: themeSection.trim().slice(0, 500) }) }] };
+  }
+
+  private async handleGetRenderingSettings(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const projectFile = join(args.projectPath, 'project.godot');
+    if (!existsSync(projectFile)) return createErrorResponse('project.godot not found.');
+    let content: string;
+    try { content = readFileSync(projectFile, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const renderingSection = content.match(/\[rendering\]([\s\S]*?)(?=\n\[|$)/)?.[1] || '';
+    const settings: Record<string, string> = {};
+    for (const line of renderingSection.split('\n')) {
+      const kv = line.match(/^(\S+)\s*=\s*(.+)/);
+      if (kv) settings[kv[1]] = kv[2].trim();
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ renderingSettings: settings }) }] };
+  }
+
+  private async handleGetPhysicsSettings(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const projectFile = join(args.projectPath, 'project.godot');
+    if (!existsSync(projectFile)) return createErrorResponse('project.godot not found.');
+    let content: string;
+    try { content = readFileSync(projectFile, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const physicsSection = content.match(/\[physics\]([\s\S]*?)(?=\n\[|$)/)?.[1] || '';
+    const settings: Record<string, string> = {};
+    for (const line of physicsSection.split('\n')) {
+      const kv = line.match(/^(\S+)\s*=\s*(.+)/);
+      if (kv) settings[kv[1]] = kv[2].trim();
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ physicsSettings: settings }) }] };
+  }
+
+  private async handleFindCircularDependencies(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const scripts = this.collectFiles(args.projectPath, ['.gd']);
+    const deps: Record<string, string[]> = {};
+    const classToFile: Record<string, string> = {};
+    for (const script of scripts) {
+      let content: string;
+      try { content = readFileSync(script, 'utf8'); } catch { continue; }
+      const rel = script.replace(args.projectPath + '/', '');
+      const classMatch = content.match(/^class_name\s+(\w+)/m);
+      if (classMatch) classToFile[classMatch[1]] = rel;
+      const extendsMatch = content.match(/^extends\s+(\w+)/m);
+      deps[rel] = extendsMatch ? [extendsMatch[1]] : [];
+    }
+    const cycles: string[] = [];
+    for (const [file, extClasses] of Object.entries(deps)) {
+      for (const ext of extClasses) {
+        const extFile = classToFile[ext];
+        if (extFile && deps[extFile]?.includes(file.split('/').pop()?.replace('.gd', '') || '')) {
+          cycles.push(`${file} <-> ${extFile}`);
+        }
+      }
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ cycleCount: cycles.length, cycles }) }] };
+  }
+
+  private async handleGetGdscriptFunctionCalls(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.scriptPath);
+    if (!existsSync(absPath)) return createErrorResponse(`Script not found: ${absPath}`);
+    let content: string;
+    try { content = readFileSync(absPath, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const calls: Array<{ name: string; line: number; context: string }> = [];
+    const lines = content.split('\n');
+    lines.forEach((line, idx) => {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('#') || trimmed.startsWith('func ') || trimmed.startsWith('var ') || trimmed.startsWith('const ')) return;
+      const matches = [...line.matchAll(/(\w+)\s*\(/g)];
+      for (const m of matches) {
+        const name = m[1];
+        if (!['if', 'elif', 'while', 'for', 'match', 'func', 'class', 'and', 'or', 'not', 'in', 'is'].includes(name)) {
+          calls.push({ name, line: idx + 1, context: trimmed.slice(0, 60) });
+        }
+      }
+    });
+    const unique = [...new Set(calls.map(c => c.name))].sort();
+    return { content: [{ type: 'text', text: JSON.stringify({ scriptPath: args.scriptPath, totalCalls: calls.length, uniqueFunctions: unique.length, uniqueNames: unique, calls: calls.slice(0, 100) }, null, 2) }] };
+  }
+
+  private async handleGetCollisionLayersNames(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const projectFile = join(args.projectPath, 'project.godot');
+    if (!existsSync(projectFile)) return createErrorResponse('project.godot not found.');
+    let content: string;
+    try { content = readFileSync(projectFile, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const layers: Record<number, string> = {};
+    const matches = content.matchAll(/layer_names\/2d_physics\/layer_(\d+)\s*=\s*"([^"]*)"/g);
+    for (const m of matches) layers[parseInt(m[1])] = m[2];
+    const matches3d = content.matchAll(/layer_names\/3d_physics\/layer_(\d+)\s*=\s*"([^"]*)"/g);
+    const layers3d: Record<number, string> = {};
+    for (const m of matches3d) layers3d[parseInt(m[1])] = m[2];
+    return { content: [{ type: 'text', text: JSON.stringify({ collision2dLayers: layers, collision3dLayers: layers3d }) }] };
+  }
+
+  private async handleGetColorInGame(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_color_in_game', args, a => ({ node_path: a.nodePath, property_name: a.propertyName || 'modulate' }));
+  }
+
+  private async handleGetLightProperties(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_light_properties', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetLightProperty(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.propertyName) return createErrorResponse('propertyName is required.');
+    return this.gameCommand('set_light_property', args, a => ({ node_path: a.nodePath, property_name: a.propertyName, value: a.value }));
   }
 
 }
