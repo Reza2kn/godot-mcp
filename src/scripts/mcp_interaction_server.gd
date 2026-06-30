@@ -1661,6 +1661,48 @@ func _handle_command(json_str: String) -> void:
 			_cmd_get_viewport_textures(params)
 		"set_viewport_msaa":
 			_cmd_set_viewport_msaa(params)
+		"get_class_property_list":
+			_cmd_get_class_property_list(params)
+		"get_class_method_list":
+			_cmd_get_class_method_list(params)
+		"get_class_signal_list":
+			_cmd_get_class_signal_list(params)
+		"class_exists":
+			_cmd_class_exists(params)
+		"get_class_inheritance":
+			_cmd_get_class_inheritance(params)
+		"instantiate_class_check":
+			_cmd_instantiate_class_check(params)
+		"get_mesh_aabb":
+			_cmd_get_mesh_aabb(params)
+		"get_mesh_vertex_count":
+			_cmd_get_mesh_vertex_count(params)
+		"set_mesh_instance_cast_shadow":
+			_cmd_set_mesh_instance_cast_shadow(params)
+		"get_mesh_surface_count_rt":
+			_cmd_get_mesh_surface_count_rt(params)
+		"set_mesh_lod_bias":
+			_cmd_set_mesh_lod_bias(params)
+		"get_mesh_instance_bounds":
+			_cmd_get_mesh_instance_bounds(params)
+		"set_mesh_transparency":
+			_cmd_set_mesh_transparency(params)
+		"rename_node_runtime":
+			_cmd_rename_node_runtime(params)
+		"list_node_metadata":
+			_cmd_list_node_metadata(params)
+		"remove_node_metadata":
+			_cmd_remove_node_metadata(params)
+		"get_physics_2d_gravity":
+			_cmd_get_physics_2d_gravity(params)
+		"get_all_node_classes":
+			_cmd_get_all_node_classes(params)
+		"get_running_scene_path":
+			_cmd_get_running_scene_path(params)
+		"get_node_scene_file_path":
+			_cmd_get_node_scene_file_path(params)
+		"get_scene_unique_nodes":
+			_cmd_get_scene_unique_nodes(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -13871,6 +13913,245 @@ func _cmd_set_viewport_msaa(params: Dictionary) -> void:
 		_: msaa = Viewport.MSAA_DISABLED
 	(node as Viewport).msaa_3d = msaa
 	_send_response({"success": true, "msaa": msaa_level})
+
+
+func _cmd_get_class_property_list(params: Dictionary) -> void:
+	var class_name_str: String = params.get("class_name", "")
+	if class_name_str.is_empty() or not ClassDB.class_exists(class_name_str):
+		_send_response({"error": "Class not found: " + class_name_str})
+		return
+	var props = ClassDB.class_get_property_list(class_name_str)
+	var result = []
+	for p in props:
+		result.append({"name": p.get("name", ""), "type": p.get("type", 0)})
+	_send_response({"success": true, "class": class_name_str, "properties": result, "count": result.size()})
+
+
+func _cmd_get_class_method_list(params: Dictionary) -> void:
+	var class_name_str: String = params.get("class_name", "")
+	if class_name_str.is_empty() or not ClassDB.class_exists(class_name_str):
+		_send_response({"error": "Class not found: " + class_name_str})
+		return
+	var methods = ClassDB.class_get_method_list(class_name_str)
+	var result = []
+	for m in methods:
+		result.append(m.get("name", ""))
+	_send_response({"success": true, "class": class_name_str, "methods": result, "count": result.size()})
+
+
+func _cmd_get_class_signal_list(params: Dictionary) -> void:
+	var class_name_str: String = params.get("class_name", "")
+	if class_name_str.is_empty() or not ClassDB.class_exists(class_name_str):
+		_send_response({"error": "Class not found: " + class_name_str})
+		return
+	var signals = ClassDB.class_get_signal_list(class_name_str)
+	var result = []
+	for s in signals:
+		result.append(s.get("name", ""))
+	_send_response({"success": true, "class": class_name_str, "signals": result, "count": result.size()})
+
+
+func _cmd_class_exists(params: Dictionary) -> void:
+	var class_name_str: String = params.get("class_name", "")
+	_send_response({"success": true, "exists": ClassDB.class_exists(class_name_str), "class_name": class_name_str})
+
+
+func _cmd_get_class_inheritance(params: Dictionary) -> void:
+	var class_name_str: String = params.get("class_name", "")
+	if not ClassDB.class_exists(class_name_str):
+		_send_response({"error": "Class not found: " + class_name_str})
+		return
+	var chain = [class_name_str]
+	var current = class_name_str
+	while true:
+		var parent = ClassDB.get_parent_class(current)
+		if parent.is_empty():
+			break
+		chain.append(parent)
+		current = parent
+		if chain.size() > 30:
+			break
+	_send_response({"success": true, "class": class_name_str, "inheritance_chain": chain})
+
+
+func _cmd_instantiate_class_check(params: Dictionary) -> void:
+	var class_name_str: String = params.get("class_name", "")
+	if not ClassDB.class_exists(class_name_str):
+		_send_response({"success": true, "exists": false, "can_instantiate": false, "class_name": class_name_str})
+		return
+	var can_inst = ClassDB.can_instantiate(class_name_str)
+	_send_response({"success": true, "class_name": class_name_str, "exists": true, "can_instantiate": can_inst})
+
+
+func _cmd_get_mesh_aabb(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var aabb = (node as MeshInstance3D).get_aabb()
+	_send_response({"success": true, "position": {"x": aabb.position.x, "y": aabb.position.y, "z": aabb.position.z}, "size": {"x": aabb.size.x, "y": aabb.size.y, "z": aabb.size.z}})
+
+
+func _cmd_get_mesh_vertex_count(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var surface_index: int = params.get("surface_index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var mesh = (node as MeshInstance3D).mesh
+	if mesh == null:
+		_send_response({"error": "No mesh assigned"})
+		return
+	if surface_index >= mesh.get_surface_count():
+		_send_response({"error": "Surface index out of range"})
+		return
+	var arrays = mesh.surface_get_arrays(surface_index)
+	var verts = arrays[Mesh.ARRAY_VERTEX] if arrays != null and arrays.size() > Mesh.ARRAY_VERTEX else null
+	_send_response({"success": true, "vertex_count": verts.size() if verts != null else 0, "surface_index": surface_index})
+
+
+func _cmd_set_mesh_instance_cast_shadow(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var cast_shadow_str: String = params.get("cast_shadow", "on")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var mode: GeometryInstance3D.ShadowCastingSetting
+	match cast_shadow_str:
+		"off": mode = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		"on": mode = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+		"double_sided": mode = GeometryInstance3D.SHADOW_CASTING_SETTING_DOUBLE_SIDED
+		"shadows_only": mode = GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY
+		_: mode = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+	(node as MeshInstance3D).cast_shadow = mode
+	_send_response({"success": true, "cast_shadow": cast_shadow_str})
+
+
+func _cmd_get_mesh_surface_count_rt(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var mesh = (node as MeshInstance3D).mesh
+	_send_response({"success": true, "surface_count": mesh.get_surface_count() if mesh != null else 0})
+
+
+func _cmd_set_mesh_lod_bias(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var lod_bias: float = params.get("lod_bias", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	(node as MeshInstance3D).lod_bias = lod_bias
+	_send_response({"success": true, "lod_bias": lod_bias})
+
+
+func _cmd_get_mesh_instance_bounds(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var aabb = (node as MeshInstance3D).get_transformed_aabb()
+	var center = aabb.get_center()
+	_send_response({"success": true, "center": {"x": center.x, "y": center.y, "z": center.z}, "size": {"x": aabb.size.x, "y": aabb.size.y, "z": aabb.size.z}})
+
+
+func _cmd_set_mesh_transparency(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var transparency: float = params.get("transparency", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	(node as MeshInstance3D).transparency = transparency
+	_send_response({"success": true, "transparency": transparency})
+
+
+func _cmd_rename_node_runtime(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var new_name: String = params.get("new_name", "")
+	if new_name.is_empty():
+		_send_response({"error": "new_name is required"})
+		return
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	node.name = new_name
+	_send_response({"success": true, "new_name": new_name, "new_path": str(node.get_path())})
+
+
+func _cmd_list_node_metadata(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	_send_response({"success": true, "meta_list": node.get_meta_list(), "count": node.get_meta_list().size()})
+
+
+func _cmd_remove_node_metadata(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var meta_key: String = params.get("meta_key", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	if node.has_meta(meta_key):
+		node.remove_meta(meta_key)
+		_send_response({"success": true, "removed": meta_key})
+	else:
+		_send_response({"error": "Meta key not found: " + meta_key})
+
+
+func _cmd_get_physics_2d_gravity(params: Dictionary) -> void:
+	var gravity = ProjectSettings.get_setting("physics/2d/default_gravity", 980.0)
+	_send_response({"success": true, "gravity": gravity})
+
+
+func _cmd_get_all_node_classes(params: Dictionary) -> void:
+	var all_classes = ClassDB.get_class_list()
+	var node_classes = []
+	for c in all_classes:
+		if ClassDB.is_parent_class(c, "Node"):
+			node_classes.append(c)
+	node_classes.sort()
+	_send_response({"success": true, "node_classes": node_classes, "count": node_classes.size()})
+
+
+func _cmd_get_running_scene_path(params: Dictionary) -> void:
+	var scene = get_tree().current_scene
+	_send_response({"success": true, "scene_path": scene.scene_file_path if scene != null else "", "scene_name": scene.name if scene != null else ""})
+
+
+func _cmd_get_node_scene_file_path(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	_send_response({"success": true, "scene_file_path": node.scene_file_path if node.scene_file_path != null else ""})
+
+
+func _cmd_get_scene_unique_nodes(params: Dictionary) -> void:
+	var result = []
+	var process_node = func(node: Node) -> void:
+		if node.unique_name_in_owner:
+			result.append({"name": node.name, "path": str(node.get_path()), "class": node.get_class()})
+	var queue = [get_tree().current_scene]
+	while queue.size() > 0:
+		var n = queue.pop_front()
+		if n != null:
+			process_node.call(n)
+			for child in n.get_children():
+				queue.append(child)
+	_send_response({"success": true, "unique_nodes": result, "count": result.size()})
 
 
 func _exit_tree() -> void:

@@ -17514,6 +17514,171 @@ class GodotServer {
         description: 'Write a door/gate open/close GDScript.',
         inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, openDuration: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
       },
+      // Batch 60 — Group A: ClassDB introspection
+      {
+        name: 'get_class_property_list',
+        description: 'List properties of any Godot class via ClassDB.',
+        inputSchema: { type: 'object', properties: { className: { type: 'string' } }, required: ['className'] },
+      },
+      {
+        name: 'get_class_method_list',
+        description: 'List methods of any Godot class via ClassDB.',
+        inputSchema: { type: 'object', properties: { className: { type: 'string' } }, required: ['className'] },
+      },
+      {
+        name: 'get_class_signal_list',
+        description: 'List signals of any Godot class via ClassDB.',
+        inputSchema: { type: 'object', properties: { className: { type: 'string' } }, required: ['className'] },
+      },
+      {
+        name: 'class_exists',
+        description: "Check if a class name exists in Godot's ClassDB.",
+        inputSchema: { type: 'object', properties: { className: { type: 'string' } }, required: ['className'] },
+      },
+      {
+        name: 'get_class_inheritance',
+        description: 'Get parent class chain for a Godot class.',
+        inputSchema: { type: 'object', properties: { className: { type: 'string' } }, required: ['className'] },
+      },
+      {
+        name: 'instantiate_class_check',
+        description: 'Check if a class can be instantiated in the game.',
+        inputSchema: { type: 'object', properties: { className: { type: 'string' } }, required: ['className'] },
+      },
+      // Batch 60 — Group B: Mesh / geometry tools
+      {
+        name: 'get_mesh_aabb',
+        description: 'Get axis-aligned bounding box of a MeshInstance3D.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_mesh_vertex_count',
+        description: 'Get vertex count of a Mesh in MeshInstance3D.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, surfaceIndex: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_mesh_instance_cast_shadow',
+        description: 'Set shadow casting mode on MeshInstance3D.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, castShadow: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_mesh_surface_count_rt',
+        description: 'Get the number of surfaces in a MeshInstance3D mesh.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_mesh_lod_bias',
+        description: 'Set LOD bias on a MeshInstance3D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, lodBias: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_mesh_instance_bounds',
+        description: 'Get world-space bounds of a MeshInstance3D.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_mesh_transparency',
+        description: 'Set transparency value on a MeshInstance3D node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, transparency: { type: 'number' } }, required: ['nodePath'] },
+      },
+      // Batch 60 — Group C: Node name / meta operations
+      {
+        name: 'rename_node_runtime',
+        description: 'Rename a node at runtime by its current path.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, newName: { type: 'string' } }, required: ['nodePath', 'newName'] },
+      },
+      {
+        name: 'list_node_metadata',
+        description: 'List all metadata keys on a node at runtime.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'remove_node_metadata',
+        description: 'Remove a metadata key from a node at runtime.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, metaKey: { type: 'string' } }, required: ['nodePath', 'metaKey'] },
+      },
+      // Batch 60 — Group D: Project configuration tools
+      {
+        name: 'add_input_action_to_project',
+        description: 'Add an input action entry to project.godot file.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, actionName: { type: 'string' }, key: { type: 'string' } }, required: ['projectPath', 'actionName', 'key'] },
+      },
+      {
+        name: 'get_input_map_from_project',
+        description: 'Read input action map from project.godot file.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' } }, required: ['projectPath'] },
+      },
+      {
+        name: 'set_project_window_mode',
+        description: 'Set window mode in project.godot (windowed/fullscreen).',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, mode: { type: 'string' } }, required: ['projectPath', 'mode'] },
+      },
+      {
+        name: 'set_project_physics_fps',
+        description: 'Set physics ticks per second in project settings.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, fps: { type: 'number' } }, required: ['projectPath'] },
+      },
+      {
+        name: 'set_project_gravity',
+        description: 'Set default gravity in Godot project settings.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, gravity: { type: 'number' } }, required: ['projectPath'] },
+      },
+      {
+        name: 'create_project_directory',
+        description: 'Create a directory inside a Godot project.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, dirPath: { type: 'string' } }, required: ['projectPath', 'dirPath'] },
+      },
+      // Batch 60 — Group E: GDScript template writers
+      {
+        name: 'write_level_manager_script',
+        description: 'Write a level progression manager script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, levelScenes: { type: 'array', items: { type: 'string' } } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_coin_script',
+        description: 'Write a collectible coin/currency GDScript.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, value: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_checkpoint_script',
+        description: 'Write a checkpoint/respawn point GDScript.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_platform_moving_script',
+        description: 'Write a moving platform GDScript.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, speed: { type: 'number' }, distance: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_destructible_object_script',
+        description: 'Write a destructible/breakable object script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, maxHealth: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_gravity_zone_script',
+        description: 'Write a gravity manipulation zone script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, gravity: { type: 'number' }, direction: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_speed_boost_script',
+        description: 'Write a speed boost zone script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, multiplier: { type: 'number' }, duration: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_follow_camera_3d_script',
+        description: 'Write a 3D third-person follow camera script.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, distance: { type: 'number' }, height: { type: 'number' } }, required: ['projectPath', 'scriptPath'] },
+      },
+      {
+        name: 'write_water_surface_shader',
+        description: 'Write a simple water surface GDShader file.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, shaderPath: { type: 'string' } }, required: ['projectPath', 'shaderPath'] },
+      },
+      {
+        name: 'write_outline_shader',
+        description: 'Write a 2D sprite outline GDShader file.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, shaderPath: { type: 'string' } }, required: ['projectPath', 'shaderPath'] },
+      },
       ],
     }));
 
@@ -20094,6 +20259,75 @@ class GodotServer {
           return await this.handleWriteInteractableScript(request.params.arguments);
         case 'write_door_script':
           return await this.handleWriteDoorScript(request.params.arguments);
+        // Batch 60 — Group A: ClassDB introspection
+        case 'get_class_property_list':
+          return await this.handleGetClassPropertyList(request.params.arguments);
+        case 'get_class_method_list':
+          return await this.handleGetClassMethodList(request.params.arguments);
+        case 'get_class_signal_list':
+          return await this.handleGetClassSignalList(request.params.arguments);
+        case 'class_exists':
+          return await this.handleClassExists(request.params.arguments);
+        case 'get_class_inheritance':
+          return await this.handleGetClassInheritance(request.params.arguments);
+        case 'instantiate_class_check':
+          return await this.handleInstantiateClassCheck(request.params.arguments);
+        // Batch 60 — Group B: Mesh / geometry tools
+        case 'get_mesh_aabb':
+          return await this.handleGetMeshAabb(request.params.arguments);
+        case 'get_mesh_vertex_count':
+          return await this.handleGetMeshVertexCount(request.params.arguments);
+        case 'set_mesh_instance_cast_shadow':
+          return await this.handleSetMeshInstanceCastShadow(request.params.arguments);
+        case 'get_mesh_surface_count_rt':
+          return await this.handleGetMeshSurfaceCountRt(request.params.arguments);
+        case 'set_mesh_lod_bias':
+          return await this.handleSetMeshLodBias(request.params.arguments);
+        case 'get_mesh_instance_bounds':
+          return await this.handleGetMeshInstanceBounds(request.params.arguments);
+        case 'set_mesh_transparency':
+          return await this.handleSetMeshTransparency(request.params.arguments);
+        // Batch 60 — Group C: Node name / meta operations
+        case 'rename_node_runtime':
+          return await this.handleRenameNodeRuntime(request.params.arguments);
+        case 'list_node_metadata':
+          return await this.handleListNodeMetadata(request.params.arguments);
+        case 'remove_node_metadata':
+          return await this.handleRemoveNodeMetadata(request.params.arguments);
+        // Batch 60 — Group D: Project configuration tools
+        case 'add_input_action_to_project':
+          return await this.handleAddInputActionToProject(request.params.arguments);
+        case 'get_input_map_from_project':
+          return await this.handleGetInputMapFromProject(request.params.arguments);
+        case 'set_project_window_mode':
+          return await this.handleSetProjectWindowMode(request.params.arguments);
+        case 'set_project_physics_fps':
+          return await this.handleSetProjectPhysicsFps(request.params.arguments);
+        case 'set_project_gravity':
+          return await this.handleSetProjectGravity(request.params.arguments);
+        case 'create_project_directory':
+          return await this.handleCreateProjectDirectory(request.params.arguments);
+        // Batch 60 — Group E: GDScript template writers
+        case 'write_level_manager_script':
+          return await this.handleWriteLevelManagerScript(request.params.arguments);
+        case 'write_coin_script':
+          return await this.handleWriteCoinScript(request.params.arguments);
+        case 'write_checkpoint_script':
+          return await this.handleWriteCheckpointScript(request.params.arguments);
+        case 'write_platform_moving_script':
+          return await this.handleWritePlatformMovingScript(request.params.arguments);
+        case 'write_destructible_object_script':
+          return await this.handleWriteDestructibleObjectScript(request.params.arguments);
+        case 'write_gravity_zone_script':
+          return await this.handleWriteGravityZoneScript(request.params.arguments);
+        case 'write_speed_boost_script':
+          return await this.handleWriteSpeedBoostScript(request.params.arguments);
+        case 'write_follow_camera_3d_script':
+          return await this.handleWriteFollowCamera3dScript(request.params.arguments);
+        case 'write_water_surface_shader':
+          return await this.handleWriteWaterSurfaceShader(request.params.arguments);
+        case 'write_outline_shader':
+          return await this.handleWriteOutlineShader(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -36349,6 +36583,489 @@ func toggle() -> void:
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, openDuration: duration }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  // ── Batch 60 — Group A: ClassDB introspection ────────────────────────────────
+
+  private async handleGetClassPropertyList(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.className) return createErrorResponse('className is required.');
+    return this.gameCommand('get_class_property_list', args, a => ({ class_name: a.className ?? '' }));
+  }
+
+  private async handleGetClassMethodList(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.className) return createErrorResponse('className is required.');
+    return this.gameCommand('get_class_method_list', args, a => ({ class_name: a.className ?? '' }));
+  }
+
+  private async handleGetClassSignalList(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.className) return createErrorResponse('className is required.');
+    return this.gameCommand('get_class_signal_list', args, a => ({ class_name: a.className ?? '' }));
+  }
+
+  private async handleClassExists(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.className) return createErrorResponse('className is required.');
+    return this.gameCommand('class_exists', args, a => ({ class_name: a.className ?? '' }));
+  }
+
+  private async handleGetClassInheritance(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.className) return createErrorResponse('className is required.');
+    return this.gameCommand('get_class_inheritance', args, a => ({ class_name: a.className ?? '' }));
+  }
+
+  private async handleInstantiateClassCheck(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.className) return createErrorResponse('className is required.');
+    return this.gameCommand('instantiate_class_check', args, a => ({ class_name: a.className ?? '' }));
+  }
+
+  // ── Batch 60 — Group B: Mesh / geometry tools ────────────────────────────────
+
+  private async handleGetMeshAabb(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_mesh_aabb', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetMeshVertexCount(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_mesh_vertex_count', args, a => ({ node_path: a.nodePath, surface_index: a.surfaceIndex ?? 0 }));
+  }
+
+  private async handleSetMeshInstanceCastShadow(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_mesh_instance_cast_shadow', args, a => ({ node_path: a.nodePath, cast_shadow: a.castShadow ?? 'on' }));
+  }
+
+  private async handleGetMeshSurfaceCountRt(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_mesh_surface_count_rt', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetMeshLodBias(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_mesh_lod_bias', args, a => ({ node_path: a.nodePath, lod_bias: a.lodBias ?? 0 }));
+  }
+
+  private async handleGetMeshInstanceBounds(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_mesh_instance_bounds', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetMeshTransparency(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_mesh_transparency', args, a => ({ node_path: a.nodePath, transparency: a.transparency ?? 0 }));
+  }
+
+  // ── Batch 60 — Group C: Node name / meta operations ──────────────────────────
+
+  private async handleRenameNodeRuntime(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.newName) return createErrorResponse('nodePath and newName are required.');
+    return this.gameCommand('rename_node_runtime', args, a => ({ node_path: a.nodePath, new_name: a.newName ?? '' }));
+  }
+
+  private async handleListNodeMetadata(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('list_node_metadata', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleRemoveNodeMetadata(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.metaKey) return createErrorResponse('nodePath and metaKey are required.');
+    return this.gameCommand('remove_node_metadata', args, a => ({ node_path: a.nodePath, meta_key: a.metaKey ?? '' }));
+  }
+
+  // ── Batch 60 — Group D: Project configuration tools ──────────────────────────
+
+  private async handleAddInputActionToProject(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.actionName || !args.key) return createErrorResponse('projectPath, actionName and key are required.');
+    return this.headlessOp('add_input_action', args, a => ({ projectPath: a.projectPath, params: { action_name: a.actionName, key: a.key } }));
+  }
+
+  private async handleGetInputMapFromProject(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    const projectFile = join(args.projectPath, 'project.godot');
+    if (!existsSync(projectFile)) return createErrorResponse('project.godot not found.');
+    const content = readFileSync(projectFile, 'utf8');
+    const actions: any[] = [];
+    let inInputSection = false;
+    for (const line of content.split('\n')) {
+      if (line.trim() === '[input]') { inInputSection = true; continue; }
+      if (line.startsWith('[') && inInputSection) inInputSection = false;
+      if (inInputSection && line.includes('=')) {
+        const m = line.match(/^(\w+)\s*=/);
+        if (m) actions.push({ action: m[1] });
+      }
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ input_actions: actions, count: actions.length }) }] };
+  }
+
+  private async handleSetProjectWindowMode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.mode) return createErrorResponse('projectPath and mode are required.');
+    return this.headlessOp('set_project_setting_value', args, a => ({ projectPath: a.projectPath, params: { key: 'display/window/size/mode', value: a.mode } }));
+  }
+
+  private async handleSetProjectPhysicsFps(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    return this.headlessOp('set_project_setting_value', args, a => ({ projectPath: a.projectPath, params: { key: 'physics/common/physics_ticks_per_second', value: a.fps ?? 60 } }));
+  }
+
+  private async handleSetProjectGravity(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath) return createErrorResponse('projectPath is required.');
+    return this.headlessOp('set_project_setting_value', args, a => ({ projectPath: a.projectPath, params: { key: 'physics/2d/default_gravity', value: a.gravity ?? 980 } }));
+  }
+
+  private async handleCreateProjectDirectory(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.dirPath) return createErrorResponse('projectPath and dirPath are required.');
+    const fullPath = join(args.projectPath, args.dirPath);
+    try {
+      require('fs').mkdirSync(fullPath, { recursive: true });
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, created: fullPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed to create directory: ${e.message}`); }
+  }
+
+  // ── Batch 60 — Group E: GDScript template writers ────────────────────────────
+
+  private async handleWriteLevelManagerScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const scenes = args.levelScenes ?? ['res://scenes/level_1.tscn', 'res://scenes/level_2.tscn', 'res://scenes/level_3.tscn'];
+    const scenesStr = JSON.stringify(scenes);
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Node
+## LevelManager — add as Autoload
+
+signal level_loaded(level_num: int)
+signal all_levels_completed
+
+const LEVELS: Array[String] = ${scenesStr}
+var current_level: int = 0
+
+func load_level(index: int) -> void:
+\tif index < 0 or index >= LEVELS.size():
+\t\tall_levels_completed.emit()
+\t\treturn
+\tcurrent_level = index
+\tget_tree().change_scene_to_file(LEVELS[index])
+\tlevel_loaded.emit(index)
+
+func next_level() -> void:
+\tload_level(current_level + 1)
+
+func restart_level() -> void:
+\tload_level(current_level)
+
+func get_level_count() -> int:
+\treturn LEVELS.size()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, levelCount: scenes.length }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteCoinScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const value = args.value ?? 1;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Area2D
+## Coin/collectible — attach to Area2D with CollisionShape2D and Sprite2D.
+
+signal collected(value: int)
+
+@export var coin_value: int = ${value}
+@export var bob_speed: float = 2.0
+@export var bob_height: float = 5.0
+@export var rotate_speed: float = 1.5
+
+var _start_y: float
+
+func _ready() -> void:
+\t_start_y = position.y
+\tbody_entered.connect(_on_body_entered)
+
+func _process(delta: float) -> void:
+\tposition.y = _start_y + sin(Time.get_ticks_msec() * 0.001 * bob_speed) * bob_height
+\trotation += rotate_speed * delta
+
+func _on_body_entered(body: Node2D) -> void:
+\tif body.is_in_group("player"):
+\t\tcollected.emit(coin_value)
+\t\tqueue_free()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, value }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteCheckpointScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Area2D
+## Checkpoint — saves player spawn position.
+
+signal activated(spawn_position: Vector2)
+
+@export var is_activated: bool = false
+
+func _ready() -> void:
+\tbody_entered.connect(_on_body_entered)
+
+func _on_body_entered(body: Node2D) -> void:
+\tif body.is_in_group("player") and not is_activated:
+\t\tis_activated = true
+\t\tactivated.emit(global_position)
+\t\t_play_activate_effect()
+
+func _play_activate_effect() -> void:
+\t# Override to add visual feedback (animate sprite, play sound, etc.)
+\tpass
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWritePlatformMovingScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const speed = args.speed ?? 80;
+    const distance = args.distance ?? 100;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends AnimatableBody2D
+## Moving platform — oscillates back and forth.
+## Attach to AnimatableBody2D.
+
+@export var speed: float = ${speed}.0
+@export var distance: float = ${distance}.0
+@export var move_horizontal: bool = true
+
+var _start_pos: Vector2
+var _direction: float = 1.0
+
+func _ready() -> void:
+\t_start_pos = position
+
+func _physics_process(delta: float) -> void:
+\tvar move_vec = Vector2.RIGHT if move_horizontal else Vector2.DOWN
+\tposition += move_vec * _direction * speed * delta
+\tvar dist = position.distance_to(_start_pos)
+\tif dist >= distance:
+\t\t_direction = -_direction
+\t\tposition = _start_pos + move_vec * _direction * -distance
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, speed, distance }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteDestructibleObjectScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const maxHealth = args.maxHealth ?? 3;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends StaticBody2D
+## Destructible object — takes hits and breaks.
+
+signal destroyed
+
+@export var max_health: int = ${maxHealth}
+var health: int = max_health
+
+func take_damage(amount: int = 1) -> void:
+\thealth -= amount
+\tif health <= 0:
+\t\t_on_destroyed()
+
+func _on_destroyed() -> void:
+\tdestroyed.emit()
+\t# Add particles or animation here before freeing
+\tqueue_free()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, maxHealth }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteGravityZoneScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const gravity = args.gravity ?? 200;
+    const dir2 = args.direction ?? 'down';
+    const dirVec: Record<string, string> = { down: 'Vector2(0, 1)', up: 'Vector2(0, -1)', left: 'Vector2(-1, 0)', right: 'Vector2(1, 0)' };
+    const gravVec = dirVec[dir2] ?? 'Vector2(0, 1)';
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Area2D
+## Gravity zone — changes gravity for bodies inside.
+
+@export var gravity_strength: float = ${gravity}.0
+@export var gravity_direction: Vector2 = ${gravVec}
+
+func _ready() -> void:
+\tgravity_space_override = Area2D.SPACE_OVERRIDE_REPLACE
+\tgravity_direction = gravity_direction
+\tgravity = gravity_strength
+`;
+    try {
+      const absDir = require('path').dirname(absPath);
+      if (!existsSync(absDir)) require('fs').mkdirSync(absDir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, gravity, direction: dir2 }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteSpeedBoostScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const multiplier = args.multiplier ?? 2.0;
+    const duration = args.duration ?? 3.0;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Area2D
+## Speed boost — temporarily boosts player speed on entry.
+
+signal boost_started(multiplier: float, duration: float)
+signal boost_ended
+
+@export var speed_multiplier: float = ${multiplier}
+@export var boost_duration: float = ${duration}
+
+func _ready() -> void:
+\tbody_entered.connect(_on_body_entered)
+
+func _on_body_entered(body: Node2D) -> void:
+\tif not body.is_in_group("player"):
+\t\treturn
+\tboost_started.emit(speed_multiplier, boost_duration)
+\tif body.has_method("apply_speed_boost"):
+\t\tbody.apply_speed_boost(speed_multiplier, boost_duration)
+\tawait get_tree().create_timer(boost_duration).timeout
+\tboost_ended.emit()
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, multiplier, duration }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteFollowCamera3dScript(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    const distance = args.distance ?? 5;
+    const height = args.height ?? 2;
+    const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
+    const content = `extends Camera3D
+## Third-person follow camera. Attach as child of the scene (not the player).
+
+@export var target: Node3D
+@export var follow_distance: float = ${distance}.0
+@export var follow_height: float = ${height}.0
+@export var smoothing: float = 5.0
+
+func _process(delta: float) -> void:
+\tif target == null:
+\t\treturn
+\tvar target_pos = target.global_position + Vector3(0, follow_height, follow_distance)
+\tglobal_position = global_position.lerp(target_pos, smoothing * delta)
+\tlook_at(target.global_position + Vector3(0, 1, 0))
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, distance, height }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteWaterSurfaceShader(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.shaderPath) return createErrorResponse('projectPath and shaderPath are required.');
+    const absPath = args.shaderPath.replace('res://', args.projectPath + '/');
+    const content = `shader_type canvas_item;
+
+uniform vec4 water_color : source_color = vec4(0.1, 0.4, 0.8, 0.7);
+uniform float wave_speed : hint_range(0.0, 5.0) = 1.5;
+uniform float wave_amplitude : hint_range(0.0, 0.1) = 0.02;
+uniform float wave_frequency : hint_range(1.0, 20.0) = 8.0;
+
+void fragment() {
+\tvec2 uv = UV;
+\tuv.x += sin(uv.y * wave_frequency + TIME * wave_speed) * wave_amplitude;
+\tuv.y += cos(uv.x * wave_frequency * 0.7 + TIME * wave_speed * 0.8) * wave_amplitude;
+\tvec4 tex = texture(TEXTURE, uv);
+\tCOLOR = mix(tex, water_color, water_color.a);
+\tCOLOR.a = water_color.a + tex.a * 0.3;
+}
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, shaderPath: args.shaderPath }) }] };
+    } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  private async handleWriteOutlineShader(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.shaderPath) return createErrorResponse('projectPath and shaderPath are required.');
+    const absPath = args.shaderPath.replace('res://', args.projectPath + '/');
+    const content = `shader_type canvas_item;
+
+uniform vec4 outline_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
+uniform float outline_width : hint_range(0.0, 10.0) = 1.0;
+
+void fragment() {
+\tvec2 size = outline_width / vec2(textureSize(TEXTURE, 0));
+\tfloat alpha = texture(TEXTURE, UV).a;
+\talpha = max(alpha, texture(TEXTURE, UV + vec2(size.x, 0.0)).a);
+\talpha = max(alpha, texture(TEXTURE, UV - vec2(size.x, 0.0)).a);
+\talpha = max(alpha, texture(TEXTURE, UV + vec2(0.0, size.y)).a);
+\talpha = max(alpha, texture(TEXTURE, UV - vec2(0.0, size.y)).a);
+\tvec4 tex = texture(TEXTURE, UV);
+\tCOLOR = mix(vec4(outline_color.rgb, alpha * outline_color.a), tex, tex.a);
+}
+`;
+    try {
+      const dir = require('path').dirname(absPath);
+      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      writeFileSync(absPath, content, 'utf8');
+      return { content: [{ type: 'text', text: JSON.stringify({ success: true, shaderPath: args.shaderPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
   }
 
