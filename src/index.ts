@@ -18114,6 +18114,86 @@ class GodotServer {
         description: 'Write a NavigationAgent2D-based pathfinding script.',
         inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] },
       },
+      // Batch 64 — Group A: Input system runtime tools
+      {
+        name: 'is_key_pressed',
+        description: 'Check if a keyboard key is currently pressed.',
+        inputSchema: { type: 'object', properties: { keycode: { type: 'integer' } }, required: ['keycode'] },
+      },
+      {
+        name: 'get_mouse_button_state',
+        description: 'Get bitmask of pressed mouse buttons.',
+        inputSchema: { type: 'object', properties: {} },
+      },
+      {
+        name: 'get_joy_axis',
+        description: 'Get the value of a joystick/gamepad axis.',
+        inputSchema: { type: 'object', properties: { deviceId: { type: 'integer' }, axisId: { type: 'integer' } } },
+      },
+      // Batch 64 — Group B: Control node (UI) property setters
+      {
+        name: 'set_control_offset',
+        description: 'Set offset (position) on a Control node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, left: { type: 'number' }, top: { type: 'number' }, right: { type: 'number' }, bottom: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_control_focus_mode',
+        description: 'Set focus mode on a Control node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, mode: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'release_focus',
+        description: 'Release keyboard focus from a Control node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      // Batch 64 — Group C: Label / RichTextLabel / TextEdit properties
+      {
+        name: 'set_rich_text_bbcode',
+        description: 'Set BBCode text on a RichTextLabel node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, text: { type: 'string' } }, required: ['nodePath', 'text'] },
+      },
+      // Batch 64 — Group D: Button / CheckButton / OptionButton
+      {
+        name: 'set_button_disabled',
+        description: 'Enable or disable a Button node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, disabled: { type: 'boolean' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'get_check_button_state',
+        description: 'Get pressed state of a CheckButton/CheckBox.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_check_button_state',
+        description: 'Set pressed state of a CheckButton/CheckBox.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, pressed: { type: 'boolean' } }, required: ['nodePath'] },
+      },
+      // Batch 64 — Group E: ProgressBar / Slider / SpinBox
+      {
+        name: 'set_range_value',
+        description: 'Set value on a Range node (Slider, SpinBox, etc.).',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, value: { type: 'number' } }, required: ['nodePath', 'value'] },
+      },
+      {
+        name: 'get_range_value',
+        description: 'Get value from a Range node (Slider, SpinBox, etc.).',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_range_min_max',
+        description: 'Set min/max on a Range node (Slider, SpinBox).',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, min: { type: 'number' }, max: { type: 'number' } }, required: ['nodePath'] },
+      },
+      {
+        name: 'set_h_slider_value',
+        description: 'Set value on an HSlider node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, value: { type: 'number' } }, required: ['nodePath', 'value'] },
+      },
+      {
+        name: 'get_h_slider_value',
+        description: 'Get current value from an HSlider node.',
+        inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] },
+      },
       ],
     }));
 
@@ -20946,6 +21026,41 @@ class GodotServer {
           return await this.handleWriteDayNightCycleScript(request.params.arguments);
         case 'write_pathfinding_agent_script':
           return await this.handleWritePathfindingAgentScript(request.params.arguments);
+        // Batch 64 switch cases — Group A: Input system runtime tools
+        case 'is_key_pressed':
+          return await this.handleIsKeyPressed(request.params.arguments);
+        case 'get_mouse_button_state':
+          return await this.handleGetMouseButtonState(request.params.arguments);
+        case 'get_joy_axis':
+          return await this.handleGetJoyAxis(request.params.arguments);
+        // Batch 64 switch cases — Group B: Control node (UI) property setters
+        case 'set_control_offset':
+          return await this.handleSetControlOffset(request.params.arguments);
+        case 'set_control_focus_mode':
+          return await this.handleSetControlFocusMode(request.params.arguments);
+        case 'release_focus':
+          return await this.handleReleaseFocus(request.params.arguments);
+        // Batch 64 switch cases — Group C: Label / RichTextLabel / TextEdit
+        case 'set_rich_text_bbcode':
+          return await this.handleSetRichTextBbcode(request.params.arguments);
+        // Batch 64 switch cases — Group D: Button / CheckButton / OptionButton
+        case 'set_button_disabled':
+          return await this.handleSetButtonDisabled(request.params.arguments);
+        case 'get_check_button_state':
+          return await this.handleGetCheckButtonState(request.params.arguments);
+        case 'set_check_button_state':
+          return await this.handleSetCheckButtonState(request.params.arguments);
+        // Batch 64 switch cases — Group E: ProgressBar / Slider / SpinBox
+        case 'set_range_value':
+          return await this.handleSetRangeValue(request.params.arguments);
+        case 'get_range_value':
+          return await this.handleGetRangeValue(request.params.arguments);
+        case 'set_range_min_max':
+          return await this.handleSetRangeMinMax(request.params.arguments);
+        case 'set_h_slider_value':
+          return await this.handleSetHSliderValue(request.params.arguments);
+        case 'get_h_slider_value':
+          return await this.handleGetHSliderValue(request.params.arguments);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(request.params.arguments);
         // Batch 50 switch cases — Group A: Tween runtime tools
@@ -38931,6 +39046,101 @@ func _on_velocity_computed(safe_velocity: Vector2) -> void:
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
+  }
+
+  // ── Batch 64 handlers ────────────────────────────────────────────────────────
+
+  // Group A: Input system runtime tools
+  private async handleIsKeyPressed(args: any) {
+    args = normalizeParameters(args || {});
+    if (args.keycode === undefined) return createErrorResponse('keycode is required.');
+    return this.gameCommand('is_key_pressed', args, a => ({ keycode: a.keycode ?? 32 }));
+  }
+
+  private async handleGetMouseButtonState(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_mouse_button_state', args, _a => ({}));
+  }
+
+  private async handleGetJoyAxis(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_joy_axis', args, a => ({ device_id: a.deviceId ?? 0, axis_id: a.axisId ?? 0 }));
+  }
+
+  // Group B: Control node (UI) property setters
+  private async handleSetControlOffset(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_control_offset', args, a => ({ node_path: a.nodePath, left: a.left ?? 0, top: a.top ?? 0, right: a.right ?? 0, bottom: a.bottom ?? 0 }));
+  }
+
+  private async handleSetControlFocusMode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_control_focus_mode', args, a => ({ node_path: a.nodePath, mode: a.mode ?? 'click' }));
+  }
+
+  private async handleReleaseFocus(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('release_focus', args, a => ({ node_path: a.nodePath }));
+  }
+
+  // Group C: Label / RichTextLabel / TextEdit properties
+  private async handleSetRichTextBbcode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_rich_text_bbcode', args, a => ({ node_path: a.nodePath, text: a.text ?? '' }));
+  }
+
+  // Group D: Button / CheckButton / OptionButton
+  private async handleSetButtonDisabled(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_button_disabled', args, a => ({ node_path: a.nodePath, disabled: a.disabled === true }));
+  }
+
+  private async handleGetCheckButtonState(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_check_button_state', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetCheckButtonState(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_check_button_state', args, a => ({ node_path: a.nodePath, pressed: a.pressed === true }));
+  }
+
+  // Group E: ProgressBar / Slider / SpinBox
+  private async handleSetRangeValue(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_range_value', args, a => ({ node_path: a.nodePath, value: a.value ?? 0 }));
+  }
+
+  private async handleGetRangeValue(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_range_value', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetRangeMinMax(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_range_min_max', args, a => ({ node_path: a.nodePath, min: a.min ?? 0, max: a.max ?? 100 }));
+  }
+
+  private async handleSetHSliderValue(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_h_slider_value', args, a => ({ node_path: a.nodePath, value: a.value ?? 0 }));
+  }
+
+  private async handleGetHSliderValue(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_h_slider_value', args, a => ({ node_path: a.nodePath }));
   }
 
   // ── Navigation / Discovery helpers ──────────────────────────────────────────

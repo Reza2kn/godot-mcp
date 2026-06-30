@@ -1819,6 +1819,32 @@ func _handle_command(json_str: String) -> void:
 			_cmd_set_box_shape_size_3d(params)
 		"get_collision_layer_mask":
 			_cmd_get_collision_layer_mask(params)
+		"is_key_pressed":
+			_cmd_is_key_pressed(params)
+		"get_joy_axis":
+			_cmd_get_joy_axis(params)
+		"set_control_offset":
+			_cmd_set_control_offset(params)
+		"set_control_focus_mode":
+			_cmd_set_control_focus_mode(params)
+		"set_rich_text_bbcode":
+			_cmd_set_rich_text_bbcode(params)
+		"set_button_disabled":
+			_cmd_set_button_disabled(params)
+		"get_check_button_state":
+			_cmd_get_check_button_state(params)
+		"set_check_button_state":
+			_cmd_set_check_button_state(params)
+		"set_range_value":
+			_cmd_set_range_value(params)
+		"get_range_value":
+			_cmd_get_range_value(params)
+		"set_range_min_max":
+			_cmd_set_range_min_max(params)
+		"set_h_slider_value":
+			_cmd_set_h_slider_value(params)
+		"get_h_slider_value":
+			_cmd_get_h_slider_value(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -15062,6 +15088,151 @@ func _cmd_get_collision_layer_mask(params: Dictionary) -> void:
 		_send_response({"success": true, "collision_layer": co.collision_layer, "collision_mask": co.collision_mask})
 	else:
 		_send_response({"error": "Node is not a CollisionObject"})
+
+func _cmd_is_key_pressed(params: Dictionary) -> void:
+	var keycode: int = params.get("keycode", 32)
+	_send_response({"success": true, "keycode": keycode, "pressed": Input.is_key_pressed(keycode as Key)})
+
+
+func _cmd_get_joy_axis(params: Dictionary) -> void:
+	var device_id: int = params.get("device_id", 0)
+	var axis_id: int = params.get("axis_id", 0)
+	var value = Input.get_joy_axis(device_id, axis_id as JoyAxis)
+	_send_response({"success": true, "device_id": device_id, "axis_id": axis_id, "value": value})
+
+
+func _cmd_set_control_offset(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var left: float = params.get("left", 0.0)
+	var top: float = params.get("top", 0.0)
+	var right: float = params.get("right", 0.0)
+	var bottom: float = params.get("bottom", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control not found: " + node_path})
+		return
+	var ctrl := node as Control
+	ctrl.offset_left = left
+	ctrl.offset_top = top
+	ctrl.offset_right = right
+	ctrl.offset_bottom = bottom
+	_send_response({"success": true, "left": left, "top": top, "right": right, "bottom": bottom})
+
+
+func _cmd_set_control_focus_mode(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var mode_str: String = params.get("mode", "click")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Control:
+		_send_response({"error": "Control not found: " + node_path})
+		return
+	var mode: Control.FocusMode
+	match mode_str:
+		"none": mode = Control.FOCUS_NONE
+		"click": mode = Control.FOCUS_CLICK
+		"all": mode = Control.FOCUS_ALL
+		_: mode = Control.FOCUS_CLICK
+	(node as Control).focus_mode = mode
+	_send_response({"success": true, "focus_mode": mode_str})
+
+
+func _cmd_set_rich_text_bbcode(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var text: String = params.get("text", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RichTextLabel:
+		_send_response({"error": "RichTextLabel not found: " + node_path})
+		return
+	var rtl := node as RichTextLabel
+	rtl.bbcode_enabled = true
+	rtl.text = text
+	_send_response({"success": true, "text": text})
+
+
+func _cmd_set_button_disabled(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var disabled: bool = params.get("disabled", false)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is BaseButton:
+		_send_response({"error": "Button node not found: " + node_path})
+		return
+	(node as BaseButton).disabled = disabled
+	_send_response({"success": true, "disabled": disabled})
+
+
+func _cmd_get_check_button_state(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is BaseButton:
+		_send_response({"error": "Button node not found: " + node_path})
+		return
+	_send_response({"success": true, "pressed": (node as BaseButton).button_pressed})
+
+
+func _cmd_set_check_button_state(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var pressed: bool = params.get("pressed", false)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is BaseButton:
+		_send_response({"error": "Button node not found: " + node_path})
+		return
+	(node as BaseButton).button_pressed = pressed
+	_send_response({"success": true, "pressed": pressed})
+
+
+func _cmd_set_range_value(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var value: float = params.get("value", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Range:
+		_send_response({"error": "Range node not found: " + node_path})
+		return
+	(node as Range).value = value
+	_send_response({"success": true, "value": value})
+
+
+func _cmd_get_range_value(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Range:
+		_send_response({"error": "Range node not found: " + node_path})
+		return
+	var r := node as Range
+	_send_response({"success": true, "value": r.value, "min": r.min_value, "max": r.max_value})
+
+
+func _cmd_set_range_min_max(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var min_val: float = params.get("min", 0.0)
+	var max_val: float = params.get("max", 100.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Range:
+		_send_response({"error": "Range node not found: " + node_path})
+		return
+	(node as Range).min_value = min_val
+	(node as Range).max_value = max_val
+	_send_response({"success": true, "min": min_val, "max": max_val})
+
+
+func _cmd_set_h_slider_value(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var value: float = params.get("value", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is HSlider:
+		_send_response({"error": "HSlider not found: " + node_path})
+		return
+	(node as HSlider).value = value
+	_send_response({"success": true, "value": value})
+
+
+func _cmd_get_h_slider_value(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is HSlider:
+		_send_response({"error": "HSlider not found: " + node_path})
+		return
+	_send_response({"success": true, "value": (node as HSlider).value})
+
 
 func _exit_tree() -> void:
 	_clear_debug_draw()
