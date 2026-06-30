@@ -1143,6 +1143,24 @@ func _handle_command(json_str: String) -> void:
 			_cmd_is_audio_bus_muted(params)
 		"set_audio_stream_player_bus":
 			_cmd_set_audio_stream_player_bus(params)
+		"get_animation_tree_active":
+			_cmd_get_animation_tree_active(params)
+		"set_animation_tree_active":
+			_cmd_set_animation_tree_active(params)
+		"get_animation_tree_parameter":
+			_cmd_get_animation_tree_parameter(params)
+		"set_animation_tree_parameter":
+			_cmd_set_animation_tree_parameter(params)
+		"get_blend_shape_count":
+			_cmd_get_blend_shape_count(params)
+		"get_blend_shape_value":
+			_cmd_get_blend_shape_value(params)
+		"set_blend_shape_value":
+			_cmd_set_blend_shape_value(params)
+		"get_material_property":
+			_cmd_get_material_property(params)
+		"create_material_override":
+			_cmd_create_material_override(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -10364,6 +10382,121 @@ func _cmd_set_audio_stream_player_bus(params: Dictionary) -> void:
 		_send_response({"success": true, "bus_name": bus_name})
 	else:
 		_send_response({"error": "Node does not have bus property: " + node.get_class()})
+
+func _cmd_get_animation_tree_active(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationTree:
+		_send_response({"error": "AnimationTree not found: " + node_path})
+		return
+	var at := node as AnimationTree
+	_send_response({"success": true, "active": at.active})
+
+func _cmd_set_animation_tree_active(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var active: bool = params.get("active", true)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationTree:
+		_send_response({"error": "AnimationTree not found: " + node_path})
+		return
+	(node as AnimationTree).active = active
+	_send_response({"success": true, "active": active})
+
+func _cmd_get_animation_tree_parameter(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var parameter: String = params.get("parameter", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationTree:
+		_send_response({"error": "AnimationTree not found: " + node_path})
+		return
+	var value = (node as AnimationTree).get(parameter)
+	_send_response({"success": true, "parameter": parameter, "value": value})
+
+func _cmd_set_animation_tree_parameter(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var parameter: String = params.get("parameter", "")
+	var value = params.get("value", null)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is AnimationTree:
+		_send_response({"error": "AnimationTree not found: " + node_path})
+		return
+	(node as AnimationTree).set(parameter, value)
+	_send_response({"success": true, "parameter": parameter, "value": value})
+
+func _cmd_get_blend_shape_count(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var mi := node as MeshInstance3D
+	var count = mi.get_blend_shape_count()
+	var names: Array = []
+	for i in range(count):
+		names.append(mi.get_blend_shape_name(i))
+	_send_response({"success": true, "count": count, "names": names})
+
+func _cmd_get_blend_shape_value(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var index: int = params.get("index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var mi := node as MeshInstance3D
+	if index >= mi.get_blend_shape_count():
+		_send_response({"error": "Blend shape index out of range: " + str(index)})
+		return
+	_send_response({"success": true, "index": index, "value": mi.get_blend_shape_value(index), "name": mi.get_blend_shape_name(index)})
+
+func _cmd_set_blend_shape_value(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var index: int = params.get("index", 0)
+	var value: float = params.get("value", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var mi := node as MeshInstance3D
+	if index >= mi.get_blend_shape_count():
+		_send_response({"error": "Blend shape index out of range: " + str(index)})
+		return
+	mi.set_blend_shape_value(index, value)
+	_send_response({"success": true, "index": index, "value": value})
+
+func _cmd_get_material_property(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var surface_index: int = params.get("surface_index", 0)
+	var property: String = params.get("property", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var mi := node as MeshInstance3D
+	var mat = mi.get_surface_override_material(surface_index)
+	if mat == null:
+		mat = mi.get_active_material(surface_index)
+	if mat == null:
+		_send_response({"error": "No material at surface: " + str(surface_index)})
+		return
+	var value = mat.get(property)
+	_send_response({"success": true, "property": property, "value": value, "material_class": mat.get_class()})
+
+func _cmd_create_material_override(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var surface_index: int = params.get("surface_index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is MeshInstance3D:
+		_send_response({"error": "MeshInstance3D not found: " + node_path})
+		return
+	var mi := node as MeshInstance3D
+	var existing = mi.get_surface_override_material(surface_index)
+	if existing != null:
+		_send_response({"success": true, "note": "Override already exists", "material_class": existing.get_class()})
+		return
+	var mat = StandardMaterial3D.new()
+	mi.set_surface_override_material(surface_index, mat)
+	_send_response({"success": true, "material_class": "StandardMaterial3D", "surface_index": surface_index})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()

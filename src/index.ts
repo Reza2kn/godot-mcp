@@ -13514,6 +13514,213 @@ class GodotServer {
           required: ['projectPath', 'scenePath'],
         },
       },
+      {
+        name: 'add_path_follow_3d_to_scene',
+        description: 'Add a PathFollow3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: PathFollow3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_mesh_instance_2d_to_scene',
+        description: 'Add a MeshInstance2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: MeshInstance2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_occluder_instance_3d_to_scene',
+        description: 'Add an OccluderInstance3D to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: OccluderInstance3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_xr_origin_3d_to_scene',
+        description: 'Add an XROrigin3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: XROrigin3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_xr_camera_3d_to_scene',
+        description: 'Add an XRCamera3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: XRCamera3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_xr_controller_3d_to_scene',
+        description: 'Add an XRController3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: XRController3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_open_xr_hand_to_scene',
+        description: 'Add an OpenXRHand node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the scene file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: OpenXRHand)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'get_animation_tree_active',
+        description: 'Check if an AnimationTree is active in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the AnimationTree node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_animation_tree_active',
+        description: 'Set the active state of an AnimationTree in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the AnimationTree node' },
+            active: { type: 'boolean', description: 'Whether to activate the tree (default: true)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_animation_tree_parameter',
+        description: 'Get a parameter from an AnimationTree in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the AnimationTree node' },
+            parameter: { type: 'string', description: 'Parameter path e.g. parameters/blend/blend_amount' },
+          },
+          required: ['nodePath', 'parameter'],
+        },
+      },
+      {
+        name: 'set_animation_tree_parameter',
+        description: 'Set a parameter on an AnimationTree in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the AnimationTree node' },
+            parameter: { type: 'string', description: 'Parameter path e.g. parameters/blend/blend_amount' },
+            value: { description: 'Value to set on the parameter' },
+          },
+          required: ['nodePath', 'parameter'],
+        },
+      },
+      {
+        name: 'get_blend_shape_count',
+        description: 'Get blend shape count of a MeshInstance3D in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the MeshInstance3D node' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_blend_shape_value',
+        description: 'Get a blend shape value on a MeshInstance3D.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the MeshInstance3D node' },
+            index: { type: 'number', description: 'Blend shape index (default: 0)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_blend_shape_value',
+        description: 'Set a blend shape value on a MeshInstance3D.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the MeshInstance3D node' },
+            index: { type: 'number', description: 'Blend shape index (default: 0)' },
+            value: { type: 'number', description: 'Blend shape value 0-1 (default: 0)' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'get_material_property',
+        description: 'Get a material property on a MeshInstance3D.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the MeshInstance3D node' },
+            surfaceIndex: { type: 'number', description: 'Surface index (default: 0)' },
+            property: { type: 'string', description: 'Property name to get' },
+          },
+          required: ['nodePath', 'property'],
+        },
+      },
+      {
+        name: 'create_material_override',
+        description: 'Create a material override on a MeshInstance3D.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Path to the MeshInstance3D node' },
+            surfaceIndex: { type: 'number', description: 'Surface index (default: 0)' },
+          },
+          required: ['nodePath'],
+        },
+      },
       ],
     }));
 
@@ -15509,6 +15716,38 @@ class GodotServer {
           return await this.handleAddNode2dToScene(request.params.arguments);
         case 'add_path_follow_2d_to_scene':
           return await this.handleAddPathFollow2dToScene(request.params.arguments);
+        case 'add_path_follow_3d_to_scene':
+          return await this.handleAddPathFollow3dToScene(request.params.arguments);
+        case 'add_mesh_instance_2d_to_scene':
+          return await this.handleAddMeshInstance2dToScene(request.params.arguments);
+        case 'add_occluder_instance_3d_to_scene':
+          return await this.handleAddOccluderInstance3dToScene(request.params.arguments);
+        case 'add_xr_origin_3d_to_scene':
+          return await this.handleAddXrOrigin3dToScene(request.params.arguments);
+        case 'add_xr_camera_3d_to_scene':
+          return await this.handleAddXrCamera3dToScene(request.params.arguments);
+        case 'add_xr_controller_3d_to_scene':
+          return await this.handleAddXrController3dToScene(request.params.arguments);
+        case 'add_open_xr_hand_to_scene':
+          return await this.handleAddOpenXrHandToScene(request.params.arguments);
+        case 'get_animation_tree_active':
+          return await this.handleGetAnimationTreeActive(request.params.arguments);
+        case 'set_animation_tree_active':
+          return await this.handleSetAnimationTreeActive(request.params.arguments);
+        case 'get_animation_tree_parameter':
+          return await this.handleGetAnimationTreeParameter(request.params.arguments);
+        case 'set_animation_tree_parameter':
+          return await this.handleSetAnimationTreeParameter(request.params.arguments);
+        case 'get_blend_shape_count':
+          return await this.handleGetBlendShapeCount(request.params.arguments);
+        case 'get_blend_shape_value':
+          return await this.handleGetBlendShapeValue(request.params.arguments);
+        case 'set_blend_shape_value':
+          return await this.handleSetBlendShapeValue(request.params.arguments);
+        case 'get_material_property':
+          return await this.handleGetMaterialProperty(request.params.arguments);
+        case 'create_material_override':
+          return await this.handleCreateMaterialOverride(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -27831,6 +28070,130 @@ class GodotServer {
       projectPath: a.projectPath,
       params: { scenePath: a.scenePath, nodeName: a.nodeName || 'PathFollow2D', nodeType: 'PathFollow2D', parentNodePath: a.parentNodePath || '.' },
     }));
+  }
+
+  private async handleAddPathFollow3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'PathFollow3D', node_type: 'PathFollow3D', parent_node_path: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddMeshInstance2dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'MeshInstance2D', node_type: 'MeshInstance2D', parent_node_path: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddOccluderInstance3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'OccluderInstance3D', node_type: 'OccluderInstance3D', parent_node_path: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddXrOrigin3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'XROrigin3D', node_type: 'XROrigin3D', parent_node_path: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddXrCamera3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'XRCamera3D', node_type: 'XRCamera3D', parent_node_path: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddXrController3dToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'XRController3D', node_type: 'XRController3D', parent_node_path: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleAddOpenXrHandToScene(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_generic_node_to_scene_ext', args, a => ({
+      projectPath: a.projectPath,
+      params: { scene_path: a.scenePath, node_name: a.nodeName || 'OpenXRHand', node_type: 'OpenXRHand', parent_node_path: a.parentNodePath || '.' },
+    }));
+  }
+
+  private async handleGetAnimationTreeActive(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_animation_tree_active', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetAnimationTreeActive(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_animation_tree_active', args, a => ({ node_path: a.nodePath, active: a.active ?? true }));
+  }
+
+  private async handleGetAnimationTreeParameter(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.parameter) return createErrorResponse('nodePath and parameter are required.');
+    return this.gameCommand('get_animation_tree_parameter', args, a => ({ node_path: a.nodePath, parameter: a.parameter }));
+  }
+
+  private async handleSetAnimationTreeParameter(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.parameter) return createErrorResponse('nodePath and parameter are required.');
+    return this.gameCommand('set_animation_tree_parameter', args, a => ({ node_path: a.nodePath, parameter: a.parameter, value: a.value }));
+  }
+
+  private async handleGetBlendShapeCount(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_blend_shape_count', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleGetBlendShapeValue(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_blend_shape_value', args, a => ({ node_path: a.nodePath, index: a.index ?? 0 }));
+  }
+
+  private async handleSetBlendShapeValue(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('set_blend_shape_value', args, a => ({ node_path: a.nodePath, index: a.index ?? 0, value: a.value ?? 0 }));
+  }
+
+  private async handleGetMaterialProperty(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath || !args.property) return createErrorResponse('nodePath and property are required.');
+    return this.gameCommand('get_material_property', args, a => ({ node_path: a.nodePath, surface_index: a.surfaceIndex ?? 0, property: a.property }));
+  }
+
+  private async handleCreateMaterialOverride(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('create_material_override', args, a => ({ node_path: a.nodePath, surface_index: a.surfaceIndex ?? 0 }));
   }
 
 }
