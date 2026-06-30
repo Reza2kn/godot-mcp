@@ -775,6 +775,26 @@ func _handle_command(json_str: String) -> void:
 			_cmd_set_time_scale(params)
 		"get_scene_tree_paused":
 			_cmd_get_scene_tree_paused(params)
+		"set_rich_text_label_bbcode":
+			_cmd_set_rich_text_label_bbcode(params)
+		"set_progress_bar_value":
+			_cmd_set_progress_bar_value(params)
+		"set_slider_value":
+			_cmd_set_slider_value(params)
+		"get_spin_box_value":
+			_cmd_get_spin_box_value(params)
+		"set_spin_box_value":
+			_cmd_set_spin_box_value(params)
+		"set_option_button_selected":
+			_cmd_set_option_button_selected(params)
+		"get_option_button_selected":
+			_cmd_get_option_button_selected(params)
+		"add_option_button_item":
+			_cmd_add_option_button_item(params)
+		"set_tab_container_current":
+			_cmd_set_tab_container_current(params)
+		"get_color_picker_value":
+			_cmd_get_color_picker_value(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -7922,6 +7942,118 @@ func _cmd_set_time_scale(params: Dictionary) -> void:
 
 func _cmd_get_scene_tree_paused(params: Dictionary) -> void:
 	_send_response({"success": true, "paused": get_tree().paused, "current_scene": str(get_tree().current_scene.get_path()) if get_tree().current_scene != null else null})
+
+func _cmd_set_rich_text_label_bbcode(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var text: String = params.get("text", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is RichTextLabel:
+		_send_response({"error": "RichTextLabel not found: " + node_path})
+		return
+	var rtl := node as RichTextLabel
+	rtl.bbcode_enabled = true
+	rtl.text = text
+	_send_response({"success": true, "text": text})
+
+func _cmd_set_progress_bar_value(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var value: float = params.get("value", 0.0)
+	var min_value = params.get("min_value", null)
+	var max_value = params.get("max_value", null)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is ProgressBar:
+		_send_response({"error": "ProgressBar not found: " + node_path})
+		return
+	var pb := node as ProgressBar
+	if min_value != null:
+		pb.min_value = float(min_value)
+	if max_value != null:
+		pb.max_value = float(max_value)
+	pb.value = value
+	_send_response({"success": true, "value": pb.value, "min": pb.min_value, "max": pb.max_value})
+
+func _cmd_set_slider_value(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var value: float = params.get("value", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not (node is HSlider or node is VSlider):
+		_send_response({"error": "Slider not found: " + node_path})
+		return
+	(node as Range).value = value
+	_send_response({"success": true, "value": value})
+
+func _cmd_get_spin_box_value(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is SpinBox:
+		_send_response({"error": "SpinBox not found: " + node_path})
+		return
+	var sb := node as SpinBox
+	_send_response({"success": true, "value": sb.value, "min": sb.min_value, "max": sb.max_value, "step": sb.step})
+
+func _cmd_set_spin_box_value(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var value: float = params.get("value", 0.0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is SpinBox:
+		_send_response({"error": "SpinBox not found: " + node_path})
+		return
+	(node as SpinBox).value = value
+	_send_response({"success": true, "value": value})
+
+func _cmd_set_option_button_selected(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var index: int = params.get("index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is OptionButton:
+		_send_response({"error": "OptionButton not found: " + node_path})
+		return
+	(node as OptionButton).selected = index
+	_send_response({"success": true, "selected": index})
+
+func _cmd_get_option_button_selected(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is OptionButton:
+		_send_response({"error": "OptionButton not found: " + node_path})
+		return
+	var ob := node as OptionButton
+	_send_response({"success": true, "selected_index": ob.selected, "selected_text": ob.get_item_text(ob.selected) if ob.selected >= 0 else null, "item_count": ob.item_count})
+
+func _cmd_add_option_button_item(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var label: String = params.get("label", "")
+	var id: int = params.get("id", -1)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is OptionButton:
+		_send_response({"error": "OptionButton not found: " + node_path})
+		return
+	var ob := node as OptionButton
+	if id >= 0:
+		ob.add_item(label, id)
+	else:
+		ob.add_item(label)
+	_send_response({"success": true, "label": label, "item_count": ob.item_count})
+
+func _cmd_set_tab_container_current(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var tab_index: int = params.get("tab_index", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is TabContainer:
+		_send_response({"error": "TabContainer not found: " + node_path})
+		return
+	(node as TabContainer).current_tab = tab_index
+	_send_response({"success": true, "current_tab": tab_index})
+
+func _cmd_get_color_picker_value(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is ColorPicker:
+		_send_response({"error": "ColorPicker not found: " + node_path})
+		return
+	var cp := node as ColorPicker
+	var color = cp.color
+	_send_response({"success": true, "color": {"r": color.r, "g": color.g, "b": color.b, "a": color.a}, "html": color.to_html()})
 
 func _exit_tree() -> void:
 	_clear_debug_draw()
