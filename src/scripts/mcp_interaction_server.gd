@@ -553,6 +553,16 @@ func _handle_command(json_str: String) -> void:
 			_cmd_game_set_time_scale(params)
 		"game_get_scene_tree":
 			_cmd_game_get_scene_tree(params)
+		"get_canvas_layers":
+			_cmd_get_canvas_layers(params)
+		"canvas_layer_set_layer":
+			_cmd_canvas_layer_set_layer(params)
+		"get_shader_params":
+			_cmd_get_shader_params(params)
+		"get_2d_camera_info":
+			_cmd_get_2d_camera_info(params)
+		"camera_2d_set_zoom":
+			_cmd_camera_2d_set_zoom(params)
 		_:
 			_send_response({"error": "Unknown command: %s" % command})
 
@@ -6345,6 +6355,83 @@ func _build_tree_node_depth(node: Node, depth: int, max_depth: int) -> Dictionar
 			children.append(_build_tree_node_depth(child, depth + 1, max_depth))
 		result["children"] = children
 	return result
+
+
+func _cmd_get_canvas_layers(_params: Dictionary) -> void:
+	var layers: Array = []
+	var queue: Array = [get_tree().root]
+	while queue.size() > 0:
+		var node = queue.pop_front()
+		if node is CanvasLayer:
+			var cl := node as CanvasLayer
+			layers.append({"path": str(node.get_path()), "name": node.name, "layer": cl.layer, "follow_viewport": cl.follow_viewport_enabled})
+		for child in node.get_children():
+			queue.append(child)
+	_send_response({"success": true, "count": layers.size(), "layers": layers})
+
+func _cmd_canvas_layer_set_layer(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var layer: int = params.get("layer", 0)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is CanvasLayer:
+		_send_response({"error": "CanvasLayer not found: " + node_path})
+		return
+	(node as CanvasLayer).layer = layer
+	_send_response({"success": true, "layer": layer})
+
+func _cmd_get_shader_params(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null:
+		_send_response({"error": "Node not found: " + node_path})
+		return
+	var material = null
+	if node is MeshInstance3D:
+		material = (node as MeshInstance3D).get_surface_override_material(0)
+		if material == null:
+			material = (node as MeshInstance3D).mesh.surface_get_material(0) if (node as MeshInstance3D).mesh != null else null
+	elif node is CanvasItem:
+		material = (node as CanvasItem).material
+	if material == null or not material is ShaderMaterial:
+		_send_response({"error": "No ShaderMaterial on node: " + node_path})
+		return
+	var sm := material as ShaderMaterial
+	var params_list: Array = []
+	if sm.shader != null:
+		for param in sm.shader.get_shader_uniform_list():
+			params_list.append({"name": param.name, "value": _to_serializable(sm.get_shader_parameter(param.name))})
+	_send_response({"success": true, "shader_params": params_list})
+
+func _cmd_get_2d_camera_info(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var cam: Camera2D
+	if node_path != "":
+		var node = get_tree().root.get_node_or_null(NodePath(node_path))
+		if node == null or not node is Camera2D:
+			_send_response({"error": "Camera2D not found: " + node_path})
+			return
+		cam = node as Camera2D
+	else:
+		var vp = get_viewport()
+		if vp == null:
+			_send_response({"error": "No viewport"})
+			return
+		cam = vp.get_camera_2d() if vp.get_camera_2d() != null else null
+		if cam == null:
+			_send_response({"error": "No current Camera2D"})
+			return
+	_send_response({"success": true, "path": str(cam.get_path()), "zoom": {"x": cam.zoom.x, "y": cam.zoom.y}, "offset": {"x": cam.offset.x, "y": cam.offset.y}, "position": {"x": cam.global_position.x, "y": cam.global_position.y}, "enabled": cam.enabled})
+
+func _cmd_camera_2d_set_zoom(params: Dictionary) -> void:
+	var node_path: String = params.get("node_path", "")
+	var x: float = params.get("x", 1.0)
+	var y: float = params.get("y", x)
+	var node = get_tree().root.get_node_or_null(NodePath(node_path))
+	if node == null or not node is Camera2D:
+		_send_response({"error": "Camera2D not found: " + node_path})
+		return
+	(node as Camera2D).zoom = Vector2(x, y)
+	_send_response({"success": true, "zoom": {"x": x, "y": y}})
 
 
 func _exit_tree() -> void:

@@ -135,6 +135,20 @@ func _init():
             add_navigation_agent_2d(params)
         "add_audio_stream_player":
             add_audio_stream_player(params)
+        "add_path_2d_node":
+            add_path_2d_node(params)
+        "add_rigid_body_2d":
+            add_physics_body_node(params, "RigidBody2D")
+        "add_character_body_2d":
+            add_physics_body_node(params, "CharacterBody2D")
+        "add_static_body_2d":
+            add_physics_body_node(params, "StaticBody2D")
+        "add_rigid_body_3d":
+            add_physics_body_node(params, "RigidBody3D")
+        "add_character_body_3d":
+            add_physics_body_node(params, "CharacterBody3D")
+        "add_static_body_3d":
+            add_physics_body_node(params, "StaticBody3D")
         _:
             log_error("Unknown operation: " + operation)
             quit(1)
@@ -2528,4 +2542,75 @@ func add_audio_stream_player(params: Dictionary) -> void:
 	ResourceSaver.save(packed, abs_scene)
 	root.queue_free()
 	print(JSON.stringify({"success": true, "node_name": node_name, "bus": bus}))
+	quit()
+
+func add_path_2d_node(params: Dictionary) -> void:
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", "Path2D")
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
+	if parent == null:
+		parent = root
+	var path_node = Path2D.new()
+	path_node.name = node_name
+	path_node.curve = Curve2D.new()
+	parent.add_child(path_node)
+	path_node.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name}))
+	quit()
+
+func add_physics_body_node(params: Dictionary, body_type: String) -> void:
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", body_type)
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
+	if parent == null:
+		parent = root
+	var body: Node
+	match body_type:
+		"RigidBody2D":
+			body = RigidBody2D.new()
+		"CharacterBody2D":
+			body = CharacterBody2D.new()
+		"StaticBody2D":
+			body = StaticBody2D.new()
+		"RigidBody3D":
+			body = RigidBody3D.new()
+		"CharacterBody3D":
+			body = CharacterBody3D.new()
+		"StaticBody3D":
+			body = StaticBody3D.new()
+		_:
+			print(JSON.stringify({"error": "Unknown body type: " + body_type}))
+			root.queue_free()
+			quit()
+			return
+	body.name = node_name
+	parent.add_child(body)
+	body.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name, "type": body_type}))
 	quit()

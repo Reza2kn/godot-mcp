@@ -6446,6 +6446,267 @@ class GodotServer {
           required: ['projectPath', 'scenePath'],
         },
       },
+      {
+        name: 'add_path_2d_node',
+        description: 'Add a Path2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the .tscn file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: Path2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_rigid_body_2d',
+        description: 'Add a RigidBody2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the .tscn file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: RigidBody2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_character_body_2d',
+        description: 'Add a CharacterBody2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the .tscn file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: CharacterBody2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_static_body_2d',
+        description: 'Add a StaticBody2D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the .tscn file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: StaticBody2D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_rigid_body_3d',
+        description: 'Add a RigidBody3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the .tscn file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: RigidBody3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_character_body_3d',
+        description: 'Add a CharacterBody3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the .tscn file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: CharacterBody3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'add_static_body_3d',
+        description: 'Add a StaticBody3D node to a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the .tscn file' },
+            nodeName: { type: 'string', description: 'Name for the new node (default: StaticBody3D)' },
+            parentNodePath: { type: 'string', description: 'Parent node path (default: .)' },
+          },
+          required: ['projectPath', 'scenePath'],
+        },
+      },
+      {
+        name: 'create_environment_resource',
+        description: 'Create a default Environment .tres resource file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            outputPath: { type: 'string', description: 'res:// path for the output .tres file' },
+          },
+          required: ['projectPath', 'outputPath'],
+        },
+      },
+      {
+        name: 'create_physics_material',
+        description: 'Create a PhysicsMaterial .tres resource file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            outputPath: { type: 'string', description: 'res:// path for the output .tres file' },
+            friction: { type: 'number', description: 'Friction value (default: 1.0)' },
+            bounce: { type: 'number', description: 'Bounce value (default: 0.0)' },
+            rough: { type: 'boolean', description: 'Rough flag (default: false)' },
+            absorbent: { type: 'boolean', description: 'Absorbent flag (default: false)' },
+          },
+          required: ['projectPath', 'outputPath'],
+        },
+      },
+      {
+        name: 'get_script_variables',
+        description: 'List all var declarations in a GDScript file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scriptPath: { type: 'string', description: 'res:// path to the .gd script file' },
+          },
+          required: ['projectPath', 'scriptPath'],
+        },
+      },
+      {
+        name: 'create_audio_stream_wav',
+        description: 'Create an AudioStreamWAV .tres referencing a .wav file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            outputPath: { type: 'string', description: 'res:// path for the output .tres file' },
+            wavPath: { type: 'string', description: 'res:// path to the .wav audio file' },
+          },
+          required: ['projectPath', 'outputPath', 'wavPath'],
+        },
+      },
+      {
+        name: 'find_nodes_with_property',
+        description: 'Find scene nodes that have a specific property set.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            propertyName: { type: 'string', description: 'Property name to search for (e.g. position)' },
+          },
+          required: ['projectPath', 'propertyName'],
+        },
+      },
+      {
+        name: 'scene_set_node_property_batch',
+        description: 'Set a property on all nodes of a type in a scene.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the .tscn file' },
+            nodeType: { type: 'string', description: 'Node type to target (e.g. Sprite2D)' },
+            propertyName: { type: 'string', description: 'Property name to set' },
+            propertyValue: { type: 'string', description: 'GDScript value literal to assign' },
+          },
+          required: ['projectPath', 'scenePath', 'nodeType', 'propertyName', 'propertyValue'],
+        },
+      },
+      {
+        name: 'get_canvas_layers',
+        description: 'Get all CanvasLayer nodes in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {},
+          required: [],
+        },
+      },
+      {
+        name: 'canvas_layer_set_layer',
+        description: 'Set the layer number of a CanvasLayer in the game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the CanvasLayer node' },
+            layer: { type: 'integer', description: 'Layer number to assign' },
+          },
+          required: ['nodePath', 'layer'],
+        },
+      },
+      {
+        name: 'get_shader_params',
+        description: 'Get shader parameters from a ShaderMaterial in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the node with ShaderMaterial' },
+          },
+          required: ['nodePath'],
+        },
+      },
+      {
+        name: 'set_shader_param',
+        description: 'Set a shader parameter on a ShaderMaterial in game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the node with ShaderMaterial' },
+            paramName: { type: 'string', description: 'Shader parameter name to set' },
+            value: { description: 'Value to assign to the shader parameter' },
+          },
+          required: ['nodePath', 'paramName'],
+        },
+      },
+      {
+        name: 'get_2d_camera_info',
+        description: 'Get Camera2D zoom, offset, and position from game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the Camera2D (optional)' },
+          },
+          required: [],
+        },
+      },
+      {
+        name: 'camera_2d_set_zoom',
+        description: 'Set the zoom of a Camera2D in the running game.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            nodePath: { type: 'string', description: 'Scene-tree path to the Camera2D node' },
+            x: { type: 'number', description: 'Zoom X value' },
+            y: { type: 'number', description: 'Zoom Y value (defaults to x if omitted)' },
+          },
+          required: ['nodePath', 'x'],
+        },
+      },
+      {
+        name: 'scene_batch_rename_nodes',
+        description: 'Rename all nodes matching a prefix in a scene file.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            projectPath: { type: 'string', description: 'Absolute path to the Godot project' },
+            scenePath: { type: 'string', description: 'res:// path to the .tscn file' },
+            oldPrefix: { type: 'string', description: 'Name prefix to match for renaming' },
+            newPrefix: { type: 'string', description: 'Replacement prefix for matched nodes' },
+          },
+          required: ['projectPath', 'scenePath', 'oldPrefix', 'newPrefix'],
+        },
+      },
       ],
     }));
 
@@ -7315,6 +7576,46 @@ class GodotServer {
           return await this.handleGetEditorPluginList(request.params.arguments);
         case 'validate_scene_file':
           return await this.handleValidateSceneFile(request.params.arguments);
+        case 'add_path_2d_node':
+          return await this.handleAddPath2dNode(request.params.arguments);
+        case 'add_rigid_body_2d':
+          return await this.handleAddRigidBody2d(request.params.arguments);
+        case 'add_character_body_2d':
+          return await this.handleAddCharacterBody2d(request.params.arguments);
+        case 'add_static_body_2d':
+          return await this.handleAddStaticBody2d(request.params.arguments);
+        case 'add_rigid_body_3d':
+          return await this.handleAddRigidBody3d(request.params.arguments);
+        case 'add_character_body_3d':
+          return await this.handleAddCharacterBody3d(request.params.arguments);
+        case 'add_static_body_3d':
+          return await this.handleAddStaticBody3d(request.params.arguments);
+        case 'create_environment_resource':
+          return await this.handleCreateEnvironmentResource(request.params.arguments);
+        case 'create_physics_material':
+          return await this.handleCreatePhysicsMaterial(request.params.arguments);
+        case 'get_script_variables':
+          return await this.handleGetScriptVariables(request.params.arguments);
+        case 'create_audio_stream_wav':
+          return await this.handleCreateAudioStreamWav(request.params.arguments);
+        case 'find_nodes_with_property':
+          return await this.handleFindNodesWithProperty(request.params.arguments);
+        case 'scene_set_node_property_batch':
+          return await this.handleSceneSetNodePropertyBatch(request.params.arguments);
+        case 'get_canvas_layers':
+          return await this.handleGetCanvasLayers(request.params.arguments);
+        case 'canvas_layer_set_layer':
+          return await this.handleCanvasLayerSetLayer(request.params.arguments);
+        case 'get_shader_params':
+          return await this.handleGetShaderParams(request.params.arguments);
+        case 'set_shader_param':
+          return await this.handleSetShaderParam(request.params.arguments);
+        case 'get_2d_camera_info':
+          return await this.handleGet2dCameraInfo(request.params.arguments);
+        case 'camera_2d_set_zoom':
+          return await this.handleCamera2dSetZoom(request.params.arguments);
+        case 'scene_batch_rename_nodes':
+          return await this.handleSceneBatchRenameNodes(request.params.arguments);
         default:
           throw new McpError(
             ErrorCode.MethodNotFound,
@@ -14307,6 +14608,220 @@ class GodotServer {
       if (!defined.includes(refId)) issues.push(`Undefined ext_resource id: ${refId}`);
     }
     return { content: [{ type: 'text', text: JSON.stringify({ scenePath: args.scenePath, valid: issues.length === 0, nodeCount: nodes.length, issues }, null, 2) }] };
+  }
+
+  private async handleAddPath2dNode(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_path_2d_node', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'Path2D', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddRigidBody2d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_rigid_body_2d', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'RigidBody2D', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddCharacterBody2d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_character_body_2d', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'CharacterBody2D', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddStaticBody2d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_static_body_2d', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'StaticBody2D', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddRigidBody3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_rigid_body_3d', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'RigidBody3D', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddCharacterBody3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_character_body_3d', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'CharacterBody3D', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleAddStaticBody3d(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath) return createErrorResponse('projectPath and scenePath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    return this.headlessOp('add_static_body_3d', args, a => ({ projectPath: a.projectPath, params: { scenePath: a.scenePath, nodeName: a.nodeName || 'StaticBody3D', parentNodePath: a.parentNodePath || '.' } }));
+  }
+
+  private async handleCreateEnvironmentResource(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.outputPath) return createErrorResponse('projectPath and outputPath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.outputPath);
+    const content = `[gd_resource type="Environment" format=3]\n\n[resource]\nbackground_mode = 2\nambient_light_color = Color(0.2, 0.2, 0.2, 1)\n`;
+    try { writeFileSync(absPath, content, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: JSON.stringify({ success: true, outputPath: args.outputPath }) }] };
+  }
+
+  private async handleCreatePhysicsMaterial(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.outputPath) return createErrorResponse('projectPath and outputPath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.outputPath);
+    const friction = args.friction ?? 1.0;
+    const bounce = args.bounce ?? 0.0;
+    const rough = args.rough ?? false;
+    const absorbent = args.absorbent ?? false;
+    const content = `[gd_resource type="PhysicsMaterial" format=3]\n\n[resource]\nfriction = ${friction}\nbounce = ${bounce}\nrough = ${rough}\nabsorbent = ${absorbent}\n`;
+    try { writeFileSync(absPath, content, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: JSON.stringify({ success: true, outputPath: args.outputPath, friction, bounce }) }] };
+  }
+
+  private async handleGetScriptVariables(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.scriptPath);
+    if (!existsSync(absPath)) return createErrorResponse(`Script not found: ${absPath}`);
+    let content: string;
+    try { content = readFileSync(absPath, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const lines = content.split('\n');
+    const vars: Array<{ name: string; type?: string; default?: string; line: number; isExport: boolean; isOnready: boolean }> = [];
+    lines.forEach((line, idx) => {
+      const m = line.match(/^\s*(?:(@export|@onready)\s+)?(?:(@export|@onready)\s+)?var\s+(\w+)(?:\s*:\s*(\w+))?(?:\s*=\s*(.+))?/);
+      if (m && !line.trim().startsWith('#')) {
+        const fullLine = line.trim();
+        vars.push({
+          name: m[3],
+          type: m[4],
+          default: m[5]?.trim().slice(0, 50),
+          line: idx + 1,
+          isExport: fullLine.includes('@export'),
+          isOnready: fullLine.includes('@onready'),
+        });
+      }
+    });
+    return { content: [{ type: 'text', text: JSON.stringify({ scriptPath: args.scriptPath, count: vars.length, variables: vars }, null, 2) }] };
+  }
+
+  private async handleCreateAudioStreamWav(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.outputPath || !args.wavPath) return createErrorResponse('projectPath, outputPath, and wavPath are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absOutput = this.resolveResPath(args.projectPath, args.outputPath);
+    const content = `[gd_resource type="AudioStreamWAV" format=3]\n\n[ext_resource type="AudioStreamWAV" path="${args.wavPath}" id="1_wav"]\n\n[resource]\ndata = ExtResource("1_wav")\n`;
+    try { writeFileSync(absOutput, content, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: JSON.stringify({ success: true, outputPath: args.outputPath }) }] };
+  }
+
+  private async handleFindNodesWithProperty(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.propertyName) return createErrorResponse('projectPath and propertyName are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const scenes = this.collectFiles(args.projectPath, ['.tscn']);
+    const results: Array<{ scene: string; nodeName: string; nodeType: string; value: string }> = [];
+    for (const scene of scenes) {
+      let content: string;
+      try { content = readFileSync(scene, 'utf8'); } catch { continue; }
+      const nodes = this.parseTscnNodes(content);
+      for (const node of nodes) {
+        const propMatch = node.body.match(new RegExp(`^${args.propertyName}\\s*=\\s*(.+)`, 'm'));
+        if (propMatch) {
+          results.push({ scene: scene.replace(args.projectPath + '/', ''), nodeName: node.name, nodeType: node.type || 'inherited', value: propMatch[1].trim().slice(0, 80) });
+        }
+      }
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ propertyName: args.propertyName, count: results.length, nodes: results }, null, 2) }] };
+  }
+
+  private async handleSceneSetNodePropertyBatch(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.nodeType || !args.propertyName || args.propertyValue === undefined)
+      return createErrorResponse('projectPath, scenePath, nodeType, propertyName, and propertyValue are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absPath)) return createErrorResponse(`Scene not found: ${absPath}`);
+    let content: string;
+    try { content = readFileSync(absPath, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const nodes = this.parseTscnNodes(content);
+    let modified = content;
+    let count = 0;
+    for (const node of nodes) {
+      if (node.type !== args.nodeType) continue;
+      count++;
+      const propRegex = new RegExp(`(${args.propertyName}\\s*=\\s*)[^\n]+`, 'm');
+      const nodeBlockStart = modified.indexOf(node.header);
+      if (nodeBlockStart === -1) continue;
+      const nextNodeStart = modified.indexOf('\n[', nodeBlockStart + 1);
+      const nodeBlock = nextNodeStart === -1 ? modified.slice(nodeBlockStart) : modified.slice(nodeBlockStart, nextNodeStart);
+      const updatedBlock = propRegex.test(nodeBlock)
+        ? nodeBlock.replace(propRegex, `$1${args.propertyValue}`)
+        : nodeBlock + `\n${args.propertyName} = ${args.propertyValue}`;
+      modified = modified.slice(0, nodeBlockStart) + updatedBlock + (nextNodeStart === -1 ? '' : modified.slice(nextNodeStart));
+    }
+    if (count === 0) return createErrorResponse(`No nodes of type "${args.nodeType}" found.`);
+    try { writeFileSync(absPath, modified, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: JSON.stringify({ success: true, modifiedCount: count, nodeType: args.nodeType, propertyName: args.propertyName }) }] };
+  }
+
+  private async handleGetCanvasLayers(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_canvas_layers', args, _a => ({}));
+  }
+
+  private async handleCanvasLayerSetLayer(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (args.layer === undefined) return createErrorResponse('layer is required.');
+    return this.gameCommand('canvas_layer_set_layer', args, a => ({ node_path: a.nodePath, layer: a.layer }));
+  }
+
+  private async handleGetShaderParams(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    return this.gameCommand('get_shader_params', args, a => ({ node_path: a.nodePath }));
+  }
+
+  private async handleSetShaderParam(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (!args.paramName) return createErrorResponse('paramName is required.');
+    return this.gameCommand('set_shader_param', args, a => ({ node_path: a.nodePath, param_name: a.paramName, value: a.value }));
+  }
+
+  private async handleGet2dCameraInfo(args: any) {
+    args = normalizeParameters(args || {});
+    return this.gameCommand('get_2d_camera_info', args, a => ({ node_path: a.nodePath || '' }));
+  }
+
+  private async handleCamera2dSetZoom(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.nodePath) return createErrorResponse('nodePath is required.');
+    if (args.x === undefined) return createErrorResponse('x is required.');
+    return this.gameCommand('camera_2d_set_zoom', args, a => ({ node_path: a.nodePath, x: a.x, y: a.y ?? a.x }));
+  }
+
+  private async handleSceneBatchRenameNodes(args: any) {
+    args = normalizeParameters(args || {});
+    if (!args.projectPath || !args.scenePath || !args.oldPrefix || args.newPrefix === undefined)
+      return createErrorResponse('projectPath, scenePath, oldPrefix, and newPrefix are required.');
+    if (!validatePath(args.projectPath)) return createErrorResponse('Invalid path.');
+    const absPath = this.resolveResPath(args.projectPath, args.scenePath);
+    if (!existsSync(absPath)) return createErrorResponse(`Scene not found: ${absPath}`);
+    let content: string;
+    try { content = readFileSync(absPath, 'utf8'); } catch (e: any) { return createErrorResponse(`Read failed: ${e.message}`); }
+    const nameRegex = new RegExp(`(\\[node[^\\]]*?\\bname=")${args.oldPrefix}([^"]*")`, 'g');
+    let count = 0;
+    const updated = content.replace(nameRegex, (_, pre, suf) => { count++; return `${pre}${args.newPrefix}${suf}`; });
+    if (count === 0) return createErrorResponse(`No nodes with prefix "${args.oldPrefix}" found.`);
+    try { writeFileSync(absPath, updated, 'utf8'); } catch (e: any) { return createErrorResponse(`Write failed: ${e.message}`); }
+    return { content: [{ type: 'text', text: JSON.stringify({ success: true, renamedCount: count, oldPrefix: args.oldPrefix, newPrefix: args.newPrefix }) }] };
   }
 
 }
