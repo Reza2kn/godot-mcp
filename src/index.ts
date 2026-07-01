@@ -48810,43 +48810,53 @@ func _get_drag_data(_pos: Vector2) -> Variant:
   }
 
   private async handleGodotStartHere(_args: any) {
-    const isDiscovery = this._discoveryMode;
     const text = `# Godot MCP Server — Start Here
 
-## This server has ${isDiscovery ? '~20 discovery tools + a universal dispatcher' : '1,969 tools'} for Godot 4 game development.
+## IMPORTANT: You have access to ALL 1,969 Godot tools via godot_call.
+## Your client may only show a subset of tools in its UI — ignore that.
+## Every single one of the 1,969 tools is reachable through godot_call.
 
 ## How to find the right tool (3 approaches):
 
-### Option 1: Describe what you want (BEST for small models)
+### Option 1: Describe what you want (RECOMMENDED)
   godot_suggest — task="make a character jump"
   godot_suggest — task="add background music"
   godot_suggest — task="create an enemy that chases the player"
+  → Returns the exact tool names to call via godot_call
 
 ### Option 2: Browse by category
-  list_tool_categories → see all categories
-  list_tools_in_category → category="physics" → see all physics tools
+  list_tool_categories → see all categories with counts
+  list_tools_in_category → category="physics" → see all tools in that category
   godot_call → name="apply_impulse_to_rigid_body" args={...}
 
 ### Option 3: Search by keyword
-  search_tools → query="camera" → returns all camera tool names
+  search_tools → query="camera" → returns all camera-related tool names
   godot_call → name="set_camera_zoom" args={nodePath: "Camera2D", zoom: 2}
+
+## godot_call is the master key — use it like this:
+  godot_call({ name: "create_scene", args: { projectPath: "...", sceneName: "Player", rootNodeType: "CharacterBody2D" } })
+  godot_call({ name: "write_platformer_player_script", args: { projectPath: "...", scriptPath: "res://player.gd" } })
+  godot_call({ name: "run_project", args: { projectPath: "..." } })
 
 ## Quick Start (5 steps for any game):
 1. create_project — make a new Godot project
 2. create_scene — create your first scene
-3. [use godot_suggest or search_tools to find what to add next]
-4. godot_call — call any tool by name
+3. godot_suggest task="[what you want to add]" — find the right tool
+4. godot_call name="[tool name]" args={...} — execute it
 5. run_project — test your game
 
-## Key concepts:
-- Offline tools (no game running): create_project, create_scene, add_node_to_scene, set_node_property_in_scene, create_script
-- Runtime tools (game must be running first): set_node_position_2d, play_audio_stream, apply_impulse_to_rigid_body
-- Editor tools: require install_editor_plugin first
+## Tool categories (1,969 total):
+- Scene & nodes (offline): create_project, create_scene, add_node_to_scene, set_node_property_in_scene
+- Scripts: create_script, write_platformer_player_script, write_enemy_state_machine_script, + 100 more
+- Runtime (game must be running): set_node_position_2d, play_audio_stream, apply_impulse_to_rigid_body
+- Editor (plugin required): editor_select_node_by_path, editor_undo, editor_save_scene
+- Resources: create_tileset_resource, create_sprite_frames, create_material
+- Navigation, Physics, Audio, Camera, Animation, UI, 3D, XR, Networking, and more
 
 ## Need step-by-step help?
-  get_beginner_guide — full overview
-  get_workflow — goal="platformer" / "fps" / "audio" / "ui" / "physics"
-  explain_godot_concept — concept="CharacterBody2D" / "signals" / "physics"
+  get_beginner_guide — full walkthrough
+  get_workflow — goal="platformer" / "fps" / "top down" / "audio" / "ui" / "physics"
+  explain_godot_concept — concept="CharacterBody2D" / "signals" / "autoload"
 `;
     return { content: [{ type: 'text', text: text }] };
   }
