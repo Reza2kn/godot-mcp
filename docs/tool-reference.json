@@ -9530,13 +9530,21 @@
     },
     {
       "name": "compare_screenshots",
-      "description": "Compare current screenshot to a reference file by hash.",
+      "description": "Compare the current frame to a reference PNG using pixel differences.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "referencePath": {
             "type": "string",
             "description": "Absolute path to the reference screenshot file"
+          },
+          "channelThreshold": {
+            "type": "number",
+            "description": "Normalized per-channel tolerance from 0 to 1 (default 0.1)"
+          },
+          "maxDiffPercent": {
+            "type": "number",
+            "description": "Allowed percent of differing pixels (default 0.5)"
           }
         },
         "required": [

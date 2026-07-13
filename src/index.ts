@@ -14,6 +14,7 @@ import { spawn, execFile } from 'child_process';
 import { promisify } from 'util';
 import { createConnection, Socket } from 'net';
 import { tmpdir } from 'os';
+import { PNG } from 'pngjs';
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
@@ -3685,11 +3686,13 @@ class GodotServer {
       },
       {
         name: 'compare_screenshots',
-        description: 'Compare current screenshot to a reference file by hash.',
+        description: 'Compare the current frame to a reference PNG using pixel differences.',
         inputSchema: {
           type: 'object',
           properties: {
             referencePath: { type: 'string', description: 'Absolute path to the reference screenshot file' },
+            channelThreshold: { type: 'number', description: 'Normalized per-channel tolerance from 0 to 1 (default 0.1)' },
+            maxDiffPercent: { type: 'number', description: 'Allowed percent of differing pixels (default 0.5)' },
           },
           required: ['referencePath'],
         },
@@ -23329,12 +23332,15 @@ class GodotServer {
 
       process.on('exit', (code: number | null) => {
         this.logDebug(`Godot process exited with code ${code}`);
-        this.disconnectFromGame();
-        if (this.gameConnection.projectPath) {
-          this.removeInteractionServer(this.gameConnection.projectPath);
-          this.gameConnection.projectPath = null;
-        }
+        // A previous process can finish exiting after a replacement has already
+        // launched. Only the process that still owns activeProcess may tear down
+        // the shared runtime connection.
         if (this.activeProcess && this.activeProcess.process === process) {
+          this.disconnectFromGame();
+          if (this.gameConnection.projectPath) {
+            this.removeInteractionServer(this.gameConnection.projectPath);
+            this.gameConnection.projectPath = null;
+          }
           this.activeProcess = null;
         }
       });
@@ -27095,11 +27101,53 @@ class GodotServer {
     try {
       const screenshotResponse = await this.sendGameCommand('screenshot', {});
       if (screenshotResponse.error) return createErrorResponse(`Screenshot failed: ${screenshotResponse.error}`);
-      const currentHash = screenshotResponse.data || screenshotResponse.base64 || '';
-      const referenceContent = readFileSync(args.referencePath, 'base64');
-      const match = currentHash === referenceContent;
-      const diffPercent = match ? 0 : 100;
-      return { content: [{ type: 'text', text: JSON.stringify({ match, diffPercent }, null, 2) }] };
+      const currentPng = PNG.sync.read(Buffer.from(screenshotResponse.data || screenshotResponse.base64 || '', 'base64'));
+      const referencePng = PNG.sync.read(readFileSync(args.referencePath));
+      const channelThreshold = Math.min(1, Math.max(0, typeof args.channelThreshold === 'number' ? args.channelThreshold : 0.1));
+      const maxDiffPercent = Math.min(100, Math.max(0, typeof args.maxDiffPercent === 'number' ? args.maxDiffPercent : 0.5));
+
+      if (currentPng.width !== referencePng.width || currentPng.height !== referencePng.height) {
+        return { content: [{ type: 'text', text: JSON.stringify({
+          match: false,
+          diffPercent: 100,
+          differentPixels: currentPng.width * currentPng.height,
+          totalPixels: currentPng.width * currentPng.height,
+          currentSize: { width: currentPng.width, height: currentPng.height },
+          referenceSize: { width: referencePng.width, height: referencePng.height },
+          channelThreshold,
+          maxDiffPercent,
+          reason: 'Image dimensions differ',
+        }, null, 2) }] };
+      }
+
+      const channelDeltaLimit = channelThreshold * 255;
+      const totalPixels = currentPng.width * currentPng.height;
+      let differentPixels = 0;
+      let absoluteDelta = 0;
+      for (let offset = 0; offset < currentPng.data.length; offset += 4) {
+        let pixelDiffers = false;
+        for (let channel = 0; channel < 4; channel++) {
+          const delta = Math.abs(currentPng.data[offset + channel] - referencePng.data[offset + channel]);
+          absoluteDelta += delta;
+          if (delta > channelDeltaLimit) pixelDiffers = true;
+        }
+        if (pixelDiffers) differentPixels++;
+      }
+      const diffPercent = totalPixels === 0 ? 0 : (differentPixels / totalPixels) * 100;
+      const meanAbsoluteErrorPercent = currentPng.data.length === 0
+        ? 0
+        : (absoluteDelta / (currentPng.data.length * 255)) * 100;
+      const match = diffPercent <= maxDiffPercent;
+      return { content: [{ type: 'text', text: JSON.stringify({
+        match,
+        diffPercent,
+        differentPixels,
+        totalPixels,
+        meanAbsoluteErrorPercent,
+        size: { width: currentPng.width, height: currentPng.height },
+        channelThreshold,
+        maxDiffPercent,
+      }, null, 2) }] };
     } catch (e: any) {
       return createErrorResponse(`compare_screenshots failed: ${e?.message || 'Unknown error'}`);
     }

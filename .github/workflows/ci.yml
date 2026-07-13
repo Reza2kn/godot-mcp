@@ -48,3 +48,9 @@ jobs:
           "$GODOT_PATH" --headless --script build/scripts/mcp_interaction_server.gd --check-only
           "$GODOT_PATH" --headless --script build/scripts/godot_operations.gd --check-only noop '{}'
       - run: npm run verify:godot
+      - name: Install virtual display
+        if: matrix.godot-version == '4.6.3-stable'
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+      - name: Verify the seven-point visual feedback loop
+        if: matrix.godot-version == '4.6.3-stable'
+        run: xvfb-run -a npm run verify:feedback

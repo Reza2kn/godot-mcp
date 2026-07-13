@@ -880,7 +880,7 @@ The machine-readable schemas are in `tool-reference.json`. Regenerate both files
 | `clear_print_output` | Clear the print output buffer in the running game. | None |
 | `clear_rich_text` | Clear all text from a RichTextLabel node. | nodePath |
 | `clear_tilemap_layer` | Clear all tiles in a TileMap layer in game. | nodePath |
-| `compare_screenshots` | Compare current screenshot to a reference file by hash. | referencePath |
+| `compare_screenshots` | Compare the current frame to a reference PNG using pixel differences. | referencePath |
 | `connect_astar2d_points` | Connect two points in an AStar2D graph. | nodePath, id1, id2 |
 | `connect_signal_in_game` | Connect a signal from one node to another in game. | sourcePath, signalName, targetPath, methodName |
 | `count_code_lines` | Count code/comment/blank lines across all GDScript files. | projectPath |

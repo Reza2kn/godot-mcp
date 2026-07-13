@@ -52,6 +52,33 @@ From an MCP client:
    `game_get_property`.
 8. Call `stop_project` and confirm port 9090 is no longer listening.
 
+## Seven-point visual feedback gate
+
+Run the complete self-evaluation loop on a machine with a display server:
+
+```bash
+npm run verify:feedback
+```
+
+Linux CI runs the same command under `xvfb-run`. The verifier creates a
+disposable UI project and proves all seven capabilities together:
+
+1. launch the project and connect to its runtime bridge;
+2. capture complete rendered PNG frames;
+3. retain frames as inspectable artifacts under `.context/seven-point-artifacts`;
+4. collect stdout and a known runtime diagnostic without bridge-warning noise;
+5. send mouse and keyboard input, record it, and replay it;
+6. assert runtime state and perform decoded per-pixel screenshot comparison;
+7. detect an intentionally wrong state, persist a repair, immediately restart,
+   and prove that the repaired state survives relaunch.
+
+The check additionally requires the `BROKEN`, `READY`, `CLICK_OK`, and `KEY_OK`
+screenshots to be distinct. `compare_screenshots` decodes both PNGs and reports
+the differing-pixel percentage and mean absolute channel error. Its default
+tolerance ignores channel deltas up to `0.1` and permits at most `0.5%`
+differing pixels; callers can override these with `channelThreshold` and
+`maxDiffPercent`.
+
 For editor tools, enable **Godot MCP Editor** under **Project > Project Settings
 > Plugins**, launch the project in the editor, then call
 `connect_to_godot_editor`. Editor control uses TCP port 9091.
@@ -86,6 +113,9 @@ or editor state.
   checked against the dispatcher.
 - **Not connected to game interaction server:** wait a few seconds after
   `run_project`, inspect `get_debug_output`, and check that port 9090 is free.
+- **Feedback artifacts are stale:** run `npm run verify:feedback`; capture waits
+  for `RenderingServer.frame_post_draw`, so each PNG must contain the most
+  recently asserted state.
 - **Editor tools are not connected:** install and enable the plugin, open the
   project in Godot, and confirm port 9091 is free.
 - **Godot script parse error:** rebuild, then run the compatibility check above
@@ -100,6 +130,7 @@ or editor state.
 - npm dry-run includes `build/index.js`, both runtime scripts, and the editor
   plugin.
 - The end-to-end smoke test passes.
+- The seven-point visual feedback gate passes without a stop/start delay.
 - README, `package.json`, `server.json`, and the observed MCP tool count agree.
 
 No finite test can cover every possible ordering, argument value, or combination

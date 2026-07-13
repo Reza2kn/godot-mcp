@@ -52,6 +52,7 @@
     "docs:generate": "npm run build && node scripts/generate-tool-reference.mjs",
     "benchmark": "npm run build && node scripts/benchmark.mjs",
     "verify:godot": "npm run build && node scripts/verify-godot.mjs",
+    "verify:feedback": "npm run build && node scripts/verify-feedback-loop.mjs",
     "inspector": "npx @modelcontextprotocol/inspector build/index.js",
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run docs:generate",
@@ -63,10 +64,12 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.26.0",
     "axios": "^1.13.5",
-    "fs-extra": "^11.2.0"
+    "fs-extra": "^11.2.0",
+    "pngjs": "^7.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.24",
+    "@types/pngjs": "^6.0.5",
     "@vitest/coverage-v8": "^3.2.4",
     "typescript": "^5.3.3",
     "vitest": "^3.0.0"

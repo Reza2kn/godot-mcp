@@ -538,6 +538,7 @@ Useful maintainer commands:
 ```bash
 npm run docs:generate  # regenerate all 1,969 schemas and the reference
 npm run verify:godot   # real offline + runtime + analysis workflow
+npm run verify:feedback # full run/capture/inspect/input/compare/repair loop
 npm run benchmark      # discovery/full startup, payload, and call timings
 ```
 
