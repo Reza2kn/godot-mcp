@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Reza2kn/godot-mcp.git"
+    "url": "git+https://github.com/Reza2kn/godot-mcp.git"
   },
   "mcpName": "io.github.reza2kn/godot-mcp",
   "license": "MIT",
@@ -34,16 +34,29 @@
   ],
   "type": "module",
   "bin": {
-    "godot-mcp": "./build/index.js"
+    "godot-mcp": "build/index.js"
   },
   "files": [
-    "build"
+    "build",
+    "docs",
+    "examples/verified-demo",
+    "CHANGELOG.md",
+    "SECURITY.md",
+    "SUPPORT.md"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc && node scripts/build.js",
+    "docs:generate": "npm run build && node scripts/generate-tool-reference.mjs",
+    "benchmark": "npm run build && node scripts/benchmark.mjs",
+    "verify:godot": "npm run build && node scripts/verify-godot.mjs",
     "inspector": "npx @modelcontextprotocol/inspector build/index.js",
     "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run docs:generate",
     "watch": "tsc --watch",
+    "pretest": "npm run build",
     "test": "vitest run",
     "test:watch": "vitest"
   },

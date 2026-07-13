@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run docs:generate
+      - run: git diff --exit-code -- docs/tool-reference.md docs/tool-reference.json
+      - run: npm run benchmark
+      - run: npm pack --dry-run
+
+  godot-compatibility:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        godot-version: [4.3-stable, 4.4.1-stable, 4.5.1-stable, 4.6.3-stable]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Download official Godot build
+        run: |
+          curl -fL "https://github.com/godotengine/godot-builds/releases/download/${{ matrix.godot-version }}/Godot_v${{ matrix.godot-version }}_linux.x86_64.zip" -o godot.zip
+          unzip -q godot.zip -d "$RUNNER_TEMP/godot"
+          chmod +x "$RUNNER_TEMP/godot/Godot_v${{ matrix.godot-version }}_linux.x86_64"
+          echo "GODOT_PATH=$RUNNER_TEMP/godot/Godot_v${{ matrix.godot-version }}_linux.x86_64" >> "$GITHUB_ENV"
+      - run: npm run build
+      - name: Compile both Godot bridges
+        run: |
+          "$GODOT_PATH" --headless --script build/scripts/mcp_interaction_server.gd --check-only
+          "$GODOT_PATH" --headless --script build/scripts/godot_operations.gd --check-only noop '{}'
+      - run: npm run verify:godot
