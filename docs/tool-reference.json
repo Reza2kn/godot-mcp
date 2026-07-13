@@ -28749,6 +28749,10 @@
           "scene": {
             "type": "string",
             "description": "Optional: Specific scene to run"
+          },
+          "headless": {
+            "type": "boolean",
+            "description": "Run without a display (recommended for CI and servers)"
           }
         },
         "required": [

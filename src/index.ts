@@ -906,6 +906,10 @@ class GodotServer {
                 type: 'string',
                 description: 'Optional: Specific scene to run',
               },
+              headless: {
+                type: 'boolean',
+                description: 'Run without a display (recommended for CI and servers)',
+              },
             },
             required: ['projectPath'],
           },
@@ -23296,6 +23300,7 @@ class GodotServer {
       this.injectInteractionServer(args.projectPath);
 
       const cmdArgs = ['-d', '--path', args.projectPath];
+      if (args.headless === true) cmdArgs.unshift('--headless');
       if (args.scene && validatePath(args.scene)) {
         this.logDebug(`Adding scene parameter: ${args.scene}`);
         cmdArgs.push(args.scene);
@@ -49341,7 +49346,7 @@ func _get_drag_data(_pos: Vector2) -> Variant:
       // ── Core always-useful tools ──
       { name: 'get_godot_version', description: 'Get installed Godot version.', inputSchema: { type: 'object', properties: {} } },
       { name: 'create_project', description: 'Create a new Godot 4 project.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string', description: 'Absolute path for new project' }, projectName: { type: 'string', description: 'Project name' } }, required: ['projectPath', 'projectName'] } },
-      { name: 'run_project', description: 'Run a Godot project.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string', description: 'Path to project folder' } }, required: ['projectPath'] } },
+      { name: 'run_project', description: 'Run a Godot project.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string', description: 'Path to project folder' }, headless: { type: 'boolean', description: 'Run without a display (CI/server mode)' } }, required: ['projectPath'] } },
       { name: 'stop_project', description: 'Stop the running Godot project.', inputSchema: { type: 'object', properties: {} } },
       { name: 'get_project_info', description: 'Get info about a Godot project.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string', description: 'Path to project folder' } }, required: ['projectPath'] } },
       { name: 'create_scene', description: 'Create a new .tscn scene file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' }, rootNodeType: { type: 'string' } }, required: ['projectPath', 'scenePath', 'rootNodeType'] } },

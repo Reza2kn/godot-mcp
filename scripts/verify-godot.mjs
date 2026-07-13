@@ -36,7 +36,7 @@ try {
   await call('set_main_scene', { projectPath, scenePath: 'res://main.tscn' });
   await call('install_editor_plugin', { projectPath, enable: true });
   await call('read_scene', { projectPath, scenePath: 'main.tscn' });
-  await call('run_project', { projectPath });
+  await call('run_project', { projectPath, headless: process.platform === 'linux' || process.env.CI === 'true' });
   await call('game_get_scene_tree', {}, 40);
   await call('game_set_property', { nodePath: '/root/root/Status', property: 'text', value: 'runtime' });
   const property = await call('game_get_property', { nodePath: '/root/root/Status', property: 'text' });

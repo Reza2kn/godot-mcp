@@ -46,7 +46,8 @@ From an MCP client:
 4. Call `set_main_scene`.
 5. Call `install_editor_plugin`; confirm both files exist under
    `addons/godot_mcp_editor/`.
-6. Call `run_project`. Initial connection can take a few seconds.
+6. Call `run_project`. Use `headless=true` in CI or on a server without a
+   display. Initial connection can take a few seconds.
 7. Call `game_get_scene_tree`, `game_get_logs`, `game_set_property`, and
    `game_get_property`.
 8. Call `stop_project` and confirm port 9090 is no longer listening.
