@@ -1,0 +1,49 @@
+{
+  "mappings": [
+    {
+      "capabilityId": "project-manager-create-project",
+      "tools": ["create_project"],
+      "state": "verified"
+    },
+    {
+      "capabilityId": "project-manager-import-project",
+      "tools": [],
+      "state": "gap"
+    },
+    {
+      "capabilityId": "scene-dock-create-node",
+      "tools": ["add_node_to_scene"],
+      "state": "represented_unverified"
+    },
+    {
+      "capabilityId": "scene-dock-save-scene",
+      "tools": ["save_scene"],
+      "state": "represented_unverified"
+    },
+    {
+      "capabilityId": "inspector-edit-property",
+      "tools": ["set_node_property_in_scene"],
+      "state": "represented_unverified"
+    },
+    {
+      "capabilityId": "script-editor-create-script",
+      "tools": ["create_script"],
+      "state": "represented_unverified"
+    },
+    {
+      "capabilityId": "play-controls-run-project",
+      "tools": ["run_project"],
+      "state": "verified"
+    },
+    {
+      "capabilityId": "play-controls-stop-project",
+      "tools": ["stop_project"],
+      "state": "verified"
+    },
+    {
+      "capabilityId": "output-panel-view-errors",
+      "tools": ["get_debug_output"],
+      "state": "represented_unverified"
+    }
+  ]
+}

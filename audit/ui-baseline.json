@@ -1,0 +1,86 @@
+{
+  "godotVersion": "4.4",
+  "capabilities": [
+    {
+      "id": "project-manager-create-project",
+      "editorSurface": "Project Manager",
+      "userAction": "Create a new project",
+      "source": {
+        "version": "4.4",
+        "url": "https://docs.godotengine.org/en/4.4/tutorials/editor/project_manager.html"
+      }
+    },
+    {
+      "id": "project-manager-import-project",
+      "editorSurface": "Project Manager",
+      "userAction": "Import an existing project",
+      "source": {
+        "version": "4.4",
+        "url": "https://docs.godotengine.org/en/4.4/tutorials/editor/project_manager.html"
+      }
+    },
+    {
+      "id": "scene-dock-create-node",
+      "editorSurface": "Scene dock",
+      "userAction": "Add a node to the current scene",
+      "source": {
+        "version": "4.4",
+        "url": "https://docs.godotengine.org/en/4.4/getting_started/first_2d_game/02.player_scene.html"
+      }
+    },
+    {
+      "id": "scene-dock-save-scene",
+      "editorSurface": "Scene dock",
+      "userAction": "Save the edited scene",
+      "source": {
+        "version": "4.4",
+        "url": "https://docs.godotengine.org/en/4.4/getting_started/first_2d_game/02.player_scene.html"
+      }
+    },
+    {
+      "id": "inspector-edit-property",
+      "editorSurface": "Inspector dock",
+      "userAction": "Edit a selected node property",
+      "source": {
+        "version": "4.4",
+        "url": "https://docs.godotengine.org/en/4.4/getting_started/first_2d_game/02.player_scene.html"
+      }
+    },
+    {
+      "id": "script-editor-create-script",
+      "editorSurface": "Script editor",
+      "userAction": "Create and attach a script",
+      "source": {
+        "version": "4.4",
+        "url": "https://docs.godotengine.org/en/4.4/getting_started/first_2d_game/03.coding_the_player.html"
+      }
+    },
+    {
+      "id": "play-controls-run-project",
+      "editorSurface": "Play controls",
+      "userAction": "Run the current project",
+      "source": {
+        "version": "4.4",
+        "url": "https://docs.godotengine.org/en/4.4/getting_started/first_2d_game/05.the_main_game_scene.html"
+      }
+    },
+    {
+      "id": "play-controls-stop-project",
+      "editorSurface": "Play controls",
+      "userAction": "Stop the running project",
+      "source": {
+        "version": "4.4",
+        "url": "https://docs.godotengine.org/en/4.4/tutorials/editor/default_key_mapping.html"
+      }
+    },
+    {
+      "id": "output-panel-view-errors",
+      "editorSurface": "Output panel",
+      "userAction": "Read project errors and debug output",
+      "source": {
+        "version": "4.4",
+        "url": "https://docs.godotengine.org/en/4.4/tutorials/scripting/debug/overview_of_debugging_tools.html"
+      }
+    }
+  ]
+}
