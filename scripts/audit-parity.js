@@ -9,6 +9,9 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const entryPoint = join(root, "build", "index.js");
 const baseline = readJson("audit/ui-baseline.json");
 const mappings = readJson("audit/mappings.json").mappings;
+const readmeClaims = readReadmeClaims(
+  readFileSync(join(root, "README.md"), "utf8"),
+);
 const STATES = ["verified", "represented_unverified", "broken", "gap"];
 const MCP_ONLY =
   /^(godot_(?:start_here|suggest|call)|search_tools|list_tool_categories|list_tools_in_category|get_beginner_guide|get_workflow|explain_godot_concept|write_.*_script|setup_.*|create_.*_template)$/;
@@ -30,6 +33,22 @@ function duplicates(values) {
       return false;
     }),
   );
+}
+
+export function readReadmeClaims(source) {
+  const claims = new Map();
+  for (const match of source.matchAll(
+    /\b([\d][\d,]*)\s+(?:real\s+)?tools?\b/gi,
+  )) {
+    const total = Number(match[1].replaceAll(",", ""));
+    if (Number.isSafeInteger(total) && !claims.has(total))
+      claims.set(total, {
+        source: "README.md",
+        total,
+        text: match[0],
+      });
+  }
+  return [...claims.values()];
 }
 
 async function listProductionTools(discoveryMode) {
@@ -68,7 +87,12 @@ export function readDispatchInventory(source) {
   return [...body.matchAll(/case '([^']+)'/g)].map((match) => match[1]);
 }
 
-export function analyzeRegistry({ full, discovery, dispatch }) {
+export function analyzeRegistry({
+  full,
+  discovery,
+  dispatch,
+  readmeClaims = [],
+}) {
   const findings = [];
   for (const tool of duplicates(full))
     findings.push({ kind: "duplicate_advertised_name", tool, mode: "full" });
@@ -80,12 +104,25 @@ export function analyzeRegistry({ full, discovery, dispatch }) {
     });
   for (const tool of duplicates(dispatch))
     findings.push({ kind: "duplicate_dispatch_name", tool });
-  for (const tool of full.filter((tool) => !dispatch.includes(tool)))
-    findings.push({ kind: "advertised_without_dispatch", tool });
+  for (const [mode, advertised] of [
+    ["full", full],
+    ["discovery", discovery],
+  ])
+    for (const tool of advertised.filter((tool) => !dispatch.includes(tool)))
+      findings.push({ kind: "advertised_without_dispatch", tool, mode });
   for (const tool of dispatch.filter((tool) => !full.includes(tool)))
     findings.push({ kind: "dispatch_not_advertised", tool });
+  for (const claim of readmeClaims)
+    findings.push({
+      kind: "readme_only_claim",
+      source: claim.source,
+      claimedTotal: claim.total,
+      text: claim.text,
+    });
   return findings.sort((left, right) =>
-    `${left.kind}:${left.tool}`.localeCompare(`${right.kind}:${right.tool}`),
+    `${left.kind}:${left.mode ?? ""}:${left.tool ?? left.claimedTotal}`.localeCompare(
+      `${right.kind}:${right.mode ?? ""}:${right.tool ?? right.claimedTotal}`,
+    ),
   );
 }
 
@@ -134,7 +171,7 @@ export async function createAuditReport() {
     listProductionTools(true),
   ]);
   const dispatch = readDispatchInventory(readFileSync(entryPoint, "utf8"));
-  const findings = analyzeRegistry({ full, discovery, dispatch });
+  const findings = analyzeRegistry({ full, discovery, dispatch, readmeClaims });
   return {
     generatedFrom: "built production MCP entry point",
     uiBaseline: baseline,
@@ -142,7 +179,7 @@ export async function createAuditReport() {
       full: { observed: true, tools: full },
       discovery: { observed: true, tools: discovery },
       dispatch: { observed: true, tools: dispatch },
-      claimedTotals: [],
+      claimedTotals: readmeClaims,
     },
     findings,
     summary: summarizeParity({

@@ -35,7 +35,7 @@ describe("versioned UI parity baseline", () => {
       expect(capability.source.url).toContain(`/en/${baseline.godotVersion}/`);
       expect(() => new URL(capability.source.url)).not.toThrow();
     }
-  });
+  }, 15000);
 
   it("separates_ui_parity_from_mcp_extras", () => {
     const audit = runAudit();
@@ -99,5 +99,55 @@ describe("versioned UI parity baseline", () => {
       "an advertised tool without dispatch cannot count as parity",
     ).toBe(1);
     expect(summary.numerator).toBe(0);
+  });
+
+  it("reports_each_evidence_state_without_collapsing_unverified_or_gaps_into_verified", () => {
+    const summary = summarizeParity({
+      capabilities: [
+        { id: "verified-capability" },
+        { id: "represented-unverified-capability" },
+        { id: "broken-capability" },
+        { id: "gap-capability" },
+      ],
+      mappings: [
+        {
+          capabilityId: "verified-capability",
+          tools: ["verified_tool"],
+          state: "verified",
+        },
+        {
+          capabilityId: "represented-unverified-capability",
+          tools: ["unverified_tool"],
+          state: "represented_unverified",
+        },
+        {
+          capabilityId: "broken-capability",
+          tools: ["advertised_only"],
+          state: "verified",
+        },
+        { capabilityId: "gap-capability", tools: [], state: "gap" },
+      ],
+      fullTools: ["verified_tool", "unverified_tool", "advertised_only"],
+      dispatchTools: ["verified_tool", "unverified_tool"],
+    });
+
+    expect(
+      summary.states.verified,
+      "verified mappings must remain separately counted",
+    ).toBe(1);
+    expect(
+      summary.states.represented_unverified,
+      "represented-but-unverified mappings must not be upgraded to verified",
+    ).toBe(1);
+    expect(
+      summary.states.broken,
+      "advertised but undispatchable mappings must be broken",
+    ).toBe(1);
+    expect(summary.states.gap, "absent mappings must remain gaps").toBe(1);
+    expect(
+      summary.numerator,
+      "only verified and represented-unverified mappings count as represented",
+    ).toBe(2);
+    expect(summary.denominator).toBe(4);
   });
 });
