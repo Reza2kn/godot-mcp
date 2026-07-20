@@ -101,7 +101,7 @@ describe("versioned UI parity baseline", () => {
     expect(summary.numerator).toBe(0);
   });
 
-  it("reports_each_evidence_state_without_collapsing_unverified_or_gaps_into_verified", () => {
+  it("reports_each_evidence_state_without_collapsing_unverified_or_absent_capabilities_into_verified", () => {
     const summary = summarizeParity({
       capabilities: [
         { id: "verified-capability" },
@@ -125,7 +125,6 @@ describe("versioned UI parity baseline", () => {
           tools: ["advertised_only"],
           state: "verified",
         },
-        { capabilityId: "gap-capability", tools: [], state: "gap" },
       ],
       fullTools: ["verified_tool", "unverified_tool", "advertised_only"],
       dispatchTools: ["verified_tool", "unverified_tool"],
@@ -143,7 +142,10 @@ describe("versioned UI parity baseline", () => {
       summary.states.broken,
       "advertised but undispatchable mappings must be broken",
     ).toBe(1);
-    expect(summary.states.gap, "absent mappings must remain gaps").toBe(1);
+    expect(
+      summary.states.gap,
+      "a baseline capability with no mapping row must remain an absent gap",
+    ).toBe(1);
     expect(
       summary.numerator,
       "only verified and represented-unverified mappings count as represented",
