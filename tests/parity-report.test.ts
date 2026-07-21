@@ -397,7 +397,9 @@ describe("generated MCP versus UI parity report", () => {
             disposition: "ui_capability",
             mcpTools: ["shared_direct_tool", "editor_full_missing_tool"],
             state: "represented_unverified",
-            dogfood: { observableResult: "The editor scene and resource save." },
+            dogfood: {
+              observableResult: "The editor scene and resource save.",
+            },
           },
         ],
       },
@@ -609,6 +611,18 @@ describe("generated MCP versus UI parity report", () => {
     ]);
     const readmePath = join(root, "README.md");
     const originalReadme = readFileSync(readmePath, "utf8");
+    const originalArtifacts = new Map(
+      artifactPaths.map((relativePath) => [
+        relativePath,
+        readFileSync(join(root, relativePath), "utf8"),
+      ]),
+    );
+
+    for (const relativePath of artifactPaths)
+      expect(
+        originalArtifacts.get(relativePath),
+        `${relativePath} must already match the real --write output before the audit refreshes it`,
+      ).toBe(expectedContents.get(relativePath));
 
     try {
       for (const relativePath of artifactPaths)
@@ -631,6 +645,11 @@ describe("generated MCP versus UI parity report", () => {
         ).toBe(expectedContents.get(relativePath));
     } finally {
       writeFileSync(readmePath, originalReadme);
+      for (const relativePath of artifactPaths)
+        writeFileSync(
+          join(root, relativePath),
+          originalArtifacts.get(relativePath) ?? "",
+        );
     }
   }, 30000);
 });
