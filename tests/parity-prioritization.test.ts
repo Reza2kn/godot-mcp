@@ -260,4 +260,92 @@ describe("parity prioritization", () => {
       "reordered equal breadth evidence must retain the canonical recommendation ranks",
     ).toEqual(recommendations.repair);
   });
+
+  it("keeps_source_qualified_groups_and_source_tool_fields_distinct", () => {
+    const recommendations = createRecommendations({
+      capabilities: [
+        {
+          id: "cross-source-collision",
+          userAction: "Repair the baseline capability",
+          editorSurface: "Project Manager",
+        },
+      ],
+      mappings: [
+        {
+          capabilityId: "cross-source-collision",
+          state: "broken",
+          tools: ["baseline_only_tool"],
+        },
+      ],
+      editorRecords: [
+        {
+          disposition: "ui_capability",
+          capabilityId: "cross-source-collision",
+          state: "broken",
+          mcpTools: ["editor_only_tool"],
+          reason: "editor route is broken",
+        },
+      ],
+      runtimeRecords: [
+        {
+          disposition: "ui_capability",
+          capabilityId: "runtime-broad",
+          state: "broken",
+          tools: ["runtime_first_tool", "runtime_second_tool"],
+          reason: "runtime route is broken",
+        },
+      ],
+      headlessRecords: [
+        {
+          disposition: "ui_capability",
+          capability: "headless-single",
+          state: "broken",
+          tool: "headless_only_tool",
+          reason: "headless route is broken",
+        },
+      ],
+    });
+
+    expect(
+      recommendations.repair.map(
+        ({ rank, source, capabilityId, affectedTools, evidenceRefs }) => ({
+          rank,
+          source,
+          capabilityId,
+          affectedTools,
+          evidenceRefs,
+        }),
+      ),
+      "source-qualified keys must not merge same-action findings, and every source must preserve its actual MCP tools for breadth ranking",
+    ).toEqual([
+      {
+        rank: 1,
+        source: "runtime",
+        capabilityId: "runtime-broad",
+        affectedTools: ["runtime_first_tool", "runtime_second_tool"],
+        evidenceRefs: ["audit/runtime-evidence.json"],
+      },
+      {
+        rank: 2,
+        source: "baseline",
+        capabilityId: "cross-source-collision",
+        affectedTools: ["baseline_only_tool"],
+        evidenceRefs: ["audit/mappings.json", "audit/ui-baseline.json"],
+      },
+      {
+        rank: 3,
+        source: "editor",
+        capabilityId: "cross-source-collision",
+        affectedTools: ["editor_only_tool"],
+        evidenceRefs: ["audit/editor-evidence.json"],
+      },
+      {
+        rank: 4,
+        source: "headless",
+        capabilityId: "headless-single",
+        affectedTools: ["headless_only_tool"],
+        evidenceRefs: ["audit/headless-evidence.json"],
+      },
+    ]);
+  });
 });
