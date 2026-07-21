@@ -151,14 +151,14 @@ describe("parity prioritization", () => {
       editorRecords: [
         {
           disposition: "ui_capability",
-          capabilityId: "editor-small",
+          capabilityId: "editor-alpha",
           state: "broken",
           mcpTools: ["small_tool"],
           reason: "small editor route is broken",
         },
         {
           disposition: "ui_capability",
-          capabilityId: "editor-large",
+          capabilityId: "editor-zulu",
           state: "broken",
           mcpTools: ["large_tool_one", "large_tool_two"],
           reason: "large editor route is broken",
@@ -181,7 +181,7 @@ describe("parity prioritization", () => {
     expect(
       canonical.repair.map((recommendation) => recommendation.capabilityId),
       "larger affected-tool groups must rank first before the stable key tie-break",
-    ).toEqual(["editor-large", "editor-small"]);
+    ).toEqual(["editor-zulu", "editor-alpha"]);
 
     const repairedToUnverified = createRecommendations({
       ...input,
@@ -195,13 +195,13 @@ describe("parity prioritization", () => {
     });
     expect(
       repairedToUnverified.repair.some(
-        (recommendation) => recommendation.capabilityId === "editor-small",
+        (recommendation) => recommendation.capabilityId === "editor-alpha",
       ),
       "a represented-unverified finding must not remain in repair",
     ).toBe(false);
     expect(
       repairedToUnverified.verify.filter(
-        (recommendation) => recommendation.capabilityId === "editor-small",
+        (recommendation) => recommendation.capabilityId === "editor-alpha",
       ),
       "a state change must create exactly one verification recommendation",
     ).toHaveLength(1);
