@@ -212,6 +212,20 @@ export function validatePath(path: string): boolean {
 export function createErrorResponse(message: string): any {
   console.error(`[SERVER] Error response: ${message}`);
 
+  const lower = message.toLowerCase();
+  const code = /required|invalid argument|invalid path/.test(lower) ? 'INVALID_ARGUMENT'
+    : /not connected|no active godot|use run_project/.test(lower) ? 'PRECONDITION_FAILED'
+    : /not found|does not exist|cannot find/.test(lower) ? 'NOT_FOUND'
+    : /outside godot_mcp_allowed_roots|destructive/.test(lower) ? 'PERMISSION_DENIED'
+    : /unsupported|only supported|version/.test(lower) ? 'UNSUPPORTED'
+    : 'INTERNAL_ERROR';
+  const recovery = code === 'PRECONDITION_FAILED' ? 'Satisfy the named runtime or editor prerequisite, then retry.'
+    : code === 'INVALID_ARGUMENT' ? 'Check the tool schema and retry with the required argument names and types.'
+    : code === 'NOT_FOUND' ? 'Verify the project, scene, node, or resource path and retry.'
+    : code === 'PERMISSION_DENIED' ? 'Adjust the allowed roots or provide the explicitly requested confirmation.'
+    : code === 'UNSUPPORTED' ? 'Use a supported Godot version or an alternative tool.'
+    : 'Inspect get_debug_output or game_get_errors for the underlying failure.';
+
   return {
     content: [
       {
@@ -219,6 +233,7 @@ export function createErrorResponse(message: string): any {
         text: message,
       },
     ],
+    structuredContent: { error: { code, message, recovery } },
     isError: true,
   };
 }

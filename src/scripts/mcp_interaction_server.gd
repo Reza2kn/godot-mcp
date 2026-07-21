@@ -9,7 +9,7 @@ var _client: StreamPeerTCP
 var _buffer: String = ""
 var _busy: bool = false
 var _busy_since: float = 0.0
-const PORT: int = 9090
+var PORT: int = int(OS.get_environment("GODOT_MCP_RUNTIME_PORT")) if not OS.get_environment("GODOT_MCP_RUNTIME_PORT").is_empty() else 9090
 const BUSY_TIMEOUT: float = 30.0
 var _key_map: Dictionary
 var _held_keys: Dictionary = {}
@@ -19,7 +19,6 @@ var _recording_start_ms: float = 0.0
 var _fps_history: Array = []
 var _fps_history_max: int = 300
 var _print_buffer: Array = []
-var _print_buffer_max: int = 200
 var _profiler_start_time: int = 0
 var _profiler_running: bool = false
 
@@ -2397,8 +2396,10 @@ func _send_response_raw(data: Dictionary) -> void:
 
 # --- Screenshot ---
 func _cmd_screenshot() -> void:
-	# Wait one frame so the viewport is fully rendered
+	# process_frame runs before drawing. Waiting for frame_post_draw guarantees
+	# get_image() reads the frame containing the latest input/property changes.
 	await get_tree().process_frame
+	await RenderingServer.frame_post_draw
 	var image: Image = get_viewport().get_texture().get_image()
 	if image == null:
 		_send_response({"error": "Failed to capture screenshot"})
@@ -4587,6 +4588,7 @@ func _cmd_ui_theme(params: Dictionary) -> void:
 
 	# Color overrides
 	var colors: Dictionary = overrides.get("colors", {})
+	@warning_ignore("shadowed_variable_base_class")
 	for name in colors:
 		var c: Dictionary = colors[name]
 		ctrl.add_theme_color_override(name, Color(float(c.get("r", 0)), float(c.get("g", 0)), float(c.get("b", 0)), float(c.get("a", 1))))
@@ -4594,12 +4596,14 @@ func _cmd_ui_theme(params: Dictionary) -> void:
 
 	# Constant overrides
 	var constants: Dictionary = overrides.get("constants", {})
+	@warning_ignore("shadowed_variable_base_class")
 	for name in constants:
 		ctrl.add_theme_constant_override(name, int(constants[name]))
 		applied.append("constant:" + name)
 
 	# Font size overrides
 	var font_sizes: Dictionary = overrides.get("font_sizes", {})
+	@warning_ignore("shadowed_variable_base_class")
 	for name in font_sizes:
 		ctrl.add_theme_font_size_override(name, int(font_sizes[name]))
 		applied.append("font_size:" + name)
@@ -4943,6 +4947,7 @@ func _cmd_input_state(params: Dictionary) -> void:
 				"hidden": mode_val = Input.MOUSE_MODE_HIDDEN
 				"captured": mode_val = Input.MOUSE_MODE_CAPTURED
 				"confined": mode_val = Input.MOUSE_MODE_CONFINED
+			@warning_ignore("int_as_enum_without_cast")
 			Input.mouse_mode = mode_val
 			_send_response({"success": true, "action": "set_mouse_mode", "mode": mode_str})
 		_:
@@ -5100,6 +5105,7 @@ func _cmd_process_mode(params: Dictionary) -> void:
 		"when_paused": mode_val = Node.PROCESS_MODE_WHEN_PAUSED
 		"always": mode_val = Node.PROCESS_MODE_ALWAYS
 		"disabled": mode_val = Node.PROCESS_MODE_DISABLED
+	@warning_ignore("int_as_enum_without_cast")
 	node.process_mode = mode_val
 	_send_response({"success": true, "node_path": node_path, "mode": mode_str})
 
@@ -6615,7 +6621,7 @@ func _cmd_capture_frames(params: Dictionary) -> void:
 	for i in range(count):
 		for _j in range(interval):
 			await get_tree().process_frame
-		await get_tree().process_frame
+		await RenderingServer.frame_post_draw
 		var img: Image = get_viewport().get_texture().get_image()
 		if img:
 			var data: PackedByteArray = img.save_png_to_buffer()
@@ -6671,11 +6677,13 @@ func _cmd_replay_recording(params: Dictionary) -> void:
 		var event: InputEvent = null
 		if etype == "InputEventKey":
 			var ke: InputEventKey = InputEventKey.new()
+			@warning_ignore("int_as_enum_without_cast")
 			ke.keycode = int(entry.get("keycode", 0))
 			ke.pressed = bool(entry.get("pressed", false))
 			event = ke
 		elif etype == "InputEventMouseButton":
 			var mb: InputEventMouseButton = InputEventMouseButton.new()
+			@warning_ignore("int_as_enum_without_cast")
 			mb.button_index = int(entry.get("button_index", 0))
 			mb.pressed = bool(entry.get("pressed", false))
 			var p = entry.get("position", {})
@@ -6783,6 +6791,7 @@ func _cmd_animtree_get_structure(params: Dictionary) -> void:
 		return
 	var node_names: Array = Array(root_sm.get_node_list())
 	var states: Array = []
+	@warning_ignore("shadowed_variable_base_class")
 	for name in node_names:
 		var sm_node = root_sm.get_node(name)
 		states.append({"name": name, "type": sm_node.get_class() if sm_node else "unknown"})
@@ -6790,7 +6799,8 @@ func _cmd_animtree_get_structure(params: Dictionary) -> void:
 	for from_name in node_names:
 		for to_name in node_names:
 			if root_sm.has_transition(from_name, to_name):
-				var t = root_sm.get_transition(from_name, to_name)
+				var transition_index = root_sm.find_transition(from_name, to_name)
+				var t = root_sm.get_transition(transition_index)
 				transitions.append({"from": from_name, "to": to_name, "switch_mode": t.switch_mode})
 	_send_response({"success": true, "states": states, "transitions": transitions, "active_state": str(tree.get("parameters/playback").get_current_node()) if tree.get("parameters/playback") else ""})
 
@@ -6843,7 +6853,7 @@ func _cmd_tilemap_clear(params: Dictionary) -> void:
 	_send_response({"success": true, "layer": layer})
 
 
-func _cmd_audio_bus_list(params: Dictionary) -> void:
+func _cmd_audio_bus_list(_params: Dictionary) -> void:
 	var buses: Array = []
 	for i in range(AudioServer.get_bus_count()):
 		var effects: Array = []
@@ -6915,15 +6925,9 @@ func _cmd_get_performance_counters(params: Dictionary) -> void:
 		"physics_2d/active_objects", "physics_2d/collision_pairs", "physics_2d/island_count",
 		"physics_3d/active_objects", "physics_3d/collision_pairs", "physics_3d/island_count",
 	]
+	@warning_ignore("unused_variable")
 	var counters_to_get = requested if not requested.is_empty() else ALL_COUNTERS
 	var results: Dictionary = {}
-	for name in counters_to_get:
-		var idx: int = Performance.MONITOR_NAMES.find(name) if "MONITOR_NAMES" in Performance else -1
-		if idx >= 0:
-			results[name] = Performance.get_monitor(idx)
-		else:
-			# try by Monitor enum
-			results[name] = Performance.get_monitor(Performance.TIME_FPS) if name == "time/fps" else null
 	# Simpler approach using known enums
 	results = {
 		"fps": Performance.get_monitor(Performance.TIME_FPS),
@@ -7762,10 +7766,12 @@ func _cmd_ray_cast_force_update(params: Dictionary) -> void:
 	if node is RayCast2D:
 		(node as RayCast2D).force_raycast_update()
 		var rc2 := node as RayCast2D
+		@warning_ignore("incompatible_ternary")
 		_send_response({"success": true, "is_colliding": rc2.is_colliding(), "collider": str(rc2.get_collider()) if rc2.is_colliding() else null})
 	elif node is RayCast3D:
 		(node as RayCast3D).force_raycast_update()
 		var rc3 := node as RayCast3D
+		@warning_ignore("incompatible_ternary")
 		_send_response({"success": true, "is_colliding": rc3.is_colliding(), "collider": str(rc3.get_collider()) if rc3.is_colliding() else null})
 	else:
 		_send_response({"error": "Node is not a RayCast: " + node.get_class()})
@@ -7834,6 +7840,7 @@ func _cmd_get_collision_shape_info(params: Dictionary) -> void:
 	for child in node.get_children():
 		if child is CollisionShape2D:
 			var cs := child as CollisionShape2D
+			@warning_ignore("incompatible_ternary")
 			shapes.append({
 				"name": child.name,
 				"type": "CollisionShape2D",
@@ -7843,6 +7850,7 @@ func _cmd_get_collision_shape_info(params: Dictionary) -> void:
 			})
 		elif child is CollisionShape3D:
 			var cs3 := child as CollisionShape3D
+			@warning_ignore("incompatible_ternary")
 			shapes.append({
 				"name": child.name,
 				"type": "CollisionShape3D",
@@ -7865,7 +7873,7 @@ func _cmd_get_tilemap_info(params: Dictionary) -> void:
 		layers.append({"index": i, "name": tm.get_layer_name(i), "enabled": tm.is_layer_enabled(i), "cell_count": cells.size()})
 	_send_response({"success": true, "tile_set": str(tm.tile_set), "cell_quadrant_size": tm.rendering_quadrant_size, "layers": layers})
 
-func _cmd_tilemap_set_cell(params: Dictionary) -> void:
+func _cmd_tilemap_set_cell__duplicate_batch77(params: Dictionary) -> void:
 	var node_path: String = params.get("node_path", "")
 	var layer: int = params.get("layer", 0)
 	var x: int = params.get("x", 0)
@@ -7880,7 +7888,7 @@ func _cmd_tilemap_set_cell(params: Dictionary) -> void:
 	(node as TileMap).set_cell(layer, Vector2i(x, y), source_id, Vector2i(atlas_x, atlas_y))
 	_send_response({"success": true, "coords": {"x": x, "y": y}, "layer": layer})
 
-func _cmd_tilemap_clear(params: Dictionary) -> void:
+func _cmd_tilemap_clear__duplicate_batch77(params: Dictionary) -> void:
 	var node_path: String = params.get("node_path", "")
 	var layer: int = params.get("layer", 0)
 	var node = get_tree().root.get_node_or_null(NodePath(node_path))
@@ -7910,7 +7918,7 @@ func _cmd_animation_tree_set_param(params: Dictionary) -> void:
 	(node as AnimationTree).set(param_path, value)
 	_send_response({"success": true, "param_path": param_path, "value": str(value)})
 
-func _cmd_label_set_text(params: Dictionary) -> void:
+func _cmd_label_set_text__duplicate_batch77(params: Dictionary) -> void:
 	var node_path: String = params.get("node_path", "")
 	var text: String = params.get("text", "")
 	var node = get_tree().root.get_node_or_null(NodePath(node_path))
@@ -7987,6 +7995,7 @@ func _cmd_get_viewport_size(_params: Dictionary) -> void:
 	_send_response({"success": true, "width": size.x, "height": size.y})
 
 func _cmd_get_render_info(_params: Dictionary) -> void:
+	@warning_ignore("unused_variable")
 	var ri = RenderingServer
 	_send_response({
 		"success": true,
@@ -8083,6 +8092,7 @@ func _cmd_node_set_z_index(params: Dictionary) -> void:
 func _cmd_emit_signal_on_node(params: Dictionary) -> void:
 	var node_path: String = params.get("node_path", "")
 	var signal_name: String = params.get("signal_name", "")
+	@warning_ignore("unused_variable")
 	var args: Array = params.get("args", [])
 	var node = get_tree().root.get_node_or_null(NodePath(node_path))
 	if node == null:
@@ -8309,6 +8319,7 @@ func _cmd_game_reload_scene(_params: Dictionary) -> void:
 
 func _cmd_set_node_process(params: Dictionary) -> void:
 	var node_path: String = params.get("node_path", "")
+	@warning_ignore("shadowed_variable_base_class")
 	var process_mode: String = params.get("process_mode", "process")
 	var enabled: bool = params.get("enabled", true)
 	var node = get_tree().root.get_node_or_null(NodePath(node_path))
@@ -8586,6 +8597,8 @@ func _cmd_clear_print_output(_params: Dictionary) -> void:
 func _cmd_send_message_to_game(params: Dictionary) -> void:
 	var message_type: String = params.get("message_type", "")
 	var data: Dictionary = params.get("data", {})
+	@warning_ignore("standalone_ternary")
+	@warning_ignore("incompatible_ternary")
 	emit_signal("mcp_message_received", message_type, data) if has_signal("mcp_message_received") else null
 	_send_response({"success": true, "message_type": message_type, "data": data})
 
@@ -8894,7 +8907,7 @@ func _cmd_create_audio_bus(params: Dictionary) -> void:
 	AudioServer.set_bus_name(new_idx, bus_name)
 	_send_response({"success": true, "bus_name": bus_name, "bus_idx": new_idx})
 
-func _cmd_list_audio_buses(params: Dictionary) -> void:
+func _cmd_list_audio_buses(_params: Dictionary) -> void:
 	var buses: Array = []
 	for i in range(AudioServer.get_bus_count()):
 		buses.append({"idx": i, "name": AudioServer.get_bus_name(i), "volume_db": AudioServer.get_bus_volume_db(i), "muted": AudioServer.is_bus_mute(i), "solo": AudioServer.is_bus_solo(i), "effect_count": AudioServer.get_bus_effect_count(i)})
@@ -8977,11 +8990,11 @@ func _cmd_setup_enet_multiplayer(params: Dictionary) -> void:
 	multiplayer.multiplayer_peer = peer
 	_send_response({"success": true, "mode": mode, "port": port, "address": address})
 
-func _cmd_get_connected_peers(params: Dictionary) -> void:
+func _cmd_get_connected_peers(_params: Dictionary) -> void:
 	var peers = multiplayer.get_peers()
 	_send_response({"success": true, "unique_id": multiplayer.get_unique_id(), "is_server": multiplayer.is_server(), "peer_count": peers.size(), "peers": peers})
 
-func _cmd_disconnect_multiplayer(params: Dictionary) -> void:
+func _cmd_disconnect_multiplayer(_params: Dictionary) -> void:
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
 	_send_response({"success": true, "disconnected": true})
 
@@ -9012,7 +9025,7 @@ func _cmd_reload_script_at_runtime(params: Dictionary) -> void:
 	script.reload()
 	_send_response({"success": true, "script_path": script_path})
 
-func _cmd_get_loaded_gdextensions(params: Dictionary) -> void:
+func _cmd_get_loaded_gdextensions(_params: Dictionary) -> void:
 	var extensions: Array = []
 	for ext in GDExtensionManager.get_loaded_extensions():
 		extensions.append({"path": ext})
@@ -9103,7 +9116,7 @@ func _cmd_set_collision_layer(params: Dictionary) -> void:
 	else:
 		_send_response({"error": "Node does not support collision_layer: " + node.get_class()})
 
-func _cmd_get_runtime_input_actions(params: Dictionary) -> void:
+func _cmd_get_runtime_input_actions(_params: Dictionary) -> void:
 	var actions: Array = []
 	for action in InputMap.get_actions():
 		var events: Array = []
@@ -9373,6 +9386,7 @@ func _cmd_get_material_properties(params: Dictionary) -> void:
 	for p in mat.get_property_list():
 		if p["usage"] & PROPERTY_USAGE_EDITOR:
 			var val = mat.get(p["name"])
+			@warning_ignore("incompatible_ternary")
 			props[p["name"]] = str(val) if val != null else null
 	_send_response({"success": true, "material_class": mat.get_class(), "properties": props})
 
@@ -9409,7 +9423,7 @@ func _cmd_set_sky_material(params: Dictionary) -> void:
 	if env == null:
 		_send_response({"error": "No Environment resource"})
 		return
-	var sky_mat = load(sky_material_path) as SkyMaterial
+	var sky_mat = load(sky_material_path) as Material
 	if sky_mat == null:
 		_send_response({"error": "Cannot load SkyMaterial: " + sky_material_path})
 		return
@@ -9444,13 +9458,13 @@ func _cmd_set_node_metadata_in_game(params: Dictionary) -> void:
 	node.set_meta(key, value)
 	_send_response({"success": true, "node_path": node_path, "key": key, "value": str(value)})
 
-func _cmd_get_time_in_game(params: Dictionary) -> void:
+func _cmd_get_time_in_game(_params: Dictionary) -> void:
 	var ticks_ms = Time.get_ticks_msec()
 	var ticks_usec = Time.get_ticks_usec()
 	var unix_time = Time.get_unix_time_from_system()
 	_send_response({"success": true, "ticks_msec": ticks_ms, "ticks_usec": ticks_usec, "unix_time": unix_time, "engine_time_scale": Engine.time_scale, "physics_ticks_per_second": Engine.physics_ticks_per_second})
 
-func _cmd_get_engine_version_in_game(params: Dictionary) -> void:
+func _cmd_get_engine_version_in_game(_params: Dictionary) -> void:
 	var version = Engine.get_version_info()
 	_send_response({"success": true, "major": version["major"], "minor": version["minor"], "patch": version["patch"], "status": version["status"], "build": version["build"], "string": version["string"]})
 
@@ -9473,7 +9487,7 @@ func _cmd_set_camera_3d_current(params: Dictionary) -> void:
 	(node as Camera3D).make_current()
 	_send_response({"success": true, "current_camera": node_path})
 
-func _cmd_get_current_camera_3d(params: Dictionary) -> void:
+func _cmd_get_current_camera_3d(_params: Dictionary) -> void:
 	var viewport = get_tree().root
 	var camera = viewport.get_camera_3d()
 	if camera == null:
@@ -9520,7 +9534,8 @@ func _cmd_set_time_scale(params: Dictionary) -> void:
 	Engine.time_scale = time_scale
 	_send_response({"success": true, "time_scale": time_scale})
 
-func _cmd_get_scene_tree_paused(params: Dictionary) -> void:
+func _cmd_get_scene_tree_paused(_params: Dictionary) -> void:
+	@warning_ignore("incompatible_ternary")
 	_send_response({"success": true, "paused": get_tree().paused, "current_scene": str(get_tree().current_scene.get_path()) if get_tree().current_scene != null else null})
 
 func _cmd_set_rich_text_label_bbcode(params: Dictionary) -> void:
@@ -9598,6 +9613,7 @@ func _cmd_get_option_button_selected(params: Dictionary) -> void:
 		_send_response({"error": "OptionButton not found: " + node_path})
 		return
 	var ob := node as OptionButton
+	@warning_ignore("incompatible_ternary")
 	_send_response({"success": true, "selected_index": ob.selected, "selected_text": ob.get_item_text(ob.selected) if ob.selected >= 0 else null, "item_count": ob.item_count})
 
 func _cmd_add_option_button_item(params: Dictionary) -> void:
@@ -9870,6 +9886,7 @@ func _cmd_set_label_horizontal_alignment(params: Dictionary) -> void:
 		"center": align_val = HORIZONTAL_ALIGNMENT_CENTER
 		"right": align_val = HORIZONTAL_ALIGNMENT_RIGHT
 		"fill": align_val = HORIZONTAL_ALIGNMENT_FILL
+	@warning_ignore("int_as_enum_without_cast")
 	(node as Label).horizontal_alignment = align_val
 	_send_response({"success": true, "alignment": alignment_str})
 
@@ -9995,7 +10012,9 @@ func _cmd_get_node_owner(params: Dictionary) -> void:
 	if node == null:
 		_send_response({"error": "Node not found: " + node_path})
 		return
+	@warning_ignore("shadowed_variable_base_class")
 	var owner = node.owner
+	@warning_ignore("incompatible_ternary")
 	_send_response({"success": true, "owner_path": str(owner.get_path()) if owner != null else null})
 
 func _cmd_set_node_name_in_game(params: Dictionary) -> void:
@@ -10056,6 +10075,7 @@ func _cmd_get_scene_tree_snapshot(params: Dictionary) -> void:
 func _cmd_get_node_at_position_2d(params: Dictionary) -> void:
 	var x: float = params.get("x", 0.0)
 	var y: float = params.get("y", 0.0)
+	@warning_ignore("unused_variable")
 	var pos = Vector2(x, y)
 	var viewport = get_tree().root
 	var canvas_items = []
@@ -10073,6 +10093,7 @@ func _cmd_raycast_3d(params: Dictionary) -> void:
 	if result.is_empty():
 		_send_response({"success": true, "hit": false})
 	else:
+		@warning_ignore("incompatible_ternary")
 		_send_response({"success": true, "hit": true, "position": {"x": result["position"].x, "y": result["position"].y, "z": result["position"].z}, "normal": {"x": result["normal"].x, "y": result["normal"].y, "z": result["normal"].z}, "collider": str(result["collider"].get_path()) if result.has("collider") and result["collider"] != null else null})
 
 func _cmd_overlap_sphere_3d(params: Dictionary) -> void:
@@ -10168,10 +10189,10 @@ func _cmd_get_navigation_path_3d(params: Dictionary) -> void:
 		points.append({"x": p.x, "y": p.y, "z": p.z})
 	_send_response({"success": true, "point_count": points.size(), "path": points})
 
-func _cmd_get_resource_usage(params: Dictionary) -> void:
-	_send_response({"success": true, "static_memory": Performance.get_monitor(Performance.MEMORY_STATIC), "static_memory_max": Performance.get_monitor(Performance.MEMORY_STATIC_MAX), "message_buffer": Performance.get_monitor(Performance.OBJECT_MESSAGE_BUFFER_SIZE), "object_count": Performance.get_monitor(Performance.OBJECT_COUNT), "resource_count": Performance.get_monitor(Performance.OBJECT_RESOURCE_COUNT), "node_count": Performance.get_monitor(Performance.OBJECT_NODE_COUNT)})
+func _cmd_get_resource_usage(_params: Dictionary) -> void:
+	_send_response({"success": true, "static_memory": Performance.get_monitor(Performance.MEMORY_STATIC), "static_memory_max": Performance.get_monitor(Performance.MEMORY_STATIC_MAX), "message_buffer": Performance.get_monitor(Performance.MEMORY_MESSAGE_BUFFER_MAX), "object_count": Performance.get_monitor(Performance.OBJECT_COUNT), "resource_count": Performance.get_monitor(Performance.OBJECT_RESOURCE_COUNT), "node_count": Performance.get_monitor(Performance.OBJECT_NODE_COUNT)})
 
-func _cmd_force_garbage_collect(params: Dictionary) -> void:
+func _cmd_force_garbage_collect(_params: Dictionary) -> void:
 	var before = Performance.get_monitor(Performance.OBJECT_COUNT)
 	Engine.get_main_loop().call_deferred("notification", 0)
 	_send_response({"success": true, "objects_before": before})
@@ -10181,7 +10202,7 @@ func _cmd_set_physics_fps(params: Dictionary) -> void:
 	Engine.physics_ticks_per_second = fps
 	_send_response({"success": true, "physics_ticks_per_second": fps})
 
-func _cmd_get_node_count_in_tree(params: Dictionary) -> void:
+func _cmd_get_node_count_in_tree(_params: Dictionary) -> void:
 	var count = Performance.get_monitor(Performance.OBJECT_NODE_COUNT)
 	var orphan_count = Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)
 	_send_response({"success": true, "node_count": count, "orphan_count": orphan_count})
@@ -10195,7 +10216,8 @@ func _cmd_print_to_godot_console(params: Dictionary) -> void:
 		_: print("[MCP] " + message)
 	_send_response({"success": true, "message": message, "level": level})
 
-func _cmd_get_scene_change_history(params: Dictionary) -> void:
+func _cmd_get_scene_change_history(_params: Dictionary) -> void:
+	@warning_ignore("incompatible_ternary")
 	_send_response({"success": true, "current_scene": str(get_tree().current_scene.get_path()) if get_tree().current_scene != null else null, "note": "Scene change history not tracked by default; use custom autoload to track"})
 
 func _cmd_get_signal_list(params: Dictionary) -> void:
@@ -10220,11 +10242,22 @@ func _cmd_wait_for_signal(params: Dictionary) -> void:
 	if not node.has_signal(signal_name):
 		_send_response({"error": "Signal not found: " + signal_name})
 		return
-	# Non-blocking: register listener, immediately respond with pending status
-	var fired = false
-	var listener = func(): fired = true
+	var state: Dictionary = {"fired": false}
+	var listener = func(): state["fired"] = true
 	node.connect(signal_name, listener, CONNECT_ONE_SHOT)
-	_send_response({"success": true, "registered": true, "node_path": node_path, "signal": signal_name, "note": "Listener registered (one-shot). Check connection list to verify when fired."})
+	var started_ms: int = Time.get_ticks_msec()
+	while not state["fired"] and Time.get_ticks_msec() - started_ms < timeout_ms:
+		await get_tree().process_frame
+	if node.is_connected(signal_name, listener):
+		node.disconnect(signal_name, listener)
+	_send_response({
+		"success": state["fired"],
+		"fired": state["fired"],
+		"timed_out": not state["fired"],
+		"node_path": node_path,
+		"signal": signal_name,
+		"elapsed_ms": Time.get_ticks_msec() - started_ms
+	})
 
 func _cmd_get_theme_color(params: Dictionary) -> void:
 	var node_path: String = params.get("node_path", "")
@@ -10301,6 +10334,7 @@ func _cmd_get_mesh_surface_count(params: Dictionary) -> void:
 		return
 	var mi := node as MeshInstance3D
 	var count = mi.mesh.get_surface_count() if mi.mesh != null else 0
+	@warning_ignore("incompatible_ternary")
 	_send_response({"success": true, "surface_count": count, "mesh_class": mi.mesh.get_class() if mi.mesh != null else null})
 
 func _cmd_get_node_2d_position(params: Dictionary) -> void:
@@ -10519,6 +10553,7 @@ func _cmd_get_audio_stream_position(params: Dictionary) -> void:
 		return
 	if node is AudioStreamPlayer:
 		var p := node as AudioStreamPlayer
+		@warning_ignore("incompatible_ternary")
 		_send_response({"success": true, "position": p.get_playback_position(), "playing": p.playing, "stream_class": p.stream.get_class() if p.stream != null else null})
 	elif node is AudioStreamPlayer2D:
 		var p := node as AudioStreamPlayer2D
@@ -10629,21 +10664,22 @@ func _cmd_kill_tweens_on_node(params: Dictionary) -> void:
 		return
 	node.get_tree().process_frame.connect(func(): node.get_tree().root.propagate_notification(Node.NOTIFICATION_WM_CLOSE_REQUEST), CONNECT_ONE_SHOT)
 	# Kill tweens by creating a fresh tween and immediately aborting (Godot 4 approach)
+	@warning_ignore("unused_variable")
 	var tweens_killed = 0
 	# In Godot 4, you can't enumerate running tweens easily; we notify and reset
 	_send_response({"success": true, "note": "Tween kill requested for: " + node_path})
 
-func _cmd_get_screen_size(params: Dictionary) -> void:
+func _cmd_get_screen_size(_params: Dictionary) -> void:
 	var size = DisplayServer.window_get_size()
 	var screen_size = DisplayServer.screen_get_size()
 	_send_response({"success": true, "window_size": {"width": size.x, "height": size.y}, "screen_size": {"width": screen_size.x, "height": screen_size.y}})
 
-func _cmd_set_window_title(params: Dictionary) -> void:
+func _cmd_set_window_title__duplicate_batch77(params: Dictionary) -> void:
 	var title: String = params.get("title", "")
 	DisplayServer.window_set_title(title)
 	_send_response({"success": true, "title": title})
 
-func _cmd_get_screen_count(params: Dictionary) -> void:
+func _cmd_get_screen_count(_params: Dictionary) -> void:
 	var count = DisplayServer.get_screen_count()
 	_send_response({"success": true, "screen_count": count})
 
@@ -10662,29 +10698,30 @@ func _cmd_set_display_mode(params: Dictionary) -> void:
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	_send_response({"success": true, "mode": mode})
 
-func _cmd_get_global_mouse_position(params: Dictionary) -> void:
+func _cmd_get_global_mouse_position(_params: Dictionary) -> void:
 	var pos = get_viewport().get_mouse_position()
 	_send_response({"success": true, "x": pos.x, "y": pos.y})
 
-func _cmd_warp_mouse(params: Dictionary) -> void:
+func _cmd_warp_mouse__duplicate_batch77(params: Dictionary) -> void:
 	var x: float = params.get("x", 0.0)
 	var y: float = params.get("y", 0.0)
 	DisplayServer.warp_mouse(Vector2i(int(x), int(y)))
 	_send_response({"success": true, "x": x, "y": y})
 
-func _cmd_is_action_pressed(params: Dictionary) -> void:
+func _cmd_is_action_pressed__duplicate_batch77(params: Dictionary) -> void:
 	var action: String = params.get("action", "")
 	var pressed = Input.is_action_pressed(action)
 	var just_pressed = Input.is_action_just_pressed(action)
 	var just_released = Input.is_action_just_released(action)
 	_send_response({"success": true, "action": action, "pressed": pressed, "just_pressed": just_pressed, "just_released": just_released})
 
-func _cmd_get_joy_count(params: Dictionary) -> void:
+func _cmd_get_joy_count(_params: Dictionary) -> void:
 	var count = Input.get_connected_joypads().size()
 	_send_response({"success": true, "count": count, "connected_ids": Input.get_connected_joypads()})
 
 func _cmd_get_joy_name(params: Dictionary) -> void:
 	var device_id: int = params.get("device_id", 0)
+	@warning_ignore("shadowed_variable_base_class")
 	var name = Input.get_joy_name(device_id)
 	_send_response({"success": true, "device_id": device_id, "name": name})
 
@@ -10705,12 +10742,12 @@ func _cmd_set_project_setting(params: Dictionary) -> void:
 	ProjectSettings.set_setting(setting, value)
 	_send_response({"success": true, "setting": setting, "value": value})
 
-func _cmd_get_os_name(params: Dictionary) -> void:
+func _cmd_get_os_name(_params: Dictionary) -> void:
 	var os_name = OS.get_name()
 	var version = OS.get_version()
 	_send_response({"success": true, "os_name": os_name, "version": version})
 
-func _cmd_get_cpu_count(params: Dictionary) -> void:
+func _cmd_get_cpu_count(_params: Dictionary) -> void:
 	var count = OS.get_processor_count()
 	var cpu_name = OS.get_processor_name()
 	_send_response({"success": true, "count": count, "cpu_name": cpu_name})
@@ -10811,6 +10848,7 @@ func _cmd_get_node_class(params: Dictionary) -> void:
 	if node == null:
 		_send_response({"error": "Node not found: " + node_path})
 		return
+	@warning_ignore("incompatible_ternary")
 	_send_response({"success": true, "class": node.get_class(), "script": str(node.get_script()) if node.get_script() != null else null, "is_class_list": ClassDB.get_inheriters_from_class(node.get_class())})
 
 func _cmd_cast_ray_in_game(params: Dictionary) -> void:
@@ -10823,6 +10861,7 @@ func _cmd_cast_ray_in_game(params: Dictionary) -> void:
 		_send_response({"success": true, "hit": false})
 	else:
 		var collider = result.get("collider")
+		@warning_ignore("incompatible_ternary")
 		_send_response({"success": true, "hit": true, "position": {"x": result["position"].x, "y": result["position"].y, "z": result["position"].z}, "normal": {"x": result["normal"].x, "y": result["normal"].y, "z": result["normal"].z}, "collider_path": str(collider.get_path()) if collider != null else null, "collider_class": collider.get_class() if collider != null else null})
 
 func _cmd_cast_ray_2d_in_game(params: Dictionary) -> void:
@@ -10835,6 +10874,7 @@ func _cmd_cast_ray_2d_in_game(params: Dictionary) -> void:
 		_send_response({"success": true, "hit": false})
 	else:
 		var collider = result.get("collider")
+		@warning_ignore("incompatible_ternary")
 		_send_response({"success": true, "hit": true, "position": {"x": result["position"].x, "y": result["position"].y}, "normal": {"x": result["normal"].x, "y": result["normal"].y}, "collider_path": str(collider.get_path()) if collider != null else null, "collider_class": collider.get_class() if collider != null else null})
 
 func _cmd_get_physics_bodies_at_point(params: Dictionary) -> void:
@@ -10913,9 +10953,11 @@ func _cmd_is_ray_cast_colliding(params: Dictionary) -> void:
 	var node = get_tree().root.get_node_or_null(NodePath(node_path))
 	if node is RayCast3D:
 		var rc := node as RayCast3D
+		@warning_ignore("incompatible_ternary")
 		_send_response({"success": true, "is_colliding": rc.is_colliding(), "collision_point": {"x": rc.get_collision_point().x, "y": rc.get_collision_point().y, "z": rc.get_collision_point().z} if rc.is_colliding() else null})
 	elif node is RayCast2D:
 		var rc := node as RayCast2D
+		@warning_ignore("incompatible_ternary")
 		_send_response({"success": true, "is_colliding": rc.is_colliding(), "collision_point": {"x": rc.get_collision_point().x, "y": rc.get_collision_point().y} if rc.is_colliding() else null})
 	else:
 		_send_response({"error": "Not a RayCast2D/3D: " + (node.get_class() if node != null else "null")})
@@ -10927,6 +10969,7 @@ func _cmd_get_ray_cast_collider(params: Dictionary) -> void:
 		var rc := node as RayCast3D
 		if rc.is_colliding():
 			var collider = rc.get_collider()
+			@warning_ignore("incompatible_ternary")
 			_send_response({"success": true, "is_colliding": true, "collider_path": str(collider.get_path()) if collider != null else null, "collider_class": collider.get_class() if collider != null else null, "collision_point": {"x": rc.get_collision_point().x, "y": rc.get_collision_point().y, "z": rc.get_collision_point().z}, "collision_normal": {"x": rc.get_collision_normal().x, "y": rc.get_collision_normal().y, "z": rc.get_collision_normal().z}})
 		else:
 			_send_response({"success": true, "is_colliding": false})
@@ -10934,6 +10977,7 @@ func _cmd_get_ray_cast_collider(params: Dictionary) -> void:
 		var rc := node as RayCast2D
 		if rc.is_colliding():
 			var collider = rc.get_collider()
+			@warning_ignore("incompatible_ternary")
 			_send_response({"success": true, "is_colliding": true, "collider_path": str(collider.get_path()) if collider != null else null, "collider_class": collider.get_class() if collider != null else null, "collision_point": {"x": rc.get_collision_point().x, "y": rc.get_collision_point().y}})
 		else:
 			_send_response({"success": true, "is_colliding": false})
@@ -10955,7 +10999,7 @@ func _cmd_set_camera_current(params: Dictionary) -> void:
 	else:
 		_send_response({"error": "Not a Camera2D/3D: " + node.get_class()})
 
-func _cmd_get_current_camera(params: Dictionary) -> void:
+func _cmd_get_current_camera(_params: Dictionary) -> void:
 	var viewport = get_viewport()
 	var cam3d = viewport.get_camera_3d()
 	var cam2d = viewport.get_camera_2d()
@@ -11080,20 +11124,21 @@ func _cmd_set_vehicle_engine_force(params: Dictionary) -> void:
 
 func _cmd_add_scene_tree_timer_via_code(params: Dictionary) -> void:
 	var duration: float = params.get("duration", 1.0)
+	@warning_ignore("unused_variable")
 	var timer = get_tree().create_timer(duration)
 	_send_response({"success": true, "duration": duration, "note": "Timer created via SceneTree.create_timer"})
 
-func _cmd_get_time_since_start(params: Dictionary) -> void:
+func _cmd_get_time_since_start(_params: Dictionary) -> void:
 	_send_response({"success": true, "time_since_start": Time.get_ticks_msec() / 1000.0, "ticks_msec": Time.get_ticks_msec(), "ticks_usec": Time.get_ticks_usec()})
 
-func _cmd_get_engine_version(params: Dictionary) -> void:
+func _cmd_get_engine_version(_params: Dictionary) -> void:
 	var v = Engine.get_version_info()
 	_send_response({"success": true, "major": v.get("major", 0), "minor": v.get("minor", 0), "patch": v.get("patch", 0), "string": v.get("string", ""), "status": v.get("status", "")})
 
-func _cmd_get_time_scale(params: Dictionary) -> void:
+func _cmd_get_time_scale(_params: Dictionary) -> void:
 	_send_response({"success": true, "time_scale": Engine.time_scale})
 
-func _cmd_get_physics_fps(params: Dictionary) -> void:
+func _cmd_get_physics_fps(_params: Dictionary) -> void:
 	_send_response({"success": true, "physics_ticks_per_second": Engine.physics_ticks_per_second, "max_fps": Engine.max_fps, "time_scale": Engine.time_scale})
 
 func _cmd_list_signals_on_node(params: Dictionary) -> void:
@@ -11231,7 +11276,9 @@ func _cmd_get_texture_rect_texture(params: Dictionary) -> void:
 	if node == null or not node is TextureRect:
 		_send_response({"error": "TextureRect not found: " + node_path})
 		return
+	@warning_ignore("shadowed_variable_base_class")
 	var tr := node as TextureRect
+	@warning_ignore("incompatible_ternary")
 	var tex_path = tr.texture.resource_path if tr.texture != null else null
 	_send_response({"success": true, "texture_path": tex_path, "has_texture": tr.texture != null})
 
@@ -11279,6 +11326,7 @@ func _cmd_get_panel_stylebox(params: Dictionary) -> void:
 		return
 	var p := node as Panel
 	var sb = p.get_theme_stylebox("panel")
+	@warning_ignore("incompatible_ternary")
 	_send_response({"success": true, "stylebox_class": sb.get_class() if sb != null else null, "has_custom_stylebox": p.has_theme_stylebox_override("panel")})
 
 func _cmd_get_control_size(params: Dictionary) -> void:
@@ -11312,7 +11360,7 @@ func _cmd_set_control_size(params: Dictionary) -> void:
 	(node as Control).size = Vector2(width, height)
 	_send_response({"success": true, "width": width, "height": height})
 
-func _cmd_get_node_visibility(params: Dictionary) -> void:
+func _cmd_get_node_visibility__duplicate_batch77(params: Dictionary) -> void:
 	var node_path: String = params.get("node_path", "")
 	var node = get_tree().root.get_node_or_null(NodePath(node_path))
 	if node == null:
@@ -11327,7 +11375,7 @@ func _cmd_get_node_visibility(params: Dictionary) -> void:
 	else:
 		_send_response({"success": true, "visible": true, "class": node.get_class()})
 
-func _cmd_toggle_node_visibility(params: Dictionary) -> void:
+func _cmd_toggle_node_visibility__duplicate_batch77(params: Dictionary) -> void:
 	var node_path: String = params.get("node_path", "")
 	var node = get_tree().root.get_node_or_null(NodePath(node_path))
 	if node == null:
@@ -11377,7 +11425,7 @@ func _cmd_count_nodes_by_class(params: Dictionary) -> void:
 		queue.append_array(node.get_children())
 	_send_response({"success": true, "class_name": class_name_str, "count": count})
 
-func _cmd_find_nodes_by_class(params: Dictionary) -> void:
+func _cmd_find_nodes_by_class__duplicate_batch77(params: Dictionary) -> void:
 	var class_name_str: String = params.get("class_name", "")
 	var max_results: int = params.get("max_results", 50)
 	var results: Array = []
@@ -11410,7 +11458,7 @@ func _cmd_set_node_property(params: Dictionary) -> void:
 	node.set(property, value)
 	_send_response({"success": true, "property": property, "value": value})
 
-func _cmd_call_node_method(params: Dictionary) -> void:
+func _cmd_call_node_method__duplicate_batch77(params: Dictionary) -> void:
 	var node_path: String = params.get("node_path", "")
 	var method: String = params.get("method", "")
 	var args: Array = params.get("args", [])
@@ -11424,7 +11472,7 @@ func _cmd_call_node_method(params: Dictionary) -> void:
 	var result = node.callv(method, args)
 	_send_response({"success": true, "method": method, "result": result})
 
-func _cmd_get_node_property_list(params: Dictionary) -> void:
+func _cmd_get_node_property_list__duplicate_batch77(params: Dictionary) -> void:
 	var node_path: String = params.get("node_path", "")
 	var node = get_tree().root.get_node_or_null(NodePath(node_path))
 	if node == null:
@@ -11436,7 +11484,7 @@ func _cmd_get_node_property_list(params: Dictionary) -> void:
 			props.append({"name": p["name"], "type": p["type"], "hint": p.get("hint", 0)})
 	_send_response({"success": true, "count": props.size(), "properties": props})
 
-func _cmd_get_node_method_list(params: Dictionary) -> void:
+func _cmd_get_node_method_list__duplicate_batch77(params: Dictionary) -> void:
 	var node_path: String = params.get("node_path", "")
 	var node = get_tree().root.get_node_or_null(NodePath(node_path))
 	if node == null:
@@ -11449,7 +11497,7 @@ func _cmd_get_node_method_list(params: Dictionary) -> void:
 			methods.append({"name": name_str, "arg_count": m["args"].size()})
 	_send_response({"success": true, "count": methods.size(), "methods": methods})
 
-func _cmd_duplicate_node_in_game(params: Dictionary) -> void:
+func _cmd_duplicate_node_in_game__duplicate_batch77(params: Dictionary) -> void:
 	var node_path: String = params.get("node_path", "")
 	var new_name: String = params.get("new_name", "")
 	var node = get_tree().root.get_node_or_null(NodePath(node_path))
@@ -11490,7 +11538,7 @@ func _cmd_add_child_node_in_game(params: Dictionary) -> void:
 	parent.add_child(child)
 	_send_response({"success": true, "child_path": str(child.get_path()), "child_name": child.name})
 
-func _cmd_reparent_node_in_game(params: Dictionary) -> void:
+func _cmd_reparent_node_in_game__duplicate_batch77(params: Dictionary) -> void:
 	var node_path: String = params.get("node_path", "")
 	var new_parent_path: String = params.get("new_parent_path", "")
 	var node = get_tree().root.get_node_or_null(NodePath(node_path))
@@ -11509,7 +11557,7 @@ func _cmd_change_scene_to(params: Dictionary) -> void:
 	get_tree().change_scene_to_file(scene_path)
 	_send_response({"success": true, "scene_path": scene_path})
 
-func _cmd_reload_current_scene(params: Dictionary) -> void:
+func _cmd_reload_current_scene(_params: Dictionary) -> void:
 	get_tree().reload_current_scene()
 	_send_response({"success": true})
 
@@ -11538,7 +11586,7 @@ func _cmd_set_vehicle_brake(params: Dictionary) -> void:
 	(node as VehicleBody3D).brake = brake
 	_send_response({"success": true, "brake": brake})
 
-func _cmd_get_audio_bus_count(params: Dictionary) -> void:
+func _cmd_get_audio_bus_count(_params: Dictionary) -> void:
 	_send_response({"success": true, "bus_count": AudioServer.bus_count})
 
 func _cmd_get_audio_bus_name(params: Dictionary) -> void:
@@ -11838,6 +11886,7 @@ func _cmd_get_sprite_texture(params: Dictionary) -> void:
 		_send_response({"error": "Sprite2D not found: " + node_path})
 		return
 	var s := node as Sprite2D
+	@warning_ignore("incompatible_ternary")
 	var tex_path = s.texture.resource_path if s.texture != null else null
 	_send_response({"success": true, "texture_path": tex_path, "has_texture": s.texture != null})
 
@@ -11918,23 +11967,23 @@ func _cmd_set_button_text(params: Dictionary) -> void:
 	(node as Button).text = text
 	_send_response({"success": true, "text": text})
 
-func _cmd_get_game_fps(params: Dictionary) -> void:
+func _cmd_get_game_fps(_params: Dictionary) -> void:
 	var fps = Engine.get_frames_per_second()
 	_send_response({"success": true, "fps": fps})
 
-func _cmd_get_game_time_elapsed(params: Dictionary) -> void:
+func _cmd_get_game_time_elapsed(_params: Dictionary) -> void:
 	var elapsed = Time.get_ticks_msec() / 1000.0
 	_send_response({"success": true, "elapsed_seconds": elapsed})
 
-func _cmd_pause_game(params: Dictionary) -> void:
+func _cmd_pause_game(_params: Dictionary) -> void:
 	get_tree().paused = true
 	_send_response({"success": true, "paused": true})
 
-func _cmd_unpause_game(params: Dictionary) -> void:
+func _cmd_unpause_game(_params: Dictionary) -> void:
 	get_tree().paused = false
 	_send_response({"success": true, "paused": false})
 
-func _cmd_is_game_paused(params: Dictionary) -> void:
+func _cmd_is_game_paused(_params: Dictionary) -> void:
 	_send_response({"success": true, "paused": get_tree().paused})
 
 func _cmd_change_scene_to_file(params: Dictionary) -> void:
@@ -11948,7 +11997,7 @@ func _cmd_change_scene_to_file(params: Dictionary) -> void:
 	else:
 		_send_response({"success": true, "scene_path": scene_path})
 
-func _cmd_get_current_scene_name(params: Dictionary) -> void:
+func _cmd_get_current_scene_name(_params: Dictionary) -> void:
 	var scene = get_tree().current_scene
 	if scene == null:
 		_send_response({"error": "No current scene"})
@@ -11968,15 +12017,15 @@ func _cmd_set_engine_time_scale(params: Dictionary) -> void:
 	Engine.time_scale = time_scale
 	_send_response({"success": true, "time_scale": Engine.time_scale})
 
-func _cmd_get_engine_time_scale(params: Dictionary) -> void:
+func _cmd_get_engine_time_scale(_params: Dictionary) -> void:
 	_send_response({"success": true, "time_scale": Engine.time_scale})
 
-func _cmd_get_game_screen_size(params: Dictionary) -> void:
+func _cmd_get_game_screen_size(_params: Dictionary) -> void:
 	var size = DisplayServer.screen_get_size()
 	var window_size = DisplayServer.window_get_size()
 	_send_response({"success": true, "screen_width": size.x, "screen_height": size.y, "window_width": window_size.x, "window_height": window_size.y})
 
-func _cmd_get_game_mouse_position(params: Dictionary) -> void:
+func _cmd_get_game_mouse_position(_params: Dictionary) -> void:
 	var pos = get_viewport().get_mouse_position()
 	_send_response({"success": true, "x": pos.x, "y": pos.y})
 
@@ -12284,7 +12333,7 @@ func _cmd_queue_animation(params: Dictionary) -> void:
 func _cmd_get_performance_monitor(params: Dictionary) -> void:
 	var monitor_name: String = params.get("monitor", "render/fps")
 	var monitor_map = {
-		"render/fps": Performance.RENDER_FPS,
+		"render/fps": Performance.TIME_FPS,
 		"render/total_draw_calls": Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME,
 		"render/total_objects": Performance.RENDER_TOTAL_OBJECTS_IN_FRAME,
 		"render/total_vertices": Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME,
@@ -12302,7 +12351,7 @@ func _cmd_get_performance_monitor(params: Dictionary) -> void:
 	_send_response({"success": true, "monitor": monitor_name, "value": value})
 
 
-func _cmd_get_physics_info(params: Dictionary) -> void:
+func _cmd_get_physics_info(_params: Dictionary) -> void:
 	_send_response({
 		"success": true,
 		"active_2d_objects": Performance.get_monitor(Performance.PHYSICS_2D_ACTIVE_OBJECTS),
@@ -12318,7 +12367,7 @@ func _cmd_set_max_fps(params: Dictionary) -> void:
 	_send_response({"success": true, "max_fps": Engine.max_fps})
 
 
-func _cmd_get_max_fps(params: Dictionary) -> void:
+func _cmd_get_max_fps(_params: Dictionary) -> void:
 	_send_response({"success": true, "max_fps": Engine.max_fps})
 
 
@@ -12434,7 +12483,7 @@ func _cmd_clear_rich_text(params: Dictionary) -> void:
 	_send_response({"success": true})
 
 
-func _cmd_list_input_actions(params: Dictionary) -> void:
+func _cmd_list_input_actions(_params: Dictionary) -> void:
 	var actions: Array = InputMap.get_actions()
 	var result: Array = []
 	for action in actions:
@@ -12486,22 +12535,22 @@ func _cmd_simulate_action_release(params: Dictionary) -> void:
 	_send_response({"success": true, "action": action_name, "released": true})
 
 
-func _cmd_get_mouse_mode(params: Dictionary) -> void:
+func _cmd_get_mouse_mode(_params: Dictionary) -> void:
 	var mode_names = ["visible", "hidden", "captured", "confined", "confined_hidden"]
 	var mode_int: int = Input.mouse_mode
 	var mode_str: String = mode_names[mode_int] if mode_int < mode_names.size() else str(mode_int)
 	_send_response({"success": true, "mode": mode_str, "mode_int": mode_int})
 
 
-func _cmd_get_multiplayer_peer_id(params: Dictionary) -> void:
+func _cmd_get_multiplayer_peer_id(_params: Dictionary) -> void:
 	_send_response({"success": true, "peer_id": multiplayer.get_unique_id()})
 
 
-func _cmd_is_multiplayer_server(params: Dictionary) -> void:
+func _cmd_is_multiplayer_server(_params: Dictionary) -> void:
 	_send_response({"success": true, "is_server": multiplayer.is_server()})
 
 
-func _cmd_get_network_peer_count(params: Dictionary) -> void:
+func _cmd_get_network_peer_count(_params: Dictionary) -> void:
 	_send_response({"success": true, "count": multiplayer.get_peers().size()})
 
 
@@ -12675,7 +12724,7 @@ func _cmd_fade_out_node(params: Dictionary) -> void:
 	_send_response({"success": true, "duration": duration})
 
 
-func _cmd_get_audio_bus_names(params: Dictionary) -> void:
+func _cmd_get_audio_bus_names(_params: Dictionary) -> void:
 	var names: Array = []
 	for i in range(AudioServer.bus_count):
 		names.append(AudioServer.get_bus_name(i))
@@ -12804,9 +12853,10 @@ func _cmd_get_node_unique_name(params: Dictionary) -> void:
 	_send_response({"success": true, "unique_name_in_owner": node.unique_name_in_owner, "name": node.name})
 
 
-func _cmd_get_2d_collision_layers_names(params: Dictionary) -> void:
+func _cmd_get_2d_collision_layers_names(_params: Dictionary) -> void:
 	var layers: Array = []
 	for i in range(32):
+		@warning_ignore("shadowed_variable_base_class")
 		var name = ProjectSettings.get_setting("layer_names/2d_physics/layer_" + str(i + 1), "Layer " + str(i + 1))
 		layers.append({"index": i + 1, "name": str(name)})
 	_send_response({"success": true, "layers": layers})
@@ -13509,7 +13559,7 @@ func _cmd_is_multiplayer_authority(params: Dictionary) -> void:
 	_send_response({"success": true, "is_authority": node.is_multiplayer_authority()})
 
 
-func _cmd_get_network_latency(params: Dictionary) -> void:
+func _cmd_get_network_latency(_params: Dictionary) -> void:
 	var peer = multiplayer.multiplayer_peer
 	if peer == null:
 		_send_response({"error": "No multiplayer peer connected"})
@@ -14170,7 +14220,7 @@ func _cmd_get_bone_index(params: Dictionary) -> void:
 	_send_response({"success": true, "bone_name": bone_name, "bone_index": idx, "found": idx >= 0})
 
 
-func _cmd_get_game_resolution(params: Dictionary) -> void:
+func _cmd_get_game_resolution(_params: Dictionary) -> void:
 	var win_size = DisplayServer.window_get_size()
 	var viewport_size = get_viewport().get_visible_rect().size
 	_send_response({"success": true, "window_width": win_size.x, "window_height": win_size.y, "viewport_width": viewport_size.x, "viewport_height": viewport_size.y})
@@ -14193,7 +14243,7 @@ func _cmd_set_2d_speed_scale(params: Dictionary) -> void:
 	_send_response({"success": true, "scale": scale_val})
 
 
-func _cmd_get_scene_current_fps(params: Dictionary) -> void:
+func _cmd_get_scene_current_fps(_params: Dictionary) -> void:
 	_send_response({"success": true, "fps": Engine.get_frames_per_second(), "target_fps": Engine.max_fps, "physics_fps": Engine.physics_ticks_per_second})
 
 
@@ -14241,11 +14291,11 @@ func _cmd_get_physics_interpolation_mode(params: Dictionary) -> void:
 	_send_response({"success": true, "physics_interpolation_mode": node.physics_interpolation_mode})
 
 
-func _cmd_get_memory_usage(params: Dictionary) -> void:
+func _cmd_get_memory_usage(_params: Dictionary) -> void:
 	_send_response({"success": true, "static_memory": OS.get_static_memory_usage(), "static_memory_peak": OS.get_static_memory_peak_usage()})
 
 
-func _cmd_get_project_name(params: Dictionary) -> void:
+func _cmd_get_project_name(_params: Dictionary) -> void:
 	_send_response({"success": true, "project_name": ProjectSettings.get_setting("application/config/name", "Unknown"), "version": ProjectSettings.get_setting("application/config/version", "1.0")})
 
 
@@ -14356,7 +14406,7 @@ func _cmd_cast_ray_from_camera(params: Dictionary) -> void:
 	var screen_pos = Vector2(screen_x * vp_size.x, screen_y * vp_size.y)
 	var from = (node as Camera3D).project_ray_origin(screen_pos)
 	var to = from + (node as Camera3D).project_ray_normal(screen_pos) * 1000.0
-	var space = get_world_3d().direct_space_state
+	var space = (node as Camera3D).get_world_3d().direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(from, to)
 	var result = space.intersect_ray(query)
 	if result.is_empty():
@@ -14560,7 +14610,7 @@ func _cmd_set_sub_viewport_update_mode(params: Dictionary) -> void:
 	_send_response({"success": true, "mode": mode_str})
 
 
-func _cmd_get_viewport_textures(params: Dictionary) -> void:
+func _cmd_get_viewport_textures(_params: Dictionary) -> void:
 	var result = []
 	var nodes = get_tree().root.find_children("*", "SubViewport", true, false)
 	for node in nodes:
@@ -14782,12 +14832,12 @@ func _cmd_remove_node_metadata(params: Dictionary) -> void:
 		_send_response({"error": "Meta key not found: " + meta_key})
 
 
-func _cmd_get_physics_2d_gravity(params: Dictionary) -> void:
+func _cmd_get_physics_2d_gravity(_params: Dictionary) -> void:
 	var gravity = ProjectSettings.get_setting("physics/2d/default_gravity", 980.0)
 	_send_response({"success": true, "gravity": gravity})
 
 
-func _cmd_get_all_node_classes(params: Dictionary) -> void:
+func _cmd_get_all_node_classes(_params: Dictionary) -> void:
 	var all_classes = ClassDB.get_class_list()
 	var node_classes = []
 	for c in all_classes:
@@ -14797,7 +14847,7 @@ func _cmd_get_all_node_classes(params: Dictionary) -> void:
 	_send_response({"success": true, "node_classes": node_classes, "count": node_classes.size()})
 
 
-func _cmd_get_running_scene_path(params: Dictionary) -> void:
+func _cmd_get_running_scene_path(_params: Dictionary) -> void:
 	var scene = get_tree().current_scene
 	_send_response({"success": true, "scene_path": scene.scene_file_path if scene != null else "", "scene_name": scene.name if scene != null else ""})
 
@@ -14811,7 +14861,7 @@ func _cmd_get_node_scene_file_path(params: Dictionary) -> void:
 	_send_response({"success": true, "scene_file_path": node.scene_file_path if node.scene_file_path != null else ""})
 
 
-func _cmd_get_scene_unique_nodes(params: Dictionary) -> void:
+func _cmd_get_scene_unique_nodes(_params: Dictionary) -> void:
 	var result = []
 	var process_node = func(node: Node) -> void:
 		if node.unique_name_in_owner:
@@ -15968,20 +16018,20 @@ func _cmd_flash_node_color(params: Dictionary) -> void:
 	_send_response({"success": true, "flash_color": {"r": r, "g": g, "b": b}, "duration": duration})
 
 
-func _cmd_get_system_memory_info(params: Dictionary) -> void:
+func _cmd_get_system_memory_info(_params: Dictionary) -> void:
 	var info = OS.get_memory_info()
 	_send_response({"success": true, "physical": info.get("physical", 0), "free": info.get("free", 0), "stack": info.get("stack", 0)})
 
 
-func _cmd_get_processor_name(params: Dictionary) -> void:
+func _cmd_get_processor_name(_params: Dictionary) -> void:
 	_send_response({"success": true, "processor_name": OS.get_processor_name(), "processor_count": OS.get_processor_count()})
 
 
-func _cmd_get_locale(params: Dictionary) -> void:
+func _cmd_get_locale(_params: Dictionary) -> void:
 	_send_response({"success": true, "locale": OS.get_locale(), "locale_language": OS.get_locale_language()})
 
 
-func _cmd_get_screen_resolution(params: Dictionary) -> void:
+func _cmd_get_screen_resolution(_params: Dictionary) -> void:
 	var screen_size = DisplayServer.screen_get_size()
 	var window_size = get_tree().root.size
 	_send_response({"success": true, "screen": {"width": screen_size.x, "height": screen_size.y}, "window": {"width": window_size.x, "height": window_size.y}})
@@ -16104,6 +16154,7 @@ func _cmd_get_texture_rect_info(params: Dictionary) -> void:
 	if node == null or not node is TextureRect:
 		_send_response({"error": "TextureRect not found: " + node_path})
 		return
+	@warning_ignore("shadowed_variable_base_class")
 	var tr := node as TextureRect
 	_send_response({"success": true, "stretch_mode": tr.stretch_mode, "flip_h": tr.flip_h, "flip_v": tr.flip_v, "size": {"x": tr.size.x, "y": tr.size.y}})
 
@@ -16517,7 +16568,7 @@ func _cmd_set_multimesh_instance_count(params: Dictionary) -> void:
 	_send_response({"success": true, "visible_instance_count": count})
 
 
-func _cmd_get_physics_server_info(params: Dictionary) -> void:
+func _cmd_get_physics_server_info(_params: Dictionary) -> void:
 	var bodies_2d = PhysicsServer2D.get_process_info(PhysicsServer2D.INFO_ACTIVE_OBJECTS)
 	var bodies_3d = PhysicsServer3D.get_process_info(PhysicsServer3D.INFO_ACTIVE_OBJECTS)
 	_send_response({"success": true, "active_2d_bodies": bodies_2d, "active_3d_bodies": bodies_3d})
@@ -16528,6 +16579,7 @@ func _cmd_http_request_get(params: Dictionary) -> void:
 	if url.is_empty():
 		_send_response({"error": "url is required"})
 		return
+	@warning_ignore("unused_variable")
 	var http = HTTPClient.new()
 	_send_response({"success": true, "note": "HTTPClient requires async - use HTTPRequest node for actual requests", "url": url})
 
@@ -16661,7 +16713,7 @@ func _cmd_set_window_fullscreen(params: Dictionary) -> void:
 	_send_response({"success": true, "fullscreen": fullscreen})
 
 
-func _cmd_get_window_info(params: Dictionary) -> void:
+func _cmd_get_window_info(_params: Dictionary) -> void:
 	var size = DisplayServer.window_get_size()
 	var pos = DisplayServer.window_get_position()
 	var mode = DisplayServer.window_get_mode()
@@ -16714,7 +16766,7 @@ func _cmd_set_all_nodes_in_group_visible(params: Dictionary) -> void:
 	_send_response({"success": true, "group": group_name, "visible": visible, "affected": count})
 
 
-func _cmd_get_node_count_in_scene(params: Dictionary) -> void:
+func _cmd_get_node_count_in_scene(_params: Dictionary) -> void:
 	var count = 0
 	var queue = [get_tree().current_scene]
 	while queue.size() > 0:
@@ -16932,20 +16984,20 @@ func _cmd_get_animation_player_animations(params: Dictionary) -> void:
 	_send_response({"success": true, "animations": Array(anim_list), "count": anim_list.size()})
 
 
-func _cmd_get_unix_time(params: Dictionary) -> void:
+func _cmd_get_unix_time(_params: Dictionary) -> void:
 	_send_response({"success": true, "unix_time": Time.get_unix_time_from_system()})
 
 
-func _cmd_get_datetime_dict(params: Dictionary) -> void:
+func _cmd_get_datetime_dict(_params: Dictionary) -> void:
 	var dt = Time.get_datetime_dict_from_system()
 	_send_response({"success": true, "datetime": dt})
 
 
-func _cmd_get_ticks_msec(params: Dictionary) -> void:
+func _cmd_get_ticks_msec(_params: Dictionary) -> void:
 	_send_response({"success": true, "ticks_msec": Time.get_ticks_msec()})
 
 
-func _cmd_get_ticks_usec(params: Dictionary) -> void:
+func _cmd_get_ticks_usec(_params: Dictionary) -> void:
 	_send_response({"success": true, "ticks_usec": Time.get_ticks_usec()})
 
 
@@ -16986,7 +17038,7 @@ func _cmd_hash_string_md5(params: Dictionary) -> void:
 	_send_response({"success": true, "md5": result.hex_encode(), "input_length": text.length()})
 
 
-func _cmd_generate_uuid_v4(params: Dictionary) -> void:
+func _cmd_generate_uuid_v4(_params: Dictionary) -> void:
 	var b = PackedByteArray()
 	b.resize(16)
 	for i in range(16):
@@ -17017,7 +17069,7 @@ func _cmd_get_random_int(params: Dictionary) -> void:
 	_send_response({"success": true, "value": result, "min": min_val, "max": max_val})
 
 
-func _cmd_get_input_map_actions(params: Dictionary) -> void:
+func _cmd_get_input_map_actions(_params: Dictionary) -> void:
 	var actions = InputMap.get_actions()
 	_send_response({"success": true, "actions": Array(actions), "count": actions.size()})
 
@@ -17504,6 +17556,7 @@ func _cmd_set_csg_shape_operation(params: Dictionary) -> void:
 	if node == null or not node is CSGShape3D:
 		_send_response({"error": "CSGShape3D not found: " + node_path})
 		return
+	@warning_ignore("int_as_enum_without_cast")
 	(node as CSGShape3D).operation = operation
 	_send_response({"success": true, "operation": operation})
 
@@ -17525,6 +17578,7 @@ func _cmd_get_csg_combined_faces(params: Dictionary) -> void:
 
 func _cmd_set_audio_bus_name(params: Dictionary) -> void:
 	var bus_index: int = params.get("bus_index", 0)
+	@warning_ignore("shadowed_variable_base_class")
 	var name: String = params.get("name", "")
 	if bus_index < 0 or bus_index >= AudioServer.get_bus_count():
 		_send_response({"error": "Invalid bus index: " + str(bus_index)})
@@ -17575,7 +17629,7 @@ func _cmd_create_enet_server(params: Dictionary) -> void:
 	_send_response({"success": true, "port": port, "max_clients": max_clients, "status": peer.get_connection_status()})
 
 
-func _cmd_get_enet_connection_status(params: Dictionary) -> void:
+func _cmd_get_enet_connection_status(_params: Dictionary) -> void:
 	var mp = get_tree().get_multiplayer()
 	if mp == null:
 		_send_response({"error": "No multiplayer peer configured"})
@@ -17590,14 +17644,15 @@ func _cmd_create_websocket_peer(params: Dictionary) -> void:
 		_send_response({"error": "url is required"})
 		return
 	var peer = WebSocketPeer.new()
-	var err = peer.connect_to_url(url, PackedStringArray(protocols))
+	peer.supported_protocols = PackedStringArray(protocols)
+	var err = peer.connect_to_url(url)
 	if err != OK:
 		_send_response({"error": "Failed to connect WebSocket: " + str(err)})
 		return
 	_send_response({"success": true, "url": url, "state": peer.get_ready_state()})
 
 
-func _cmd_get_websocket_peer_state(params: Dictionary) -> void:
+func _cmd_get_websocket_peer_state(_params: Dictionary) -> void:
 	_send_response({"success": true, "note": "WebSocketPeer state must be checked per-instance", "states": {"CONNECTING": 0, "OPEN": 1, "CLOSING": 2, "CLOSED": 3}})
 
 
@@ -17624,6 +17679,7 @@ func _cmd_get_visual_shader_info(params: Dictionary) -> void:
 	if not node is ShaderMaterial:
 		_send_response({"error": "Node does not have ShaderMaterial"})
 		return
+	@warning_ignore("unused_variable")
 	var mat = node.material_override if node.has_method("get") else null
 	_send_response({"success": true, "node_path": node_path, "note": "VisualShader manipulation requires editor context"})
 
@@ -17645,7 +17701,9 @@ func _cmd_remove_visual_shader_node(params: Dictionary) -> void:
 
 
 func _cmd_connect_visual_shader_nodes(params: Dictionary) -> void:
+	@warning_ignore("unused_variable")
 	var node_path: String = params.get("node_path", "")
+	@warning_ignore("unused_variable")
 	var shader_type: String = params.get("shader_type", "TYPE_FRAGMENT")
 	var from_node: int = params.get("from_node", 0)
 	var from_port: int = params.get("from_port", 0)
@@ -17661,7 +17719,9 @@ func _cmd_get_visual_shader_node_list(params: Dictionary) -> void:
 
 
 func _cmd_set_visual_shader_node_position(params: Dictionary) -> void:
+	@warning_ignore("unused_variable")
 	var node_path: String = params.get("node_path", "")
+	@warning_ignore("unused_variable")
 	var shader_type: String = params.get("shader_type", "TYPE_FRAGMENT")
 	var node_id: int = params.get("node_id", 0)
 	var pos_x: float = params.get("pos_x", 0.0)
@@ -17676,7 +17736,9 @@ func _cmd_get_visual_shader_connections(params: Dictionary) -> void:
 
 
 func _cmd_disconnect_visual_shader_nodes(params: Dictionary) -> void:
+	@warning_ignore("unused_variable")
 	var node_path: String = params.get("node_path", "")
+	@warning_ignore("unused_variable")
 	var shader_type: String = params.get("shader_type", "TYPE_FRAGMENT")
 	var from_node: int = params.get("from_node", 0)
 	var from_port: int = params.get("from_port", 0)
@@ -17685,24 +17747,24 @@ func _cmd_disconnect_visual_shader_nodes(params: Dictionary) -> void:
 	_send_response({"success": true, "note": "VisualShader disconnect requires editor context", "from": {"node": from_node, "port": from_port}, "to": {"node": to_node, "port": to_port}})
 
 
-func _cmd_list_system_fonts(params: Dictionary) -> void:
+func _cmd_list_system_fonts(_params: Dictionary) -> void:
 	var fonts = OS.get_system_fonts()
 	_send_response({"success": true, "fonts": Array(fonts), "count": fonts.size()})
 
 
-func _cmd_get_editor_selected_nodes(params: Dictionary) -> void:
+func _cmd_get_editor_selected_nodes(_params: Dictionary) -> void:
 	_send_response({"success": true, "note": "Editor selection is only available via editorCommand (port 9091)", "use_tool": "get_editor_selected_nodes via editor plugin"})
 
 
-func _cmd_get_screen_dpi(params: Dictionary) -> void:
+func _cmd_get_screen_dpi(_params: Dictionary) -> void:
 	_send_response({"success": true, "dpi": DisplayServer.screen_get_dpi(), "size": {"x": DisplayServer.screen_get_size().x, "y": DisplayServer.screen_get_size().y}})
 
 
-func _cmd_get_display_server_info(params: Dictionary) -> void:
+func _cmd_get_display_server_info(_params: Dictionary) -> void:
 	_send_response({"success": true, "screen_count": DisplayServer.get_screen_count(), "main_window_id": DisplayServer.get_window_list()[0] if DisplayServer.get_window_list().size() > 0 else -1, "native_handle": 0})
 
 
-func _cmd_get_engine_target_fps(params: Dictionary) -> void:
+func _cmd_get_engine_target_fps(_params: Dictionary) -> void:
 	_send_response({"success": true, "target_fps": Engine.max_fps, "physics_ticks": Engine.physics_ticks_per_second, "time_scale": Engine.time_scale})
 
 
@@ -17712,7 +17774,7 @@ func _cmd_set_engine_target_fps(params: Dictionary) -> void:
 	_send_response({"success": true, "target_fps": fps})
 
 
-func _cmd_get_locale_info(params: Dictionary) -> void:
+func _cmd_get_locale_info(_params: Dictionary) -> void:
 	_send_response({"success": true, "locale": OS.get_locale(), "language": OS.get_locale_language(), "country_code": OS.get_locale().split("_")[1] if "_" in OS.get_locale() else ""})
 
 
@@ -17725,7 +17787,7 @@ func _cmd_get_environment_variable(params: Dictionary) -> void:
 	_send_response({"success": true, "var_name": var_name, "value": value, "found": not value.is_empty()})
 
 
-func _cmd_get_xr_interface_list(params: Dictionary) -> void:
+func _cmd_get_xr_interface_list(_params: Dictionary) -> void:
 	var iface_count = XRServer.get_interface_count()
 	var interfaces = []
 	for i in range(iface_count):
@@ -17744,7 +17806,7 @@ func _cmd_initialize_xr_interface(params: Dictionary) -> void:
 	_send_response({"success": true, "interface_name": interface_name, "initialized": result})
 
 
-func _cmd_get_xr_is_tracking(params: Dictionary) -> void:
+func _cmd_get_xr_is_tracking(_params: Dictionary) -> void:
 	var primary = XRServer.primary_interface
 	if primary == null:
 		_send_response({"success": true, "tracking": false, "primary_interface": null})
@@ -17933,7 +17995,7 @@ func _cmd_get_performance_monitor_value(params: Dictionary) -> void:
 	_send_response({"success": true, "monitor": monitor_name, "value": Performance.get_monitor(monitor_map[monitor_name])})
 
 
-func _cmd_get_all_performance_monitors(params: Dictionary) -> void:
+func _cmd_get_all_performance_monitors(_params: Dictionary) -> void:
 	var monitors = {
 		"fps": Performance.get_monitor(Performance.TIME_FPS),
 		"process_ms": Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0,
@@ -17956,7 +18018,7 @@ func _cmd_set_project_setting_runtime(params: Dictionary) -> void:
 	_send_response({"success": true, "setting": setting_name, "value": value})
 
 
-func _cmd_get_rendering_info(params: Dictionary) -> void:
+func _cmd_get_rendering_info(_params: Dictionary) -> void:
 	var info = {
 		"video_adapter_name": RenderingServer.get_video_adapter_name(),
 		"video_adapter_vendor": RenderingServer.get_video_adapter_vendor(),
@@ -18135,6 +18197,7 @@ func _cmd_set_texture_rect_stretch_mode(params: Dictionary) -> void:
 	if node == null or not node is TextureRect:
 		_send_response({"error": "TextureRect not found: " + node_path})
 		return
+	@warning_ignore("int_as_enum_without_cast")
 	(node as TextureRect).stretch_mode = stretch_mode
 	_send_response({"success": true, "stretch_mode": stretch_mode})
 
@@ -18207,6 +18270,7 @@ func _cmd_set_viewport_clear_mode(params: Dictionary) -> void:
 	if node == null or not node is SubViewport:
 		_send_response({"error": "SubViewport not found: " + node_path})
 		return
+	@warning_ignore("int_as_enum_without_cast")
 	(node as SubViewport).render_target_clear_mode = clear_mode
 	_send_response({"success": true, "clear_mode": clear_mode})
 
@@ -18260,6 +18324,7 @@ func _cmd_set_label_3d_billboard(params: Dictionary) -> void:
 	if node == null or not node is Label3D:
 		_send_response({"error": "Label3D not found: " + node_path})
 		return
+	@warning_ignore("int_as_enum_without_cast")
 	(node as Label3D).billboard = billboard_mode
 	_send_response({"success": true, "billboard_mode": billboard_mode})
 

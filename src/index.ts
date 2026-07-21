@@ -8,11 +8,13 @@
  */
 
 import { fileURLToPath } from 'url';
-import { join, dirname, basename, normalize } from 'path';
-import { existsSync, readdirSync, readFileSync, writeFileSync, copyFileSync, unlinkSync, mkdirSync, renameSync, statSync, appendFileSync } from 'fs';
+import { join, dirname, basename, normalize, resolve, relative, isAbsolute, delimiter } from 'path';
+import { existsSync, readdirSync, readFileSync, writeFileSync, copyFileSync, unlinkSync, mkdirSync, renameSync, statSync, appendFileSync, realpathSync, mkdtempSync, cpSync, rmSync } from 'fs';
 import { spawn, execFile } from 'child_process';
 import { promisify } from 'util';
 import { createConnection, Socket } from 'net';
+import { tmpdir } from 'os';
+import { PNG } from 'pngjs';
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
@@ -94,8 +96,8 @@ class GodotServer {
   };
   private lastErrorIndex: number = 0;
   private lastLogIndex: number = 0;
-  private readonly INTERACTION_PORT = 9090;
-  private readonly EDITOR_PORT = 9091;
+  private readonly INTERACTION_PORT = this.resolvePort('GODOT_MCP_RUNTIME_PORT', 8, 9090);
+  private readonly EDITOR_PORT = this.resolvePort('GODOT_MCP_EDITOR_PORT', 9, 9091);
   private editorConnection: GameConnection = {
     socket: null,
     connected: false,
@@ -104,6 +106,66 @@ class GodotServer {
     projectPath: null,
   };
   private readonly AUTOLOAD_NAME = 'McpInteractionServer';
+  private readonly allowedRoots = (process.env.GODOT_MCP_ALLOWED_ROOTS || '')
+    .split(delimiter).filter(Boolean).map(root => resolve(root));
+  private readonly requireDestructiveConfirmation = process.env.GODOT_MCP_CONFIRM_DESTRUCTIVE === 'true';
+  private readonly maxResponseBytes = Number.parseInt(process.env.GODOT_MCP_MAX_RESPONSE_BYTES || '0', 10);
+
+  private resolvePort(variable: string, conductorOffset: number, fallback: number): number {
+    const explicit = Number.parseInt(process.env[variable] || '', 10);
+    if (Number.isInteger(explicit) && explicit > 0 && explicit <= 65535) return explicit;
+    const conductorBase = Number.parseInt(process.env.CONDUCTOR_PORT || '', 10);
+    const conductorPort = conductorBase + conductorOffset;
+    if (Number.isInteger(conductorBase) && conductorPort > 0 && conductorPort <= 65535) return conductorPort;
+    return fallback;
+  }
+
+  private childEnvironment(): NodeJS.ProcessEnv {
+    return {
+      ...process.env,
+      GODOT_MCP_RUNTIME_PORT: String(this.INTERACTION_PORT),
+      GODOT_MCP_EDITOR_PORT: String(this.EDITOR_PORT),
+    };
+  }
+
+  private isWithinAllowedRoots(candidate: string): boolean {
+    if (this.allowedRoots.length === 0) return true;
+    const absolute = resolve(candidate);
+    const canonical = existsSync(absolute) ? realpathSync(absolute) : absolute;
+    return this.allowedRoots.some(root => {
+      const canonicalRoot = existsSync(root) ? realpathSync(root) : root;
+      const rel = relative(canonicalRoot, canonical);
+      return rel === '' || (!rel.startsWith('..') && !isAbsolute(rel));
+    });
+  }
+
+  private validateAllowedPaths(args: any): string | null {
+    if (this.allowedRoots.length === 0 || !args || typeof args !== 'object') return null;
+    const filesystemKeys = new Set([
+      'projectPath', 'otherProjectPath', 'directory', 'directoryPath', 'filePath',
+      'sourcePath', 'outputPath', 'newPath', 'scriptPath', 'resourcePath', 'shaderPath',
+      'translationPath', 'texturePath', 'savePath', 'oggPath',
+    ]);
+    const projectPath = typeof args.projectPath === 'string' ? args.projectPath : undefined;
+    for (const [key, value] of Object.entries(args)) {
+      if (!filesystemKeys.has(key) || typeof value !== 'string' || value.startsWith('res://')) continue;
+      const candidate = isAbsolute(value) ? value : projectPath ? join(projectPath, value) : value;
+      if (!this.isWithinAllowedRoots(candidate)) return `${key} is outside GODOT_MCP_ALLOWED_ROOTS.`;
+    }
+    return null;
+  }
+
+  private limitToolResponse(result: any): any {
+    if (!Number.isInteger(this.maxResponseBytes) || this.maxResponseBytes <= 0 || !Array.isArray(result?.content)) return result;
+    return {
+      ...result,
+      content: result.content.map((item: any) => {
+        if (item?.type !== 'text' || Buffer.byteLength(item.text || '', 'utf8') <= this.maxResponseBytes) return item;
+        const preview = Buffer.from(item.text, 'utf8').subarray(0, this.maxResponseBytes).toString('utf8');
+        return { type: 'text', text: JSON.stringify({ truncated: true, originalBytes: Buffer.byteLength(item.text, 'utf8'), maxBytes: this.maxResponseBytes, preview }) };
+      }),
+    };
+  }
 
   constructor(config?: GodotServerConfig) {
     // Apply configuration if provided
@@ -812,7 +874,10 @@ class GodotServer {
    */
   private setupToolHandlers() {
     // Define available tools
-    this.server.setRequestHandler(ListToolsRequestSchema, async () => ({
+    // Keep the original tool catalog available so the later expansion batches
+    // can append to it. Registering a second ListTools handler replaces the
+    // first one in the MCP SDK, which previously hid the first 1,003 tools.
+    const getBaseTools = async (): Promise<{ tools: any[] }> => ({
       tools: [
         {
           name: 'launch_editor',
@@ -841,6 +906,10 @@ class GodotServer {
               scene: {
                 type: 'string',
                 description: 'Optional: Specific scene to run',
+              },
+              headless: {
+                type: 'boolean',
+                description: 'Run without a display (recommended for CI and servers)',
               },
             },
             required: ['projectPath'],
@@ -3617,11 +3686,13 @@ class GodotServer {
       },
       {
         name: 'compare_screenshots',
-        description: 'Compare current screenshot to a reference file by hash.',
+        description: 'Compare the current frame to a reference PNG using pixel differences.',
         inputSchema: {
           type: 'object',
           properties: {
             referencePath: { type: 'string', description: 'Absolute path to the reference screenshot file' },
+            channelThreshold: { type: 'number', description: 'Normalized per-channel tolerance from 0 to 1 (default 0.1)' },
+            maxDiffPercent: { type: 'number', description: 'Allowed percent of differing pixels (default 0.5)' },
           },
           required: ['referencePath'],
         },
@@ -14058,15 +14129,15 @@ class GodotServer {
           },
         },
       ],
-    }));
+    });
 
     // ── Batch 46 tool definitions ──────────────────────────────────────────────
     this.server.setRequestHandler(ListToolsRequestSchema, async () => {
       if (this._discoveryMode) {
         return { tools: this.getDiscoveryModeTools() };
       }
-      return ({
-      tools: [
+      const tools: any[] = [
+        ...(await getBaseTools()).tools,
         // Group A: Node type adders
         {
           name: 'add_animatable_body_2d_to_scene',
@@ -16799,6 +16870,11 @@ class GodotServer {
         },
       // ── Editor tools ──────────────────────────────────────────────────────────
       {
+        name: 'install_editor_plugin',
+        description: 'Install the packaged Godot MCP editor plugin into a project.',
+        inputSchema: { type: 'object', properties: { projectPath: { type: 'string', description: 'Godot project path' }, enable: { type: 'boolean', description: 'Also enable the plugin in project.godot' } }, required: ['projectPath'] },
+      },
+      {
         name: 'connect_to_godot_editor',
         description: 'Connect to Godot editor plugin on port 9091.',
         inputSchema: { type: 'object', properties: {} },
@@ -18724,21 +18800,48 @@ class GodotServer {
       { name: 'get_scroll_container_scroll', description: 'Get scroll position of a ScrollContainer.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
       { name: 'set_scroll_container_scroll', description: 'Set scroll position of a ScrollContainer.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' }, scrollH: { type: 'integer' }, scrollV: { type: 'integer' } }, required: ['nodePath', 'scrollH', 'scrollV'] } },
       { name: 'get_nine_patch_rect_info', description: 'Get NinePatchRect patch margins and texture.', inputSchema: { type: 'object', properties: { nodePath: { type: 'string' } }, required: ['nodePath'] } },
+      { name: 'get_project_health_report', description: 'Audit project files and report missing resource references.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' } }, required: ['projectPath'] } },
+      { name: 'get_scene_dependency_graph', description: 'Build a dependency graph for every scene in a project.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' } }, required: ['projectPath'] } },
+      { name: 'find_orphaned_project_files', description: 'Find project assets not referenced by scenes, scripts, or settings.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, includeExtensions: { type: 'array', items: { type: 'string' } } }, required: ['projectPath'] } },
+      { name: 'compare_project_settings', description: 'Compare two project.godot files and report setting differences.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, otherProjectPath: { type: 'string' } }, required: ['projectPath', 'otherProjectPath'] } },
       { name: 'godot_start_here', description: 'START HERE: Overview and how to use this MCP server with 1969 tools.', inputSchema: { type: 'object', properties: {} } },
-      { name: 'godot_call', description: 'Call any Godot tool by name. Discover names via search_tools first.', inputSchema: { type: 'object', properties: { name: { type: 'string', description: 'Exact tool name (e.g. "set_node_position_2d")' }, args: { type: 'object', description: 'Arguments for the tool (same as calling it directly)' } }, required: ['name'] } },
+      { name: 'godot_call', description: 'Call one tool or execute a guarded multi-tool sequence.', inputSchema: { type: 'object', properties: { name: { type: 'string', description: 'Exact tool name for a single call' }, args: { type: 'object', description: 'Arguments for the single tool' }, sequence: { type: 'array', description: 'Ordered calls: [{name,args}]', items: { type: 'object' } }, dryRun: { type: 'boolean', description: 'Validate and preview without executing' }, rollbackOnError: { type: 'boolean', description: 'Restore the shared projectPath if any sequence step fails' } } } },
       { name: 'godot_suggest', description: 'Get tool suggestions for a natural language task description.', inputSchema: { type: 'object', properties: { task: { type: 'string', description: 'What you want to do (e.g. "make a character jump")' } }, required: ['task'] } },
-      ],
-    });
+      ];
+      // Several expansion batches retained older definitions for compatibility.
+      // MCP clients must receive one schema per callable tool name.
+      return { tools: [...new Map(tools.map(tool => [tool.name, tool])).values()] };
     });
 
     // Handle tool calls
     this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
       this.logDebug(`Handling tool request: ${request.params.name}`);
-      return await this.dispatchTool(request.params.name, request.params.arguments);
+      return this.limitToolResponse(await this.dispatchTool(request.params.name, request.params.arguments));
     });
   }
 
   private async dispatchTool(name: string, args: any): Promise<any> {
+    const pathError = this.validateAllowedPaths(args);
+    if (pathError) return createErrorResponse(pathError);
+    if (this.requireDestructiveConfirmation && /^(?:delete|remove|clear|erase|free)_/.test(name) && args?.confirmDestructive !== true) {
+      return createErrorResponse(`Tool "${name}" is destructive. Retry with confirmDestructive=true.`);
+    }
+    const templateToolsRequiringPaths = new Set([
+      'write_boss_enemy_script', 'write_dialogue_npc_script', 'write_rpg_stats_script',
+      'write_resource_gathering_script', 'write_crafting_system_script', 'write_minimap_icon_script',
+      'write_ability_cooldown_script', 'write_ai_follow_player_script', 'write_game_manager_script',
+      'write_debug_overlay_script', 'write_turn_based_battle_script', 'write_quest_system_script',
+      'write_skill_tree_script', 'write_weather_system_script', 'write_2d_lighting_controller',
+      'write_footstep_system_script', 'write_leaderboard_script', 'write_vfx_manager_script',
+      'write_ui_animation_script', 'write_save_load_system_script', 'write_loading_screen_script',
+      'write_gamepad_rumble_script', 'write_localization_helper_script', 'write_console_command_script',
+      'write_signal_bus_script', 'write_resource_loader_script', 'write_scene_manager_script',
+      'write_audio_manager_script', 'write_global_events_script', 'write_procedural_dungeon_script',
+      'write_chunk_loading_script',
+    ]);
+    if (templateToolsRequiringPaths.has(name) && (!args?.projectPath || !args?.scriptPath)) {
+      return createErrorResponse('projectPath and scriptPath are required.');
+    }
     switch (name) {
         case 'launch_editor':
           return await this.handleLaunchEditor(args);
@@ -21013,6 +21116,8 @@ class GodotServer {
         case 'create_audio_stream_ogg':
           return await this.handleCreateAudioStreamOgg(args);
         // ── Editor tool cases ──────────────────────────────────────────────────
+        case 'install_editor_plugin':
+          return await this.handleInstallEditorPlugin(args);
         case 'connect_to_godot_editor':
           return await this.handleConnectToGodotEditor(args);
         case 'disconnect_from_godot_editor':
@@ -22578,6 +22683,14 @@ class GodotServer {
           return await this.handleSetScrollContainerScroll(args);
         case 'get_nine_patch_rect_info':
           return await this.handleGetNinePatchRectInfo(args);
+        case 'get_project_health_report':
+          return await this.handleGetProjectHealthReport(args);
+        case 'get_scene_dependency_graph':
+          return await this.handleGetSceneDependencyGraph(args);
+        case 'find_orphaned_project_files':
+          return await this.handleFindOrphanedProjectFiles(args);
+        case 'compare_project_settings':
+          return await this.handleCompareProjectSettings(args);
         case 'explain_godot_concept':
           return await this.handleExplainGodotConcept(args);
         case 'godot_start_here':
@@ -22877,6 +22990,160 @@ class GodotServer {
       }
   }
 
+  private getProjectFiles(projectPath: string): string[] {
+    const result: string[] = [];
+    const visit = (directory: string) => {
+      for (const entry of readdirSync(directory, { withFileTypes: true })) {
+        if (entry.name === '.godot' || entry.name === '.git') continue;
+        const absolute = join(directory, entry.name);
+        if (entry.isDirectory()) visit(absolute);
+        else result.push(absolute.slice(projectPath.length + 1).replace(/\\/g, '/'));
+      }
+    };
+    visit(projectPath);
+    return result.sort();
+  }
+
+  private validateGodotProject(projectPath: unknown): string | null {
+    if (typeof projectPath !== 'string' || !projectPath) return 'projectPath is required.';
+    if (!validatePath(projectPath) || !existsSync(join(projectPath, 'project.godot'))) {
+      return `Not a valid Godot project: ${projectPath}`;
+    }
+    return null;
+  }
+
+  private async handleGetProjectHealthReport(args: any) {
+    args = normalizeParameters(args || {});
+    const error = this.validateGodotProject(args.projectPath);
+    if (error) return createErrorResponse(error);
+    const files = this.getProjectFiles(args.projectPath);
+    const existing = new Set(files);
+    const sourceFiles = files.filter(file => /\.(?:godot|tscn|tres|gd|gdshader)$/i.test(file));
+    const missing = new Set<string>();
+    for (const file of sourceFiles) {
+      const text = readFileSync(join(args.projectPath, file), 'utf8');
+      for (const match of text.matchAll(/res:\/\/([^"'\s\]\)]+)/g)) {
+        const referenced = match[1];
+        if (!existing.has(referenced) && !existsSync(join(args.projectPath, referenced))) missing.add(referenced);
+      }
+    }
+    const report = {
+      healthy: missing.size === 0,
+      projectPath: args.projectPath,
+      totals: {
+        files: files.length,
+        scenes: files.filter(file => file.endsWith('.tscn')).length,
+        scripts: files.filter(file => file.endsWith('.gd')).length,
+        resources: files.filter(file => file.endsWith('.tres')).length,
+      },
+      missingReferences: [...missing].sort(),
+    };
+    return { content: [{ type: 'text', text: JSON.stringify(report, null, 2) }] };
+  }
+
+  private async handleGetSceneDependencyGraph(args: any) {
+    args = normalizeParameters(args || {});
+    const error = this.validateGodotProject(args.projectPath);
+    if (error) return createErrorResponse(error);
+    const scenes = this.getProjectFiles(args.projectPath).filter(file => file.endsWith('.tscn'));
+    const graph: Record<string, string[]> = {};
+    for (const scene of scenes) {
+      const text = readFileSync(join(args.projectPath, scene), 'utf8');
+      graph[`res://${scene}`] = [...new Set([...text.matchAll(/\[ext_resource[^\]]*path="(res:\/\/[^\"]+)"/g)].map(match => match[1]))].sort();
+    }
+    return { content: [{ type: 'text', text: JSON.stringify({ projectPath: args.projectPath, sceneCount: scenes.length, graph }, null, 2) }] };
+  }
+
+  private async handleFindOrphanedProjectFiles(args: any) {
+    args = normalizeParameters(args || {});
+    const error = this.validateGodotProject(args.projectPath);
+    if (error) return createErrorResponse(error);
+    const files = this.getProjectFiles(args.projectPath);
+    const extensions = Array.isArray(args.includeExtensions) && args.includeExtensions.length
+      ? new Set(args.includeExtensions.map((extension: string) => extension.replace(/^\./, '').toLowerCase()))
+      : new Set(['tscn', 'tres', 'gd', 'gdshader', 'png', 'jpg', 'jpeg', 'svg', 'wav', 'ogg', 'mp3']);
+    const referenced = new Set<string>(['project.godot']);
+    for (const file of files.filter(path => /\.(?:godot|tscn|tres|gd|gdshader)$/i.test(path))) {
+      const text = readFileSync(join(args.projectPath, file), 'utf8');
+      for (const match of text.matchAll(/res:\/\/([^"'\s\]\)]+)/g)) referenced.add(match[1]);
+    }
+    const orphans = files.filter(file => {
+      const extension = file.split('.').pop()?.toLowerCase() || '';
+      return extensions.has(extension) && !referenced.has(file);
+    });
+    return { content: [{ type: 'text', text: JSON.stringify({ projectPath: args.projectPath, orphanCount: orphans.length, orphanedFiles: orphans }, null, 2) }] };
+  }
+
+  private async handleCompareProjectSettings(args: any) {
+    args = normalizeParameters(args || {});
+    const firstError = this.validateGodotProject(args.projectPath);
+    if (firstError) return createErrorResponse(firstError);
+    const secondError = this.validateGodotProject(args.otherProjectPath);
+    if (secondError) return createErrorResponse(secondError.replace('projectPath', 'otherProjectPath'));
+    const parse = (projectPath: string) => {
+      const settings: Record<string, string> = {};
+      let section = '';
+      for (const rawLine of readFileSync(join(projectPath, 'project.godot'), 'utf8').split(/\r?\n/)) {
+        const line = rawLine.trim();
+        const sectionMatch = line.match(/^\[([^\]]+)\]$/);
+        if (sectionMatch) { section = sectionMatch[1]; continue; }
+        if (!line || line.startsWith(';') || !line.includes('=')) continue;
+        const separator = line.indexOf('=');
+        settings[`${section}/${line.slice(0, separator).trim()}`] = line.slice(separator + 1).trim();
+      }
+      return settings;
+    };
+    const left = parse(args.projectPath);
+    const right = parse(args.otherProjectPath);
+    const keys = [...new Set([...Object.keys(left), ...Object.keys(right)])].sort();
+    const differences = keys.filter(key => left[key] !== right[key]).map(key => ({ key, left: left[key] ?? null, right: right[key] ?? null }));
+    return { content: [{ type: 'text', text: JSON.stringify({ identical: differences.length === 0, differenceCount: differences.length, differences }, null, 2) }] };
+  }
+
+  private async handleInstallEditorPlugin(args: any) {
+    args = normalizeParameters(args || {});
+    const projectPath = args.projectPath;
+    if (!projectPath) return createErrorResponse('projectPath is required.');
+    if (!validatePath(projectPath) || !existsSync(join(projectPath, 'project.godot'))) {
+      return createErrorResponse(`Not a valid Godot project: ${projectPath}`);
+    }
+
+    const sourceDir = join(__dirname, 'godot-editor-plugin', 'addons', 'godot_mcp_editor');
+    const targetDir = join(projectPath, 'addons', 'godot_mcp_editor');
+    const files = ['editor_mcp_server.gd', 'plugin.cfg'];
+    try {
+      mkdirSync(targetDir, { recursive: true });
+      for (const file of files) copyFileSync(join(sourceDir, file), join(targetDir, file));
+      let enabled = false;
+      if (args.enable === true) {
+        const projectFile = join(projectPath, 'project.godot');
+        const pluginPath = 'res://addons/godot_mcp_editor/plugin.cfg';
+        let content = readFileSync(projectFile, 'utf8');
+        if (!content.includes('[editor_plugins]')) {
+          content += `\n[editor_plugins]\n\nenabled=PackedStringArray("${pluginPath}")\n`;
+        } else if (!content.includes(pluginPath)) {
+          content = content.replace(/(\[editor_plugins\][\s\S]*?enabled=PackedStringArray\()([^)]*)(\))/, (_match, start, entries, end) => {
+            const separator = entries.trim() ? ', ' : '';
+            return `${start}${entries}${separator}"${pluginPath}"${end}`;
+          });
+          if (!content.includes(pluginPath)) content = content.replace('[editor_plugins]', `[editor_plugins]\n\nenabled=PackedStringArray("${pluginPath}")`);
+        }
+        writeFileSync(projectFile, content, 'utf8');
+        enabled = true;
+      }
+      return { content: [{ type: 'text', text: JSON.stringify({
+        success: true,
+        pluginPath: 'res://addons/godot_mcp_editor/plugin.cfg',
+        installedFiles: files,
+        enabled,
+        editorPort: this.EDITOR_PORT,
+        nextStep: enabled ? 'Launch the Godot editor, then call connect_to_godot_editor.' : 'In Godot, open Project > Project Settings > Plugins and enable Godot MCP Editor.',
+      }, null, 2) }] };
+    } catch (error: any) {
+      return createErrorResponse(`Failed to install editor plugin: ${error.message}`);
+    }
+  }
+
   private async handleConnectToGodotEditor(_args: any) {
     if (this.editorConnection.connected) return { content: [{ type: 'text', text: 'Already connected to Godot editor.' }] };
     return new Promise<any>((resolve) => {
@@ -22885,7 +23152,7 @@ class GodotServer {
         this.editorConnection.socket = socket;
         this.editorConnection.connected = true;
         this.editorConnection.responseBuffer = '';
-        resolve({ content: [{ type: 'text', text: 'Connected to Godot editor on port 9091.' }] });
+        resolve({ content: [{ type: 'text', text: `Connected to Godot editor on port ${this.EDITOR_PORT}.` }] });
       });
       socket.on('data', (data: Buffer) => {
         this.editorConnection.responseBuffer += data.toString();
@@ -22970,6 +23237,7 @@ class GodotServer {
       this.logDebug(`Launching Godot editor for project: ${args.projectPath}`);
       const process = spawn(this.godotPath, ['-e', '--path', args.projectPath], {
         stdio: 'pipe',
+        env: this.childEnvironment(),
       });
 
       process.on('error', (err: Error) => {
@@ -23035,13 +23303,14 @@ class GodotServer {
       this.injectInteractionServer(args.projectPath);
 
       const cmdArgs = ['-d', '--path', args.projectPath];
+      if (args.headless === true) cmdArgs.unshift('--headless');
       if (args.scene && validatePath(args.scene)) {
         this.logDebug(`Adding scene parameter: ${args.scene}`);
         cmdArgs.push(args.scene);
       }
 
       this.logDebug(`Running Godot project: ${args.projectPath}`);
-      const process = spawn(this.godotPath!, cmdArgs, { stdio: 'pipe' });
+      const process = spawn(this.godotPath!, cmdArgs, { stdio: 'pipe', env: this.childEnvironment() });
       const output: string[] = [];
       const errors: string[] = [];
 
@@ -23063,12 +23332,15 @@ class GodotServer {
 
       process.on('exit', (code: number | null) => {
         this.logDebug(`Godot process exited with code ${code}`);
-        this.disconnectFromGame();
-        if (this.gameConnection.projectPath) {
-          this.removeInteractionServer(this.gameConnection.projectPath);
-          this.gameConnection.projectPath = null;
-        }
+        // A previous process can finish exiting after a replacement has already
+        // launched. Only the process that still owns activeProcess may tear down
+        // the shared runtime connection.
         if (this.activeProcess && this.activeProcess.process === process) {
+          this.disconnectFromGame();
+          if (this.gameConnection.projectPath) {
+            this.removeInteractionServer(this.gameConnection.projectPath);
+            this.gameConnection.projectPath = null;
+          }
           this.activeProcess = null;
         }
       });
@@ -26829,11 +27101,53 @@ class GodotServer {
     try {
       const screenshotResponse = await this.sendGameCommand('screenshot', {});
       if (screenshotResponse.error) return createErrorResponse(`Screenshot failed: ${screenshotResponse.error}`);
-      const currentHash = screenshotResponse.data || screenshotResponse.base64 || '';
-      const referenceContent = readFileSync(args.referencePath, 'base64');
-      const match = currentHash === referenceContent;
-      const diffPercent = match ? 0 : 100;
-      return { content: [{ type: 'text', text: JSON.stringify({ match, diffPercent }, null, 2) }] };
+      const currentPng = PNG.sync.read(Buffer.from(screenshotResponse.data || screenshotResponse.base64 || '', 'base64'));
+      const referencePng = PNG.sync.read(readFileSync(args.referencePath));
+      const channelThreshold = Math.min(1, Math.max(0, typeof args.channelThreshold === 'number' ? args.channelThreshold : 0.1));
+      const maxDiffPercent = Math.min(100, Math.max(0, typeof args.maxDiffPercent === 'number' ? args.maxDiffPercent : 0.5));
+
+      if (currentPng.width !== referencePng.width || currentPng.height !== referencePng.height) {
+        return { content: [{ type: 'text', text: JSON.stringify({
+          match: false,
+          diffPercent: 100,
+          differentPixels: currentPng.width * currentPng.height,
+          totalPixels: currentPng.width * currentPng.height,
+          currentSize: { width: currentPng.width, height: currentPng.height },
+          referenceSize: { width: referencePng.width, height: referencePng.height },
+          channelThreshold,
+          maxDiffPercent,
+          reason: 'Image dimensions differ',
+        }, null, 2) }] };
+      }
+
+      const channelDeltaLimit = channelThreshold * 255;
+      const totalPixels = currentPng.width * currentPng.height;
+      let differentPixels = 0;
+      let absoluteDelta = 0;
+      for (let offset = 0; offset < currentPng.data.length; offset += 4) {
+        let pixelDiffers = false;
+        for (let channel = 0; channel < 4; channel++) {
+          const delta = Math.abs(currentPng.data[offset + channel] - referencePng.data[offset + channel]);
+          absoluteDelta += delta;
+          if (delta > channelDeltaLimit) pixelDiffers = true;
+        }
+        if (pixelDiffers) differentPixels++;
+      }
+      const diffPercent = totalPixels === 0 ? 0 : (differentPixels / totalPixels) * 100;
+      const meanAbsoluteErrorPercent = currentPng.data.length === 0
+        ? 0
+        : (absoluteDelta / (currentPng.data.length * 255)) * 100;
+      const match = diffPercent <= maxDiffPercent;
+      return { content: [{ type: 'text', text: JSON.stringify({
+        match,
+        diffPercent,
+        differentPixels,
+        totalPixels,
+        meanAbsoluteErrorPercent,
+        size: { width: currentPng.width, height: currentPng.height },
+        channelThreshold,
+        maxDiffPercent,
+      }, null, 2) }] };
     } catch (e: any) {
       return createErrorResponse(`compare_screenshots failed: ${e?.message || 'Unknown error'}`);
     }
@@ -37300,8 +37614,8 @@ func _physics_process(delta: float) -> void:
 \tmove_and_slide()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, message: 'Player controller script written.' }) }] };
     } catch (e: any) {
@@ -37351,8 +37665,8 @@ func _physics_process(delta: float) -> void:
 \tmove_and_slide()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, message: '3D FPS controller script written.' }) }] };
     } catch (e: any) {
@@ -37393,8 +37707,8 @@ func get_health_percent() -> float:
 \treturn float(current_health) / float(max_health)
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) {
@@ -37443,8 +37757,8 @@ func _physics_process(delta: float) -> void:
 \t\tpatrol_direction = -patrol_direction
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) {
@@ -37488,8 +37802,8 @@ func delete_save() -> void:
 \t\tDirAccess.remove_absolute(SAVE_PATH)
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) {
@@ -37535,8 +37849,8 @@ func lose_life() -> bool:
 \treturn player_lives <= 0
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, className: className, note: 'Add this script as an Autoload in Project > Project Settings > Autoload' }) }] };
     } catch (e: any) {
@@ -37568,8 +37882,8 @@ func change_state(new_state: State) -> void:
 ${funcs}
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, states: stateList }) }] };
     } catch (e: any) {
@@ -37706,8 +38020,8 @@ ${funcs}
     };
     const content = args.shaderCode ?? defaultCode[shaderType] ?? defaultCode['canvas_item'];
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, shaderPath: args.shaderPath, shaderType }) }] };
     } catch (e: any) {
@@ -37768,8 +38082,8 @@ func is_full() -> bool:
 \treturn items.size() >= max_slots
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, maxSlots }) }] };
     } catch (e: any) {
@@ -37817,8 +38131,8 @@ func end_dialogue() -> void:
 \tdialogue_ended.emit()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) {
@@ -37846,8 +38160,8 @@ signal game_paused(paused: bool)
 signal scene_changed(scene_name: String)
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, note: 'Add as Autoload named EventBus in Project > Project Settings > Autoload' }) }] };
     } catch (e: any) {
@@ -37897,8 +38211,8 @@ func get_active_count() -> int:
 \treturn _pool.filter(func(o): return o.visible).size()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, poolSize }) }] };
     } catch (e: any) {
@@ -37926,8 +38240,8 @@ func _process(delta: float) -> void:
 \tglobal_position = global_position.lerp(target_pos, smoothing_speed * delta)
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, smoothing }) }] };
     } catch (e: any) {
@@ -37968,8 +38282,8 @@ func _on_body_entered(body: Node2D) -> void:
 \t\tqueue_free()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, itemId, itemName, points }) }] };
     } catch (e: any) {
@@ -38068,8 +38382,8 @@ func _on_body_entered(body: Node2D) -> void:
 ## Add CollisionShape2D as child with desired shape.
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -38092,8 +38406,8 @@ func _physics_process(delta: float) -> void:
 \t\trotation = input.angle()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, speed }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -38138,8 +38452,8 @@ func _load_high_score() -> void:
 \t\tif f: high_score = f.get_32()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -38183,8 +38497,8 @@ func show_message(text: String, duration: float = 2.0) -> void:
 \t\tscore_label.text = ""
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -38232,8 +38546,8 @@ func _on_timeout() -> void:
 \ttimed_out.emit(_fire_count)
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, waitTime, oneShot }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -38267,8 +38581,8 @@ func go_to_scene(scene_path: String, duration: float = 0.5) -> void:
 \t_is_transitioning = false
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -38300,8 +38614,8 @@ func _unhandled_input(event: InputEvent) -> void:
 \tif event.is_action_pressed("ui_cancel"): pause_pressed.emit()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -38346,8 +38660,8 @@ func _spawn() -> void:
 \tspawned.emit(instance)
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, spawnInterval }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -38667,7 +38981,7 @@ func _on_body_exited(body: Node2D) -> void:
 \t\ttarget_exited.emit(body)
 `;
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, groupToDetect: group }) }] };
@@ -38706,7 +39020,7 @@ func _on_body_entered(body: Node2D) -> void:
 \tqueue_free()
 `;
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, speed, lifetime }) }] };
@@ -38742,7 +39056,7 @@ func set_active(value: bool) -> void:
 \tmonitoring = value
 `;
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -38785,7 +39099,7 @@ func _on_body_exited(body: Node) -> void:
 \t\t\tbody.hide_prompt()
 `;
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, interactKey: key }) }] };
@@ -38834,7 +39148,7 @@ func toggle() -> void:
 \telse: open()
 `;
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, openDuration: duration }) }] };
@@ -38993,7 +39307,7 @@ func toggle() -> void:
     if (!args.projectPath || !args.dirPath) return createErrorResponse('projectPath and dirPath are required.');
     const fullPath = join(args.projectPath, args.dirPath);
     try {
-      require('fs').mkdirSync(fullPath, { recursive: true });
+      mkdirSync(fullPath, { recursive: true });
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, created: fullPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed to create directory: ${e.message}`); }
   }
@@ -39033,8 +39347,8 @@ func get_level_count() -> int:
 \treturn LEVELS.size()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, levelCount: scenes.length }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -39071,8 +39385,8 @@ func _on_body_entered(body: Node2D) -> void:
 \t\tqueue_free()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, value }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -39103,8 +39417,8 @@ func _play_activate_effect() -> void:
 \tpass
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -39139,8 +39453,8 @@ func _physics_process(delta: float) -> void:
 \t\tposition = _start_pos + move_vec * _direction * -distance
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, speed, distance }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -39170,8 +39484,8 @@ func _on_destroyed() -> void:
 \tqueue_free()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, maxHealth }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -39197,8 +39511,8 @@ func _ready() -> void:
 \tgravity = gravity_strength
 `;
     try {
-      const absDir = require('path').dirname(absPath);
-      if (!existsSync(absDir)) require('fs').mkdirSync(absDir, { recursive: true });
+      const absDir = dirname(absPath);
+      if (!existsSync(absDir)) mkdirSync(absDir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, gravity, direction: dir2 }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -39232,8 +39546,8 @@ func _on_body_entered(body: Node2D) -> void:
 \tboost_ended.emit()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, multiplier, duration }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -39261,8 +39575,8 @@ func _process(delta: float) -> void:
 \tlook_at(target.global_position + Vector3(0, 1, 0))
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, distance, height }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -39289,8 +39603,8 @@ void fragment() {
 }
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, shaderPath: args.shaderPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -39317,8 +39631,8 @@ void fragment() {
 }
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, shaderPath: args.shaderPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -39467,8 +39781,8 @@ void fragment() {
 }
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, shaderPath: args.shaderPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -39489,8 +39803,8 @@ void fragment() {
 }
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, shaderPath: args.shaderPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -39514,8 +39828,8 @@ void fragment() {
 }
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, shaderPath: args.shaderPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -39546,8 +39860,8 @@ func _physics_process(delta: float) -> void:
 \t\t_direction *= -1.0
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, speed, patrolRange: range }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -39594,8 +39908,8 @@ func get_all_items() -> Dictionary:
 \treturn items.duplicate()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -39648,8 +39962,8 @@ func _input(event: InputEvent) -> void:
 \t\t\t_display_line(_lines[_current_line])
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -39812,8 +40126,8 @@ func call_delayed(callable: Callable, seconds: float) -> void:
 \tcallable.call()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -39848,8 +40162,8 @@ func _process(delta: float) -> void:
 \toffset = Vector2(randf_range(-max_offset, max_offset), randf_range(-max_offset, max_offset))
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -39883,8 +40197,8 @@ func preload_all(resources: Dictionary) -> void:
 \t\tpreload_resource(key, resources[key])
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -39926,8 +40240,8 @@ func bounce(node: Node2D, amount: float = 0.2, duration: float = 0.4) -> Tween:
 \treturn tween
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -39976,8 +40290,8 @@ func _apply_settings() -> void:
 \t\tDisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -40029,8 +40343,8 @@ func load_data() -> void:
 \t\t_unlocked[id] = cfg.get_value("achievements", id, false)
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -40072,8 +40386,8 @@ func show_error(message: String) -> void:
 \tshow_notification(message, Color.RED)
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -40114,8 +40428,8 @@ func set_zoom(zoom: float) -> void:
 \tcamera.zoom = Vector2(zoom, zoom)
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -40316,8 +40630,8 @@ func _process(_delta: float) -> void:
 \ttext = "FPS: %d" % Engine.get_frames_per_second()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -40352,8 +40666,8 @@ func damage(amount: float) -> void:
 \tset_health(current_health - amount)
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -40370,8 +40684,8 @@ func _process(_delta: float) -> void:
 \tglobal_position = get_viewport().get_mouse_position()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -40416,8 +40730,8 @@ func _do_respawn() -> void:
 \tplayer_respawned.emit()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -40476,8 +40790,8 @@ func _on_enemy_died() -> void:
 \t\tget_tree().create_timer(time_between_waves).timeout.connect(_spawn_next_wave)
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -40524,8 +40838,8 @@ func get_normalized_time() -> float:
 \treturn _time / day_duration
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -40563,8 +40877,8 @@ func _on_velocity_computed(safe_velocity: Vector2) -> void:
 \tmove_and_slide()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -40824,7 +41138,7 @@ func return_bullet(bullet: Node) -> void:
 \tbullet.visible = false
 `;
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, poolSize }) }] };
@@ -40865,7 +41179,7 @@ func _on_quit_pressed() -> void:
 \tget_tree().quit()
 `;
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -40904,7 +41218,7 @@ func _on_quit_pressed() -> void:
 \tget_tree().quit()
 `;
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -40933,7 +41247,7 @@ func set_text_value(value: String) -> void:
 \ttext = value
 `;
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, duration }) }] };
@@ -40963,7 +41277,7 @@ func _process(delta: float) -> void:
 \tglobal_position = global_position.lerp(_target_node.global_position, smoothing_speed * delta)
 `;
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, smoothing }) }] };
@@ -40994,7 +41308,7 @@ func _on_body_entered(body: Node) -> void:
 \t\tqueue_free()
 `;
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, healAmount }) }] };
@@ -41111,7 +41425,7 @@ func _on_body_entered(body: Node) -> void:
     if (!args.projectPath || !args.filePath) return createErrorResponse('projectPath and filePath are required.');
     const absPath = args.filePath.replace('res://', args.projectPath + '/');
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       const content = JSON.stringify(args.data ?? {}, null, 2);
       writeFileSync(absPath, content, 'utf8');
@@ -41130,7 +41444,7 @@ func _on_body_entered(body: Node) -> void:
       }
       const merged = { ...existing, ...args.data };
       const content = JSON.stringify(merged, null, 2);
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, keys: Object.keys(merged).length }) }] };
@@ -41183,7 +41497,7 @@ func _on_body_entered(body: Node) -> void:
     const absDest = args.destPath.replace('res://', args.projectPath + '/');
     if (!existsSync(absSrc)) return createErrorResponse('Source file not found.');
     try {
-      const dir = require('path').dirname(absDest);
+      const dir = dirname(absDest);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       copyFileSync(absSrc, absDest);
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, source: args.sourcePath, dest: args.destPath }) }] };
@@ -41218,7 +41532,7 @@ func flash_and_shake(color: Color = default_flash_color, duration: float = 0.15,
 \ttween.tween_property(self, "position", original_pos, duration * 0.1)
 `;
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -41253,7 +41567,7 @@ func _process(delta: float) -> void:
 \tposition = _offset
 `;
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, scrollFactor }) }] };
@@ -41294,7 +41608,7 @@ func reset() -> void:
 \t_triggered = false
 `;
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, triggerGroup }) }] };
@@ -41341,7 +41655,7 @@ func _roll_loot() -> String:
 \treturn ""
 `;
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -41390,7 +41704,7 @@ func reset_combo() -> void:
 \tcombo_broken.emit()
 `;
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, comboTimeout }) }] };
@@ -41443,7 +41757,7 @@ func _process(delta: float) -> void:
 \t\teffect_expired.emit(name)
 `;
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -41490,7 +41804,7 @@ func reset() -> void:
 \tcurrent_xp = 0
 `;
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -41541,7 +41855,7 @@ func move_to_cell(cell: Vector2i) -> void:
 \t_moving = true
 `;
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, cellSize }) }] };
@@ -41590,7 +41904,7 @@ func get_item(item_id: String) -> Dictionary:
 \treturn {}
 `;
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -41647,7 +41961,7 @@ func get_action_display(action: String) -> String:
 \treturn "Unbound"
 `;
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -41820,9 +42134,9 @@ func _die() -> void:
     emit_signal("boss_defeated")
     queue_free()
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -41867,9 +42181,9 @@ func _next_line() -> void:
         player_inside = false
         emit_signal("dialogue_ended")
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -41910,9 +42224,9 @@ func get_attack_damage() -> int:
 func is_alive() -> bool:
     return hp > 0
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -41962,9 +42276,9 @@ func _respawn() -> void:
     is_depleted = false
     emit_signal("resource_respawned")
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -42004,9 +42318,9 @@ func craft(item_name: String, inventory: Dictionary) -> bool:
 func add_recipe(item_name: String, ingredients: Dictionary) -> void:
     recipes[item_name] = ingredients
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -42043,9 +42357,9 @@ func _exit_tree() -> void:
     if _icon:
         _icon.queue_free()
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -42092,9 +42406,9 @@ func get_remaining(ability_name: String) -> float:
         return 0.0
     return _cooldowns[ability_name].time_left
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -42128,9 +42442,9 @@ func _physics_process(_delta: float) -> void:
     else:
         velocity = Vector2.ZERO
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -42181,9 +42495,9 @@ func reset() -> void:
     game_paused = false
     get_tree().paused = false
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -42227,9 +42541,9 @@ func set_info(key: String, value) -> void:
 func clear_info(key: String) -> void:
     extra_lines.erase(key)
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -42425,9 +42739,9 @@ func _check_victory() -> bool:
         return true
     return false
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -42480,9 +42794,9 @@ func is_quest_complete(quest_id: String) -> bool:
 func get_quest_progress(quest_id: String) -> Dictionary:
     return active_quests.get(quest_id, {}).get("progress", {})
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -42534,9 +42848,9 @@ func reset_tree() -> void:
         skill_points += skill_tree[skill]["cost"]
     unlocked_skills.clear()
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -42585,9 +42899,9 @@ func cycle_weather() -> void:
     var next = (current_weather + 1) % Weather.size()
     set_weather(next as Weather)
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -42630,9 +42944,9 @@ func disable_flicker() -> void:
     flicker_enabled = false
     energy = base_energy
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -42675,9 +42989,9 @@ func _play_footstep() -> void:
 func set_surface(surface: String) -> void:
     pass  # Override to swap footstep_sounds based on surface type
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -42732,9 +43046,9 @@ func clear_scores() -> void:
     if FileAccess.file_exists(SAVE_PATH):
         DirAccess.remove_absolute(SAVE_PATH)
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -42792,9 +43106,9 @@ func clear_pool(key: String) -> void:
                 n.queue_free()
         _pool.erase(key)
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -42841,9 +43155,9 @@ func shake(duration: float = 0.3, strength: float = 5.0) -> void:
         t.tween_property(self, "position", origin + Vector2(randf_range(-strength, strength), randf_range(-strength, strength)), 0.05)
     t.tween_property(self, "position", origin, 0.05)
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
+      const dir = dirname(absPath);
       if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
@@ -42858,7 +43172,7 @@ func shake(duration: float = 0.3, strength: float = 5.0) -> void:
     const classes: any[] = [];
     const walk = (dir: string) => {
       if (!existsSync(dir)) return;
-      const entries = require('fs').readdirSync(dir, { withFileTypes: true });
+      const entries = readdirSync(dir, { withFileTypes: true });
       for (const e of entries) {
         const full = join(dir, e.name);
         if (e.isDirectory() && !e.name.startsWith('.')) walk(full);
@@ -42879,7 +43193,7 @@ func shake(duration: float = 0.3, strength: float = 5.0) -> void:
     const exports: any[] = [];
     const walk = (dir: string) => {
       if (!existsSync(dir)) return;
-      const entries = require('fs').readdirSync(dir, { withFileTypes: true });
+      const entries = readdirSync(dir, { withFileTypes: true });
       for (const e of entries) {
         const full = join(dir, e.name);
         if (e.isDirectory() && !e.name.startsWith('.')) walk(full);
@@ -42903,7 +43217,7 @@ func shake(duration: float = 0.3, strength: float = 5.0) -> void:
     const signals: any[] = [];
     const walk = (dir: string) => {
       if (!existsSync(dir)) return;
-      const entries = require('fs').readdirSync(dir, { withFileTypes: true });
+      const entries = readdirSync(dir, { withFileTypes: true });
       for (const e of entries) {
         const full = join(dir, e.name);
         if (e.isDirectory() && !e.name.startsWith('.')) walk(full);
@@ -42939,7 +43253,7 @@ func shake(duration: float = 0.3, strength: float = 5.0) -> void:
     const tscnContent: string[] = [];
     const walk = (dir: string) => {
       if (!existsSync(dir)) return;
-      const entries = require('fs').readdirSync(dir, { withFileTypes: true });
+      const entries = readdirSync(dir, { withFileTypes: true });
       for (const e of entries) {
         const full = join(dir, e.name);
         if (e.isDirectory() && !e.name.startsWith('.')) walk(full);
@@ -42959,7 +43273,7 @@ func shake(duration: float = 0.3, strength: float = 5.0) -> void:
     const scenes: string[] = [];
     const walk = (dir: string) => {
       if (!existsSync(dir)) return;
-      const entries = require('fs').readdirSync(dir, { withFileTypes: true });
+      const entries = readdirSync(dir, { withFileTypes: true });
       for (const e of entries) {
         const full = join(dir, e.name);
         if (e.isDirectory() && !e.name.startsWith('.')) walk(full);
@@ -42976,7 +43290,7 @@ func shake(duration: float = 0.3, strength: float = 5.0) -> void:
     const assignments: any[] = [];
     const walk = (dir: string) => {
       if (!existsSync(dir)) return;
-      const entries = require('fs').readdirSync(dir, { withFileTypes: true });
+      const entries = readdirSync(dir, { withFileTypes: true });
       for (const e of entries) {
         const full = join(dir, e.name);
         if (e.isDirectory() && !e.name.startsWith('.')) walk(full);
@@ -42999,7 +43313,7 @@ func shake(duration: float = 0.3, strength: float = 5.0) -> void:
     const results: any[] = [];
     const walk = (dir: string) => {
       if (!existsSync(dir)) return;
-      const entries = require('fs').readdirSync(dir, { withFileTypes: true });
+      const entries = readdirSync(dir, { withFileTypes: true });
       for (const e of entries) {
         const full = join(dir, e.name);
         if (e.isDirectory() && !e.name.startsWith('.')) walk(full);
@@ -43061,9 +43375,9 @@ func shake(duration: float = 0.3, strength: float = 5.0) -> void:
     const absDest = args.destPath.replace('res://', args.projectPath + '/');
     if (!existsSync(absSrc)) return createErrorResponse('Source scene not found.');
     try {
-      const dir = require('path').dirname(absDest);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
-      require('fs').copyFileSync(absSrc, absDest);
+      const dir = dirname(absDest);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      copyFileSync(absSrc, absDest);
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, source: args.sourcePath, dest: args.destPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
   }
@@ -43074,7 +43388,7 @@ func shake(duration: float = 0.3, strength: float = 5.0) -> void:
     const absPath = args.scriptPath.replace('res://', args.projectPath + '/');
     if (!existsSync(absPath)) return createErrorResponse('Script file not found.');
     try {
-      require('fs').appendFileSync(absPath, '\n' + args.code, 'utf8');
+      appendFileSync(absPath, '\n' + args.code, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath, appendedBytes: args.code.length }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
   }
@@ -43147,8 +43461,8 @@ func take_screenshot(filename: String = "") -> String:
     return path
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -43197,8 +43511,8 @@ func skip() -> void:
         cutscene_finished.emit()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -43235,8 +43549,8 @@ func generate() -> void:
                 set_cell(LAYER, Vector2i(x, y), 0, floor_tile)
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -43282,8 +43596,8 @@ func _scan() -> void:
         target_lost.emit()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -43335,8 +43649,8 @@ func _on_enemy_died() -> void:
         wave_cleared.emit()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -43377,8 +43691,8 @@ func _on_body_entered(body: Node) -> void:
         queue_free()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -43424,8 +43738,8 @@ func _physics_process(delta: float) -> void:
             _returning = true
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -43465,8 +43779,8 @@ func is_alerted() -> bool:
     return alert_level >= 1.0
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -43497,8 +43811,8 @@ func _physics_process(delta: float) -> void:
         _pushback = Vector2.ZERO
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -43531,8 +43845,8 @@ func _physics_process(delta: float) -> void:
                     item.global_position += move
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -43599,8 +43913,8 @@ func get_tile(pos: Vector2i) -> int:
     return _tiles[pos.y * grid_size + pos.x]
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -43672,8 +43986,8 @@ func get_cell(x: int, y: int) -> int:
     return _board[x][y]
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -43728,8 +44042,8 @@ func _fire() -> void:
             p.launch(_target)
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -43903,9 +44217,9 @@ func take_damage(amount: int) -> void:
 `;
       const projectPath: string = args.projectPath ?? '';
       const scriptPath: string = args.scriptPath ?? '';
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -43944,9 +44258,9 @@ func _physics_process(delta: float) -> void:
 `;
       const projectPath: string = args.projectPath ?? '';
       const scriptPath: string = args.scriptPath ?? '';
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -44013,9 +44327,9 @@ func die() -> void:
 `;
       const projectPath: string = args.projectPath ?? '';
       const scriptPath: string = args.scriptPath ?? '';
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -44054,9 +44368,9 @@ func to_dict() -> Dictionary:
 `;
       const projectPath: string = args.projectPath ?? '';
       const scriptPath: string = args.scriptPath ?? '';
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -44107,9 +44421,9 @@ func emit_ui_requested(panel_name: String) -> void:
 `;
       const projectPath: string = args.projectPath ?? '';
       const scriptPath: string = args.scriptPath ?? '';
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -44162,9 +44476,9 @@ func clear_all() -> void:
 `;
       const projectPath: string = args.projectPath ?? '';
       const scriptPath: string = args.scriptPath ?? '';
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -44202,9 +44516,9 @@ func shake(amount: float = 0.5) -> void:
 `;
       const projectPath: string = args.projectPath ?? '';
       const scriptPath: string = args.scriptPath ?? '';
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -44242,9 +44556,9 @@ func explode_at(pos: Vector2) -> void:
 `;
       const projectPath: string = args.projectPath ?? '';
       const scriptPath: string = args.scriptPath ?? '';
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -44289,9 +44603,9 @@ func deactivate_ragdoll() -> void:
 `;
       const projectPath: string = args.projectPath ?? '';
       const scriptPath: string = args.scriptPath ?? '';
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -44352,9 +44666,9 @@ func _stop_climb() -> void:
 `;
       const projectPath: string = args.projectPath ?? '';
       const scriptPath: string = args.scriptPath ?? '';
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -44412,9 +44726,9 @@ func release() -> void:
 `;
       const projectPath: string = args.projectPath ?? '';
       const scriptPath: string = args.scriptPath ?? '';
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -44462,9 +44776,9 @@ func exit_water() -> void:
 `;
       const projectPath: string = args.projectPath ?? '';
       const scriptPath: string = args.scriptPath ?? '';
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -44613,9 +44927,9 @@ func _physics_process(delta: float) -> void:
     var steer_input := Input.get_action_strength("ui_left") - Input.get_action_strength("ui_right")
     steering = lerp(steering, steer_input * steer_angle, 0.1)
 `;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -44664,9 +44978,9 @@ func is_quest_complete(quest_id: String) -> bool:
 func get_quest_progress(quest_id: String) -> int:
     return active_quests.get(quest_id, {}).get("progress", 0)
 `;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -44714,9 +45028,9 @@ func add_entry(table_id: String, item_id: String, weight: float, min_qty: int = 
         loot_tables[table_id] = []
     loot_tables[table_id].append({ "item": item_id, "weight": weight, "min_qty": min_qty, "max_qty": max_qty })
 `;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -44778,9 +45092,9 @@ func teleport_to_cell(cell: Vector2i) -> void:
     _cell = cell
     position = Vector2(cell.x * grid_size, cell.y * grid_size)
 `;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -44986,9 +45300,9 @@ func get_active_count() -> int:
 func get_pool_count() -> int:
     return _pool.size()
 `;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45048,9 +45362,9 @@ func get_shield_percent() -> float:
 func is_active() -> bool:
     return current_shield > 0.0
 `;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45115,9 +45429,9 @@ func set_waypoint_index(index: int) -> void:
 func get_current_waypoint_index() -> int:
     return _current_index
 `;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45300,9 +45614,9 @@ func get_current_waypoint_index() -> int:
       const { projectPath, scriptPath } = args;
       if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
       const content = `class_name StateMachine\nextends Node\n\nsignal state_changed(from_state: String, to_state: String)\n\nvar current_state: String = ""\nvar previous_state: String = ""\nvar states: Dictionary = {}\n\nfunc register_state(name: String, obj: Object) -> void:\n    states[name] = obj\n\nfunc change_state(new_state: String) -> void:\n    if not new_state in states: return\n    if current_state == new_state: return\n    if current_state in states and states[current_state].has_method("exit"):\n        states[current_state].exit()\n    previous_state = current_state\n    current_state = new_state\n    state_changed.emit(previous_state, current_state)\n    if states[current_state].has_method("enter"):\n        states[current_state].enter()\n\nfunc update(delta: float) -> void:\n    if current_state in states and states[current_state].has_method("update"):\n        states[current_state].update(delta)\n\nfunc get_state() -> String:\n    return current_state\n\nfunc is_in_state(state_name: String) -> bool:\n    return current_state == state_name\n`;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45314,9 +45628,9 @@ func get_current_waypoint_index() -> int:
       const { projectPath, scriptPath, maxHealth = 100 } = args;
       if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
       const content = `class_name HealthComponent\nextends Node\n\nsignal health_changed(old_value: float, new_value: float)\nsignal died\nsignal healed(amount: float)\nsignal damaged(amount: float)\n\n@export var max_health: float = ${maxHealth}\n\nvar current_health: float = max_health\n\nfunc _ready() -> void:\n    current_health = max_health\n\nfunc take_damage(amount: float) -> void:\n    if amount <= 0.0: return\n    var old = current_health\n    current_health = max(0.0, current_health - amount)\n    damaged.emit(amount)\n    health_changed.emit(old, current_health)\n    if current_health <= 0.0:\n        died.emit()\n\nfunc heal(amount: float) -> void:\n    if amount <= 0.0: return\n    var old = current_health\n    current_health = min(max_health, current_health + amount)\n    healed.emit(amount)\n    health_changed.emit(old, current_health)\n\nfunc get_health_percent() -> float:\n    return current_health / max_health\n\nfunc is_dead() -> bool:\n    return current_health <= 0.0\n`;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45328,9 +45642,9 @@ func get_current_waypoint_index() -> int:
       const { projectPath, scriptPath } = args;
       if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
       const content = `# Hitbox -- attach to attacker Area2D\nclass_name Hitbox\nextends Area2D\n\nsignal hit_landed(hurtbox: Node)\n\n@export var damage: float = 10.0\n@export var knockback_force: float = 200.0\n\nfunc _ready() -> void:\n    area_entered.connect(_on_area_entered)\n\nfunc _on_area_entered(area: Area2D) -> void:\n    if area.has_method("receive_hit"):\n        area.receive_hit(self)\n        hit_landed.emit(area)\n`;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45342,9 +45656,9 @@ func get_current_waypoint_index() -> int:
       const { projectPath, scriptPath } = args;
       if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
       const content = `extends Control\n\nsignal settings_changed(key: String, value: Variant)\n\nconst SETTINGS_FILE := "user://settings.cfg"\nvar _config := ConfigFile.new()\n\nfunc _ready() -> void:\n    _load_settings()\n\nfunc set_volume(bus: String, value: float) -> void:\n    var idx = AudioServer.get_bus_index(bus)\n    if idx >= 0:\n        AudioServer.set_bus_volume_db(idx, linear_to_db(value))\n    _config.set_value("audio", bus.to_lower() + "_volume", value)\n    settings_changed.emit(bus + "_volume", value)\n\nfunc set_fullscreen(enabled: bool) -> void:\n    DisplayServer.window_set_mode(\n        DisplayServer.WINDOW_MODE_FULLSCREEN if enabled else DisplayServer.WINDOW_MODE_WINDOWED)\n    _config.set_value("display", "fullscreen", enabled)\n    settings_changed.emit("fullscreen", enabled)\n\nfunc save_settings() -> void:\n    _config.save(SETTINGS_FILE)\n\nfunc _load_settings() -> void:\n    _config.load(SETTINGS_FILE)\n`;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45356,9 +45670,9 @@ func get_current_waypoint_index() -> int:
       const { projectPath, scriptPath, scrollSpeed = 50 } = args;
       if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
       const content = `extends ParallaxBackground\n\n@export var scroll_speed: float = ${scrollSpeed}\n@export var auto_scroll: bool = true\n\nfunc _process(delta: float) -> void:\n    if auto_scroll:\n        scroll_offset.x -= scroll_speed * delta\n\nfunc set_scroll_speed(speed: float) -> void:\n    scroll_speed = speed\n\nfunc stop_scroll() -> void:\n    auto_scroll = false\n\nfunc start_scroll() -> void:\n    auto_scroll = true\n`;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45370,9 +45684,9 @@ func get_current_waypoint_index() -> int:
       const { projectPath, scriptPath, maxShake = 8 } = args;
       if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
       const content = `extends Camera2D\n\n@export var max_shake: float = ${maxShake}\n@export var decay: float = 5.0\n\nvar _shake_amount: float = 0.0\nvar _rng := RandomNumberGenerator.new()\n\nfunc _ready() -> void:\n    _rng.randomize()\n\nfunc _process(delta: float) -> void:\n    if _shake_amount > 0.0:\n        _shake_amount = move_toward(_shake_amount, 0.0, decay * delta)\n        offset = Vector2(\n            _rng.randf_range(-_shake_amount, _shake_amount),\n            _rng.randf_range(-_shake_amount, _shake_amount)\n        )\n    else:\n        offset = Vector2.ZERO\n\nfunc shake(intensity: float = 1.0) -> void:\n    _shake_amount = clamp(max_shake * intensity, 0.0, max_shake)\n\nfunc shake_for(intensity: float, duration: float) -> void:\n    shake(intensity)\n    await get_tree().create_timer(duration).timeout\n    _shake_amount = 0.0\n`;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45384,9 +45698,9 @@ func get_current_waypoint_index() -> int:
       const { projectPath, scriptPath, baseXp = 100, xpMultiplier = 1.5 } = args;
       if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
       const content = `class_name ExperienceSystem\nextends Node\n\nsignal level_up(new_level: int)\nsignal xp_gained(amount: int, total: int)\n\n@export var base_xp: int = ${baseXp}\n@export var xp_multiplier: float = ${xpMultiplier}\n\nvar current_level: int = 1\nvar current_xp: int = 0\n\nfunc get_xp_for_level(level: int) -> int:\n    return int(base_xp * pow(xp_multiplier, level - 1))\n\nfunc add_xp(amount: int) -> void:\n    current_xp += amount\n    xp_gained.emit(amount, current_xp)\n    while current_xp >= get_xp_for_level(current_level):\n        current_xp -= get_xp_for_level(current_level)\n        current_level += 1\n        level_up.emit(current_level)\n\nfunc get_level_progress() -> float:\n    var needed = get_xp_for_level(current_level)\n    if needed <= 0: return 1.0\n    return float(current_xp) / float(needed)\n\nfunc reset() -> void:\n    current_level = 1\n    current_xp = 0\n`;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45398,9 +45712,9 @@ func get_current_waypoint_index() -> int:
       const { projectPath, scriptPath, displayTime = 2.0 } = args;
       if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
       const content = `class_name NotificationSystem\nextends CanvasLayer\n\n@export var display_time: float = ${displayTime}\n@export var max_visible: int = 5\n@export var stack_offset: float = 48.0\n\nvar _active: Array[Node] = []\n\nfunc notify(message: String, color: Color = Color.WHITE) -> void:\n    if _active.size() >= max_visible:\n        var oldest = _active.pop_front()\n        if is_instance_valid(oldest): oldest.queue_free()\n    var toast = _create_toast(message, color)\n    _active.append(toast)\n    _reposition_toasts()\n\nfunc _create_toast(message: String, color: Color) -> Control:\n    var toast := Label.new()\n    toast.text = message\n    toast.modulate = color\n    add_child(toast)\n    get_tree().create_timer(display_time).timeout.connect(func(): _remove_toast(toast))\n    return toast\n\nfunc _remove_toast(toast: Node) -> void:\n    _active.erase(toast)\n    if is_instance_valid(toast): toast.queue_free()\n    _reposition_toasts()\n\nfunc _reposition_toasts() -> void:\n    for i in _active.size():\n        if is_instance_valid(_active[i]) and _active[i] is Control:\n            (_active[i] as Control).position.y = get_viewport().get_visible_rect().size.y - stack_offset * (i + 1)\n\nfunc clear_all() -> void:\n    for toast in _active:\n        if is_instance_valid(toast): toast.queue_free()\n    _active.clear()\n`;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45527,9 +45841,9 @@ func get_current_waypoint_index() -> int:
       const { projectPath, scriptPath, jumpForce = 400, maxJumps = 2 } = args;
       if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
       const content = `extends CharacterBody2D\n\n@export var jump_force: float = ${jumpForce}\n@export var max_jumps: int = ${maxJumps}\n@export var gravity: float = 980.0\n@export var speed: float = 200.0\n\nvar jumps_remaining: int = 0\n\nfunc _ready() -> void:\n    jumps_remaining = max_jumps\n\nfunc _physics_process(delta: float) -> void:\n    if not is_on_floor():\n        velocity.y += gravity * delta\n    else:\n        jumps_remaining = max_jumps\n\n    if Input.is_action_just_pressed("ui_accept") and jumps_remaining > 0:\n        velocity.y = -jump_force\n        jumps_remaining -= 1\n\n    var direction := Input.get_axis("ui_left", "ui_right")\n    velocity.x = direction * speed\n    move_and_slide()\n`;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45541,9 +45855,9 @@ func get_current_waypoint_index() -> int:
       const { projectPath, scriptPath, dashForce = 600, dashDuration = 0.15, dashCooldown = 0.8 } = args;
       if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
       const content = `extends CharacterBody2D\n\n@export var speed: float = 200.0\n@export var gravity: float = 980.0\n@export var jump_force: float = 400.0\n@export var dash_force: float = ${dashForce}\n@export var dash_duration: float = ${dashDuration}\n@export var dash_cooldown: float = ${dashCooldown}\n\nvar _is_dashing: bool = false\nvar _dash_timer: float = 0.0\nvar _cooldown_timer: float = 0.0\nvar _dash_direction: float = 1.0\n\nfunc _physics_process(delta: float) -> void:\n    if _cooldown_timer > 0.0:\n        _cooldown_timer -= delta\n\n    if _is_dashing:\n        _dash_timer -= delta\n        velocity.x = _dash_direction * dash_force\n        if _dash_timer <= 0.0:\n            _is_dashing = false\n    else:\n        if not is_on_floor():\n            velocity.y += gravity * delta\n\n        if Input.is_action_just_pressed("ui_accept") and is_on_floor():\n            velocity.y = -jump_force\n\n        var direction := Input.get_axis("ui_left", "ui_right")\n        if direction != 0.0:\n            _dash_direction = direction\n        velocity.x = direction * speed\n\n        if Input.is_action_just_pressed("ui_focus_next") and _cooldown_timer <= 0.0:\n            _is_dashing = true\n            _dash_timer = dash_duration\n            _cooldown_timer = dash_cooldown\n            velocity.y = 0.0\n\n    move_and_slide()\n`;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45555,9 +45869,9 @@ func get_current_waypoint_index() -> int:
       const { projectPath, scriptPath, speed = 200, jumpForce = 400 } = args;
       if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
       const content = `extends CharacterBody2D\n\n@export var speed: float = ${speed}\n@export var jump_force: float = ${jumpForce}\n@export var gravity: float = 980.0\n@export var wall_jump_force_x: float = ${speed * 1.2}\n\nfunc _physics_process(delta: float) -> void:\n    if not is_on_floor():\n        velocity.y += gravity * delta\n\n    if Input.is_action_just_pressed("ui_accept"):\n        if is_on_floor():\n            velocity.y = -jump_force\n        elif is_on_wall():\n            var wall_normal := get_wall_normal()\n            velocity.x = wall_normal.x * wall_jump_force_x\n            velocity.y = -jump_force\n\n    var direction := Input.get_axis("ui_left", "ui_right")\n    if is_on_floor() or not is_on_wall():\n        velocity.x = direction * speed\n\n    move_and_slide()\n`;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45569,9 +45883,9 @@ func get_current_waypoint_index() -> int:
       const { projectPath, scriptPath } = args;
       if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
       const content = `class_name CutsceneTrigger\nextends Area2D\n\nsignal cutscene_started\nsignal cutscene_finished\n\n@export var trigger_once: bool = true\n@export var cutscene_name: String = ""\n\nvar _triggered: bool = false\n\nfunc _ready() -> void:\n    body_entered.connect(_on_body_entered)\n\nfunc _on_body_entered(body: Node2D) -> void:\n    if _triggered and trigger_once:\n        return\n    if not body.is_in_group("player"):\n        return\n    _triggered = true\n    cutscene_started.emit()\n    _play_cutscene()\n\nfunc _play_cutscene() -> void:\n    # Override or connect cutscene_finished when done.\n    await get_tree().create_timer(1.0).timeout\n    cutscene_finished.emit()\n\nfunc reset() -> void:\n    _triggered = false\n`;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45583,9 +45897,9 @@ func get_current_waypoint_index() -> int:
       const { projectPath, scriptPath, promptText = 'Press E to interact' } = args;
       if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
       const content = `class_name InteractableObject\nextends Area2D\n\nsignal interacted(interactor: Node)\n\n@export var prompt_text: String = "${promptText}"\n@export var enabled: bool = true\n\nvar _player_in_range: bool = false\n\nfunc _ready() -> void:\n    body_entered.connect(_on_body_entered)\n    body_exited.connect(_on_body_exited)\n\nfunc _unhandled_input(event: InputEvent) -> void:\n    if not enabled or not _player_in_range:\n        return\n    if event.is_action_just_pressed("ui_accept"):\n        _interact()\n\nfunc _on_body_entered(body: Node) -> void:\n    if body.is_in_group("player"):\n        _player_in_range = true\n\nfunc _on_body_exited(body: Node) -> void:\n    if body.is_in_group("player"):\n        _player_in_range = false\n\nfunc _interact() -> void:\n    interacted.emit(get_overlapping_bodies().filter(func(b): return b.is_in_group("player")).front())\n`;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45597,9 +45911,9 @@ func get_current_waypoint_index() -> int:
       const { projectPath, scriptPath, itemName = 'Item', itemValue = 1 } = args;
       if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
       const content = `class_name ItemPickup\nextends Area2D\n\nsignal picked_up(item_name: String, item_value: int)\n\n@export var item_name: String = "${itemName}"\n@export var item_value: int = ${itemValue}\n@export var auto_collect: bool = true\n\nfunc _ready() -> void:\n    if auto_collect:\n        body_entered.connect(_on_body_entered)\n\nfunc _on_body_entered(body: Node) -> void:\n    if body.is_in_group("player"):\n        collect(body)\n\nfunc collect(_collector: Node = null) -> void:\n    picked_up.emit(item_name, item_value)\n    queue_free()\n`;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45611,9 +45925,9 @@ func get_current_waypoint_index() -> int:
       const { projectPath, scriptPath, speed = 60, waitTime = 1.0 } = args;
       if (!projectPath || !scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
       const content = `class_name MovingPlatform\nextends AnimatableBody2D\n\n@export var point_a: Vector2 = Vector2.ZERO\n@export var point_b: Vector2 = Vector2(200, 0)\n@export var speed: float = ${speed}\n@export var wait_time: float = ${waitTime}\n\nvar _target: Vector2\nvar _waiting: bool = false\n\nfunc _ready() -> void:\n    position = point_a\n    _target = point_b\n\nfunc _physics_process(delta: float) -> void:\n    if _waiting:\n        return\n    var direction := (_target - position)\n    var dist := direction.length()\n    if dist <= speed * delta:\n        position = _target\n        _waiting = true\n        await get_tree().create_timer(wait_time).timeout\n        _target = point_a if _target == point_b else point_b\n        _waiting = false\n    else:\n        position += direction.normalized() * speed * delta\n`;
-      const absPath = require('path').join(projectPath, scriptPath);
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const absPath = join(projectPath, scriptPath);
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45738,7 +46052,7 @@ func get_current_waypoint_index() -> int:
     args = normalizeParameters(args || {});
     if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
     const absPath = args.scriptPath.startsWith('res://')
-      ? require('path').join(args.projectPath, args.scriptPath.replace('res://', ''))
+      ? join(args.projectPath, args.scriptPath.replace('res://', ''))
       : args.scriptPath;
     const bufferFrames = args.bufferFrames ?? 6;
     const content = `extends Node
@@ -45763,8 +46077,8 @@ func _process(_delta: float) -> void:
 \t\t\t_buffer[action] -= 1
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45774,7 +46088,7 @@ func _process(_delta: float) -> void:
     args = normalizeParameters(args || {});
     if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
     const absPath = args.scriptPath.startsWith('res://')
-      ? require('path').join(args.projectPath, args.scriptPath.replace('res://', ''))
+      ? join(args.projectPath, args.scriptPath.replace('res://', ''))
       : args.scriptPath;
     const coyoteTime = args.coyoteTime ?? 0.12;
     const jumpForce = args.jumpForce ?? 400;
@@ -45818,8 +46132,8 @@ func _physics_process(delta: float) -> void:
 \tmove_and_slide()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45829,7 +46143,7 @@ func _physics_process(delta: float) -> void:
     args = normalizeParameters(args || {});
     if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
     const absPath = args.scriptPath.startsWith('res://')
-      ? require('path').join(args.projectPath, args.scriptPath.replace('res://', ''))
+      ? join(args.projectPath, args.scriptPath.replace('res://', ''))
       : args.scriptPath;
     const followSpeed = args.followSpeed ?? 5.0;
     const offset = args.offset ?? 'Vector3(0, 2, 5)';
@@ -45854,8 +46168,8 @@ func _process(delta: float) -> void:
 \tlook_at(_target_node.global_position, Vector3.UP)
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45865,7 +46179,7 @@ func _process(delta: float) -> void:
     args = normalizeParameters(args || {});
     if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
     const absPath = args.scriptPath.startsWith('res://')
-      ? require('path').join(args.projectPath, args.scriptPath.replace('res://', ''))
+      ? join(args.projectPath, args.scriptPath.replace('res://', ''))
       : args.scriptPath;
     const outlineColor = args.outlineColor ?? 'Color.WHITE';
     const outlineWidth = args.outlineWidth ?? 1.0;
@@ -45914,8 +46228,8 @@ func set_outline(enabled: bool) -> void:
 \t_apply_outline()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45925,7 +46239,7 @@ func set_outline(enabled: bool) -> void:
     args = normalizeParameters(args || {});
     if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
     const absPath = args.scriptPath.startsWith('res://')
-      ? require('path').join(args.projectPath, args.scriptPath.replace('res://', ''))
+      ? join(args.projectPath, args.scriptPath.replace('res://', ''))
       : args.scriptPath;
     const speed = args.speed ?? 80;
     const content = `extends CharacterBody2D
@@ -45952,8 +46266,8 @@ func _physics_process(_delta: float) -> void:
 \tmove_and_slide()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -45963,7 +46277,7 @@ func _physics_process(_delta: float) -> void:
     args = normalizeParameters(args || {});
     if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
     const absPath = args.scriptPath.startsWith('res://')
-      ? require('path').join(args.projectPath, args.scriptPath.replace('res://', ''))
+      ? join(args.projectPath, args.scriptPath.replace('res://', ''))
       : args.scriptPath;
     const gridSize = args.gridSize ?? 64;
     const content = `extends Node2D
@@ -45999,8 +46313,8 @@ func _snap() -> void:
 \t)
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -46010,7 +46324,7 @@ func _snap() -> void:
     args = normalizeParameters(args || {});
     if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
     const absPath = args.scriptPath.startsWith('res://')
-      ? require('path').join(args.projectPath, args.scriptPath.replace('res://', ''))
+      ? join(args.projectPath, args.scriptPath.replace('res://', ''))
       : args.scriptPath;
     const content = `extends Node
 ## CardGameBase — simple deck/hand manager for card games.
@@ -46063,8 +46377,8 @@ func get_deck_count() -> int:
 \treturn deck.size()
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -46074,7 +46388,7 @@ func get_deck_count() -> int:
     args = normalizeParameters(args || {});
     if (!args.projectPath || !args.scriptPath) return createErrorResponse('projectPath and scriptPath are required.');
     const absPath = args.scriptPath.startsWith('res://')
-      ? require('path').join(args.projectPath, args.scriptPath.replace('res://', ''))
+      ? join(args.projectPath, args.scriptPath.replace('res://', ''))
       : args.scriptPath;
     const content = `extends Node
 ## TurnBasedCombat — manages turn order and actions for a simple RPG combat system.
@@ -46141,8 +46455,8 @@ func get_current_combatant() -> Dictionary:
 \treturn combatants[_current_index] if _active else {}
 `;
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -46294,10 +46608,10 @@ func delete_save() -> void:
 \t\tDirAccess.remove_absolute(save_file)
 \tsave_data = {}
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -46341,10 +46655,10 @@ func _process(_delta: float) -> void:
 \t\tpush_error("Failed to load: " + scene_to_load)
 \t\tset_process(false)
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -46384,10 +46698,10 @@ func light_tap(device: int = 0) -> void:
 func heavy_hit(device: int = 0) -> void:
 \trumble(0.5, 1.0, 0.4, device)
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -46429,10 +46743,10 @@ func t_format(key: String, values: Dictionary) -> String:
 func get_available_locales() -> Array:
 \treturn TranslationServer.get_loaded_locales()
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -46480,10 +46794,10 @@ func _cmd_help(_args: Array) -> String:
 func _cmd_clear(_args: Array) -> String:
 \treturn "__CLEAR__"
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -46510,10 +46824,10 @@ signal scene_transition_requested(scene_path: String)
 signal save_requested
 signal load_requested
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -46559,10 +46873,10 @@ func _process(_delta: float) -> void:
 \t\tset_process(false)
 \t\tall_loaded.emit()
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -46609,10 +46923,10 @@ func is_registered(name: String) -> bool:
 func get_registered_scenes() -> Array:
 \treturn _registry.keys()
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -46661,10 +46975,10 @@ func set_sfx_volume(value: float) -> void:
 \tfor p in _sfx_players:
 \t\tp.volume_db = linear_to_db(sfx_volume)
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -46703,10 +47017,10 @@ signal cutscene_started(cutscene_id: String)
 signal cutscene_ended(cutscene_id: String)
 signal settings_changed(setting_key: String, new_value: Variant)
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -46782,10 +47096,10 @@ func get_random_floor_position() -> Vector2i:
 \tvar r: Dictionary = rooms[randi() % rooms.size()]
 \treturn Vector2i(r.x + r.w / 2, r.y + r.h / 2)
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -46859,10 +47173,10 @@ func is_chunk_loaded(chunk: Vector2i) -> bool:
 func get_loaded_chunks() -> Array:
 \treturn _loaded_chunks.keys()
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47153,10 +47467,10 @@ func remove_modifier(id: String) -> void:
 func get_all_stats() -> Dictionary:
 \treturn { "str": get_stat("str"), "agi": get_stat("agi"), "int": get_stat("int") }
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47202,10 +47516,10 @@ func spend_gold(amount: int, reason: String = "") -> bool:
 func get_history() -> Array[Dictionary]:
 \treturn _history
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47247,10 +47561,10 @@ func get_total_mod(stat: String) -> float:
 \t\tif b["mods"].has(stat): total += b["mods"][stat]
 \treturn total
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47284,10 +47598,10 @@ func _on_body_entered(body: Node) -> void:
 func _on_trigger(_body: Node) -> void:
 \tpass
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47328,10 +47642,10 @@ func _notification(what: int) -> void:
 \tif what == NOTIFICATION_WM_CLOSE_REQUEST:
 \t\tEngine.time_scale = 1.0
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47354,10 +47668,10 @@ func _process(_delta: float) -> void:
 \telif pos.y > vp.y: pos.y -= vp.y
 \tglobal_position = pos
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47388,10 +47702,10 @@ func _on_body_entered(body: Node) -> void:
 \tawait get_tree().create_timer(0.1).timeout
 \tqueue_free()
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47428,10 +47742,10 @@ func try_unlock(door_id: String, required_key: String) -> bool:
 func get_keys() -> Array[String]:
 \treturn _keys.duplicate()
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47469,10 +47783,10 @@ func is_destroyed(cell: Vector2i) -> bool:
 func get_destroyed_cells() -> Array:
 \treturn _destroyed.keys()
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47520,10 +47834,10 @@ func _draw() -> void:
 \tfor i in range(_points.size() - 1):
 \t\tdraw_line(_points[i], _points[i + 1], Color.BROWN, 2.0)
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47574,10 +47888,10 @@ func _stop_riding() -> void:
 \t_riding = false
 \t_rider = null
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47616,10 +47930,10 @@ func _on_body_exited(_body: Node) -> void:
 func is_pressed() -> bool:
 \treturn _is_pressed
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47654,10 +47968,10 @@ func get_last_checkpoint() -> Vector2:
 func get_checkpoint_id() -> String:
 \treturn _checkpoint_id
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47695,10 +48009,10 @@ func _physics_process(delta: float) -> void:
 \t\t\texpired.emit()
 \t\t\tqueue_free()
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47723,10 +48037,10 @@ func _physics_process(delta: float) -> void:
 \t\telif body is CharacterBody2D:
 \t\t\tbody.velocity += push_direction.normalized() * push_force * delta
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47750,10 +48064,10 @@ func _ready() -> void:
 func get_belt_velocity() -> Vector2:
 \treturn belt_direction.normalized() * belt_speed
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47795,10 +48109,10 @@ func _on_body_exited(body: Node) -> void:
 \t_climbers.erase(body)
 \tclimbing_stopped.emit(body)
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47823,10 +48137,10 @@ func _physics_process(_delta: float) -> void:
 \t\t\tbody.apply_central_force(Vector2(0.0, -buoyancy_force * depth))
 \t\t\tbody.linear_velocity *= (1.0 - drag)
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47855,10 +48169,10 @@ func _physics_process(_delta: float) -> void:
 \t\t\t\tvar pull: float = tornado_force * (1.0 - dist / tornado_radius)
 \t\t\t\tbody.apply_central_force(tangent * tornado_force + to_center.normalized() * pull)
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47890,10 +48204,10 @@ func _on_body_entered(body: Node) -> void:
 \telif body is CharacterBody2D:
 \t\t(body as CharacterBody2D).velocity = (body as CharacterBody2D).velocity.normalized() * boost_speed
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47939,10 +48253,10 @@ func _deal_damage(body: Node) -> void:
 \t\tbody.take_damage(spike_damage)
 \tspike_hit.emit(body, spike_damage)
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -47976,10 +48290,10 @@ func _draw() -> void:
 \t\tvar lpos: Vector2 = to_local(_target.global_position)
 \t\tdraw_circle(lpos, view_radius, Color(0.0, 0.0, 0.0, 0.0))
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -48014,10 +48328,10 @@ func _draw() -> void:
 \tvar dot_pos: Vector2 = minimap_offset + target.global_position * minimap_scale
 \tdraw_circle(dot_pos, dot_radius, dot_color)
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -48059,10 +48373,10 @@ func _hide_prompt() -> void:
 func is_player_nearby() -> bool:
 \treturn _player_inside
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -48107,10 +48421,10 @@ func get_health() -> float:
 func set_regen_enabled(enabled: bool) -> void:
 \t_enabled = enabled
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -48158,10 +48472,10 @@ func can_sprint() -> bool:
 func get_stamina() -> float:
 \treturn _stamina
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -48202,10 +48516,10 @@ func pick_up() -> void:
 \tangular_velocity = 0.0
 \t_has_landed = false
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -48246,10 +48560,10 @@ func _physics_process(_delta: float) -> void:
 func is_open() -> bool:
 \treturn _open
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -48292,10 +48606,10 @@ func _explode() -> void:
 \t\t\tif body.has_method("take_damage"): body.take_damage(50)
 \tqueue_free()
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -48345,10 +48659,10 @@ func _apply_damage() -> void:
 \t\t\tif body.has_method("take_damage"): body.take_damage(wave_damage)
 \t\t\tshockwave_hit.emit(body, wave_damage)
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -48385,10 +48699,10 @@ func on_hit(world_position: Vector2) -> void:
 func on_death(world_position: Vector2) -> void:
 \tspawn_vfx(world_position)
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -48423,10 +48737,10 @@ func flash_custom(c: Color, duration: float) -> void:
 \tvar tw: Tween = create_tween()
 \ttw.tween_property(self, "color:a", 0.0, duration)
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -48459,10 +48773,10 @@ func _process(_delta: float) -> void:
 func clear_trail() -> void:
 \tclear_points()
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -48510,10 +48824,10 @@ func _spawn_clone() -> void:
 \ttw.tween_property(ghost, "modulate:a", 0.0, clone_lifetime)
 \ttw.tween_callback(ghost.queue_free)
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -48553,10 +48867,10 @@ func _process(delta: float) -> void:
 func get_ratio() -> float:
 \treturn (value - min_value) / (max_value - min_value)
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -48605,10 +48919,10 @@ func set_item(index: int, item: Dictionary) -> void:
 func get_selected_item() -> Dictionary:
 \treturn _items[_selected]
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -48645,10 +48959,10 @@ func _process(_delta: float) -> void:
 \tif target and _camera:
 \t\t_camera.global_position = target.global_position
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -48699,10 +49013,10 @@ func _process(delta: float) -> void:
 \t\t\t_panel.visible = true
 \t\t_panel.global_position = get_global_mouse_position() + tooltip_offset
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -48763,10 +49077,10 @@ func _get_drag_data(_pos: Vector2) -> Variant:
 \tclear_slot()
 \treturn drag_data
 `;
-    const absPath = require('path').join(args.projectPath, args.scriptPath);
+    const absPath = join(args.projectPath, args.scriptPath);
     try {
-      const dir = require('path').dirname(absPath);
-      if (!existsSync(dir)) require('fs').mkdirSync(dir, { recursive: true });
+      const dir = dirname(absPath);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
       writeFileSync(absPath, content, 'utf8');
       return { content: [{ type: 'text', text: JSON.stringify({ success: true, scriptPath: args.scriptPath }) }] };
     } catch (e: any) { return createErrorResponse(`Failed: ${e.message}`); }
@@ -48846,7 +49160,7 @@ func _get_drag_data(_pos: Vector2) -> Variant:
 5. run_project — test your game
 
 ## Tool categories (1,969 total):
-- Scene & nodes (offline): create_project, create_scene, add_node_to_scene, set_node_property_in_scene
+- Scene & nodes (offline): create_project, create_scene, add_node, set_node_property_in_scene
 - Scripts: create_script, write_platformer_player_script, write_enemy_state_machine_script, + 100 more
 - Runtime (game must be running): set_node_position_2d, play_audio_stream, apply_impulse_to_rigid_body
 - Editor (plugin required): editor_select_node_by_path, editor_undo, editor_save_scene
@@ -48865,8 +49179,46 @@ func _get_drag_data(_pos: Vector2) -> Variant:
     args = normalizeParameters(args || {});
     const name = (args.name || '').trim();
     const toolArgs = args.args || {};
-    if (!name) return createErrorResponse('name is required. Use search_tools to find a tool name, then call godot_call with that name.');
+    const sequence = Array.isArray(args.sequence) ? args.sequence : [];
+    if (sequence.length > 0) {
+      const invalid = sequence.find((step: any) => !step || typeof step.name !== 'string' || step.name === 'godot_call');
+      if (invalid) return createErrorResponse('Each sequence step requires a non-recursive tool name and optional args.');
+      if (args.dryRun === true) {
+        return { content: [{ type: 'text', text: JSON.stringify({ dryRun: true, stepCount: sequence.length, sequence }, null, 2) }] };
+      }
+      const projectPaths = [...new Set(sequence.map((step: any) => step.args?.projectPath).filter(Boolean))] as string[];
+      if (args.rollbackOnError === true && projectPaths.length !== 1) {
+        return createErrorResponse('rollbackOnError requires every filesystem step to share exactly one projectPath.');
+      }
+      let backupRoot: string | null = null;
+      let backupProject: string | null = null;
+      if (args.rollbackOnError === true) {
+        backupRoot = mkdtempSync(join(tmpdir(), 'godot-mcp-transaction-'));
+        backupProject = join(backupRoot, 'project');
+        cpSync(projectPaths[0], backupProject, { recursive: true });
+      }
+      const results: any[] = [];
+      try {
+        for (let index = 0; index < sequence.length; index++) {
+          const step = sequence[index];
+          const result = await this.dispatchTool(step.name, step.args || {});
+          results.push({ index, name: step.name, result });
+          if (result?.isError) {
+            if (backupProject) {
+              rmSync(projectPaths[0], { recursive: true, force: true });
+              cpSync(backupProject, projectPaths[0], { recursive: true });
+            }
+            return createErrorResponse(JSON.stringify({ failedStep: index, name: step.name, rolledBack: Boolean(backupProject), results }));
+          }
+        }
+        return { content: [{ type: 'text', text: JSON.stringify({ success: true, stepCount: results.length, results }, null, 2) }] };
+      } finally {
+        if (backupRoot) rmSync(backupRoot, { recursive: true, force: true });
+      }
+    }
+    if (!name) return createErrorResponse('name or sequence is required. Use search_tools to discover tool names.');
     if (name === 'godot_call') return createErrorResponse('Cannot call godot_call recursively.');
+    if (args.dryRun === true) return { content: [{ type: 'text', text: JSON.stringify({ dryRun: true, name, args: toolArgs }, null, 2) }] };
     return this.dispatchTool(name, toolArgs);
   }
 
@@ -48963,7 +49315,7 @@ func _get_drag_data(_pos: Vector2) -> Variant:
       ]},
       { keywords: ['spawn', 'instantiate', 'create node', 'add node', 'instance'], tools: [
         { tool: 'spawn_node', reason: 'Spawn a PackedScene instance at runtime' },
-        { tool: 'add_node_to_scene', reason: 'Add a node to a .tscn file (offline)' },
+        { tool: 'add_node', reason: 'Add a node to a .tscn file (offline)' },
         { tool: 'instance_scene', reason: 'Instance a scene into another scene' },
       ]},
       { keywords: ['input', 'key', 'keyboard', 'mouse', 'controller', 'gamepad'], tools: [
@@ -49038,19 +49390,19 @@ func _get_drag_data(_pos: Vector2) -> Variant:
       { name: 'get_beginner_guide', description: 'Get step-by-step beginner guide for Godot MCP.', inputSchema: { type: 'object', properties: {} } },
       { name: 'get_workflow', description: 'Get step-by-step workflow for a goal.', inputSchema: { type: 'object', properties: { goal: { type: 'string', description: 'e.g. "platformer", "fps", "audio", "ui"' } }, required: ['goal'] } },
       { name: 'explain_godot_concept', description: 'Explain a Godot concept or node type.', inputSchema: { type: 'object', properties: { concept: { type: 'string', description: 'e.g. "CharacterBody2D", "signals", "physics"' } }, required: ['concept'] } },
-      { name: 'godot_call', description: 'Call any Godot tool by name. Use after discovering tool names.', inputSchema: { type: 'object', properties: { name: { type: 'string', description: 'Tool name from search_tools or list_tools_in_category' }, args: { type: 'object', description: 'Tool arguments' } }, required: ['name'] } },
+      { name: 'godot_call', description: 'Call one tool or execute a guarded multi-tool sequence.', inputSchema: { type: 'object', properties: { name: { type: 'string' }, args: { type: 'object' }, sequence: { type: 'array', items: { type: 'object' } }, dryRun: { type: 'boolean' }, rollbackOnError: { type: 'boolean' } } } },
       // ── Core always-useful tools ──
       { name: 'get_godot_version', description: 'Get installed Godot version.', inputSchema: { type: 'object', properties: {} } },
       { name: 'create_project', description: 'Create a new Godot 4 project.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string', description: 'Absolute path for new project' }, projectName: { type: 'string', description: 'Project name' } }, required: ['projectPath', 'projectName'] } },
-      { name: 'run_project', description: 'Run a Godot project.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string', description: 'Path to project folder' } }, required: ['projectPath'] } },
+      { name: 'run_project', description: 'Run a Godot project.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string', description: 'Path to project folder' }, headless: { type: 'boolean', description: 'Run without a display (CI/server mode)' } }, required: ['projectPath'] } },
       { name: 'stop_project', description: 'Stop the running Godot project.', inputSchema: { type: 'object', properties: {} } },
       { name: 'get_project_info', description: 'Get info about a Godot project.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string', description: 'Path to project folder' } }, required: ['projectPath'] } },
       { name: 'create_scene', description: 'Create a new .tscn scene file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' }, rootNodeType: { type: 'string' } }, required: ['projectPath', 'scenePath', 'rootNodeType'] } },
-      { name: 'get_scene_structure', description: 'Get the node tree of a scene file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' } }, required: ['projectPath', 'scenePath'] } },
-      { name: 'add_node_to_scene', description: 'Add a node to a scene file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' }, nodeType: { type: 'string' }, nodeName: { type: 'string' } }, required: ['projectPath', 'scenePath', 'nodeType', 'nodeName'] } },
-      { name: 'set_node_property_in_scene', description: 'Set a node property in a scene file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' }, nodeName: { type: 'string' }, property: { type: 'string' }, value: {} }, required: ['projectPath', 'scenePath', 'nodeName', 'property', 'value'] } },
+      { name: 'read_scene', description: 'Get the node tree of a scene file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' } }, required: ['projectPath', 'scenePath'] } },
+      { name: 'add_node', description: 'Add a node to a scene file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' }, parentNodePath: { type: 'string' }, nodeType: { type: 'string' }, nodeName: { type: 'string' }, properties: { type: 'object' } }, required: ['projectPath', 'scenePath', 'nodeType', 'nodeName'] } },
+      { name: 'set_node_property_in_scene', description: 'Set a node property in a scene file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scenePath: { type: 'string' }, nodeName: { type: 'string' }, propertyName: { type: 'string' }, propertyValue: {} }, required: ['projectPath', 'scenePath', 'nodeName', 'propertyName', 'propertyValue'] } },
       { name: 'create_script', description: 'Create a GDScript file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' }, content: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
-      { name: 'read_script', description: 'Read a GDScript file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, scriptPath: { type: 'string' } }, required: ['projectPath', 'scriptPath'] } },
+      { name: 'read_file', description: 'Read a GDScript or other text file.', inputSchema: { type: 'object', properties: { projectPath: { type: 'string' }, filePath: { type: 'string' } }, required: ['projectPath', 'filePath'] } },
     ];
   }
 
@@ -49064,7 +49416,7 @@ func _get_drag_data(_pos: Vector2) -> Variant:
     try {
       const src = readFileSync(__filename, 'utf8');
       const matches = [...src.matchAll(/case '([^']+)':/g)];
-      this._toolNamesCache = matches.map(m => m[1]).filter(n => n !== 'default');
+      this._toolNamesCache = [...new Set(matches.map(m => m[1]).filter(n => n !== 'default'))];
       return this._toolNamesCache;
     } catch {
       return [];
@@ -49096,7 +49448,7 @@ func _get_drag_data(_pos: Vector2) -> Variant:
     const CATEGORIES: Record<string, { label: string; detail: string; examples: string[] }> = {
       navigation: { label: '🧭 Navigation (START HERE)', detail: 'Meta-tools for finding the right tool. Use search_tools, list_tools_in_category, or get_workflow first.', examples: ['search_tools', 'list_tools_in_category', 'get_workflow', 'get_beginner_guide', 'explain_godot_concept'] },
       project: { label: '📁 Project Management', detail: 'Create, open, run, stop, list, configure, and export Godot projects. Start here for any new project.', examples: ['create_project', 'run_project', 'stop_project', 'get_project_info', 'list_projects'] },
-      scene_files: { label: '🎬 Scene File Editing (Offline)', detail: 'Create and edit .tscn scene files without running Godot. Add/delete/rename nodes, set properties, move nodes.', examples: ['create_scene', 'get_scene_structure', 'add_node_to_scene', 'set_node_property_in_scene', 'delete_node_from_scene'] },
+      scene_files: { label: '🎬 Scene File Editing (Offline)', detail: 'Create and edit .tscn scene files without running Godot. Add/delete/rename nodes, set properties, move nodes.', examples: ['create_scene', 'read_scene', 'add_node', 'set_node_property_in_scene', 'delete_node_from_scene'] },
       add_2d_nodes: { label: '2️⃣  Add 2D Nodes to Scenes', detail: 'Add Sprite2D, Area2D, CharacterBody2D, Camera2D, TileMap, lights, shapes, and all other 2D node types to .tscn files.', examples: ['add_sprite_2d_to_scene', 'add_area_2d_to_scene', 'add_character_body_2d_to_scene', 'add_camera_2d_to_scene', 'add_tile_map_to_scene'] },
       add_3d_nodes: { label: '3️⃣  Add 3D Nodes to Scenes', detail: 'Add MeshInstance3D, CharacterBody3D, OmniLight3D, Camera3D, CSG shapes, and all 3D node types to .tscn files.', examples: ['add_mesh_instance_3d_to_scene', 'add_character_body_3d_to_scene', 'add_omni_light_3d_to_scene', 'add_camera_3d_to_scene', 'add_world_environment_to_scene'] },
       add_ui_nodes: { label: '🖼️  Add UI/Control Nodes', detail: 'Add Label, Button, Panel, VBoxContainer, ProgressBar, LineEdit, Slider and all UI/Control node types to .tscn files.', examples: ['add_label_to_scene', 'add_button_to_scene', 'add_v_box_container_to_scene', 'add_progress_bar_to_scene', 'add_line_edit_to_scene'] },
@@ -49106,7 +49458,7 @@ func _get_drag_data(_pos: Vector2) -> Variant:
       runtime_audio: { label: '🔊 Runtime Audio Control', detail: 'Play, stop, pause audio at runtime. Set volume, pitch, bus. Requires run_project first.', examples: ['play_audio_stream', 'stop_audio_stream', 'set_audio_volume', 'set_audio_bus_volume'] },
       camera: { label: '📷 Camera Control', detail: 'Control Camera2D/3D at runtime: FOV, zoom, position, current camera, offset, limits.', examples: ['set_camera_fov', 'set_camera_zoom', 'set_camera_position', 'get_current_camera'] },
       physics: { label: '⚡ Physics Runtime', detail: 'Apply forces, impulses, set velocities, gravity, configure physics bodies at runtime.', examples: ['apply_impulse_to_rigid_body', 'set_linear_velocity', 'set_angular_velocity', 'apply_force_to_rigid_body'] },
-      scripts: { label: '📝 Scripts & Signals', detail: 'Read, write, create GDScript files. List, connect, disconnect signals. Inspect class methods and properties.', examples: ['read_script', 'write_script', 'create_script', 'connect_signal', 'list_signals'] },
+      scripts: { label: '📝 Scripts & Signals', detail: 'Read, write, create GDScript files. List, connect, disconnect signals. Inspect class methods and properties.', examples: ['read_file', 'write_script', 'create_script', 'connect_signal', 'list_signals'] },
       file_io: { label: '💾 File & Directory I/O', detail: 'Read/write files, list directories, copy/move/delete files, parse JSON. Works on any project file.', examples: ['read_file', 'write_file', 'list_files_in_directory', 'copy_file', 'delete_file'] },
       resources: { label: '🗂️  Resources', detail: 'Create and edit Godot resource files (.tres): TileSet, SpriteFrames, AnimationLibrary, Materials, Shaders.', examples: ['create_sprite_frames', 'get_resource_info', 'list_resources', 'create_tile_set'] },
       diagnostics: { label: '🔍 Diagnostics & Validation', detail: 'Validate scene setups, check for common errors, describe node types, find missing scripts, inspect project state.', examples: ['validate_scene', 'check_node_has_collision', 'get_scene_overview', 'find_missing_scripts'] },
@@ -49128,7 +49480,11 @@ func _get_drag_data(_pos: Vector2) -> Variant:
     const query = (args.query || '').toLowerCase().trim();
     if (!query) return createErrorResponse('query is required. Example: search_tools with query="camera"');
     const names = this.getToolNames();
-    const matches = names.filter(n => n.toLowerCase().includes(query));
+    const terms: string[] = query.replace(/[^a-z0-9]+/g, ' ').trim().split(/\s+/).filter(Boolean);
+    const matches = names.filter(name => {
+      const searchable = name.toLowerCase().replace(/[^a-z0-9]+/g, ' ');
+      return terms.every(term => searchable.includes(term));
+    });
     const tooMany = matches.length > 50;
     return { content: [{ type: 'text', text: JSON.stringify({ query, matches: tooMany ? matches.slice(0, 50) : matches, count: matches.length, truncated: tooMany, tip: tooMany ? 'Too many results — try a more specific query' : undefined }, null, 2) }] };
   }
@@ -49149,7 +49505,7 @@ func _get_drag_data(_pos: Vector2) -> Variant:
 ## Quick Start (5 steps)
 1. create_project — create a new Godot project folder
 2. create_scene — create your first scene (e.g. root type Node2D)
-3. add_*_to_scene — add nodes (Sprite2D, CharacterBody2D, etc.)
+3. add_node or add_*_to_scene — add nodes (Sprite2D, CharacterBody2D, etc.)
 4. set_node_property_in_scene — configure node properties
 5. run_project — run and test your game
 

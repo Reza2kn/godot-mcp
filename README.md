@@ -5,6 +5,8 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
 [![Tools: 1969](https://img.shields.io/badge/Tools-1%2C969-brightgreen)](https://github.com/Reza2kn/godot-mcp)
+[![npm](https://img.shields.io/npm/v/godot-mcp-1969)](https://www.npmjs.com/package/godot-mcp-1969)
+[![CI](https://github.com/Reza2kn/godot-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/Reza2kn/godot-mcp/actions/workflows/ci.yml)
 
 > **Anything you can do in the Godot editor, an AI can now do via MCP.**
 >
@@ -152,7 +154,7 @@ All 1,969 tools exposed directly. Claude, GPT-4o, Gemini — use this.
 
 ### 2️⃣ Install
 
-**From npm (once published):**
+**From npm:** [godot-mcp-1969 on npm](https://www.npmjs.com/package/godot-mcp-1969)
 ```bash
 npm install -g godot-mcp-1969
 ```
@@ -185,6 +187,23 @@ npm run build
   }
 }
 ```
+
+#### 🎛️ Conductor / Codex
+
+Build the repository, then register the server globally with Codex. Conductor
+uses the same Codex MCP configuration:
+
+```bash
+codex mcp add godot \
+  --env GODOT_PATH=/Applications/Godot.app/Contents/MacOS/Godot \
+  --env GODOT_MCP_DISCOVERY_MODE=true \
+  -- node /absolute/path/to/godot-mcp/build/index.js
+codex mcp get godot
+```
+
+Start a new Conductor/Codex session after registration so it discovers the new
+server. Discovery mode is recommended: the client sees 20 tools, while all
+1,969 remain callable through `godot_call`.
 
 For local models / demos — add discovery mode:
 ```json
@@ -469,6 +488,11 @@ Call `get_workflow goal="..."` to get a numbered checklist:
 | `GODOT_PATH` | auto-detect | Full path to the Godot 4 executable |
 | `GODOT_MCP_DISCOVERY_MODE` | `false` | `true` = expose 20 tools only (best for local models) |
 | `GODOT_PROJECTS_DIR` | `~/GodotProjects` | Default directory for new projects |
+| `GODOT_MCP_RUNTIME_PORT` | `9090` | Runtime bridge port; in Conductor defaults to `CONDUCTOR_PORT+8` |
+| `GODOT_MCP_EDITOR_PORT` | `9091` | Editor bridge port; in Conductor defaults to `CONDUCTOR_PORT+9` |
+| `GODOT_MCP_ALLOWED_ROOTS` | unrestricted | Platform-delimited filesystem roots the MCP may access |
+| `GODOT_MCP_CONFIRM_DESTRUCTIVE` | `false` | Require `confirmDestructive=true` for destructive tool families |
+| `GODOT_MCP_MAX_RESPONSE_BYTES` | unlimited | Optional cap for individual text responses |
 
 ---
 
@@ -489,6 +513,35 @@ build/
     └── addons/godot_mcp_editor/
 ```
 
+## ✅ Verification and Release Checks
+
+Run `npm test` before release. It rebuilds the package, runs the unit suite, and
+launches real MCP clients to verify full mode exposes 1,969 unique tools,
+discovery mode exposes 20 tools, discovery names are dispatchable, and hidden
+tools remain reachable through `godot_call`. The protocol suite also invokes
+every one of the 1,969 advertised names and fails on any unknown route, protocol
+exception, invalid result envelope, or server crash.
+
+Start with the [documentation index](docs/README.md), or jump directly to:
+
+- [Complete generated tool reference](docs/tool-reference.md)
+- [Godot verification and troubleshooting](docs/VERIFICATION.md)
+- [Verified multi-tool workflows](docs/WORKFLOWS.md)
+- [Architecture and port model](docs/ARCHITECTURE.md)
+- [Security policy](SECURITY.md)
+- [Support and compatibility](SUPPORT.md)
+- [Changelog](CHANGELOG.md)
+- [Release procedure](docs/RELEASE.md)
+
+Useful maintainer commands:
+
+```bash
+npm run docs:generate  # regenerate all 1,969 schemas and the reference
+npm run verify:godot   # real offline + runtime + analysis workflow
+npm run verify:feedback # full run/capture/inspect/input/compare/repair loop
+npm run benchmark      # discovery/full startup, payload, and call timings
+```
+
 ---
 
 ## 🙏 Acknowledgments
@@ -507,6 +560,6 @@ MIT — build games, make tutorials, ship products, teach students, run livestre
 
 **1,969 tools. Built for AI. Zero BS.**
 
-[⭐ Star this repo](https://github.com/Reza2kn/godot-mcp) · [🐛 Issues](https://github.com/Reza2kn/godot-mcp/issues) · [💬 Discussions](https://github.com/Reza2kn/godot-mcp/discussions)
+[⭐ Star this repo](https://github.com/Reza2kn/godot-mcp) · [📦 npm](https://www.npmjs.com/package/godot-mcp-1969) · [🐛 Issues](https://github.com/Reza2kn/godot-mcp/issues)
 
 </div>

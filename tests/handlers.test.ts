@@ -24,9 +24,11 @@ import {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 let sourceCode: string;
+let runtimeBridgeCode: string;
 
 beforeAll(() => {
   sourceCode = readFileSync(join(__dirname, '..', 'src', 'index.ts'), 'utf8');
+  runtimeBridgeCode = readFileSync(join(__dirname, '..', 'src', 'scripts', 'mcp_interaction_server.gd'), 'utf8');
 });
 
 // ---------------------------------------------------------------------------
@@ -1058,6 +1060,14 @@ describe('Lifecycle handlers', () => {
     expect(sourceCode).toContain('spawn(');
   });
 
+  it('only lets the active process tear down the runtime connection', () => {
+    const exitBlock = sourceCode.slice(
+      sourceCode.indexOf("process.on('exit'"),
+      sourceCode.indexOf("process.on('error'", sourceCode.indexOf("process.on('exit'")),
+    );
+    expect(exitBlock.indexOf('this.activeProcess.process === process')).toBeLessThan(exitBlock.indexOf('this.disconnectFromGame()'));
+  });
+
   it('handleStopProject exists and kills process', () => {
     expect(sourceCode).toContain('handleStopProject');
     // Should have some form of process termination
@@ -1119,6 +1129,21 @@ describe('Lifecycle handlers', () => {
     expect(sourceCode).toContain('handleGameScreenshot');
     expect(sourceCode).toContain("type: 'image'");
     expect(sourceCode).toContain("mimeType: 'image/png'");
+  });
+
+  it('synchronizes screenshots to a completed rendered frame', () => {
+    expect(runtimeBridgeCode).toContain('await RenderingServer.frame_post_draw');
+  });
+
+  it('compares decoded PNG pixels with quantitative metrics', () => {
+    expect(sourceCode).toContain('PNG.sync.read');
+    expect(sourceCode).toContain('differentPixels');
+    expect(sourceCode).toContain('meanAbsoluteErrorPercent');
+  });
+
+  it('wait_for_signal reports firing or timeout instead of only registration', () => {
+    expect(runtimeBridgeCode).toContain('while not state["fired"]');
+    expect(runtimeBridgeCode).toContain('"timed_out": not state["fired"]');
   });
 
   it('handleUpdateProjectUids checks Godot version >= 4.4', () => {
