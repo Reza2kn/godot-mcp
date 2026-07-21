@@ -401,7 +401,8 @@ describe("generated MCP versus UI parity report", () => {
             capability: "headless provenance surface",
             route: "direct_operation",
             state: "broken",
-            reason: "The direct operation returns a bridge-not-implemented error.",
+            reason:
+              "The direct operation returns a bridge-not-implemented error.",
           },
         ],
       },
