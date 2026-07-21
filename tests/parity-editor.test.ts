@@ -6,6 +6,14 @@ const REQUIRED_PLUGIN_FILES = [
   "src/scripts/plugin.cfg",
 ];
 const STATES = ["verified", "represented_unverified", "broken", "gap"];
+const DOGFOOD_PLACEHOLDER =
+  /^\s*(?:action|do this|n\/?a|none|observable result|placeholder|result|same as above|setup|tbd|todo|unknown|works)\s*[.!]?\s*$/i;
+const SETUP_CONTEXT =
+  /\b(?:scene|project|plugin|filesystem|inspector|viewport|resource|png|node2d|sprite2d)\b/i;
+const OBSERVABLE_SURFACE =
+  /\b(?:scene dock|filesystem dock|inspector|viewport|response|game window|scene tab|import dock|resource)\b/i;
+const OBSERVABLE_CHANGE =
+  /\b(?:appears|becomes|centers|changes|clears|closes|created|disappears|ends|highlighted|lists|opens|preserves|reflects|reimports|returns|shows|switches|visible)\b/i;
 
 interface EditorEvidence {
   requiredPluginFiles: string[];
@@ -63,6 +71,35 @@ function sourceEditorToolCommands(): Map<string, string> {
   return toolCommands;
 }
 
+function sourceToolRegistrations(): Set<string> {
+  const source = readFileSync("src/index.ts", "utf8");
+  return new Set(
+    [...source.matchAll(/name:\s*'([^']+)'/g)].map((match) => match[1]),
+  );
+}
+
+function dogfoodRecipeFailures(
+  record: EditorEvidence["records"][number],
+): string[] {
+  const dogfood = record.dogfood;
+  if (!dogfood) return ["missing dogfood recipe"];
+
+  const failures: string[] = [];
+  for (const [field, value] of Object.entries(dogfood)) {
+    if (DOGFOOD_PLACEHOLDER.test(value))
+      failures.push(`${field} is a placeholder`);
+  }
+  if (!SETUP_CONTEXT.test(dogfood.setup))
+    failures.push("setup lacks an editor context");
+  if (!record.mcpTools.some((tool) => dogfood.action.includes(tool)))
+    failures.push("action does not name a capability tool");
+  if (!OBSERVABLE_SURFACE.test(dogfood.observableResult))
+    failures.push("observable result lacks an editor surface");
+  if (!OBSERVABLE_CHANGE.test(dogfood.observableResult))
+    failures.push("observable result lacks a visible change");
+  return failures;
+}
+
 function pluginEvidenceFailures(
   requiredPluginFiles: string[],
   handlerCommands: string[],
@@ -98,17 +135,30 @@ describe("editor-path parity evidence", () => {
     const evidence = readEvidence();
     const editorCommands = sourceEditorCommands();
     const sourceToolCommands = sourceEditorToolCommands();
+    const sourceRegisteredTools = sourceToolRegistrations();
     const represented = evidence.records.filter(
       (record) => record.disposition === "ui_capability",
     );
     const mappedCommands = represented.flatMap(
       (record) => record.handlerCommands,
     );
+    const mappedTools = represented.flatMap((record) => record.mcpTools);
 
     expect(evidence.requiredPluginFiles).toEqual(REQUIRED_PLUGIN_FILES);
     expect(new Set(editorCommands).size).toBe(editorCommands.length);
     expect(new Set(mappedCommands).size).toBe(mappedCommands.length);
     expect(mappedCommands.sort()).toEqual([...editorCommands].sort());
+    expect(new Set(mappedTools).size).toBe(mappedTools.length);
+    expect(
+      mappedTools.sort(),
+      "every TypeScript tool that dispatches to port 9091 must have an evidence disposition, including aliases sharing a handler",
+    ).toEqual([...sourceToolCommands.keys()].sort());
+    for (const tool of sourceToolCommands.keys()) {
+      expect(
+        sourceRegisteredTools.has(tool),
+        `${tool} must be registered by the production MCP server as well as dispatched to the editor`,
+      ).toBe(true);
+    }
     for (const record of represented) {
       expect(record.mcpTools.length).toBe(record.handlerCommands.length);
       for (const [index, tool] of record.mcpTools.entries())
@@ -219,18 +269,34 @@ describe("editor-path parity evidence", () => {
       if (state === "mcp_only") continue;
       expect(STATES).toContain(state);
       expect(
-        record.dogfood?.setup,
-        `${record.capabilityId} needs dogfood setup`,
-      ).toMatch(/\S/);
-      expect(
-        record.dogfood?.action,
-        `${record.capabilityId} needs dogfood action`,
-      ).toMatch(/\S/);
-      expect(
-        record.dogfood?.observableResult,
-        `${record.capabilityId} needs a concrete observable result`,
-      ).toMatch(/\S/);
+        dogfoodRecipeFailures(record),
+        `${record.capabilityId} needs a concrete setup, a named MCP action, and an observable editor result`,
+      ).toEqual([]);
     }
+
+    const mutableRecord = evidence.records.find(
+      (record) => record.disposition === "ui_capability",
+    );
+    if (!mutableRecord) throw new Error("fixture needs an editor capability");
+    expect(
+      dogfoodRecipeFailures({
+        ...mutableRecord,
+        dogfood: {
+          setup: "TODO",
+          action: "Do this",
+          observableResult: "Works",
+        },
+      }),
+      "placeholder recipes must not count as manual verification evidence",
+    ).toEqual([
+      "setup is a placeholder",
+      "action is a placeholder",
+      "observableResult is a placeholder",
+      "setup lacks an editor context",
+      "action does not name a capability tool",
+      "observable result lacks an editor surface",
+      "observable result lacks a visible change",
+    ]);
   });
 
   it("reconciles_editor_totals", () => {

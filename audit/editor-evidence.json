@@ -105,7 +105,7 @@
       "dogfood": {
         "setup": "Open a scene with a Sprite2D named Icon and select it so its Inspector is visible.",
         "action": "Call editor_set_node_property for Icon.visible=false, then call editor_get_node_property and get_editor_inspector_object.",
-        "observableResult": "The Icon row is hidden in the viewport, the property read reports false, and the Inspector response identifies Icon."
+        "observableResult": "The Icon row becomes hidden in the viewport, the property read reports false, and the Inspector response identifies Icon."
       }
     },
     {
@@ -144,7 +144,7 @@
       "dogfood": {
         "setup": "Open a saved scene, make an unsaved property change, and confirm the scene tab shows its modified indicator.",
         "action": "Call editor_save_scene.",
-        "observableResult": "The modified indicator clears and reopening the scene preserves the changed property."
+        "observableResult": "The Scene tab's modified indicator clears and reopening the scene preserves the changed property."
       }
     },
     {
