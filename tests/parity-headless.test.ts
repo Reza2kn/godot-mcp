@@ -5,6 +5,7 @@ import {
   rmSync,
   writeFileSync,
 } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
@@ -244,6 +245,17 @@ describe("headless-path parity evidence", () => {
       join(projectPath, "project.godot"),
       '[application]\nconfig/name="Parity"\n',
     );
+    const buildScripts = execFileSync(process.execPath, ["scripts/build.js"], {
+      cwd: process.cwd(),
+      encoding: "utf8",
+    });
+    expect(buildScripts, "the production build must refresh the bundled headless script before the MCP server starts").toContain(
+      "Successfully copied scripts to build/scripts",
+    );
+    expect(
+      readFileSync("build/scripts/godot_operations.gd", "utf8"),
+      "the production MCP server must execute the bundled script generated from the shipped source",
+    ).toBe(readFileSync(OPERATIONS_SCRIPT, "utf8"));
     const transport = new StdioClientTransport({
       command: process.execPath,
       args: [join(process.cwd(), "build", "index.js")],
