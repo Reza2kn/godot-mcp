@@ -1,10 +1,58 @@
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
-import { describe, expect, it } from "vitest";
+import { join } from "node:path";
+import { describe, expect, it, vi } from "vitest";
 import {
   analyzeRegistry,
+  createAuditReport,
   readDispatchInventory,
 } from "../scripts/audit-parity.js";
+
+vi.mock("@modelcontextprotocol/sdk/client/index.js", () => ({
+  Client: class {
+    transport: any;
+
+    async connect(transport: any) {
+      this.transport = transport;
+    }
+
+    async listTools(params?: { cursor?: string }) {
+      const discovery = this.transport.env.GODOT_MCP_DISCOVERY_MODE === "true";
+      const pages = discovery
+        ? [
+            {
+              tools: [{ name: "discovery_page_one" }],
+              nextCursor: "discovery-page-two",
+            },
+            { tools: [{ name: "discovery_page_two" }] },
+          ]
+        : [
+            {
+              tools: [{ name: "full_page_one" }],
+              nextCursor: "full-page-two",
+            },
+            { tools: [{ name: "full_page_two" }] },
+          ];
+      return params?.cursor === undefined
+        ? pages[0]
+        : params.cursor === pages[0].nextCursor
+          ? pages[1]
+          : { tools: [] };
+    }
+  },
+}));
+
+vi.mock("@modelcontextprotocol/sdk/client/stdio.js", () => ({
+  StdioClientTransport: class {
+    env: Record<string, string | undefined>;
+
+    constructor(options: { env: Record<string, string | undefined> }) {
+      this.env = options.env;
+    }
+
+    async close() {}
+  },
+}));
 
 interface AuditRun {
   status: number;
@@ -31,6 +79,46 @@ function runAudit(): AuditRun {
       report: error.stdout ? JSON.parse(error.stdout) : {},
       error: error.stderr || error.message,
     };
+  }
+}
+
+async function independentlyReadEveryLiveTool(
+  discoveryMode: boolean,
+): Promise<string[]> {
+  const { Client: ProductionClient } = await vi.importActual<any>(
+    "@modelcontextprotocol/sdk/client/index.js",
+  );
+  const { StdioClientTransport: ProductionTransport } =
+    await vi.importActual<any>("@modelcontextprotocol/sdk/client/stdio.js");
+  const env = { ...process.env };
+  if (discoveryMode) env.GODOT_MCP_DISCOVERY_MODE = "true";
+  else delete env.GODOT_MCP_DISCOVERY_MODE;
+  const transport = new ProductionTransport({
+    command: process.execPath,
+    args: [join(process.cwd(), "build", "index.js")],
+    cwd: process.cwd(),
+    env,
+    stderr: "pipe",
+  });
+  const client = new ProductionClient({
+    name: "independent-parity-registry-reader",
+    version: "1.0.0",
+  });
+  const tools: string[] = [];
+  let cursor: string | undefined;
+
+  try {
+    await client.connect(transport);
+    do {
+      const response = await client.listTools(
+        cursor === undefined ? undefined : { cursor },
+      );
+      tools.push(...response.tools.map((tool: { name: string }) => tool.name));
+      cursor = response.nextCursor;
+    } while (cursor !== undefined);
+    return tools;
+  } finally {
+    await transport.close();
   }
 }
 
@@ -66,8 +154,25 @@ function independentlyReadBuiltDispatchCases(source: string): string[] {
 }
 
 describe("production parity registry", () => {
-  it("reads_production_mcp_registry", () => {
+  it("collects_every_page_of_each_production_advertised_registry", async () => {
+    const audit = await createAuditReport();
+
+    expect(
+      audit.registry.full.tools,
+      "full-mode production registry must include the page returned after its cursor",
+    ).toEqual(["full_page_one", "full_page_two"]);
+    expect(
+      audit.registry.discovery.tools,
+      "discovery-mode production registry must include the page returned after its cursor",
+    ).toEqual(["discovery_page_one", "discovery_page_two"]);
+  });
+
+  it("reads_production_mcp_registry", async () => {
     const audit = runAudit();
+    const [expectedFull, expectedDiscovery] = await Promise.all([
+      independentlyReadEveryLiveTool(false),
+      independentlyReadEveryLiveTool(true),
+    ]);
 
     expect(
       audit.status,
@@ -77,14 +182,18 @@ describe("production parity registry", () => {
       audit.report.registry.full.observed,
       "full mode must be observed from the built MCP process",
     ).toBe(true);
-    expect(audit.report.registry.full.tools).toContain(
-      "add_animatable_body_2d_to_scene",
-    );
+    expect(
+      audit.report.registry.full.tools,
+      "the audit full-mode inventory must equal an independent exhaustive read of the built MCP entry point",
+    ).toEqual(expectedFull);
     expect(
       audit.report.registry.discovery.observed,
       "discovery mode must be observed from the built MCP process",
     ).toBe(true);
-    expect(audit.report.registry.discovery.tools).toContain("godot_call");
+    expect(
+      audit.report.registry.discovery.tools,
+      "the audit discovery-mode inventory must equal an independent exhaustive read of the built MCP entry point",
+    ).toEqual(expectedDiscovery);
     expect(
       audit.report.registry.dispatch.observed,
       "dispatch inventory must be observed from the built entry point",
@@ -96,10 +205,6 @@ describe("production parity registry", () => {
       audit.report.registry.dispatch.tools,
       "the audit dispatch inventory must contain every case in the built dispatch switch, including cases after create_project",
     ).toEqual(expectedDispatch);
-    expect(
-      audit.report.registry.full.tools.length,
-      "the report must contain observed tools, not a README total",
-    ).toBeGreaterThan(100);
   }, 15000);
 
   it("rejects_claim_based_coverage", () => {

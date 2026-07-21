@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { summarizeParity } from "../scripts/audit-parity.js";
 
@@ -51,6 +52,50 @@ describe("versioned UI parity baseline", () => {
     expect(summary.numerator).toBeGreaterThanOrEqual(0);
     expect(summary.extras).toContain("write_platformer_player_script");
     expect(summary.extras).not.toContain("create_project");
+  });
+
+  it("uses_the_shipped_mapping_rows_when_summarizing_the_production_report", () => {
+    const audit = runAudit();
+    const mappings = JSON.parse(
+      readFileSync("audit/mappings.json", "utf8"),
+    ).mappings;
+    const mappingsByCapability = new Map(
+      mappings.map((mapping: any) => [mapping.capabilityId, mapping]),
+    );
+    const expectedStates = {
+      verified: 0,
+      represented_unverified: 0,
+      broken: 0,
+      gap: 0,
+    };
+
+    for (const capability of audit.uiBaseline.capabilities) {
+      const mapping = mappingsByCapability.get(capability.id);
+      const hasProductionEvidence =
+        mapping?.tools.length > 0 &&
+        mapping.tools.every((tool: string) =>
+          audit.registry.full.tools.includes(tool),
+        ) &&
+        mapping.tools.every((tool: string) =>
+          audit.registry.dispatch.tools.includes(tool),
+        );
+      const state =
+        mapping === undefined
+          ? "gap"
+          : ["verified", "represented_unverified"].includes(mapping.state) &&
+              !hasProductionEvidence
+            ? "broken"
+            : mapping.state;
+      expectedStates[state as keyof typeof expectedStates] += 1;
+    }
+
+    expect(
+      audit.summary.states,
+      "the production report must summarize audit/mappings.json rather than an empty injected mapping list",
+    ).toEqual(expectedStates);
+    expect(audit.summary.numerator).toBe(
+      expectedStates.verified + expectedStates.represented_unverified,
+    );
   });
 
   it("keeps_a_template_only_tool_outside_the_ui_parity_measure", () => {

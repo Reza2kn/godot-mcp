@@ -77,8 +77,16 @@ async function listProductionTools(discoveryMode) {
   });
   try {
     await client.connect(transport);
-    const response = await client.listTools();
-    return response.tools.map((tool) => tool.name);
+    const tools = [];
+    let cursor;
+    do {
+      const response = await client.listTools(
+        cursor === undefined ? undefined : { cursor },
+      );
+      tools.push(...response.tools.map((tool) => tool.name));
+      cursor = response.nextCursor;
+    } while (cursor !== undefined);
+    return tools;
   } finally {
     await transport.close();
   }
