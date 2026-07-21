@@ -2365,14 +2365,9 @@
       "disposition": "ui_capability",
       "capability": "scene-dock",
       "route": "bundled_operation",
-      "state": "verified",
-      "reason": "Production MCP create_scene write and read_scene artifact read-back are exercised in tests/parity-headless.test.ts.",
-      "operation": "create_scene",
-      "postcondition": {
-        "artifact": "res://main.tscn",
-        "readbackTool": "read_scene",
-        "expected": "root"
-      }
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "create_scene"
     },
     {
       "tool": "create_standard_material_3d",
@@ -3014,8 +3009,8 @@
   "summary": {
     "denominator": 334,
     "states": {
-      "verified": 1,
-      "represented_unverified": 273,
+      "verified": 0,
+      "represented_unverified": 274,
       "broken": 60
     },
     "mcpExtras": [

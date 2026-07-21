@@ -2030,7 +2030,7 @@ func list_animations(params):
         printerr("Failed to load scene: " + scene_path)
         quit(1)
     var root = scene.instantiate()
-    get_root().add_child(root)
+    add_child(root)
     var player_path = params.get("animation_player_path", "")
     var player: AnimationPlayer = null
     if not player_path.is_empty():
@@ -2075,7 +2075,7 @@ func add_scene_instance(params):
         printerr("Failed to load scene: " + scene_path)
         quit(1)
     var root = scene.instantiate()
-    get_root().add_child(root)
+    add_child(root)
     var parent_path = params.get("parent_node_path", ".")
     var parent_node = root if parent_path == "." else root.get_node_or_null(parent_path)
     if parent_node == null:
@@ -2116,7 +2116,7 @@ func scene_create_inherited(params):
         quit(1)
     var root = base_scene.instantiate()
     root.set_meta("_editor_description", "")
-    get_root().add_child(root)
+    add_child(root)
     # Save as inherited using PackedScene with the base scene as source
     # Write a minimal .tscn file that inherits from base
     var abs_new_path = ProjectSettings.globalize_path(new_path)
@@ -2188,7 +2188,7 @@ func set_anchor_preset(params):
         printerr("Failed to load scene: " + scene_path)
         quit(1)
     var root = scene.instantiate()
-    get_root().add_child(root)
+    add_child(root)
     var target = root.get_node_or_null(node_path_str)
     if target == null or not target is Control:
         printerr("Control node not found: " + node_path_str)
@@ -2244,723 +2244,723 @@ func get_class_api(params):
 
 
 func add_mesh_instance(params: Dictionary) -> void:
-    var project_path: String = params.get("project_path", "")
-    var scene_path: String = params.get("scene_path", "")
-    var mesh_type: String = params.get("mesh_type", "box")
-    var node_name: String = params.get("node_name", "MeshInstance3D")
-    var parent_node_path: String = params.get("parent_node_path", ".")
-    var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
-    var scene_res = load(abs_scene) as PackedScene
-    if scene_res == null:
-        print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
-        quit()
-        return
-    var root = scene_res.instantiate()
-    var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
-    if parent == null:
-        parent = root
-    var mi = MeshInstance3D.new()
-    mi.name = node_name
-    match mesh_type:
-        "sphere":
-            mi.mesh = SphereMesh.new()
-        "capsule":
-            mi.mesh = CapsuleMesh.new()
-        "cylinder":
-            mi.mesh = CylinderMesh.new()
-        "plane":
-            mi.mesh = PlaneMesh.new()
-        "torus":
-            mi.mesh = TorusMesh.new()
-        _:
-            mi.mesh = BoxMesh.new()
-    parent.add_child(mi)
-    mi.owner = root
-    var packed = PackedScene.new()
-    packed.pack(root)
-    ResourceSaver.save(packed, abs_scene)
-    root.queue_free()
-    print(JSON.stringify({"success": true, "node_name": node_name, "mesh_type": mesh_type}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var mesh_type: String = params.get("mesh_type", "box")
+	var node_name: String = params.get("node_name", "MeshInstance3D")
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
+	if parent == null:
+		parent = root
+	var mi = MeshInstance3D.new()
+	mi.name = node_name
+	match mesh_type:
+		"sphere":
+			mi.mesh = SphereMesh.new()
+		"capsule":
+			mi.mesh = CapsuleMesh.new()
+		"cylinder":
+			mi.mesh = CylinderMesh.new()
+		"plane":
+			mi.mesh = PlaneMesh.new()
+		"torus":
+			mi.mesh = TorusMesh.new()
+		_:
+			mi.mesh = BoxMesh.new()
+	parent.add_child(mi)
+	mi.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name, "mesh_type": mesh_type}))
+	quit()
 
 
 func add_directional_light_3d(params: Dictionary) -> void:
-    var project_path: String = params.get("project_path", "")
-    var scene_path: String = params.get("scene_path", "")
-    var node_name: String = params.get("node_name", "DirectionalLight3D")
-    var energy: float = params.get("energy", 1.0)
-    var cast_shadows: bool = params.get("cast_shadows", true)
-    var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
-    var scene_res = load(abs_scene) as PackedScene
-    if scene_res == null:
-        print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
-        quit()
-        return
-    var root = scene_res.instantiate()
-    var light = DirectionalLight3D.new()
-    light.name = node_name
-    light.light_energy = energy
-    light.shadow_enabled = cast_shadows
-    root.add_child(light)
-    light.owner = root
-    var packed = PackedScene.new()
-    packed.pack(root)
-    ResourceSaver.save(packed, abs_scene)
-    root.queue_free()
-    print(JSON.stringify({"success": true, "node_name": node_name, "energy": energy}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", "DirectionalLight3D")
+	var energy: float = params.get("energy", 1.0)
+	var cast_shadows: bool = params.get("cast_shadows", true)
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var light = DirectionalLight3D.new()
+	light.name = node_name
+	light.light_energy = energy
+	light.shadow_enabled = cast_shadows
+	root.add_child(light)
+	light.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name, "energy": energy}))
+	quit()
 
 
 func add_camera_3d(params: Dictionary) -> void:
-    var project_path: String = params.get("project_path", "")
-    var scene_path: String = params.get("scene_path", "")
-    var node_name: String = params.get("node_name", "Camera3D")
-    var fov: float = params.get("fov", 75.0)
-    var current: bool = params.get("current", false)
-    var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
-    var scene_res = load(abs_scene) as PackedScene
-    if scene_res == null:
-        print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
-        quit()
-        return
-    var root = scene_res.instantiate()
-    var cam = Camera3D.new()
-    cam.name = node_name
-    cam.fov = fov
-    cam.current = current
-    root.add_child(cam)
-    cam.owner = root
-    var packed = PackedScene.new()
-    packed.pack(root)
-    ResourceSaver.save(packed, abs_scene)
-    root.queue_free()
-    print(JSON.stringify({"success": true, "node_name": node_name, "fov": fov}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", "Camera3D")
+	var fov: float = params.get("fov", 75.0)
+	var current: bool = params.get("current", false)
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var cam = Camera3D.new()
+	cam.name = node_name
+	cam.fov = fov
+	cam.current = current
+	root.add_child(cam)
+	cam.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name, "fov": fov}))
+	quit()
 
 
 func add_omni_light_3d(params: Dictionary) -> void:
-    var project_path: String = params.get("project_path", "")
-    var scene_path: String = params.get("scene_path", "")
-    var node_name: String = params.get("node_name", "OmniLight3D")
-    var energy: float = params.get("energy", 1.0)
-    var range_val: float = params.get("range", 5.0)
-    var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
-    var scene_res = load(abs_scene) as PackedScene
-    if scene_res == null:
-        print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
-        quit()
-        return
-    var root = scene_res.instantiate()
-    var light = OmniLight3D.new()
-    light.name = node_name
-    light.light_energy = energy
-    light.omni_range = range_val
-    root.add_child(light)
-    light.owner = root
-    var packed = PackedScene.new()
-    packed.pack(root)
-    ResourceSaver.save(packed, abs_scene)
-    root.queue_free()
-    print(JSON.stringify({"success": true, "node_name": node_name, "energy": energy, "range": range_val}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", "OmniLight3D")
+	var energy: float = params.get("energy", 1.0)
+	var range_val: float = params.get("range", 5.0)
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var light = OmniLight3D.new()
+	light.name = node_name
+	light.light_energy = energy
+	light.omni_range = range_val
+	root.add_child(light)
+	light.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name, "energy": energy, "range": range_val}))
+	quit()
 
 
 func add_spot_light_3d(params: Dictionary) -> void:
-    var project_path: String = params.get("project_path", "")
-    var scene_path: String = params.get("scene_path", "")
-    var node_name: String = params.get("node_name", "SpotLight3D")
-    var energy: float = params.get("energy", 1.0)
-    var range_val: float = params.get("range", 5.0)
-    var angle: float = params.get("angle", 45.0)
-    var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
-    var scene_res = load(abs_scene) as PackedScene
-    if scene_res == null:
-        print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
-        quit()
-        return
-    var root = scene_res.instantiate()
-    var light = SpotLight3D.new()
-    light.name = node_name
-    light.light_energy = energy
-    light.spot_range = range_val
-    light.spot_angle = angle
-    root.add_child(light)
-    light.owner = root
-    var packed = PackedScene.new()
-    packed.pack(root)
-    ResourceSaver.save(packed, abs_scene)
-    root.queue_free()
-    print(JSON.stringify({"success": true, "node_name": node_name, "energy": energy, "angle": angle}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", "SpotLight3D")
+	var energy: float = params.get("energy", 1.0)
+	var range_val: float = params.get("range", 5.0)
+	var angle: float = params.get("angle", 45.0)
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var light = SpotLight3D.new()
+	light.name = node_name
+	light.light_energy = energy
+	light.spot_range = range_val
+	light.spot_angle = angle
+	root.add_child(light)
+	light.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name, "energy": energy, "angle": angle}))
+	quit()
 
 
 func add_collision_shape_2d(params: Dictionary) -> void:
-    var project_path: String = params.get("project_path", "")
-    var scene_path: String = params.get("scene_path", "")
-    var parent_node_path: String = params.get("parent_node_path", ".")
-    var shape_type: String = params.get("shape_type", "rectangle")
-    var width: float = params.get("width", 32.0)
-    var height: float = params.get("height", 32.0)
-    var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
-    var scene_res = load(abs_scene) as PackedScene
-    if scene_res == null:
-        print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
-        quit()
-        return
-    var root = scene_res.instantiate()
-    var parent = root.get_node_or_null(parent_node_path)
-    if parent == null:
-        print(JSON.stringify({"error": "Parent not found: " + parent_node_path}))
-        root.queue_free()
-        quit()
-        return
-    var cs = CollisionShape2D.new()
-    cs.name = "CollisionShape2D"
-    match shape_type:
-        "circle":
-            var shape = CircleShape2D.new()
-            shape.radius = width * 0.5
-            cs.shape = shape
-        "capsule":
-            var shape = CapsuleShape2D.new()
-            shape.radius = width * 0.5
-            shape.height = height
-            cs.shape = shape
-        _:
-            var shape = RectangleShape2D.new()
-            shape.size = Vector2(width, height)
-            cs.shape = shape
-    parent.add_child(cs)
-    cs.owner = root
-    var packed = PackedScene.new()
-    packed.pack(root)
-    ResourceSaver.save(packed, abs_scene)
-    root.queue_free()
-    print(JSON.stringify({"success": true, "shape_type": shape_type}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var shape_type: String = params.get("shape_type", "rectangle")
+	var width: float = params.get("width", 32.0)
+	var height: float = params.get("height", 32.0)
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path)
+	if parent == null:
+		print(JSON.stringify({"error": "Parent not found: " + parent_node_path}))
+		root.queue_free()
+		quit()
+		return
+	var cs = CollisionShape2D.new()
+	cs.name = "CollisionShape2D"
+	match shape_type:
+		"circle":
+			var shape = CircleShape2D.new()
+			shape.radius = width * 0.5
+			cs.shape = shape
+		"capsule":
+			var shape = CapsuleShape2D.new()
+			shape.radius = width * 0.5
+			shape.height = height
+			cs.shape = shape
+		_:
+			var shape = RectangleShape2D.new()
+			shape.size = Vector2(width, height)
+			cs.shape = shape
+	parent.add_child(cs)
+	cs.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "shape_type": shape_type}))
+	quit()
 
 
 func add_collision_shape_3d(params: Dictionary) -> void:
-    var project_path: String = params.get("project_path", "")
-    var scene_path: String = params.get("scene_path", "")
-    var parent_node_path: String = params.get("parent_node_path", ".")
-    var shape_type: String = params.get("shape_type", "box")
-    var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
-    var scene_res = load(abs_scene) as PackedScene
-    if scene_res == null:
-        print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
-        quit()
-        return
-    var root = scene_res.instantiate()
-    var parent = root.get_node_or_null(parent_node_path)
-    if parent == null:
-        print(JSON.stringify({"error": "Parent not found: " + parent_node_path}))
-        root.queue_free()
-        quit()
-        return
-    var cs = CollisionShape3D.new()
-    cs.name = "CollisionShape3D"
-    match shape_type:
-        "sphere":
-            cs.shape = SphereShape3D.new()
-        "capsule":
-            cs.shape = CapsuleShape3D.new()
-        "cylinder":
-            cs.shape = CylinderShape3D.new()
-        _:
-            cs.shape = BoxShape3D.new()
-    parent.add_child(cs)
-    cs.owner = root
-    var packed = PackedScene.new()
-    packed.pack(root)
-    ResourceSaver.save(packed, abs_scene)
-    root.queue_free()
-    print(JSON.stringify({"success": true, "shape_type": shape_type}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var shape_type: String = params.get("shape_type", "box")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path)
+	if parent == null:
+		print(JSON.stringify({"error": "Parent not found: " + parent_node_path}))
+		root.queue_free()
+		quit()
+		return
+	var cs = CollisionShape3D.new()
+	cs.name = "CollisionShape3D"
+	match shape_type:
+		"sphere":
+			cs.shape = SphereShape3D.new()
+		"capsule":
+			cs.shape = CapsuleShape3D.new()
+		"cylinder":
+			cs.shape = CylinderShape3D.new()
+		_:
+			cs.shape = BoxShape3D.new()
+	parent.add_child(cs)
+	cs.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "shape_type": shape_type}))
+	quit()
 
 
 func add_area_2d(params: Dictionary) -> void:
-    var project_path: String = params.get("project_path", "")
-    var scene_path: String = params.get("scene_path", "")
-    var node_name: String = params.get("node_name", "Area2D")
-    var parent_node_path: String = params.get("parent_node_path", ".")
-    var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
-    var scene_res = load(abs_scene) as PackedScene
-    if scene_res == null:
-        print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
-        quit()
-        return
-    var root = scene_res.instantiate()
-    var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
-    if parent == null:
-        parent = root
-    var area = Area2D.new()
-    area.name = node_name
-    var cs = CollisionShape2D.new()
-    cs.name = "CollisionShape2D"
-    var shape = RectangleShape2D.new()
-    shape.size = Vector2(32, 32)
-    cs.shape = shape
-    area.add_child(cs)
-    cs.owner = root
-    parent.add_child(area)
-    area.owner = root
-    var packed = PackedScene.new()
-    packed.pack(root)
-    ResourceSaver.save(packed, abs_scene)
-    root.queue_free()
-    print(JSON.stringify({"success": true, "node_name": node_name}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", "Area2D")
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
+	if parent == null:
+		parent = root
+	var area = Area2D.new()
+	area.name = node_name
+	var cs = CollisionShape2D.new()
+	cs.name = "CollisionShape2D"
+	var shape = RectangleShape2D.new()
+	shape.size = Vector2(32, 32)
+	cs.shape = shape
+	area.add_child(cs)
+	cs.owner = root
+	parent.add_child(area)
+	area.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name}))
+	quit()
 
 
 func add_navigation_agent_2d(params: Dictionary) -> void:
-    var project_path: String = params.get("project_path", "")
-    var scene_path: String = params.get("scene_path", "")
-    var parent_node_path: String = params.get("parent_node_path", ".")
-    var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
-    var scene_res = load(abs_scene) as PackedScene
-    if scene_res == null:
-        print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
-        quit()
-        return
-    var root = scene_res.instantiate()
-    var parent = root.get_node_or_null(parent_node_path)
-    if parent == null:
-        print(JSON.stringify({"error": "Parent not found: " + parent_node_path}))
-        root.queue_free()
-        quit()
-        return
-    var agent = NavigationAgent2D.new()
-    agent.name = "NavigationAgent2D"
-    parent.add_child(agent)
-    agent.owner = root
-    var packed = PackedScene.new()
-    packed.pack(root)
-    ResourceSaver.save(packed, abs_scene)
-    root.queue_free()
-    print(JSON.stringify({"success": true, "parent": parent_node_path}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path)
+	if parent == null:
+		print(JSON.stringify({"error": "Parent not found: " + parent_node_path}))
+		root.queue_free()
+		quit()
+		return
+	var agent = NavigationAgent2D.new()
+	agent.name = "NavigationAgent2D"
+	parent.add_child(agent)
+	agent.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "parent": parent_node_path}))
+	quit()
 
 
 func add_audio_stream_player(params: Dictionary) -> void:
-    var project_path: String = params.get("project_path", "")
-    var scene_path: String = params.get("scene_path", "")
-    var node_name: String = params.get("node_name", "AudioStreamPlayer")
-    var bus: String = params.get("bus", "Master")
-    var parent_node_path: String = params.get("parent_node_path", ".")
-    var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
-    var scene_res = load(abs_scene) as PackedScene
-    if scene_res == null:
-        print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
-        quit()
-        return
-    var root = scene_res.instantiate()
-    var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
-    if parent == null:
-        parent = root
-    var asp = AudioStreamPlayer.new()
-    asp.name = node_name
-    asp.bus = bus
-    parent.add_child(asp)
-    asp.owner = root
-    var packed = PackedScene.new()
-    packed.pack(root)
-    ResourceSaver.save(packed, abs_scene)
-    root.queue_free()
-    print(JSON.stringify({"success": true, "node_name": node_name, "bus": bus}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", "AudioStreamPlayer")
+	var bus: String = params.get("bus", "Master")
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
+	if parent == null:
+		parent = root
+	var asp = AudioStreamPlayer.new()
+	asp.name = node_name
+	asp.bus = bus
+	parent.add_child(asp)
+	asp.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name, "bus": bus}))
+	quit()
 
 func add_path_2d_node(params: Dictionary) -> void:
-    var project_path: String = params.get("project_path", "")
-    var scene_path: String = params.get("scene_path", "")
-    var node_name: String = params.get("node_name", "Path2D")
-    var parent_node_path: String = params.get("parent_node_path", ".")
-    var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
-    var scene_res = load(abs_scene) as PackedScene
-    if scene_res == null:
-        print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
-        quit()
-        return
-    var root = scene_res.instantiate()
-    var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
-    if parent == null:
-        parent = root
-    var path_node = Path2D.new()
-    path_node.name = node_name
-    path_node.curve = Curve2D.new()
-    parent.add_child(path_node)
-    path_node.owner = root
-    var packed = PackedScene.new()
-    packed.pack(root)
-    ResourceSaver.save(packed, abs_scene)
-    root.queue_free()
-    print(JSON.stringify({"success": true, "node_name": node_name}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", "Path2D")
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
+	if parent == null:
+		parent = root
+	var path_node = Path2D.new()
+	path_node.name = node_name
+	path_node.curve = Curve2D.new()
+	parent.add_child(path_node)
+	path_node.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name}))
+	quit()
 
 func add_physics_body_node(params: Dictionary, body_type: String) -> void:
-    var project_path: String = params.get("project_path", "")
-    var scene_path: String = params.get("scene_path", "")
-    var node_name: String = params.get("node_name", body_type)
-    var parent_node_path: String = params.get("parent_node_path", ".")
-    var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
-    var scene_res = load(abs_scene) as PackedScene
-    if scene_res == null:
-        print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
-        quit()
-        return
-    var root = scene_res.instantiate()
-    var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
-    if parent == null:
-        parent = root
-    var body: Node
-    match body_type:
-        "RigidBody2D":
-            body = RigidBody2D.new()
-        "CharacterBody2D":
-            body = CharacterBody2D.new()
-        "StaticBody2D":
-            body = StaticBody2D.new()
-        "RigidBody3D":
-            body = RigidBody3D.new()
-        "CharacterBody3D":
-            body = CharacterBody3D.new()
-        "StaticBody3D":
-            body = StaticBody3D.new()
-        _:
-            print(JSON.stringify({"error": "Unknown body type: " + body_type}))
-            root.queue_free()
-            quit()
-            return
-    body.name = node_name
-    parent.add_child(body)
-    body.owner = root
-    var packed = PackedScene.new()
-    packed.pack(root)
-    ResourceSaver.save(packed, abs_scene)
-    root.queue_free()
-    print(JSON.stringify({"success": true, "node_name": node_name, "type": body_type}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", body_type)
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
+	if parent == null:
+		parent = root
+	var body: Node
+	match body_type:
+		"RigidBody2D":
+			body = RigidBody2D.new()
+		"CharacterBody2D":
+			body = CharacterBody2D.new()
+		"StaticBody2D":
+			body = StaticBody2D.new()
+		"RigidBody3D":
+			body = RigidBody3D.new()
+		"CharacterBody3D":
+			body = CharacterBody3D.new()
+		"StaticBody3D":
+			body = StaticBody3D.new()
+		_:
+			print(JSON.stringify({"error": "Unknown body type: " + body_type}))
+			root.queue_free()
+			quit()
+			return
+	body.name = node_name
+	parent.add_child(body)
+	body.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name, "type": body_type}))
+	quit()
 
 func add_generic_node_to_scene(params: Dictionary, node_type: String) -> void:
-    var project_path: String = params.get("project_path", "")
-    var scene_path: String = params.get("scene_path", "")
-    var node_name: String = params.get("node_name", node_type)
-    var parent_node_path: String = params.get("parent_node_path", ".")
-    var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
-    var scene_res = load(abs_scene) as PackedScene
-    if scene_res == null:
-        print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
-        quit()
-        return
-    var root = scene_res.instantiate()
-    var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
-    if parent == null:
-        parent = root
-    var new_node: Node
-    match node_type:
-        "RayCast2D":
-            new_node = RayCast2D.new()
-        "RayCast3D":
-            new_node = RayCast3D.new()
-        _:
-            print(JSON.stringify({"error": "Unknown node type: " + node_type}))
-            root.queue_free()
-            quit()
-            return
-    new_node.name = node_name
-    parent.add_child(new_node)
-    new_node.owner = root
-    var packed = PackedScene.new()
-    packed.pack(root)
-    ResourceSaver.save(packed, abs_scene)
-    root.queue_free()
-    print(JSON.stringify({"success": true, "node_name": node_name, "type": node_type}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", node_type)
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
+	if parent == null:
+		parent = root
+	var new_node: Node
+	match node_type:
+		"RayCast2D":
+			new_node = RayCast2D.new()
+		"RayCast3D":
+			new_node = RayCast3D.new()
+		_:
+			print(JSON.stringify({"error": "Unknown node type: " + node_type}))
+			root.queue_free()
+			quit()
+			return
+	new_node.name = node_name
+	parent.add_child(new_node)
+	new_node.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name, "type": node_type}))
+	quit()
 
 func check_script_errors(params: Dictionary) -> void:
-    var project_path: String = params.get("project_path", "")
-    var script_path: String = params.get("script_path", "")
-    var abs_path = project_path.path_join(script_path.trim_prefix("res://"))
-    var script = load(abs_path) as GDScript
-    if script == null:
-        print(JSON.stringify({"error": "Cannot load script: " + script_path}))
-        quit()
-        return
-    print(JSON.stringify({"success": true, "script_path": script_path, "valid": true, "errors": []}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var script_path: String = params.get("script_path", "")
+	var abs_path = project_path.path_join(script_path.trim_prefix("res://"))
+	var script = load(abs_path) as GDScript
+	if script == null:
+		print(JSON.stringify({"error": "Cannot load script: " + script_path}))
+		quit()
+		return
+	print(JSON.stringify({"success": true, "script_path": script_path, "valid": true, "errors": []}))
+	quit()
 
 func add_generic_node_to_scene_ext(params: Dictionary) -> void:
-    var project_path: String = params.get("project_path", "")
-    var scene_path: String = params.get("scene_path", "")
-    var node_type: String = params.get("node_type", "Node")
-    var node_name: String = params.get("node_name", node_type)
-    var parent_node_path: String = params.get("parent_node_path", ".")
-    var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
-    var scene_res = load(abs_scene) as PackedScene
-    if scene_res == null:
-        print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
-        quit()
-        return
-    var root = scene_res.instantiate()
-    var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
-    if parent == null:
-        parent = root
-    var new_node: Node = ClassDB.instantiate(node_type)
-    if new_node == null:
-        print(JSON.stringify({"error": "Cannot instantiate node type: " + node_type}))
-        root.queue_free()
-        quit()
-        return
-    new_node.name = node_name
-    parent.add_child(new_node)
-    new_node.owner = root
-    var packed = PackedScene.new()
-    packed.pack(root)
-    ResourceSaver.save(packed, abs_scene)
-    root.queue_free()
-    print(JSON.stringify({"success": true, "node_name": node_name, "type": node_type}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_type: String = params.get("node_type", "Node")
+	var node_name: String = params.get("node_name", node_type)
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
+	if parent == null:
+		parent = root
+	var new_node: Node = ClassDB.instantiate(node_type)
+	if new_node == null:
+		print(JSON.stringify({"error": "Cannot instantiate node type: " + node_type}))
+		root.queue_free()
+		quit()
+		return
+	new_node.name = node_name
+	parent.add_child(new_node)
+	new_node.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name, "type": node_type}))
+	quit()
 
 func get_animation_names(params: Dictionary) -> void:
-    var project_path: String = params.get("project_path", "")
-    var scene_path: String = params.get("scene_path", "")
-    var node_path: String = params.get("node_path", "AnimationPlayer")
-    var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
-    var scene_res = load(abs_scene) as PackedScene
-    if scene_res == null:
-        print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
-        quit()
-        return
-    var root = scene_res.instantiate()
-    var node = root.get_node_or_null(node_path)
-    if node == null or not node is AnimationPlayer:
-        root.queue_free()
-        print(JSON.stringify({"error": "AnimationPlayer not found at: " + node_path}))
-        quit()
-        return
-    var ap := node as AnimationPlayer
-    var animations: Array = []
-    for anim_name in ap.get_animation_list():
-        var anim = ap.get_animation(anim_name)
-        animations.append({"name": anim_name, "length": anim.length if anim != null else 0, "loop_mode": anim.loop_mode if anim != null else 0})
-    root.queue_free()
-    print(JSON.stringify({"success": true, "animations": animations, "count": animations.size()}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_path: String = params.get("node_path", "AnimationPlayer")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var node = root.get_node_or_null(node_path)
+	if node == null or not node is AnimationPlayer:
+		root.queue_free()
+		print(JSON.stringify({"error": "AnimationPlayer not found at: " + node_path}))
+		quit()
+		return
+	var ap := node as AnimationPlayer
+	var animations: Array = []
+	for anim_name in ap.get_animation_list():
+		var anim = ap.get_animation(anim_name)
+		animations.append({"name": anim_name, "length": anim.length if anim != null else 0, "loop_mode": anim.loop_mode if anim != null else 0})
+	root.queue_free()
+	print(JSON.stringify({"success": true, "animations": animations, "count": animations.size()}))
+	quit()
 
 func add_label_3d(params: Dictionary) -> void:
-    var project_path: String = params.get("project_path", "")
-    var scene_path: String = params.get("scene_path", "")
-    var node_name: String = params.get("node_name", "Label3D")
-    var text: String = params.get("text", "Label3D")
-    var parent_node_path: String = params.get("parent_node_path", ".")
-    var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
-    var scene_res = load(abs_scene) as PackedScene
-    if scene_res == null:
-        print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
-        quit()
-        return
-    var root = scene_res.instantiate()
-    var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
-    if parent == null:
-        parent = root
-    var label = Label3D.new()
-    label.name = node_name
-    label.text = text
-    parent.add_child(label)
-    label.owner = root
-    var packed = PackedScene.new()
-    packed.pack(root)
-    ResourceSaver.save(packed, abs_scene)
-    root.queue_free()
-    print(JSON.stringify({"success": true, "node_name": node_name, "text": text}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", "Label3D")
+	var text: String = params.get("text", "Label3D")
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
+	if parent == null:
+		parent = root
+	var label = Label3D.new()
+	label.name = node_name
+	label.text = text
+	parent.add_child(label)
+	label.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name, "text": text}))
+	quit()
 
 func add_sub_viewport(params: Dictionary) -> void:
-    var project_path: String = params.get("project_path", "")
-    var scene_path: String = params.get("scene_path", "")
-    var node_name: String = params.get("node_name", "SubViewport")
-    var width: int = params.get("width", 512)
-    var height: int = params.get("height", 512)
-    var parent_node_path: String = params.get("parent_node_path", ".")
-    var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
-    var scene_res = load(abs_scene) as PackedScene
-    if scene_res == null:
-        print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
-        quit()
-        return
-    var root = scene_res.instantiate()
-    var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
-    if parent == null:
-        parent = root
-    var vp = SubViewport.new()
-    vp.name = node_name
-    vp.size = Vector2i(width, height)
-    parent.add_child(vp)
-    vp.owner = root
-    var packed = PackedScene.new()
-    packed.pack(root)
-    ResourceSaver.save(packed, abs_scene)
-    root.queue_free()
-    print(JSON.stringify({"success": true, "node_name": node_name, "width": width, "height": height}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", "SubViewport")
+	var width: int = params.get("width", 512)
+	var height: int = params.get("height", 512)
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
+	if parent == null:
+		parent = root
+	var vp = SubViewport.new()
+	vp.name = node_name
+	vp.size = Vector2i(width, height)
+	parent.add_child(vp)
+	vp.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name, "width": width, "height": height}))
+	quit()
 
 func add_grid_container(params: Dictionary) -> void:
-    var project_path: String = params.get("project_path", "")
-    var scene_path: String = params.get("scene_path", "")
-    var node_name: String = params.get("node_name", "GridContainer")
-    var columns: int = params.get("columns", 2)
-    var parent_node_path: String = params.get("parent_node_path", ".")
-    var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
-    var scene_res = load(abs_scene) as PackedScene
-    if scene_res == null:
-        print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
-        quit()
-        return
-    var root = scene_res.instantiate()
-    var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
-    if parent == null:
-        parent = root
-    var gc = GridContainer.new()
-    gc.name = node_name
-    gc.columns = columns
-    parent.add_child(gc)
-    gc.owner = root
-    var packed = PackedScene.new()
-    packed.pack(root)
-    ResourceSaver.save(packed, abs_scene)
-    root.queue_free()
-    print(JSON.stringify({"success": true, "node_name": node_name, "columns": columns}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var node_name: String = params.get("node_name", "GridContainer")
+	var columns: int = params.get("columns", 2)
+	var parent_node_path: String = params.get("parent_node_path", ".")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var parent = root.get_node_or_null(parent_node_path) if parent_node_path != "." else root
+	if parent == null:
+		parent = root
+	var gc = GridContainer.new()
+	gc.name = node_name
+	gc.columns = columns
+	parent.add_child(gc)
+	gc.owner = root
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "node_name": node_name, "columns": columns}))
+	quit()
 
 func create_animation_track(params: Dictionary) -> void:
-    var project_path: String = params.get("project_path", "")
-    var scene_path: String = params.get("scene_path", "")
-    var anim_player_path: String = params.get("anim_player_path", "AnimationPlayer")
-    var animation_name: String = params.get("animation_name", "")
-    var track_path: String = params.get("track_path", "")
-    var track_type_str: String = params.get("track_type", "value")
-    var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
-    var scene_res = load(abs_scene) as PackedScene
-    if scene_res == null:
-        print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
-        quit()
-        return
-    var root = scene_res.instantiate()
-    var ap = root.get_node_or_null(anim_player_path) as AnimationPlayer
-    if ap == null:
-        root.queue_free()
-        print(JSON.stringify({"error": "AnimationPlayer not found: " + anim_player_path}))
-        quit()
-        return
-    if not ap.has_animation(animation_name):
-        root.queue_free()
-        print(JSON.stringify({"error": "Animation not found: " + animation_name}))
-        quit()
-        return
-    var anim = ap.get_animation(animation_name)
-    var track_type = Animation.TYPE_VALUE
-    match track_type_str:
-        "method": track_type = Animation.TYPE_METHOD
-        "bezier": track_type = Animation.TYPE_BEZIER
-    var track_idx = anim.add_track(track_type)
-    anim.track_set_path(track_idx, NodePath(track_path))
-    ResourceSaver.save(ap.get_animation_library("").resource_path if ap.get_animation_library("").resource_path != "" else abs_scene, anim)
-    var packed = PackedScene.new()
-    packed.pack(root)
-    ResourceSaver.save(packed, abs_scene)
-    root.queue_free()
-    print(JSON.stringify({"success": true, "track_idx": track_idx, "track_type": track_type_str}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var anim_player_path: String = params.get("anim_player_path", "AnimationPlayer")
+	var animation_name: String = params.get("animation_name", "")
+	var track_path: String = params.get("track_path", "")
+	var track_type_str: String = params.get("track_type", "value")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var ap = root.get_node_or_null(anim_player_path) as AnimationPlayer
+	if ap == null:
+		root.queue_free()
+		print(JSON.stringify({"error": "AnimationPlayer not found: " + anim_player_path}))
+		quit()
+		return
+	if not ap.has_animation(animation_name):
+		root.queue_free()
+		print(JSON.stringify({"error": "Animation not found: " + animation_name}))
+		quit()
+		return
+	var anim = ap.get_animation(animation_name)
+	var track_type = Animation.TYPE_VALUE
+	match track_type_str:
+		"method": track_type = Animation.TYPE_METHOD
+		"bezier": track_type = Animation.TYPE_BEZIER
+	var track_idx = anim.add_track(track_type)
+	anim.track_set_path(track_idx, NodePath(track_path))
+	ResourceSaver.save(ap.get_animation_library("").resource_path if ap.get_animation_library("").resource_path != "" else abs_scene, anim)
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "track_idx": track_idx, "track_type": track_type_str}))
+	quit()
 
 func add_animation_keyframe(params: Dictionary) -> void:
-    var project_path: String = params.get("project_path", "")
-    var scene_path: String = params.get("scene_path", "")
-    var anim_player_path: String = params.get("anim_player_path", "AnimationPlayer")
-    var animation_name: String = params.get("animation_name", "")
-    var track_idx: int = params.get("track_idx", 0)
-    var time: float = params.get("time", 0.0)
-    var value = params.get("value", null)
-    var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
-    var scene_res = load(abs_scene) as PackedScene
-    if scene_res == null:
-        print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
-        quit()
-        return
-    var root = scene_res.instantiate()
-    var ap = root.get_node_or_null(anim_player_path) as AnimationPlayer
-    if ap == null or not ap.has_animation(animation_name):
-        root.queue_free()
-        print(JSON.stringify({"error": "AnimationPlayer or animation not found"}))
-        quit()
-        return
-    var anim = ap.get_animation(animation_name)
-    if track_idx >= anim.get_track_count():
-        root.queue_free()
-        print(JSON.stringify({"error": "Track index out of range: " + str(track_idx)}))
-        quit()
-        return
-    anim.track_insert_key(track_idx, time, value)
-    var packed = PackedScene.new()
-    packed.pack(root)
-    ResourceSaver.save(packed, abs_scene)
-    root.queue_free()
-    print(JSON.stringify({"success": true, "track_idx": track_idx, "time": time}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var anim_player_path: String = params.get("anim_player_path", "AnimationPlayer")
+	var animation_name: String = params.get("animation_name", "")
+	var track_idx: int = params.get("track_idx", 0)
+	var time: float = params.get("time", 0.0)
+	var value = params.get("value", null)
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var ap = root.get_node_or_null(anim_player_path) as AnimationPlayer
+	if ap == null or not ap.has_animation(animation_name):
+		root.queue_free()
+		print(JSON.stringify({"error": "AnimationPlayer or animation not found"}))
+		quit()
+		return
+	var anim = ap.get_animation(animation_name)
+	if track_idx >= anim.get_track_count():
+		root.queue_free()
+		print(JSON.stringify({"error": "Track index out of range: " + str(track_idx)}))
+		quit()
+		return
+	anim.track_insert_key(track_idx, time, value)
+	var packed = PackedScene.new()
+	packed.pack(root)
+	ResourceSaver.save(packed, abs_scene)
+	root.queue_free()
+	print(JSON.stringify({"success": true, "track_idx": track_idx, "time": time}))
+	quit()
 
 func get_animation_track_count(params: Dictionary) -> void:
-    var project_path: String = params.get("project_path", "")
-    var scene_path: String = params.get("scene_path", "")
-    var anim_player_path: String = params.get("anim_player_path", "AnimationPlayer")
-    var animation_name: String = params.get("animation_name", "")
-    var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
-    var scene_res = load(abs_scene) as PackedScene
-    if scene_res == null:
-        print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
-        quit()
-        return
-    var root = scene_res.instantiate()
-    var ap = root.get_node_or_null(anim_player_path) as AnimationPlayer
-    if ap == null or not ap.has_animation(animation_name):
-        root.queue_free()
-        print(JSON.stringify({"error": "AnimationPlayer or animation not found"}))
-        quit()
-        return
-    var anim = ap.get_animation(animation_name)
-    var tracks: Array = []
-    for i in range(anim.get_track_count()):
-        tracks.append({"idx": i, "path": str(anim.track_get_path(i)), "type": anim.track_get_type(i), "key_count": anim.track_get_key_count(i)})
-    root.queue_free()
-    print(JSON.stringify({"success": true, "track_count": anim.get_track_count(), "tracks": tracks}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var scene_path: String = params.get("scene_path", "")
+	var anim_player_path: String = params.get("anim_player_path", "AnimationPlayer")
+	var animation_name: String = params.get("animation_name", "")
+	var abs_scene = project_path.path_join(scene_path.trim_prefix("res://"))
+	var scene_res = load(abs_scene) as PackedScene
+	if scene_res == null:
+		print(JSON.stringify({"error": "Cannot load scene: " + scene_path}))
+		quit()
+		return
+	var root = scene_res.instantiate()
+	var ap = root.get_node_or_null(anim_player_path) as AnimationPlayer
+	if ap == null or not ap.has_animation(animation_name):
+		root.queue_free()
+		print(JSON.stringify({"error": "AnimationPlayer or animation not found"}))
+		quit()
+		return
+	var anim = ap.get_animation(animation_name)
+	var tracks: Array = []
+	for i in range(anim.get_track_count()):
+		tracks.append({"idx": i, "path": str(anim.track_get_path(i)), "type": anim.track_get_type(i), "key_count": anim.track_get_key_count(i)})
+	root.queue_free()
+	print(JSON.stringify({"success": true, "track_count": anim.get_track_count(), "tracks": tracks}))
+	quit()
 
 func list_classdb_classes(params: Dictionary) -> void:
-    var filter: String = params.get("filter", "").to_lower()
-    var all_classes = ClassDB.get_class_list()
-    all_classes.sort()
-    var filtered: Array = []
-    for cls in all_classes:
-        if filter == "" or cls.to_lower().contains(filter):
-            filtered.append(cls)
-    print(JSON.stringify({"success": true, "count": filtered.size(), "classes": filtered}))
-    quit()
+	var filter: String = params.get("filter", "").to_lower()
+	var all_classes = ClassDB.get_class_list()
+	all_classes.sort()
+	var filtered: Array = []
+	for cls in all_classes:
+		if filter == "" or cls.to_lower().contains(filter):
+			filtered.append(cls)
+	print(JSON.stringify({"success": true, "count": filtered.size(), "classes": filtered}))
+	quit()
 
 func generate_mesh_normals(params: Dictionary) -> void:
-    var project_path: String = params.get("project_path", "")
-    var mesh_path: String = params.get("mesh_path", "")
-    var abs_path = project_path.path_join(mesh_path.trim_prefix("res://"))
-    var res = load(abs_path)
-    if res == null:
-        print(JSON.stringify({"error": "Cannot load resource: " + mesh_path}))
-        quit()
-        return
-    if res is ArrayMesh:
-        var arr_mesh := res as ArrayMesh
-        for i in range(arr_mesh.get_surface_count()):
-            var arrays = arr_mesh.surface_get_arrays(i)
-            if arrays[Mesh.ARRAY_NORMAL] == null:
-                print(JSON.stringify({"note": "No normals to regenerate — use MeshDataTool for full regen"}))
-        ResourceSaver.save(arr_mesh, abs_path)
-        print(JSON.stringify({"success": true, "mesh_path": mesh_path, "surfaces": arr_mesh.get_surface_count()}))
-    else:
-        print(JSON.stringify({"error": "Not an ArrayMesh: " + res.get_class()}))
-    quit()
+	var project_path: String = params.get("project_path", "")
+	var mesh_path: String = params.get("mesh_path", "")
+	var abs_path = project_path.path_join(mesh_path.trim_prefix("res://"))
+	var res = load(abs_path)
+	if res == null:
+		print(JSON.stringify({"error": "Cannot load resource: " + mesh_path}))
+		quit()
+		return
+	if res is ArrayMesh:
+		var arr_mesh := res as ArrayMesh
+		for i in range(arr_mesh.get_surface_count()):
+			var arrays = arr_mesh.surface_get_arrays(i)
+			if arrays[Mesh.ARRAY_NORMAL] == null:
+				print(JSON.stringify({"note": "No normals to regenerate — use MeshDataTool for full regen"}))
+		ResourceSaver.save(arr_mesh, abs_path)
+		print(JSON.stringify({"success": true, "mesh_path": mesh_path, "surfaces": arr_mesh.get_surface_count()}))
+	else:
+		print(JSON.stringify({"error": "Not an ArrayMesh: " + res.get_class()}))
+	quit()
