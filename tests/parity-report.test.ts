@@ -1,9 +1,23 @@
+import { execFileSync } from "node:child_process";
+import { readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   assertAuditCoverage,
   buildParityArtifacts,
+  createParityArtifacts,
   renderParityReport,
 } from "../scripts/parity-report.js";
+
+const root = process.cwd();
+
+function formatGapDataset(gaps: unknown): string {
+  return `${JSON.stringify(gaps, null, 2).replace(
+    /"relatedMcpTools": \[\n((?:\s+"[^"]+",?\n)+)\s+\]/g,
+    (_match, values: string) =>
+      `"relatedMcpTools": [${values.match(/"[^"]+"/g).join(", ")}]`,
+  )}\n`;
+}
 
 const baseline = {
   godotVersion: "4.4",
@@ -100,6 +114,21 @@ describe("generated MCP versus UI parity report", () => {
     expect(artifacts.summary.byPath.runtime.gap).toBe(1);
   });
 
+  it("renders_the_exact_baseline_denominator_percentages_and_surface_path_totals", () => {
+    const report = renderParityReport(
+      buildParityArtifacts({ baseline, ...evidence }),
+    );
+
+    expect(report).toContain("Godot baseline: 4.4");
+    expect(report).toContain("Canonical UI capability denominator: 5");
+    expect(report).toContain("Strict verified parity: 20% (1/5)");
+    expect(report).toContain("Represented parity: 40% (2/5)");
+    expect(report).toContain("| Project Manager | 1 | 0 | 0 | 0 |");
+    expect(report).toContain("| Godot editor plugin | 0 | 0 | 1 | 0 |");
+    expect(report).toContain("| bundled_operation | 0 | 1 | 0 | 0 |");
+    expect(report).toContain("| runtime | 0 | 0 | 0 | 1 |");
+  });
+
   it("exports_complete_unprioritized_gaps", () => {
     const artifacts = buildParityArtifacts({ baseline, ...evidence });
 
@@ -108,12 +137,37 @@ describe("generated MCP versus UI parity report", () => {
       "editor:editor-broken",
       "runtime:runtime-gap",
     ]);
+    expect(artifacts.gaps).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: "baseline:baseline-gap",
+          uiSurface: "Scene dock",
+          userOutcome: "Save a scene",
+          sourceReference: "https://example.test/baseline-gap",
+          relatedMcpTools: [],
+          evidenceReason:
+            "No MCP disposition is recorded for this canonical UI capability.",
+        }),
+        expect.objectContaining({
+          id: "editor:editor-broken",
+          uiSurface: "Godot editor plugin",
+          userOutcome: "The scene saves in the editor.",
+          sourceReference: "audit/editor-evidence.json#records/0",
+          relatedMcpTools: ["editor_save_scene"],
+          evidenceReason:
+            "Editor evidence records this capability as broken; no representation evidence.",
+        }),
+        expect.objectContaining({
+          id: "runtime:runtime-gap",
+          uiSurface: "Running game",
+          userOutcome: "Use the runtime-gap running-game capability.",
+          sourceReference: "audit/runtime-evidence.json#records/0",
+          relatedMcpTools: ["inspect_runtime"],
+          evidenceReason: "The runtime command has no represented capability.",
+        }),
+      ]),
+    );
     for (const gap of artifacts.gaps) {
-      expect(gap.uiSurface).toMatch(/\S/);
-      expect(gap.userOutcome).toMatch(/\S/);
-      expect(gap.sourceReference).toMatch(/\S/);
-      expect(gap.relatedMcpTools).toEqual(expect.any(Array));
-      expect(gap.evidenceReason).toMatch(/\S/);
       expect(JSON.stringify(gap)).not.toMatch(/priority|rank|score/i);
     }
     const report = renderParityReport(artifacts);
@@ -154,4 +208,203 @@ describe("generated MCP versus UI parity report", () => {
     );
     expect(after).toBe(before);
   });
+
+  it("downgrades_verified_or_represented_records_without_full_and_dispatch_exposure_in_every_evidence_slice", () => {
+    const artifacts = buildParityArtifacts({
+      baseline: {
+        ...baseline,
+        capabilities: [
+          ...baseline.capabilities,
+          {
+            id: "baseline-dispatch-only",
+            editorSurface: "Node dock",
+            userAction: "Rename a node",
+            source: {
+              version: "4.4",
+              url: "https://example.test/baseline-dispatch-only",
+            },
+          },
+        ],
+      },
+      mappings: [
+        ...evidence.mappings,
+        {
+          capabilityId: "baseline-dispatch-only",
+          tools: ["dispatch_only_tool"],
+          state: "verified",
+        },
+      ],
+      editor: {
+        records: [
+          {
+            capabilityId: "editor-full-only",
+            disposition: "ui_capability",
+            mcpTools: ["editor_full_only_tool"],
+            state: "verified",
+            dogfood: { observableResult: "Editor action is available." },
+          },
+        ],
+      },
+      headless: {
+        records: [
+          {
+            tool: "headless-dispatch-only-tool",
+            disposition: "ui_capability",
+            capability: "headless-surface",
+            route: "bundled_operation",
+            state: "represented_unverified",
+            reason: "The operation has a representation.",
+          },
+        ],
+      },
+      runtime: {
+        records: [
+          {
+            capabilityId: "runtime-full-only",
+            disposition: "ui_capability",
+            tools: ["runtime_full_only_tool"],
+            state: "verified",
+            reason: "The command has a representation.",
+          },
+        ],
+      },
+      registry: {
+        ...evidence.registry,
+        full: {
+          tools: [
+            "create_project",
+            "create_scene",
+            "inspect_runtime",
+            "editor_full_only_tool",
+            "runtime_full_only_tool",
+          ],
+        },
+        dispatch: {
+          tools: [
+            "create_project",
+            "create_scene",
+            "inspect_runtime",
+            "headless-dispatch-only-tool",
+            "dispatch_only_tool",
+          ],
+        },
+      },
+    });
+
+    for (const id of [
+      "baseline:baseline-dispatch-only",
+      "editor:editor-full-only",
+      "headless:headless-dispatch-only-tool",
+      "runtime:runtime-full-only",
+    ]) {
+      expect(
+        artifacts.records.find((record) => record.id === id)?.state,
+        `${id} must be broken when any represented tool is absent from one production inventory`,
+      ).toBe("broken");
+    }
+  });
+
+  it("keeps_mcp_only_records_out_of_the_ui_denominator_and_lists_each_as_an_extra", () => {
+    const artifacts = buildParityArtifacts({
+      baseline,
+      mappings: evidence.mappings,
+      editor: {
+        records: [
+          ...evidence.editor.records,
+          {
+            disposition: "mcp_only",
+            mcpTools: ["editor_transport_extra"],
+          },
+        ],
+      },
+      headless: {
+        records: [
+          ...evidence.headless.records,
+          {
+            disposition: "mcp_only",
+            tool: "headless_template_extra",
+          },
+        ],
+      },
+      runtime: {
+        records: [
+          ...evidence.runtime.records,
+          {
+            disposition: "mcp_only",
+            tools: ["runtime_transport_extra"],
+          },
+        ],
+      },
+      registry: {
+        ...evidence.registry,
+        mcpOnlyExtras: ["registry_extra"],
+      },
+    });
+
+    expect(artifacts.summary.denominator).toBe(5);
+    expect(artifacts.summary.mcpOnlyExtras).toEqual([
+      "editor_transport_extra",
+      "headless_template_extra",
+      "registry_extra",
+      "runtime_transport_extra",
+    ]);
+  });
+
+  it("enforces_coverage_from_the_production_artifact_composition_even_when_a_runtime_classifier_would_call_the_new_tool_an_extra", async () => {
+    await expect(
+      createParityArtifacts({
+        createAuditReport: async () => ({
+          registry: {
+            full: { observed: true, tools: ["write_unmapped_tool"] },
+            discovery: { observed: true, tools: [] },
+            dispatch: { observed: true, tools: ["write_unmapped_tool"] },
+          },
+          findings: [],
+          summary: { extras: ["write_unmapped_tool"] },
+        }),
+      }),
+    ).rejects.toThrow(/undispositioned MCP tools: write_unmapped_tool/);
+  });
+
+  it("refreshes_all_committed_artifacts_and_ignores_readme_only_counts_through_the_real_write_entrypoint", async () => {
+    const artifactPaths = [
+      "audit/parity-summary.json",
+      "audit/parity-gaps.json",
+      "audit/parity-report.md",
+    ];
+    const expected = await createParityArtifacts();
+    const expectedContents = new Map([
+      [
+        "audit/parity-summary.json",
+        `${JSON.stringify(expected.summary, null, 2)}\n`,
+      ],
+      ["audit/parity-gaps.json", formatGapDataset(expected.gaps)],
+      ["audit/parity-report.md", renderParityReport(expected)],
+    ]);
+    const readmePath = join(root, "README.md");
+    const originalReadme = readFileSync(readmePath, "utf8");
+
+    try {
+      for (const relativePath of artifactPaths)
+        writeFileSync(join(root, relativePath), "stale parity artifact\n");
+      writeFileSync(
+        readmePath,
+        `${originalReadme}\nThis README-only note claims 99,999 tools.\n`,
+      );
+
+      execFileSync(
+        "npm",
+        ["run", "--silent", "audit:parity-report", "--", "--write"],
+        { cwd: root, encoding: "utf8", maxBuffer: 20 * 1024 * 1024 },
+      );
+
+      for (const relativePath of artifactPaths)
+        expect(
+          readFileSync(join(root, relativePath), "utf8"),
+          `${relativePath} must be regenerated from production evidence rather than left stale or changed by a README count`,
+        ).toBe(expectedContents.get(relativePath));
+    } finally {
+      writeFileSync(readmePath, originalReadme);
+    }
+  }, 30000);
 });

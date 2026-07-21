@@ -79,9 +79,17 @@ function normalizeEvidence({
 
   for (const [index, record] of editor.records.entries()) {
     if (record.disposition !== "ui_capability") continue;
+    const state = mappingState(
+      {
+        capabilityId: record.capabilityId,
+        tools: record.mcpTools,
+        state: record.state,
+      },
+      registry,
+    );
     records.push({
       id: `editor:${record.capabilityId}`,
-      state: record.state,
+      state,
       uiSurface: "Godot editor plugin",
       executionPath: "editor_plugin",
       userOutcome:
@@ -89,15 +97,23 @@ function normalizeEvidence({
         `Use the ${record.capabilityId} editor capability.`,
       sourceReference: sourcePointer("audit/editor-evidence.json", index),
       relatedMcpTools: record.mcpTools,
-      evidenceReason: `Editor evidence records this capability as ${record.state}; ${record.representation ?? "no representation evidence"}.`,
+      evidenceReason: `Editor evidence records this capability as ${state}; ${record.representation ?? "no representation evidence"}.`,
     });
   }
 
   for (const [index, record] of headless.records.entries()) {
     if (record.disposition !== "ui_capability") continue;
+    const state = mappingState(
+      {
+        capabilityId: record.tool,
+        tools: [record.tool],
+        state: record.state,
+      },
+      registry,
+    );
     records.push({
       id: `headless:${record.tool}`,
-      state: record.state,
+      state,
       uiSurface: record.capability,
       executionPath: record.route,
       userOutcome: `Use ${record.tool} through a headless Godot operation.`,
@@ -109,9 +125,17 @@ function normalizeEvidence({
 
   for (const [index, record] of runtime.records.entries()) {
     if (record.disposition !== "ui_capability") continue;
+    const state = mappingState(
+      {
+        capabilityId: record.capabilityId,
+        tools: record.tools,
+        state: record.state,
+      },
+      registry,
+    );
     records.push({
       id: `runtime:${record.capabilityId}`,
-      state: record.state,
+      state,
       uiSurface: "Running game",
       executionPath: "runtime",
       userOutcome: `Use the ${record.capabilityId} running-game capability.`,
@@ -162,6 +186,24 @@ export function assertAuditCoverage({
     throw new Error(
       `Parity audit drift: unmapped UI capabilities: ${unmappedCapabilities.join(", ") || "none"}; undispositioned MCP tools: ${undispositionedTools.join(", ") || "none"}.`,
     );
+}
+
+function dispositionTools({
+  mappings,
+  editor,
+  headless,
+  runtime,
+  mcpOnlyExtras,
+}) {
+  return [
+    ...new Set([
+      ...mappings.flatMap((mapping) => mapping.tools),
+      ...editor.records.flatMap((record) => record.mcpTools ?? []),
+      ...headless.records.map((record) => record.tool),
+      ...runtime.records.flatMap((record) => record.tools ?? []),
+      ...mcpOnlyExtras,
+    ]),
+  ];
 }
 
 export function buildParityArtifacts(input) {
@@ -247,6 +289,14 @@ function gapLines(gaps) {
     .join("\n");
 }
 
+function formatGapDataset(gaps) {
+  return `${JSON.stringify(gaps, null, 2).replace(
+    /"relatedMcpTools": \[\n((?:\s+"[^"]+",?\n)+)\s+\]/g,
+    (_match, values) =>
+      `"relatedMcpTools": [${values.match(/"[^"]+"/g).join(", ")}]`,
+  )}\n`;
+}
+
 export function renderParityReport({ summary, gaps }) {
   return [
     "# MCP versus UI parity report",
@@ -298,19 +348,46 @@ export function renderParityReport({ summary, gaps }) {
   ].join("\n");
 }
 
-export async function createParityArtifacts() {
-  const audit = await createAuditReport();
+export async function createParityArtifacts({
+  createAuditReport: getAuditReport = createAuditReport,
+} = {}) {
+  const [audit, baseline, mappingsFile, editor, headless, runtime, mcpOnly] =
+    await Promise.all([
+      getAuditReport(),
+      readJson("audit/ui-baseline.json"),
+      readJson("audit/mappings.json"),
+      readJson("audit/editor-evidence.json"),
+      readJson("audit/headless-evidence.json"),
+      readJson("audit/runtime-evidence.json"),
+      readJson("audit/mcp-only-evidence.json"),
+    ]);
+  const mappings = mappingsFile.mappings;
+  const registry = {
+    ...audit.registry,
+    findings: audit.findings,
+    mcpOnlyExtras: mcpOnly.tools,
+  };
+  assertAuditCoverage({
+    canonicalCapabilities: baseline.capabilities.map(
+      (capability) => capability.id,
+    ),
+    mappingCapabilities: mappings.map((mapping) => mapping.capabilityId),
+    productionTools: registry.full.tools,
+    dispositionTools: dispositionTools({
+      mappings,
+      editor,
+      headless,
+      runtime,
+      mcpOnlyExtras: registry.mcpOnlyExtras,
+    }),
+  });
   return buildParityArtifacts({
-    baseline: readJson("audit/ui-baseline.json"),
-    mappings: readJson("audit/mappings.json").mappings,
-    editor: readJson("audit/editor-evidence.json"),
-    headless: readJson("audit/headless-evidence.json"),
-    runtime: readJson("audit/runtime-evidence.json"),
-    registry: {
-      ...audit.registry,
-      findings: audit.findings,
-      mcpOnlyExtras: audit.summary.extras,
-    },
+    baseline,
+    mappings,
+    editor,
+    headless,
+    runtime,
+    registry,
   });
 }
 
@@ -321,7 +398,7 @@ function writeArtifacts(artifacts) {
   );
   writeFileSync(
     join(root, "audit/parity-gaps.json"),
-    `${JSON.stringify(artifacts.gaps, null, 2)}\n`,
+    formatGapDataset(artifacts.gaps),
   );
   writeFileSync(
     join(root, "audit/parity-report.md"),

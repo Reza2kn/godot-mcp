@@ -225,6 +225,26 @@
     "evidenceReason": "Editor evidence records this capability as broken; represented_unverified."
   },
   {
+    "id": "headless:add_accept_dialog_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_accept_dialog_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/0",
+    "relatedMcpTools": ["add_accept_dialog_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_animated_sprite_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_animated_sprite_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/4",
+    "relatedMcpTools": ["add_animated_sprite_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
     "id": "headless:add_animation_key_value",
     "state": "broken",
     "uiSurface": "scene-dock",
@@ -233,6 +253,16 @@
     "sourceReference": "audit/headless-evidence.json#records/5",
     "relatedMcpTools": ["add_animation_key_value"],
     "evidenceReason": "Bundled operation add_animation_key_value is missing from src/scripts/godot_operations.gd."
+  },
+  {
+    "id": "headless:add_animation_keyframe",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_animation_keyframe through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/6",
+    "relatedMcpTools": ["add_animation_keyframe"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
   },
   {
     "id": "headless:add_animation_track",
@@ -245,6 +275,746 @@
     "evidenceReason": "Bundled operation add_animation_track is missing from src/scripts/godot_operations.gd."
   },
   {
+    "id": "headless:add_animation_tree_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_animation_tree_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/8",
+    "relatedMcpTools": ["add_animation_tree_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_area_2d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_area_2d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/9",
+    "relatedMcpTools": ["add_area_2d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_area_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_area_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/10",
+    "relatedMcpTools": ["add_area_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_aspect_ratio_container",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_aspect_ratio_container through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/11",
+    "relatedMcpTools": ["add_aspect_ratio_container"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_aspect_ratio_container_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_aspect_ratio_container_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/12",
+    "relatedMcpTools": ["add_aspect_ratio_container_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_audio_listener_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_audio_listener_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/14",
+    "relatedMcpTools": ["add_audio_listener_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_audio_stream_player",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_audio_stream_player through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/15",
+    "relatedMcpTools": ["add_audio_stream_player"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_audio_stream_player_2d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_audio_stream_player_2d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/16",
+    "relatedMcpTools": ["add_audio_stream_player_2d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_audio_stream_player_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_audio_stream_player_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/17",
+    "relatedMcpTools": ["add_audio_stream_player_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_back_buffer_copy",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_back_buffer_copy through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/18",
+    "relatedMcpTools": ["add_back_buffer_copy"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_billboard_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_billboard_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/19",
+    "relatedMcpTools": ["add_billboard_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_bone_attachment_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_bone_attachment_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/21",
+    "relatedMcpTools": ["add_bone_attachment_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_bone_attachment_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_bone_attachment_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/22",
+    "relatedMcpTools": ["add_bone_attachment_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_box_container_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_box_container_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/23",
+    "relatedMcpTools": ["add_box_container_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_camera_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_camera_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/24",
+    "relatedMcpTools": ["add_camera_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_camera_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_camera_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/25",
+    "relatedMcpTools": ["add_camera_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_camera_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_camera_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/26",
+    "relatedMcpTools": ["add_camera_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_canvas_layer_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_canvas_layer_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/28",
+    "relatedMcpTools": ["add_canvas_layer_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_canvas_modulate",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_canvas_modulate through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/29",
+    "relatedMcpTools": ["add_canvas_modulate"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_center_container_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_center_container_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/30",
+    "relatedMcpTools": ["add_center_container_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_character_body_2d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_character_body_2d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/31",
+    "relatedMcpTools": ["add_character_body_2d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_character_body_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_character_body_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/32",
+    "relatedMcpTools": ["add_character_body_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_character_body_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_character_body_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/33",
+    "relatedMcpTools": ["add_character_body_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_character_body_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_character_body_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/34",
+    "relatedMcpTools": ["add_character_body_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_check_button_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_check_button_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/36",
+    "relatedMcpTools": ["add_check_button_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_code_edit_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_code_edit_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/37",
+    "relatedMcpTools": ["add_code_edit_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_collision_polygon_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_collision_polygon_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/38",
+    "relatedMcpTools": ["add_collision_polygon_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_collision_polygon_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_collision_polygon_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/39",
+    "relatedMcpTools": ["add_collision_polygon_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_collision_shape_2d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_collision_shape_2d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/40",
+    "relatedMcpTools": ["add_collision_shape_2d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_collision_shape_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_collision_shape_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/41",
+    "relatedMcpTools": ["add_collision_shape_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_collision_shape_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_collision_shape_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/42",
+    "relatedMcpTools": ["add_collision_shape_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_collision_shape_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_collision_shape_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/43",
+    "relatedMcpTools": ["add_collision_shape_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_color_picker_button_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_color_picker_button_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/44",
+    "relatedMcpTools": ["add_color_picker_button_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_color_rect",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_color_rect through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/46",
+    "relatedMcpTools": ["add_color_rect"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_color_rect_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_color_rect_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/47",
+    "relatedMcpTools": ["add_color_rect_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_cone_twist_joint_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_cone_twist_joint_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/48",
+    "relatedMcpTools": ["add_cone_twist_joint_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_confirmation_dialog_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_confirmation_dialog_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/49",
+    "relatedMcpTools": ["add_confirmation_dialog_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_cpu_particles_2d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_cpu_particles_2d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/50",
+    "relatedMcpTools": ["add_cpu_particles_2d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_cpu_particles_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_cpu_particles_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/51",
+    "relatedMcpTools": ["add_cpu_particles_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_cpu_particles_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_cpu_particles_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/52",
+    "relatedMcpTools": ["add_cpu_particles_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_cpu_particles_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_cpu_particles_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/53",
+    "relatedMcpTools": ["add_cpu_particles_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_csg_box",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_csg_box through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/54",
+    "relatedMcpTools": ["add_csg_box"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_csg_box_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_csg_box_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/55",
+    "relatedMcpTools": ["add_csg_box_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_csg_combiner",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_csg_combiner through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/56",
+    "relatedMcpTools": ["add_csg_combiner"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_csg_combiner_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_csg_combiner_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/57",
+    "relatedMcpTools": ["add_csg_combiner_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_csg_cylinder",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_csg_cylinder through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/58",
+    "relatedMcpTools": ["add_csg_cylinder"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_csg_cylinder_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_csg_cylinder_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/59",
+    "relatedMcpTools": ["add_csg_cylinder_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_csg_sphere",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_csg_sphere through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/60",
+    "relatedMcpTools": ["add_csg_sphere"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_csg_sphere_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_csg_sphere_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/61",
+    "relatedMcpTools": ["add_csg_sphere_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_csg_torus_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_csg_torus_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/62",
+    "relatedMcpTools": ["add_csg_torus_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_decal_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_decal_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/63",
+    "relatedMcpTools": ["add_decal_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_decal_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_decal_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/64",
+    "relatedMcpTools": ["add_decal_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_directional_light_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_directional_light_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/65",
+    "relatedMcpTools": ["add_directional_light_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_directional_light_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_directional_light_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/66",
+    "relatedMcpTools": ["add_directional_light_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_directional_light_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_directional_light_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/67",
+    "relatedMcpTools": ["add_directional_light_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_file_dialog_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_file_dialog_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/68",
+    "relatedMcpTools": ["add_file_dialog_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_flow_container",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_flow_container through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/69",
+    "relatedMcpTools": ["add_flow_container"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_flow_container_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_flow_container_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/70",
+    "relatedMcpTools": ["add_flow_container_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_fog_volume",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_fog_volume through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/71",
+    "relatedMcpTools": ["add_fog_volume"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_fog_volume_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_fog_volume_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/72",
+    "relatedMcpTools": ["add_fog_volume_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_generic_6dof_joint_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_generic_6dof_joint_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/73",
+    "relatedMcpTools": ["add_generic_6dof_joint_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_gpu_particles_2d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_gpu_particles_2d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/74",
+    "relatedMcpTools": ["add_gpu_particles_2d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_gpu_particles_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_gpu_particles_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/75",
+    "relatedMcpTools": ["add_gpu_particles_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_gpu_particles_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_gpu_particles_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/76",
+    "relatedMcpTools": ["add_gpu_particles_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_gpu_particles_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_gpu_particles_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/77",
+    "relatedMcpTools": ["add_gpu_particles_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_graph_edit_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_graph_edit_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/78",
+    "relatedMcpTools": ["add_graph_edit_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_graph_node_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_graph_node_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/79",
+    "relatedMcpTools": ["add_graph_node_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_grid_container",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_grid_container through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/80",
+    "relatedMcpTools": ["add_grid_container"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_groove_joint_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_groove_joint_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/82",
+    "relatedMcpTools": ["add_groove_joint_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_hflow_container_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_hflow_container_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/87",
+    "relatedMcpTools": ["add_hflow_container_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_hinge_joint_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_hinge_joint_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/88",
+    "relatedMcpTools": ["add_hinge_joint_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_hinge_joint_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_hinge_joint_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/89",
+    "relatedMcpTools": ["add_hinge_joint_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_http_request",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_http_request through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/90",
+    "relatedMcpTools": ["add_http_request"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_http_request_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_http_request_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/91",
+    "relatedMcpTools": ["add_http_request_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
     "id": "headless:add_input_action_to_project",
     "state": "broken",
     "uiSurface": "project-settings",
@@ -253,6 +1023,1026 @@
     "sourceReference": "audit/headless-evidence.json#records/92",
     "relatedMcpTools": ["add_input_action_to_project"],
     "evidenceReason": "Bundled operation add_input_action is missing from src/scripts/godot_operations.gd."
+  },
+  {
+    "id": "headless:add_item_list_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_item_list_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/93",
+    "relatedMcpTools": ["add_item_list_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_joint_2d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_joint_2d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/94",
+    "relatedMcpTools": ["add_joint_2d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_joint_2d_damped_spring_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_joint_2d_damped_spring_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/95",
+    "relatedMcpTools": ["add_joint_2d_damped_spring_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_joint_2d_groove_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_joint_2d_groove_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/96",
+    "relatedMcpTools": ["add_joint_2d_groove_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_joint_2d_pin_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_joint_2d_pin_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/97",
+    "relatedMcpTools": ["add_joint_2d_pin_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_joint_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_joint_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/98",
+    "relatedMcpTools": ["add_joint_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_label_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_label_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/99",
+    "relatedMcpTools": ["add_label_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_lightmap_gi",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_lightmap_gi through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/102",
+    "relatedMcpTools": ["add_lightmap_gi"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_lightmap_gi_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_lightmap_gi_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/103",
+    "relatedMcpTools": ["add_lightmap_gi_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_line_2d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_line_2d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/104",
+    "relatedMcpTools": ["add_line_2d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_line_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_line_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/105",
+    "relatedMcpTools": ["add_line_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_link_button_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_link_button_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/106",
+    "relatedMcpTools": ["add_link_button_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_margin_container_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_margin_container_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/107",
+    "relatedMcpTools": ["add_margin_container_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_marker_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_marker_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/108",
+    "relatedMcpTools": ["add_marker_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_marker_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_marker_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/109",
+    "relatedMcpTools": ["add_marker_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_menu_button_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_menu_button_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/110",
+    "relatedMcpTools": ["add_menu_button_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_mesh_instance",
+    "state": "broken",
+    "uiSurface": "resource-editor",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_mesh_instance through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/111",
+    "relatedMcpTools": ["add_mesh_instance"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_mesh_instance_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "resource-editor",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_mesh_instance_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/112",
+    "relatedMcpTools": ["add_mesh_instance_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_multi_mesh_instance_3d",
+    "state": "broken",
+    "uiSurface": "resource-editor",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_multi_mesh_instance_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/114",
+    "relatedMcpTools": ["add_multi_mesh_instance_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_multi_mesh_instance_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "resource-editor",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_multi_mesh_instance_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/115",
+    "relatedMcpTools": ["add_multi_mesh_instance_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_multiplayer_spawner_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_multiplayer_spawner_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/116",
+    "relatedMcpTools": ["add_multiplayer_spawner_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_multiplayer_synchronizer_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_multiplayer_synchronizer_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/117",
+    "relatedMcpTools": ["add_multiplayer_synchronizer_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_navigation_agent_2d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_navigation_agent_2d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/118",
+    "relatedMcpTools": ["add_navigation_agent_2d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_navigation_agent_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_navigation_agent_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/119",
+    "relatedMcpTools": ["add_navigation_agent_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_navigation_agent_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_navigation_agent_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/120",
+    "relatedMcpTools": ["add_navigation_agent_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_navigation_region_2d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_navigation_region_2d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/125",
+    "relatedMcpTools": ["add_navigation_region_2d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_navigation_region_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_navigation_region_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/126",
+    "relatedMcpTools": ["add_navigation_region_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_navigation_region_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_navigation_region_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/127",
+    "relatedMcpTools": ["add_navigation_region_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_navigation_region_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_navigation_region_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/128",
+    "relatedMcpTools": ["add_navigation_region_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_nine_patch_rect",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_nine_patch_rect through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/129",
+    "relatedMcpTools": ["add_nine_patch_rect"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_nine_patch_rect_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_nine_patch_rect_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/130",
+    "relatedMcpTools": ["add_nine_patch_rect_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_node",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_node through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/131",
+    "relatedMcpTools": ["add_node"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_node_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_node_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/132",
+    "relatedMcpTools": ["add_node_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_node_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_node_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/133",
+    "relatedMcpTools": ["add_node_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_occluder_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_occluder_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/134",
+    "relatedMcpTools": ["add_occluder_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_occluder_instance_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_occluder_instance_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/135",
+    "relatedMcpTools": ["add_occluder_instance_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_occluder_instance_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_occluder_instance_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/136",
+    "relatedMcpTools": ["add_occluder_instance_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_omni_light_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_omni_light_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/137",
+    "relatedMcpTools": ["add_omni_light_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_omni_light_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_omni_light_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/138",
+    "relatedMcpTools": ["add_omni_light_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_open_xr_hand_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_open_xr_hand_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/141",
+    "relatedMcpTools": ["add_open_xr_hand_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_option_button_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_option_button_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/144",
+    "relatedMcpTools": ["add_option_button_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_panel_container_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_panel_container_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/145",
+    "relatedMcpTools": ["add_panel_container_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_parallax_background",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_parallax_background through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/148",
+    "relatedMcpTools": ["add_parallax_background"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_parallax_layer",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_parallax_layer through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/149",
+    "relatedMcpTools": ["add_parallax_layer"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_path_2d_node",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_path_2d_node through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/150",
+    "relatedMcpTools": ["add_path_2d_node"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_path_follow_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_path_follow_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/153",
+    "relatedMcpTools": ["add_path_follow_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_path_follow_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_path_follow_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/154",
+    "relatedMcpTools": ["add_path_follow_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_physics_body_3d_static_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_physics_body_3d_static_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/157",
+    "relatedMcpTools": ["add_physics_body_3d_static_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_pin_joint_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_pin_joint_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/158",
+    "relatedMcpTools": ["add_pin_joint_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_point_light_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_point_light_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/159",
+    "relatedMcpTools": ["add_point_light_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_polygon_2d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_polygon_2d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/160",
+    "relatedMcpTools": ["add_polygon_2d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_polygon_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_polygon_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/161",
+    "relatedMcpTools": ["add_polygon_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_popup_menu_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_popup_menu_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/162",
+    "relatedMcpTools": ["add_popup_menu_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_popup_panel_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_popup_panel_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/163",
+    "relatedMcpTools": ["add_popup_panel_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_ray_cast_2d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_ray_cast_2d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/164",
+    "relatedMcpTools": ["add_ray_cast_2d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_ray_cast_2d_from_camera",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_ray_cast_2d_from_camera through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/165",
+    "relatedMcpTools": ["add_ray_cast_2d_from_camera"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_ray_cast_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_ray_cast_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/166",
+    "relatedMcpTools": ["add_ray_cast_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_ray_cast_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_ray_cast_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/167",
+    "relatedMcpTools": ["add_ray_cast_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_ray_cast_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_ray_cast_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/168",
+    "relatedMcpTools": ["add_ray_cast_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_reflection_probe",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_reflection_probe through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/169",
+    "relatedMcpTools": ["add_reflection_probe"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_reflection_probe_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_reflection_probe_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/170",
+    "relatedMcpTools": ["add_reflection_probe_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_remote_transform_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_remote_transform_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/171",
+    "relatedMcpTools": ["add_remote_transform_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_remote_transform_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_remote_transform_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/172",
+    "relatedMcpTools": ["add_remote_transform_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_remote_transform_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_remote_transform_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/173",
+    "relatedMcpTools": ["add_remote_transform_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_rich_text_label_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_rich_text_label_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/174",
+    "relatedMcpTools": ["add_rich_text_label_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_rigid_body_2d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_rigid_body_2d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/175",
+    "relatedMcpTools": ["add_rigid_body_2d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_rigid_body_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_rigid_body_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/176",
+    "relatedMcpTools": ["add_rigid_body_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_rigid_body_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_rigid_body_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/177",
+    "relatedMcpTools": ["add_rigid_body_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_scene_instance",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_scene_instance through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/178",
+    "relatedMcpTools": ["add_scene_instance"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_scroll_container",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_scroll_container through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/179",
+    "relatedMcpTools": ["add_scroll_container"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_scroll_container_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_scroll_container_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/180",
+    "relatedMcpTools": ["add_scroll_container_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_separator_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_separator_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/181",
+    "relatedMcpTools": ["add_separator_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_shape_cast_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_shape_cast_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/182",
+    "relatedMcpTools": ["add_shape_cast_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_shape_cast_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_shape_cast_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/183",
+    "relatedMcpTools": ["add_shape_cast_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_skeleton_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_skeleton_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/185",
+    "relatedMcpTools": ["add_skeleton_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_skeleton_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_skeleton_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/186",
+    "relatedMcpTools": ["add_skeleton_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_slider_joint_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_slider_joint_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/188",
+    "relatedMcpTools": ["add_slider_joint_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_soft_body_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_soft_body_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/189",
+    "relatedMcpTools": ["add_soft_body_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_split_container",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_split_container through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/190",
+    "relatedMcpTools": ["add_split_container"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_split_container_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_split_container_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/191",
+    "relatedMcpTools": ["add_split_container_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_spot_light_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_spot_light_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/192",
+    "relatedMcpTools": ["add_spot_light_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_spot_light_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_spot_light_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/193",
+    "relatedMcpTools": ["add_spot_light_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_spring_arm_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_spring_arm_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/194",
+    "relatedMcpTools": ["add_spring_arm_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_spring_arm_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_spring_arm_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/195",
+    "relatedMcpTools": ["add_spring_arm_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_spring_joint_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_spring_joint_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/196",
+    "relatedMcpTools": ["add_spring_joint_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_sprite_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_sprite_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/197",
+    "relatedMcpTools": ["add_sprite_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_static_body_2d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_static_body_2d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/199",
+    "relatedMcpTools": ["add_static_body_2d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_static_body_2d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_static_body_2d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/200",
+    "relatedMcpTools": ["add_static_body_2d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_static_body_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_static_body_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/201",
+    "relatedMcpTools": ["add_static_body_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_sub_viewport",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_sub_viewport through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/202",
+    "relatedMcpTools": ["add_sub_viewport"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_sub_viewport_container",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_sub_viewport_container through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/203",
+    "relatedMcpTools": ["add_sub_viewport_container"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_sub_viewport_container_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_sub_viewport_container_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/204",
+    "relatedMcpTools": ["add_sub_viewport_container_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_sub_viewport_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_sub_viewport_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/205",
+    "relatedMcpTools": ["add_sub_viewport_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_tab_bar_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_tab_bar_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/206",
+    "relatedMcpTools": ["add_tab_bar_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_tab_container",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_tab_container through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/207",
+    "relatedMcpTools": ["add_tab_container"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_tab_container_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_tab_container_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/208",
+    "relatedMcpTools": ["add_tab_container_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_text_edit_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_text_edit_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/209",
+    "relatedMcpTools": ["add_text_edit_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_texture_button_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_texture_button_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/210",
+    "relatedMcpTools": ["add_texture_button_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_texture_progress_bar",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_texture_progress_bar through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/211",
+    "relatedMcpTools": ["add_texture_progress_bar"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_texture_progress_bar_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_texture_progress_bar_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/212",
+    "relatedMcpTools": ["add_texture_progress_bar_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_texture_rect_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_texture_rect_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/213",
+    "relatedMcpTools": ["add_texture_rect_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_tile_map_layer",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_tile_map_layer through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/214",
+    "relatedMcpTools": ["add_tile_map_layer"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
   },
   {
     "id": "headless:add_tileset_custom_data_layer",
@@ -295,6 +2085,246 @@
     "evidenceReason": "Bundled operation add_tileset_terrain_set is missing from src/scripts/godot_operations.gd."
   },
   {
+    "id": "headless:add_timer_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_timer_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/220",
+    "relatedMcpTools": ["add_timer_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_touch_screen_button",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_touch_screen_button through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/221",
+    "relatedMcpTools": ["add_touch_screen_button"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_tree_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_tree_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/222",
+    "relatedMcpTools": ["add_tree_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_tween_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_tween_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/223",
+    "relatedMcpTools": ["add_tween_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_v_separator_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_v_separator_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/225",
+    "relatedMcpTools": ["add_v_separator_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_vehicle_body_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_vehicle_body_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/228",
+    "relatedMcpTools": ["add_vehicle_body_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_vehicle_body_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_vehicle_body_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/229",
+    "relatedMcpTools": ["add_vehicle_body_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_vehicle_wheel_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_vehicle_wheel_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/230",
+    "relatedMcpTools": ["add_vehicle_wheel_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_vehicle_wheel_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_vehicle_wheel_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/231",
+    "relatedMcpTools": ["add_vehicle_wheel_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_vflow_container_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_vflow_container_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/232",
+    "relatedMcpTools": ["add_vflow_container_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_video_stream_player",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_video_stream_player through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/233",
+    "relatedMcpTools": ["add_video_stream_player"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_visible_on_screen_notifier_2d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_visible_on_screen_notifier_2d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/235",
+    "relatedMcpTools": ["add_visible_on_screen_notifier_2d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_visible_on_screen_notifier_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_visible_on_screen_notifier_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/236",
+    "relatedMcpTools": ["add_visible_on_screen_notifier_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_visible_on_screen_notifier_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_visible_on_screen_notifier_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/237",
+    "relatedMcpTools": ["add_visible_on_screen_notifier_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_voxel_gi",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_voxel_gi through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/239",
+    "relatedMcpTools": ["add_voxel_gi"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_voxel_gi_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_voxel_gi_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/240",
+    "relatedMcpTools": ["add_voxel_gi_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_world_environment",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_world_environment through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/242",
+    "relatedMcpTools": ["add_world_environment"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_world_environment_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_world_environment_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/243",
+    "relatedMcpTools": ["add_world_environment_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_xr_camera_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_xr_camera_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/244",
+    "relatedMcpTools": ["add_xr_camera_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_xr_camera_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_xr_camera_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/245",
+    "relatedMcpTools": ["add_xr_camera_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_xr_controller_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_xr_controller_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/246",
+    "relatedMcpTools": ["add_xr_controller_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_xr_origin_3d",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_xr_origin_3d through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/247",
+    "relatedMcpTools": ["add_xr_origin_3d"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:add_xr_origin_3d_to_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use add_xr_origin_3d_to_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/248",
+    "relatedMcpTools": ["add_xr_origin_3d_to_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:attach_script",
+    "state": "broken",
+    "uiSurface": "script-editor",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use attach_script through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/249",
+    "relatedMcpTools": ["attach_script"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
     "id": "headless:check_node_has_children",
     "state": "broken",
     "uiSurface": "scene-dock",
@@ -313,6 +2343,16 @@
     "sourceReference": "audit/headless-evidence.json#records/251",
     "relatedMcpTools": ["create_animation_library_resource"],
     "evidenceReason": "Bundled operation create_animation_library_resource is missing from src/scripts/godot_operations.gd."
+  },
+  {
+    "id": "headless:create_animation_track",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use create_animation_track through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/252",
+    "relatedMcpTools": ["create_animation_track"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
   },
   {
     "id": "headless:create_audio_stream_ogg",
@@ -395,6 +2435,26 @@
     "evidenceReason": "Bundled operation create_packed_scene_from_script is missing from src/scripts/godot_operations.gd."
   },
   {
+    "id": "headless:create_resource",
+    "state": "broken",
+    "uiSurface": "resource-editor",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use create_resource through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/261",
+    "relatedMcpTools": ["create_resource"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:create_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use create_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/262",
+    "relatedMcpTools": ["create_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
     "id": "headless:create_standard_material_3d",
     "state": "broken",
     "uiSurface": "resource-editor",
@@ -413,6 +2473,16 @@
     "sourceReference": "audit/headless-evidence.json#records/264",
     "relatedMcpTools": ["create_tileset_resource"],
     "evidenceReason": "Bundled operation create_tileset_resource is missing from src/scripts/godot_operations.gd."
+  },
+  {
+    "id": "headless:curve_create",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use curve_create through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/265",
+    "relatedMcpTools": ["curve_create"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
   },
   {
     "id": "headless:delete_node_from_scene",
@@ -435,6 +2505,26 @@
     "evidenceReason": "Bundled operation duplicate_node_in_scene is missing from src/scripts/godot_operations.gd."
   },
   {
+    "id": "headless:export_mesh_library",
+    "state": "broken",
+    "uiSurface": "resource-editor",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use export_mesh_library through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/268",
+    "relatedMcpTools": ["export_mesh_library"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:export_project",
+    "state": "broken",
+    "uiSurface": "export-dialog",
+    "executionPath": "direct_godot",
+    "userOutcome": "Use export_project through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/269",
+    "relatedMcpTools": ["export_project"],
+    "evidenceReason": "Direct headless Godot route is registered but has no recorded production artifact read-back."
+  },
+  {
     "id": "headless:find_node_by_type_in_scene",
     "state": "broken",
     "uiSurface": "scene-dock",
@@ -445,6 +2535,16 @@
     "evidenceReason": "Bundled operation find_node_by_type_in_scene is missing from src/scripts/godot_operations.gd."
   },
   {
+    "id": "headless:generate_mesh_normals",
+    "state": "broken",
+    "uiSurface": "resource-editor",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use generate_mesh_normals through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/271",
+    "relatedMcpTools": ["generate_mesh_normals"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
     "id": "headless:get_animation_key_count",
     "state": "broken",
     "uiSurface": "scene-dock",
@@ -453,6 +2553,36 @@
     "sourceReference": "audit/headless-evidence.json#records/272",
     "relatedMcpTools": ["get_animation_key_count"],
     "evidenceReason": "Bundled operation get_animation_key_count is missing from src/scripts/godot_operations.gd."
+  },
+  {
+    "id": "headless:get_animation_names",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use get_animation_names through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/273",
+    "relatedMcpTools": ["get_animation_names"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:get_animation_track_count",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use get_animation_track_count through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/274",
+    "relatedMcpTools": ["get_animation_track_count"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:get_class_api",
+    "state": "broken",
+    "uiSurface": "script-editor",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use get_class_api through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/275",
+    "relatedMcpTools": ["get_class_api"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
   },
   {
     "id": "headless:get_font_glyph_count",
@@ -473,6 +2603,16 @@
     "sourceReference": "audit/headless-evidence.json#records/277",
     "relatedMcpTools": ["get_gdscript_class_hierarchy"],
     "evidenceReason": "Bundled operation get_gdscript_class_hierarchy is missing from src/scripts/godot_operations.gd."
+  },
+  {
+    "id": "headless:get_gdscript_parse_errors",
+    "state": "broken",
+    "uiSurface": "script-editor",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use get_gdscript_parse_errors through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/278",
+    "relatedMcpTools": ["get_gdscript_parse_errors"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
   },
   {
     "id": "headless:get_node_property_in_scene",
@@ -535,6 +2675,36 @@
     "evidenceReason": "Bundled operation get_tileset_source_count is missing from src/scripts/godot_operations.gd."
   },
   {
+    "id": "headless:get_uid",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use get_uid through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/285",
+    "relatedMcpTools": ["get_uid"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:gradient_create",
+    "state": "broken",
+    "uiSurface": "resource-editor",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use gradient_create through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/286",
+    "relatedMcpTools": ["gradient_create"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:import_reimport",
+    "state": "broken",
+    "uiSurface": "import-dock",
+    "executionPath": "direct_godot",
+    "userOutcome": "Use import_reimport through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/287",
+    "relatedMcpTools": ["import_reimport"],
+    "evidenceReason": "Direct headless Godot route is registered but has no recorded production artifact read-back."
+  },
+  {
     "id": "headless:inspect_resource_properties",
     "state": "broken",
     "uiSurface": "resource-editor",
@@ -543,6 +2713,16 @@
     "sourceReference": "audit/headless-evidence.json#records/288",
     "relatedMcpTools": ["inspect_resource_properties"],
     "evidenceReason": "Bundled operation inspect_resource_properties is missing from src/scripts/godot_operations.gd."
+  },
+  {
+    "id": "headless:list_gdscript_classes",
+    "state": "broken",
+    "uiSurface": "script-editor",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use list_gdscript_classes through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/289",
+    "relatedMcpTools": ["list_gdscript_classes"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
   },
   {
     "id": "headless:list_node_properties_in_scene",
@@ -595,6 +2775,66 @@
     "evidenceReason": "Bundled operation list_system_fonts is missing from src/scripts/godot_operations.gd."
   },
   {
+    "id": "headless:load_sprite",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use load_sprite through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/295",
+    "relatedMcpTools": ["load_sprite"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:manage_resource",
+    "state": "broken",
+    "uiSurface": "resource-editor",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use manage_resource through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/296",
+    "relatedMcpTools": ["manage_resource"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:manage_scene_signals",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use manage_scene_signals through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/297",
+    "relatedMcpTools": ["manage_scene_signals"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:manage_scene_structure",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use manage_scene_structure through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/298",
+    "relatedMcpTools": ["manage_scene_structure"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:manage_theme_resource",
+    "state": "broken",
+    "uiSurface": "resource-editor",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use manage_theme_resource through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/299",
+    "relatedMcpTools": ["manage_theme_resource"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:modify_scene_node",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use modify_scene_node through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/300",
+    "relatedMcpTools": ["modify_scene_node"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
     "id": "headless:path_2d_add_point",
     "state": "broken",
     "uiSurface": "scene-dock",
@@ -615,6 +2855,26 @@
     "evidenceReason": "Bundled operation path_3d_add_point is missing from src/scripts/godot_operations.gd."
   },
   {
+    "id": "headless:read_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use read_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/303",
+    "relatedMcpTools": ["read_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:remove_scene_node",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use remove_scene_node through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/304",
+    "relatedMcpTools": ["remove_scene_node"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
     "id": "headless:rename_node_in_scene",
     "state": "broken",
     "uiSurface": "scene-dock",
@@ -633,6 +2893,16 @@
     "sourceReference": "audit/headless-evidence.json#records/306",
     "relatedMcpTools": ["reparent_node_in_scene"],
     "evidenceReason": "Bundled operation reparent_node_in_scene is missing from src/scripts/godot_operations.gd."
+  },
+  {
+    "id": "headless:save_scene",
+    "state": "broken",
+    "uiSurface": "scene-dock",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use save_scene through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/307",
+    "relatedMcpTools": ["save_scene"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
   },
   {
     "id": "headless:scene_create_inherited",
@@ -815,6 +3085,66 @@
     "evidenceReason": "Bundled operation set_project_setting_value is missing from src/scripts/godot_operations.gd."
   },
   {
+    "id": "headless:spriteframes_add_animation",
+    "state": "broken",
+    "uiSurface": "resource-editor",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use spriteframes_add_animation through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/326",
+    "relatedMcpTools": ["spriteframes_add_animation"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:spriteframes_add_frame",
+    "state": "broken",
+    "uiSurface": "resource-editor",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use spriteframes_add_frame through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/327",
+    "relatedMcpTools": ["spriteframes_add_frame"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:spriteframes_create",
+    "state": "broken",
+    "uiSurface": "resource-editor",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use spriteframes_create through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/328",
+    "relatedMcpTools": ["spriteframes_create"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:tileset_add_source",
+    "state": "broken",
+    "uiSurface": "resource-editor",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use tileset_add_source through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/329",
+    "relatedMcpTools": ["tileset_add_source"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:tileset_create",
+    "state": "broken",
+    "uiSurface": "resource-editor",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use tileset_create through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/330",
+    "relatedMcpTools": ["tileset_create"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
+    "id": "headless:update_project_uids",
+    "state": "broken",
+    "uiSurface": "project-settings",
+    "executionPath": "bundled_operation",
+    "userOutcome": "Use update_project_uids through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/331",
+    "relatedMcpTools": ["update_project_uids"],
+    "evidenceReason": "No recorded production MCP execution and artifact read-back."
+  },
+  {
     "id": "headless:validate_scene_physics",
     "state": "broken",
     "uiSurface": "scene-dock",
@@ -823,6 +3153,103 @@
     "sourceReference": "audit/headless-evidence.json#records/332",
     "relatedMcpTools": ["validate_scene_physics"],
     "evidenceReason": "Bundled operation validate_scene_physics is missing from src/scripts/godot_operations.gd."
+  },
+  {
+    "id": "headless:validate_script",
+    "state": "broken",
+    "uiSurface": "script-editor",
+    "executionPath": "direct_godot",
+    "userOutcome": "Use validate_script through a headless Godot operation.",
+    "sourceReference": "audit/headless-evidence.json#records/333",
+    "relatedMcpTools": ["validate_script"],
+    "evidenceReason": "Direct headless Godot route is registered but has no recorded production artifact read-back."
+  },
+  {
+    "id": "runtime:runtime-animation-control",
+    "state": "broken",
+    "uiSurface": "Running game",
+    "executionPath": "runtime",
+    "userOutcome": "Use the runtime-animation-control running-game capability.",
+    "sourceReference": "audit/runtime-evidence.json#records/8",
+    "relatedMcpTools": [
+      "animation_set_loop",
+      "apply_physical_bone_impulse",
+      "game_animation_control",
+      "game_bone_pose",
+      "game_play_animation",
+      "game_skeleton_ik",
+      "game_tween_property",
+      "kill_tweens_on_node",
+      "play_animation_from_position",
+      "queue_animation",
+      "reset_skeleton_3d_pose",
+      "reset_skeleton_pose",
+      "seek_animation",
+      "seek_animation_player",
+      "skeleton_get_bones",
+      "skeleton_set_bone_pose",
+      "start_animation_state",
+      "stop_animation_state_machine",
+      "stop_tween",
+      "travel_animation_state",
+      "tween_alpha",
+      "tween_color",
+      "tween_node_alpha",
+      "tween_node_position_2d",
+      "tween_node_rotation",
+      "tween_node_scale",
+      "tween_position_2d",
+      "tween_property",
+      "tween_rotation_2d",
+      "tween_scale_2d"
+    ],
+    "evidenceReason": "No production MCP invocation through port 9090 with a concrete running-fixture state mutation or read-back is recorded."
+  },
+  {
+    "id": "runtime:runtime-audio-control",
+    "state": "broken",
+    "uiSurface": "Running game",
+    "executionPath": "runtime",
+    "userOutcome": "Use the runtime-audio-control running-game capability.",
+    "sourceReference": "audit/runtime-evidence.json#records/5",
+    "relatedMcpTools": [
+      "audio_bus_add_effect",
+      "audio_bus_create",
+      "audio_bus_list",
+      "audio_bus_set_volume",
+      "audio_player_set_bus",
+      "game_audio_bus",
+      "game_audio_bus_layout",
+      "game_audio_effect",
+      "game_audio_play",
+      "game_audio_spatial",
+      "play_audio_player_3d_at_position",
+      "play_video_stream",
+      "seek_audio_stream",
+      "stop_video_stream"
+    ],
+    "evidenceReason": "No production MCP invocation through port 9090 with a concrete running-fixture state mutation or read-back is recorded."
+  },
+  {
+    "id": "runtime:runtime-debugging",
+    "state": "broken",
+    "uiSurface": "Running game",
+    "executionPath": "runtime",
+    "userOutcome": "Use the runtime-debugging running-game capability.",
+    "sourceReference": "audit/runtime-evidence.json#records/3",
+    "relatedMcpTools": [
+      "capture_frames",
+      "clear_print_output",
+      "game_debug_draw",
+      "game_set_debug_visible",
+      "print_to_godot_console",
+      "replay_recording",
+      "start_recording",
+      "stop_recording",
+      "wait_for_node",
+      "wait_for_signal"
+    ],
+    "evidenceReason": "No production MCP invocation through port 9090 with a concrete running-fixture state mutation or read-back is recorded."
   },
   {
     "id": "runtime:runtime-game-control",
@@ -914,6 +3341,33 @@
       "visibility_notifier_set_rect"
     ],
     "evidenceReason": "TypeScript port-9090 commands lack shipped bridge handlers: terrain, video."
+  },
+  {
+    "id": "runtime:runtime-input-control",
+    "state": "broken",
+    "uiSurface": "Running game",
+    "executionPath": "runtime",
+    "userOutcome": "Use the runtime-input-control running-game capability.",
+    "sourceReference": "audit/runtime-evidence.json#records/2",
+    "relatedMcpTools": [
+      "click_button",
+      "click_button_by_text",
+      "game_click",
+      "game_gamepad",
+      "game_input_action",
+      "game_input_state",
+      "game_key_hold",
+      "game_key_press",
+      "game_key_release",
+      "game_mouse_drag",
+      "game_mouse_move",
+      "game_scroll",
+      "game_touch",
+      "scroll_rich_text_label_to_line",
+      "simulate_input_action",
+      "warp_mouse"
+    ],
+    "evidenceReason": "No production MCP invocation through port 9090 with a concrete running-fixture state mutation or read-back is recorded."
   },
   {
     "id": "runtime:runtime-live-node-mutation",
@@ -1323,6 +3777,90 @@
       "toggle_node_visibility"
     ],
     "evidenceReason": "TypeScript port-9090 commands lack shipped bridge handlers: release_focus, set_button_group, set_control_focus_owner, set_mouse_mode, set_multimesh_instance_color, set_multimesh_instance_transform_3d, set_scroll_container_scroll."
+  },
+  {
+    "id": "runtime:runtime-network-system-control",
+    "state": "broken",
+    "uiSurface": "Running game",
+    "executionPath": "runtime",
+    "userOutcome": "Use the runtime-network-system-control running-game capability.",
+    "sourceReference": "audit/runtime-evidence.json#records/10",
+    "relatedMcpTools": [
+      "batch_set_node_property_runtime",
+      "datetime_to_unix_time",
+      "download_file_via_http",
+      "game_http_request",
+      "game_locale",
+      "game_multiplayer",
+      "game_os_info",
+      "game_process_mode",
+      "game_rpc",
+      "game_set_time_scale",
+      "game_time_scale",
+      "game_websocket",
+      "game_window",
+      "http_request_get",
+      "http_request_post",
+      "make_http_request",
+      "open_url_in_browser",
+      "reload_script_at_runtime",
+      "rpc_call",
+      "send_multiplayer_rpc",
+      "send_websocket_text",
+      "setup_enet_multiplayer",
+      "start_timer",
+      "stop_timer",
+      "timer_set_wait_time",
+      "timer_start",
+      "timer_stop",
+      "unix_time_to_datetime"
+    ],
+    "evidenceReason": "No production MCP invocation through port 9090 with a concrete running-fixture state mutation or read-back is recorded."
+  },
+  {
+    "id": "runtime:runtime-performance-monitoring",
+    "state": "broken",
+    "uiSurface": "Running game",
+    "executionPath": "runtime",
+    "userOutcome": "Use the runtime-performance-monitoring running-game capability.",
+    "sourceReference": "audit/runtime-evidence.json#records/4",
+    "relatedMcpTools": [
+      "animation_add_keyframe",
+      "animation_delete_keyframe",
+      "animation_get_keyframes",
+      "restart_gpu_particles_3d",
+      "scene_profiler_start",
+      "scene_profiler_stop"
+    ],
+    "evidenceReason": "No production MCP invocation through port 9090 with a concrete running-fixture state mutation or read-back is recorded."
+  },
+  {
+    "id": "runtime:runtime-physics-control",
+    "state": "broken",
+    "uiSurface": "Running game",
+    "executionPath": "runtime",
+    "userOutcome": "Use the runtime-physics-control running-game capability.",
+    "sourceReference": "audit/runtime-evidence.json#records/6",
+    "relatedMcpTools": [
+      "apply_force_to_rigid_body",
+      "apply_impulse_to_rigid_body",
+      "area_get_overlapping",
+      "character_body_set_velocity",
+      "enable_physics_body",
+      "enable_ray_cast_2d",
+      "enable_ray_cast_3d",
+      "force_ray_cast_update",
+      "game_physics_2d",
+      "game_physics_3d",
+      "game_physics_body",
+      "game_raycast",
+      "pin_soft_body_3d_point",
+      "ray_cast_force_update",
+      "raycast_3d",
+      "rigid_body_apply_impulse",
+      "unpin_soft_body_3d_point"
+    ],
+    "evidenceReason": "No production MCP invocation through port 9090 with a concrete running-fixture state mutation or read-back is recorded."
   },
   {
     "id": "runtime:runtime-remote-inspection",
@@ -1813,5 +4351,38 @@
       "world_to_map"
     ],
     "evidenceReason": "TypeScript port-9090 commands lack shipped bridge handlers: assign_shader_to_mesh, visual_shader."
+  },
+  {
+    "id": "runtime:runtime-scene-execution-control",
+    "state": "broken",
+    "uiSurface": "Running game",
+    "executionPath": "runtime",
+    "userOutcome": "Use the runtime-scene-execution-control running-game capability.",
+    "sourceReference": "audit/runtime-evidence.json#records/7",
+    "relatedMcpTools": [
+      "animation_tree_get_state",
+      "animation_tree_set_param",
+      "animtree_add_state",
+      "animtree_add_transition",
+      "animtree_get_structure",
+      "animtree_remove_state",
+      "animtree_remove_transition",
+      "change_scene_to",
+      "change_scene_to_file",
+      "game_animation_tree",
+      "game_change_scene",
+      "game_instantiate_scene",
+      "game_pause",
+      "game_quit",
+      "game_reload_scene",
+      "game_spawn_node",
+      "instantiate_class_check",
+      "instantiate_scene_at_runtime",
+      "pause_game",
+      "reload_current_scene",
+      "save_scene_at_runtime",
+      "unpause_game"
+    ],
+    "evidenceReason": "No production MCP invocation through port 9090 with a concrete running-fixture state mutation or read-back is recorded."
   }
 ]
