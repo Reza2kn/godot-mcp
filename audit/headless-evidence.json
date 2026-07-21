@@ -1,0 +1,3023 @@
+{
+  "generatedFrom": "production MCP dispatch handlers and bundled headless operation script",
+  "bundledOperationScript": "src/scripts/godot_operations.gd",
+  "records": [
+    {
+      "tool": "add_accept_dialog_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_anchor_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_animatable_body_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_animatable_body_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_animated_sprite_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_animation_key_value",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation add_animation_key_value is missing from src/scripts/godot_operations.gd.",
+      "operation": "add_animation_key_value"
+    },
+    {
+      "tool": "add_animation_keyframe",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_animation_keyframe"
+    },
+    {
+      "tool": "add_animation_track",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation add_animation_track is missing from src/scripts/godot_operations.gd.",
+      "operation": "add_animation_track"
+    },
+    {
+      "tool": "add_animation_tree_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_area_2d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_area_2d"
+    },
+    {
+      "tool": "add_area_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_aspect_ratio_container",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_aspect_ratio_container_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_audio_listener_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_audio_listener_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_audio_stream_player",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_audio_stream_player"
+    },
+    {
+      "tool": "add_audio_stream_player_2d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_audio_stream_player_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_back_buffer_copy",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_billboard_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_bone_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_bone_attachment_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_bone_attachment_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_box_container_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_camera_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_camera_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_camera_3d"
+    },
+    {
+      "tool": "add_camera_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_canvas_group_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_canvas_layer_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_canvas_modulate",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_center_container_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_character_body_2d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_character_body_2d"
+    },
+    {
+      "tool": "add_character_body_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_character_body_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_character_body_3d"
+    },
+    {
+      "tool": "add_character_body_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_check_box_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_check_button_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_code_edit_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_collision_polygon_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_collision_polygon_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_collision_shape_2d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_collision_shape_2d"
+    },
+    {
+      "tool": "add_collision_shape_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_collision_shape_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_collision_shape_3d"
+    },
+    {
+      "tool": "add_collision_shape_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_color_picker_button_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_color_picker_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_color_rect",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_color_rect_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_cone_twist_joint_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_confirmation_dialog_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_cpu_particles_2d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_cpu_particles_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_cpu_particles_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_cpu_particles_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_csg_box",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_csg_box_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_csg_combiner",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_csg_combiner_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_csg_cylinder",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_csg_cylinder_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_csg_sphere",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_csg_sphere_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_csg_torus_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_decal_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_decal_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_directional_light_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_directional_light_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_directional_light_3d"
+    },
+    {
+      "tool": "add_directional_light_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_file_dialog_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_flow_container",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_flow_container_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_fog_volume",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_fog_volume_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_generic_6dof_joint_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_gpu_particles_2d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_gpu_particles_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_gpu_particles_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_gpu_particles_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_graph_edit_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_graph_node_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_grid_container",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_grid_container"
+    },
+    {
+      "tool": "add_grid_container_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_groove_joint_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_h_scroll_bar_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_h_separator_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_h_slider_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_h_split_container_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_hflow_container_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_hinge_joint_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_hinge_joint_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_http_request",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_http_request_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_input_action_to_project",
+      "disposition": "ui_capability",
+      "capability": "project-settings",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation add_input_action is missing from src/scripts/godot_operations.gd.",
+      "operation": "add_input_action"
+    },
+    {
+      "tool": "add_item_list_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_joint_2d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_joint_2d_damped_spring_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_joint_2d_groove_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_joint_2d_pin_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_joint_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_label_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_label_3d"
+    },
+    {
+      "tool": "add_label_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_light_occluder_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_lightmap_gi",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_lightmap_gi_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_line_2d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_line_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_link_button_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_margin_container_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_marker_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_marker_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_menu_button_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_mesh_instance",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_mesh_instance"
+    },
+    {
+      "tool": "add_mesh_instance_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_mesh_instance_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_multi_mesh_instance_3d",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_multi_mesh_instance_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_multiplayer_spawner_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_multiplayer_synchronizer_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_navigation_agent_2d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_navigation_agent_2d"
+    },
+    {
+      "tool": "add_navigation_agent_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_navigation_agent_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_navigation_link_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_navigation_link_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_navigation_obstacle_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_navigation_obstacle_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_navigation_region_2d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_navigation_region_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_navigation_region_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_navigation_region_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_nine_patch_rect",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_nine_patch_rect_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_node",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_node"
+    },
+    {
+      "tool": "add_node_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_node_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_occluder_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_occluder_instance_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_occluder_instance_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_omni_light_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_omni_light_3d"
+    },
+    {
+      "tool": "add_omni_light_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_open_xr_camera_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_open_xr_controller_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_open_xr_hand_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_open_xr_hand_tracker_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_open_xr_origin_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_option_button_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_panel_container_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_panel_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_parallax_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_parallax_background",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_parallax_layer",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_path_2d_node",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_path_2d_node"
+    },
+    {
+      "tool": "add_path_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_path_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_path_follow_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_path_follow_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_physical_bone_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_physical_bone_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_physics_body_3d_static_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_pin_joint_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_point_light_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_polygon_2d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_polygon_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_popup_menu_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_popup_panel_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_ray_cast_2d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_ray_cast_2d"
+    },
+    {
+      "tool": "add_ray_cast_2d_from_camera",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_ray_cast_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_ray_cast_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_ray_cast_3d"
+    },
+    {
+      "tool": "add_ray_cast_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_reflection_probe",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_reflection_probe_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_remote_transform_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_remote_transform_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_remote_transform_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_rich_text_label_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_rigid_body_2d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_rigid_body_2d"
+    },
+    {
+      "tool": "add_rigid_body_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_rigid_body_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_rigid_body_3d"
+    },
+    {
+      "tool": "add_scene_instance",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_scene_instance"
+    },
+    {
+      "tool": "add_scroll_container",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_scroll_container_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_separator_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_shape_cast_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_shape_cast_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_skeleton_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_skeleton_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_skeleton_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_skeleton_ik_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_slider_joint_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_soft_body_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_split_container",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_split_container_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_spot_light_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_spot_light_3d"
+    },
+    {
+      "tool": "add_spot_light_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_spring_arm_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_spring_arm_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_spring_joint_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_sprite_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_sprite_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_static_body_2d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_static_body_2d"
+    },
+    {
+      "tool": "add_static_body_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_static_body_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_static_body_3d"
+    },
+    {
+      "tool": "add_sub_viewport",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_sub_viewport"
+    },
+    {
+      "tool": "add_sub_viewport_container",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_sub_viewport_container_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_sub_viewport_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_tab_bar_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_tab_container",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_tab_container_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_text_edit_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_texture_button_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_texture_progress_bar",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_texture_progress_bar_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_texture_rect_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_tile_map_layer",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_tile_map_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_tileset_custom_data_layer",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation add_tileset_custom_data_layer is missing from src/scripts/godot_operations.gd.",
+      "operation": "add_tileset_custom_data_layer"
+    },
+    {
+      "tool": "add_tileset_physics_layer",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation add_tileset_physics_layer is missing from src/scripts/godot_operations.gd.",
+      "operation": "add_tileset_physics_layer"
+    },
+    {
+      "tool": "add_tileset_source",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation add_tileset_source is missing from src/scripts/godot_operations.gd.",
+      "operation": "add_tileset_source"
+    },
+    {
+      "tool": "add_tileset_terrain_set",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation add_tileset_terrain_set is missing from src/scripts/godot_operations.gd.",
+      "operation": "add_tileset_terrain_set"
+    },
+    {
+      "tool": "add_timer_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_touch_screen_button",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_tree_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_tween_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_v_scroll_bar_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_v_separator_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_v_slider_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_v_split_container_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_vehicle_body_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_vehicle_body_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_vehicle_wheel_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_vehicle_wheel_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_vflow_container_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_video_stream_player",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_visibility_notifier_2d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_visible_on_screen_notifier_2d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_visible_on_screen_notifier_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_visible_on_screen_notifier_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_visual_instance_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_voxel_gi",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_voxel_gi_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_window_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_world_environment",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_world_environment_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_xr_camera_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_xr_camera_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_xr_controller_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_xr_origin_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "add_xr_origin_3d_to_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "add_generic_node_to_scene_ext"
+    },
+    {
+      "tool": "attach_script",
+      "disposition": "ui_capability",
+      "capability": "script-editor",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "attach_script"
+    },
+    {
+      "tool": "check_node_has_children",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation check_node_has_children is missing from src/scripts/godot_operations.gd.",
+      "operation": "check_node_has_children"
+    },
+    {
+      "tool": "create_animation_library_resource",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation create_animation_library_resource is missing from src/scripts/godot_operations.gd.",
+      "operation": "create_animation_library_resource"
+    },
+    {
+      "tool": "create_animation_track",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "create_animation_track"
+    },
+    {
+      "tool": "create_audio_stream_ogg",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation create_audio_stream_ogg is missing from src/scripts/godot_operations.gd.",
+      "operation": "create_audio_stream_ogg"
+    },
+    {
+      "tool": "create_audio_stream_wav_resource",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation create_audio_stream_wav_resource is missing from src/scripts/godot_operations.gd.",
+      "operation": "create_audio_stream_wav_resource"
+    },
+    {
+      "tool": "create_bitmap_font_resource",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation create_bitmap_font_resource is missing from src/scripts/godot_operations.gd.",
+      "operation": "create_bitmap_font_resource"
+    },
+    {
+      "tool": "create_dynamic_font_resource",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation create_dynamic_font_resource is missing from src/scripts/godot_operations.gd.",
+      "operation": "create_dynamic_font_resource"
+    },
+    {
+      "tool": "create_gdscript_resource",
+      "disposition": "ui_capability",
+      "capability": "script-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation create_gdscript_resource is missing from src/scripts/godot_operations.gd.",
+      "operation": "create_gdscript_resource"
+    },
+    {
+      "tool": "create_gradient_texture_resource",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation create_gradient_texture_resource is missing from src/scripts/godot_operations.gd.",
+      "operation": "create_gradient_texture_resource"
+    },
+    {
+      "tool": "create_image_from_color",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation create_image_from_color is missing from src/scripts/godot_operations.gd.",
+      "operation": "create_image_from_color"
+    },
+    {
+      "tool": "create_packed_scene_from_script",
+      "disposition": "ui_capability",
+      "capability": "script-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation create_packed_scene_from_script is missing from src/scripts/godot_operations.gd.",
+      "operation": "create_packed_scene_from_script"
+    },
+    {
+      "tool": "create_resource",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "create_resource"
+    },
+    {
+      "tool": "create_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "verified",
+      "reason": "Production MCP create_scene write and read_scene artifact read-back are exercised in tests/parity-headless.test.ts.",
+      "operation": "create_scene",
+      "postcondition": {
+        "artifact": "res://main.tscn",
+        "readbackTool": "read_scene",
+        "expected": "root"
+      }
+    },
+    {
+      "tool": "create_standard_material_3d",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation create_standard_material_3d is missing from src/scripts/godot_operations.gd.",
+      "operation": "create_standard_material_3d"
+    },
+    {
+      "tool": "create_tileset_resource",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation create_tileset_resource is missing from src/scripts/godot_operations.gd.",
+      "operation": "create_tileset_resource"
+    },
+    {
+      "tool": "curve_create",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "curve_create"
+    },
+    {
+      "tool": "delete_node_from_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation delete_node_from_scene is missing from src/scripts/godot_operations.gd.",
+      "operation": "delete_node_from_scene"
+    },
+    {
+      "tool": "duplicate_node_in_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation duplicate_node_in_scene is missing from src/scripts/godot_operations.gd.",
+      "operation": "duplicate_node_in_scene"
+    },
+    {
+      "tool": "export_mesh_library",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "export_mesh_library"
+    },
+    {
+      "tool": "export_project",
+      "disposition": "ui_capability",
+      "capability": "export-dialog",
+      "route": "direct_godot",
+      "state": "represented_unverified",
+      "reason": "Direct headless Godot route is registered but has no recorded production artifact read-back."
+    },
+    {
+      "tool": "find_node_by_type_in_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation find_node_by_type_in_scene is missing from src/scripts/godot_operations.gd.",
+      "operation": "find_node_by_type_in_scene"
+    },
+    {
+      "tool": "generate_mesh_normals",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "generate_mesh_normals"
+    },
+    {
+      "tool": "get_animation_key_count",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation get_animation_key_count is missing from src/scripts/godot_operations.gd.",
+      "operation": "get_animation_key_count"
+    },
+    {
+      "tool": "get_animation_names",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "get_animation_names"
+    },
+    {
+      "tool": "get_animation_track_count",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "get_animation_track_count"
+    },
+    {
+      "tool": "get_class_api",
+      "disposition": "ui_capability",
+      "capability": "script-editor",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "get_class_api"
+    },
+    {
+      "tool": "get_font_glyph_count",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation get_font_glyph_count is missing from src/scripts/godot_operations.gd.",
+      "operation": "get_font_glyph_count"
+    },
+    {
+      "tool": "get_gdscript_class_hierarchy",
+      "disposition": "ui_capability",
+      "capability": "script-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation get_gdscript_class_hierarchy is missing from src/scripts/godot_operations.gd.",
+      "operation": "get_gdscript_class_hierarchy"
+    },
+    {
+      "tool": "get_gdscript_parse_errors",
+      "disposition": "ui_capability",
+      "capability": "script-editor",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "check_script_errors"
+    },
+    {
+      "tool": "get_node_property_in_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation get_node_property_in_scene is missing from src/scripts/godot_operations.gd.",
+      "operation": "get_node_property_in_scene"
+    },
+    {
+      "tool": "get_resource_import_metadata",
+      "disposition": "ui_capability",
+      "capability": "import-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation get_resource_import_metadata is missing from src/scripts/godot_operations.gd.",
+      "operation": "get_resource_import_metadata"
+    },
+    {
+      "tool": "get_scene_resource_dependencies",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation get_scene_resource_dependencies is missing from src/scripts/godot_operations.gd.",
+      "operation": "get_scene_resource_dependencies"
+    },
+    {
+      "tool": "get_scene_root_type",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation get_scene_root_type is missing from src/scripts/godot_operations.gd.",
+      "operation": "get_scene_root_type"
+    },
+    {
+      "tool": "get_script_exported_properties",
+      "disposition": "ui_capability",
+      "capability": "script-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation get_script_exported_properties is missing from src/scripts/godot_operations.gd.",
+      "operation": "get_script_exported_properties"
+    },
+    {
+      "tool": "get_tileset_source_count",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation get_tileset_source_count is missing from src/scripts/godot_operations.gd.",
+      "operation": "get_tileset_source_count"
+    },
+    {
+      "tool": "get_uid",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "get_uid"
+    },
+    {
+      "tool": "gradient_create",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "gradient_create"
+    },
+    {
+      "tool": "import_reimport",
+      "disposition": "ui_capability",
+      "capability": "import-dock",
+      "route": "direct_godot",
+      "state": "represented_unverified",
+      "reason": "Direct headless Godot route is registered but has no recorded production artifact read-back."
+    },
+    {
+      "tool": "inspect_resource_properties",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation inspect_resource_properties is missing from src/scripts/godot_operations.gd.",
+      "operation": "inspect_resource_properties"
+    },
+    {
+      "tool": "list_gdscript_classes",
+      "disposition": "ui_capability",
+      "capability": "script-editor",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "list_classdb_classes"
+    },
+    {
+      "tool": "list_node_properties_in_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation list_node_properties_in_scene is missing from src/scripts/godot_operations.gd.",
+      "operation": "list_node_properties_in_scene"
+    },
+    {
+      "tool": "list_nodes_without_scripts",
+      "disposition": "ui_capability",
+      "capability": "script-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation list_nodes_without_scripts is missing from src/scripts/godot_operations.gd.",
+      "operation": "list_nodes_without_scripts"
+    },
+    {
+      "tool": "list_resources_of_type",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation list_resources_of_type is missing from src/scripts/godot_operations.gd.",
+      "operation": "list_resources_of_type"
+    },
+    {
+      "tool": "list_scene_signals",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation list_scene_signals is missing from src/scripts/godot_operations.gd.",
+      "operation": "list_scene_signals"
+    },
+    {
+      "tool": "list_system_fonts",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation list_system_fonts is missing from src/scripts/godot_operations.gd.",
+      "operation": "list_system_fonts"
+    },
+    {
+      "tool": "load_sprite",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "load_sprite"
+    },
+    {
+      "tool": "manage_resource",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "manage_resource"
+    },
+    {
+      "tool": "manage_scene_signals",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "manage_scene_signals"
+    },
+    {
+      "tool": "manage_scene_structure",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "manage_scene_structure"
+    },
+    {
+      "tool": "manage_theme_resource",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "manage_theme_resource"
+    },
+    {
+      "tool": "modify_scene_node",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "modify_node"
+    },
+    {
+      "tool": "path_2d_add_point",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation path_2d_add_point is missing from src/scripts/godot_operations.gd.",
+      "operation": "path_2d_add_point"
+    },
+    {
+      "tool": "path_3d_add_point",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation path_3d_add_point is missing from src/scripts/godot_operations.gd.",
+      "operation": "path_3d_add_point"
+    },
+    {
+      "tool": "read_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "read_scene"
+    },
+    {
+      "tool": "remove_scene_node",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "remove_node"
+    },
+    {
+      "tool": "rename_node_in_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation rename_node_in_scene is missing from src/scripts/godot_operations.gd.",
+      "operation": "rename_node_in_scene"
+    },
+    {
+      "tool": "reparent_node_in_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation reparent_node_in_scene is missing from src/scripts/godot_operations.gd.",
+      "operation": "reparent_node_in_scene"
+    },
+    {
+      "tool": "save_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "save_scene"
+    },
+    {
+      "tool": "scene_create_inherited",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation create_inherited_scene is missing from src/scripts/godot_operations.gd.",
+      "operation": "create_inherited_scene"
+    },
+    {
+      "tool": "set_animation_loop_mode",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation set_animation_loop_mode is missing from src/scripts/godot_operations.gd.",
+      "operation": "set_animation_loop_mode"
+    },
+    {
+      "tool": "set_collision_box_3d_size",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation set_collision_box_3d_size is missing from src/scripts/godot_operations.gd.",
+      "operation": "set_collision_box_3d_size"
+    },
+    {
+      "tool": "set_collision_capsule_2d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation set_collision_capsule_2d is missing from src/scripts/godot_operations.gd.",
+      "operation": "set_collision_capsule_2d"
+    },
+    {
+      "tool": "set_collision_capsule_3d",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation set_collision_capsule_3d is missing from src/scripts/godot_operations.gd.",
+      "operation": "set_collision_capsule_3d"
+    },
+    {
+      "tool": "set_collision_rect_extents",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation set_collision_rect_extents is missing from src/scripts/godot_operations.gd.",
+      "operation": "set_collision_rect_extents"
+    },
+    {
+      "tool": "set_collision_shape_2d_radius",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation set_collision_shape_2d_radius is missing from src/scripts/godot_operations.gd.",
+      "operation": "set_collision_shape_2d_radius"
+    },
+    {
+      "tool": "set_collision_shape_2d_type",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation set_collision_shape_2d_type is missing from src/scripts/godot_operations.gd.",
+      "operation": "set_collision_shape_2d_type"
+    },
+    {
+      "tool": "set_collision_shape_3d_type",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation set_collision_shape_3d_type is missing from src/scripts/godot_operations.gd.",
+      "operation": "set_collision_shape_3d_type"
+    },
+    {
+      "tool": "set_collision_sphere_3d_radius",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation set_collision_sphere_3d_radius is missing from src/scripts/godot_operations.gd.",
+      "operation": "set_collision_sphere_3d_radius"
+    },
+    {
+      "tool": "set_font_default_size",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation set_font_default_size is missing from src/scripts/godot_operations.gd.",
+      "operation": "set_font_default_size"
+    },
+    {
+      "tool": "set_node_position_in_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation set_node_position_in_scene is missing from src/scripts/godot_operations.gd.",
+      "operation": "set_node_position_in_scene"
+    },
+    {
+      "tool": "set_node_property_in_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation set_node_property_in_scene is missing from src/scripts/godot_operations.gd.",
+      "operation": "set_node_property_in_scene"
+    },
+    {
+      "tool": "set_node_rotation_in_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation set_node_rotation_in_scene is missing from src/scripts/godot_operations.gd.",
+      "operation": "set_node_rotation_in_scene"
+    },
+    {
+      "tool": "set_node_scale_in_scene",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation set_node_scale_in_scene is missing from src/scripts/godot_operations.gd.",
+      "operation": "set_node_scale_in_scene"
+    },
+    {
+      "tool": "set_project_gravity",
+      "disposition": "ui_capability",
+      "capability": "project-settings",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation set_project_setting_value is missing from src/scripts/godot_operations.gd.",
+      "operation": "set_project_setting_value"
+    },
+    {
+      "tool": "set_project_physics_fps",
+      "disposition": "ui_capability",
+      "capability": "project-settings",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation set_project_setting_value is missing from src/scripts/godot_operations.gd.",
+      "operation": "set_project_setting_value"
+    },
+    {
+      "tool": "set_project_window_mode",
+      "disposition": "ui_capability",
+      "capability": "project-settings",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation set_project_setting_value is missing from src/scripts/godot_operations.gd.",
+      "operation": "set_project_setting_value"
+    },
+    {
+      "tool": "spriteframes_add_animation",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "spriteframes_add_animation"
+    },
+    {
+      "tool": "spriteframes_add_frame",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "spriteframes_add_frame"
+    },
+    {
+      "tool": "spriteframes_create",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "spriteframes_create"
+    },
+    {
+      "tool": "tileset_add_source",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "tileset_add_source"
+    },
+    {
+      "tool": "tileset_create",
+      "disposition": "ui_capability",
+      "capability": "resource-editor",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "tileset_create"
+    },
+    {
+      "tool": "update_project_uids",
+      "disposition": "ui_capability",
+      "capability": "project-settings",
+      "route": "bundled_operation",
+      "state": "represented_unverified",
+      "reason": "No recorded production MCP execution and artifact read-back.",
+      "operation": "resave_resources"
+    },
+    {
+      "tool": "validate_scene_physics",
+      "disposition": "ui_capability",
+      "capability": "scene-dock",
+      "route": "bundled_operation",
+      "state": "broken",
+      "reason": "Bundled operation validate_scene_physics is missing from src/scripts/godot_operations.gd.",
+      "operation": "validate_scene_physics"
+    },
+    {
+      "tool": "validate_script",
+      "disposition": "ui_capability",
+      "capability": "script-editor",
+      "route": "direct_godot",
+      "state": "represented_unverified",
+      "reason": "Direct headless Godot route is registered but has no recorded production artifact read-back."
+    }
+  ],
+  "summary": {
+    "denominator": 334,
+    "states": {
+      "verified": 1,
+      "represented_unverified": 273,
+      "broken": 60
+    },
+    "mcpExtras": []
+  }
+}
