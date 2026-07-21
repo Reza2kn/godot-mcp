@@ -367,6 +367,92 @@ describe("generated MCP versus UI parity report", () => {
     }
   });
 
+  it("requires_every_tool_in_multi_tool_baseline_editor_and_runtime_mappings_to_be_directly_exposed", () => {
+    const artifacts = buildParityArtifacts({
+      baseline: {
+        godotVersion: "4.4",
+        capabilities: [
+          {
+            id: "baseline-multi-tool",
+            editorSurface: "Scene dock",
+            userAction: "Save a scene and its resources",
+            source: {
+              version: "4.4",
+              url: "https://example.test/baseline-multi-tool",
+            },
+          },
+        ],
+      },
+      mappings: [
+        {
+          capabilityId: "baseline-multi-tool",
+          tools: ["shared_direct_tool", "baseline_dispatch_missing_tool"],
+          state: "verified",
+        },
+      ],
+      editor: {
+        records: [
+          {
+            capabilityId: "editor-multi-tool",
+            disposition: "ui_capability",
+            mcpTools: ["shared_direct_tool", "editor_full_missing_tool"],
+            state: "represented_unverified",
+            dogfood: { observableResult: "The editor scene and resource save." },
+          },
+        ],
+      },
+      headless: { records: [] },
+      runtime: {
+        records: [
+          {
+            capabilityId: "runtime-multi-tool",
+            disposition: "ui_capability",
+            tools: ["shared_direct_tool", "runtime_dispatch_missing_tool"],
+            state: "verified",
+            reason: "Both runtime operations are claimed to be represented.",
+          },
+        ],
+      },
+      registry: {
+        full: {
+          tools: [
+            "shared_direct_tool",
+            "baseline_dispatch_missing_tool",
+            "runtime_dispatch_missing_tool",
+          ],
+        },
+        discovery: { tools: ["shared_direct_tool"] },
+        dispatch: {
+          tools: ["shared_direct_tool", "editor_full_missing_tool"],
+        },
+        findings: [],
+        mcpOnlyExtras: [],
+      },
+    });
+
+    for (const id of [
+      "baseline:baseline-multi-tool",
+      "editor:editor-multi-tool",
+      "runtime:runtime-multi-tool",
+    ]) {
+      expect(
+        artifacts.records.find((record) => record.id === id)?.state,
+        `${id} must be broken when its first tool is directly exposed but a required second tool is absent from full or dispatch`,
+      ).toBe("broken");
+    }
+    expect(
+      artifacts.summary.states,
+      "multi-tool exposure failures must not inflate either parity numerator",
+    ).toEqual({
+      verified: 0,
+      represented_unverified: 0,
+      broken: 3,
+      gap: 0,
+    });
+    expect(artifacts.summary.verifiedParityPercent).toBe(0);
+    expect(artifacts.summary.representedParityPercent).toBe(0);
+  });
+
   it("preserves_source_derived_provenance_for_mapped_baseline_and_broken_headless_gaps", () => {
     const artifacts = buildParityArtifacts({
       baseline: {
