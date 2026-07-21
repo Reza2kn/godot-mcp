@@ -41,6 +41,7 @@
   ],
   "scripts": {
     "audit:parity": "node scripts/audit-parity.js",
+    "audit:parity-report": "node scripts/parity-report.js --write",
     "build": "tsc && node scripts/build.js",
     "inspector": "npx @modelcontextprotocol/inspector build/index.js",
     "prepare": "npm run build",
