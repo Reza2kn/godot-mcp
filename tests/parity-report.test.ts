@@ -304,6 +304,145 @@ describe("generated MCP versus UI parity report", () => {
     }
   });
 
+  it("does_not_count_empty_tool_mappings_as_direct_exposure_in_baseline_editor_or_runtime_evidence", () => {
+    const artifacts = buildParityArtifacts({
+      baseline: {
+        ...baseline,
+        capabilities: [
+          ...baseline.capabilities,
+          {
+            id: "baseline-empty-tools",
+            editorSurface: "Inspector",
+            userAction: "Edit an exported property",
+            source: {
+              version: "4.4",
+              url: "https://example.test/baseline-empty-tools",
+            },
+          },
+        ],
+      },
+      mappings: [
+        ...evidence.mappings,
+        {
+          capabilityId: "baseline-empty-tools",
+          tools: [],
+          state: "verified",
+        },
+      ],
+      editor: {
+        records: [
+          {
+            capabilityId: "editor-empty-tools",
+            disposition: "ui_capability",
+            mcpTools: [],
+            state: "verified",
+            dogfood: { observableResult: "An inspector property changes." },
+          },
+        ],
+      },
+      headless: evidence.headless,
+      runtime: {
+        records: [
+          {
+            capabilityId: "runtime-empty-tools",
+            disposition: "ui_capability",
+            tools: [],
+            state: "represented_unverified",
+            reason: "A claimed runtime mapping has no tool.",
+          },
+        ],
+      },
+      registry: evidence.registry,
+    });
+
+    for (const id of [
+      "baseline:baseline-empty-tools",
+      "editor:editor-empty-tools",
+      "runtime:runtime-empty-tools",
+    ]) {
+      expect(
+        artifacts.records.find((record) => record.id === id)?.state,
+        `${id} must be broken because an empty tool list has no direct MCP exposure`,
+      ).toBe("broken");
+    }
+  });
+
+  it("preserves_source_derived_provenance_for_mapped_baseline_and_broken_headless_gaps", () => {
+    const artifacts = buildParityArtifacts({
+      baseline: {
+        ...baseline,
+        capabilities: [
+          ...baseline.capabilities,
+          {
+            id: "baseline-broken-provenance",
+            editorSurface: "Filesystem dock",
+            userAction: "Move a resource",
+            source: {
+              version: "4.4",
+              url: "https://example.test/baseline-broken-provenance",
+            },
+          },
+        ],
+      },
+      mappings: [
+        ...evidence.mappings,
+        {
+          capabilityId: "baseline-broken-provenance",
+          tools: ["move_resource"],
+          state: "broken",
+        },
+      ],
+      editor: evidence.editor,
+      headless: {
+        records: [
+          {
+            tool: "headless_broken_provenance",
+            disposition: "ui_capability",
+            capability: "headless provenance surface",
+            route: "direct_operation",
+            state: "broken",
+            reason: "The direct operation returns a bridge-not-implemented error.",
+          },
+        ],
+      },
+      runtime: evidence.runtime,
+      registry: evidence.registry,
+    });
+
+    expect(
+      artifacts.gaps.find(
+        (gap) => gap.id === "baseline:baseline-broken-provenance",
+      ),
+      "a mapped baseline failure must retain its baseline fields and mapped tools",
+    ).toEqual({
+      id: "baseline:baseline-broken-provenance",
+      state: "broken",
+      uiSurface: "Filesystem dock",
+      executionPath: "baseline",
+      userOutcome: "Move a resource",
+      sourceReference: "https://example.test/baseline-broken-provenance",
+      relatedMcpTools: ["move_resource"],
+      evidenceReason: "Baseline mapping is broken.",
+    });
+    expect(
+      artifacts.gaps.find(
+        (gap) => gap.id === "headless:headless_broken_provenance",
+      ),
+      "a broken headless record must retain the evidence record's tool, surface, route, and reason",
+    ).toEqual({
+      id: "headless:headless_broken_provenance",
+      state: "broken",
+      uiSurface: "headless provenance surface",
+      executionPath: "direct_operation",
+      userOutcome:
+        "Use headless_broken_provenance through a headless Godot operation.",
+      sourceReference: "audit/headless-evidence.json#records/0",
+      relatedMcpTools: ["headless_broken_provenance"],
+      evidenceReason:
+        "The direct operation returns a bridge-not-implemented error.",
+    });
+  });
+
   it("keeps_mcp_only_records_out_of_the_ui_denominator_and_lists_each_as_an_extra", () => {
     const artifacts = buildParityArtifacts({
       baseline,
