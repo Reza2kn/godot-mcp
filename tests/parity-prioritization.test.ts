@@ -261,6 +261,66 @@ describe("parity prioritization", () => {
     ).toEqual(recommendations.repair);
   });
 
+  it("uses_source_in_the_stable_key_for_equal_breadth_same_capability_groups", () => {
+    const input = {
+      capabilities: [],
+      mappings: [],
+      editorRecords: [],
+      runtimeRecords: [
+        {
+          disposition: "ui_capability",
+          capabilityId: "shared-evidence-capability",
+          state: "broken",
+          tools: ["runtime_only_tool"],
+          reason: "runtime path is broken",
+        },
+      ],
+      headlessRecords: [
+        {
+          disposition: "ui_capability",
+          capability: "shared-evidence-capability",
+          state: "broken",
+          tool: "headless_only_tool",
+          reason: "headless path is broken",
+        },
+      ],
+    };
+
+    const canonical = createRecommendations(input);
+    const duplicated = createRecommendations({
+      ...input,
+      runtimeRecords: [...input.runtimeRecords, input.runtimeRecords[0]],
+      headlessRecords: [...input.headlessRecords, input.headlessRecords[0]],
+    });
+
+    expect(
+      canonical.repair.map(({ rank, source, capabilityId, affectedTools }) => ({
+        rank,
+        source,
+        capabilityId,
+        affectedTools,
+      })),
+      "equal-breadth findings with the same capability must use source in their stable key rather than retain runtime-first ingestion order",
+    ).toEqual([
+      {
+        rank: 1,
+        source: "headless",
+        capabilityId: "shared-evidence-capability",
+        affectedTools: ["headless_only_tool"],
+      },
+      {
+        rank: 2,
+        source: "runtime",
+        capabilityId: "shared-evidence-capability",
+        affectedTools: ["runtime_only_tool"],
+      },
+    ]);
+    expect(
+      duplicated.repair,
+      "duplicating same-capability findings must preserve source-qualified ranks and deduplicate each group",
+    ).toEqual(canonical.repair);
+  });
+
   it("keeps_source_qualified_groups_and_source_tool_fields_distinct", () => {
     const recommendations = createRecommendations({
       capabilities: [
