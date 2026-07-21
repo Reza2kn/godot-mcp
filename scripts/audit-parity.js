@@ -13,6 +13,7 @@ const readmeClaims = readReadmeClaims(
   readFileSync(join(root, "README.md"), "utf8"),
 );
 const STATES = ["verified", "represented_unverified", "broken", "gap"];
+const REPRESENTED_STATES = new Set(["verified", "represented_unverified"]);
 const MCP_ONLY =
   /^(godot_(?:start_here|suggest|call)|search_tools|list_tool_categories|list_tools_in_category|get_beginner_guide|get_workflow|explain_godot_concept|write_.*_script|setup_.*|create_.*_template)$/;
 
@@ -32,6 +33,14 @@ function duplicates(values) {
       seen.add(value);
       return false;
     }),
+  );
+}
+
+function hasProductionEvidence(mapping, fullTools, dispatchTools) {
+  return (
+    mapping.tools.length > 0 &&
+    mapping.tools.every((tool) => fullTools.includes(tool)) &&
+    mapping.tools.every((tool) => dispatchTools.includes(tool))
   );
 }
 
@@ -146,9 +155,8 @@ export function summarizeParity({
         `Unknown evidence state for ${capability.id}: ${mapping.state}`,
       );
     const state =
-      mapping.tools.length > 0 &&
-      (!mapping.tools.every((tool) => fullTools.includes(tool)) ||
-        !mapping.tools.every((tool) => dispatchTools.includes(tool)))
+      REPRESENTED_STATES.has(mapping.state) &&
+      !hasProductionEvidence(mapping, fullTools, dispatchTools)
         ? "broken"
         : mapping.state;
     states[state] += 1;

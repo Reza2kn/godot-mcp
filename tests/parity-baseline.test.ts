@@ -101,12 +101,17 @@ describe("versioned UI parity baseline", () => {
     expect(summary.numerator).toBe(0);
   });
 
-  it("reports_each_evidence_state_without_collapsing_unverified_or_absent_capabilities_into_verified", () => {
+  it("requires_every_represented_mapping_to_be_both_full_advertised_and_dispatchable", () => {
     const summary = summarizeParity({
       capabilities: [
         { id: "verified-capability" },
         { id: "represented-unverified-capability" },
-        { id: "broken-capability" },
+        { id: "full-only-verified-capability" },
+        { id: "full-only-unverified-capability" },
+        { id: "dispatch-only-verified-capability" },
+        { id: "dispatch-only-unverified-capability" },
+        { id: "empty-verified-capability" },
+        { id: "empty-unverified-capability" },
         { id: "gap-capability" },
       ],
       mappings: [
@@ -121,13 +126,48 @@ describe("versioned UI parity baseline", () => {
           state: "represented_unverified",
         },
         {
-          capabilityId: "broken-capability",
-          tools: ["advertised_only"],
+          capabilityId: "full-only-verified-capability",
+          tools: ["full_only_verified_tool"],
           state: "verified",
         },
+        {
+          capabilityId: "full-only-unverified-capability",
+          tools: ["full_only_unverified_tool"],
+          state: "represented_unverified",
+        },
+        {
+          capabilityId: "dispatch-only-verified-capability",
+          tools: ["dispatch_only_verified_tool"],
+          state: "verified",
+        },
+        {
+          capabilityId: "dispatch-only-unverified-capability",
+          tools: ["dispatch_only_unverified_tool"],
+          state: "represented_unverified",
+        },
+        {
+          capabilityId: "empty-verified-capability",
+          tools: [],
+          state: "verified",
+        },
+        {
+          capabilityId: "empty-unverified-capability",
+          tools: [],
+          state: "represented_unverified",
+        },
       ],
-      fullTools: ["verified_tool", "unverified_tool", "advertised_only"],
-      dispatchTools: ["verified_tool", "unverified_tool"],
+      fullTools: [
+        "verified_tool",
+        "unverified_tool",
+        "full_only_verified_tool",
+        "full_only_unverified_tool",
+      ],
+      dispatchTools: [
+        "verified_tool",
+        "unverified_tool",
+        "dispatch_only_verified_tool",
+        "dispatch_only_unverified_tool",
+      ],
     });
 
     expect(
@@ -140,16 +180,16 @@ describe("versioned UI parity baseline", () => {
     ).toBe(1);
     expect(
       summary.states.broken,
-      "advertised but undispatchable mappings must be broken",
-    ).toBe(1);
+      "a represented mapping with no tool, no full advertisement, or no dispatchability must be broken",
+    ).toBe(6);
     expect(
       summary.states.gap,
       "a baseline capability with no mapping row must remain an absent gap",
     ).toBe(1);
     expect(
       summary.numerator,
-      "only verified and represented-unverified mappings count as represented",
+      "only mappings present in both production inventories count as represented",
     ).toBe(2);
-    expect(summary.denominator).toBe(4);
+    expect(summary.denominator).toBe(9);
   });
 });
