@@ -1,0 +1,5923 @@
+{
+  "godotBaseline": "4.4",
+  "denominator": 367,
+  "states": {
+    "verified": 0,
+    "represented_unverified": 41,
+    "broken": 325,
+    "gap": 1
+  },
+  "verifiedParityPercent": 0,
+  "representedParityPercent": 11.17,
+  "bySurface": {
+    "Inspector dock": {
+      "verified": 0,
+      "represented_unverified": 1,
+      "broken": 0,
+      "gap": 0
+    },
+    "Output panel": {
+      "verified": 0,
+      "represented_unverified": 0,
+      "broken": 1,
+      "gap": 0
+    },
+    "Play controls": {
+      "verified": 0,
+      "represented_unverified": 0,
+      "broken": 2,
+      "gap": 0
+    },
+    "Project Manager": {
+      "verified": 0,
+      "represented_unverified": 0,
+      "broken": 1,
+      "gap": 1
+    },
+    "Scene dock": {
+      "verified": 0,
+      "represented_unverified": 0,
+      "broken": 2,
+      "gap": 0
+    },
+    "Script editor": {
+      "verified": 0,
+      "represented_unverified": 0,
+      "broken": 1,
+      "gap": 0
+    },
+    "Godot editor plugin": {
+      "verified": 0,
+      "represented_unverified": 0,
+      "broken": 12,
+      "gap": 0
+    },
+    "scene-dock": {
+      "verified": 0,
+      "represented_unverified": 39,
+      "broken": 243,
+      "gap": 0
+    },
+    "project-settings": {
+      "verified": 0,
+      "represented_unverified": 0,
+      "broken": 5,
+      "gap": 0
+    },
+    "resource-editor": {
+      "verified": 0,
+      "represented_unverified": 1,
+      "broken": 33,
+      "gap": 0
+    },
+    "script-editor": {
+      "verified": 0,
+      "represented_unverified": 0,
+      "broken": 10,
+      "gap": 0
+    },
+    "export-dialog": {
+      "verified": 0,
+      "represented_unverified": 0,
+      "broken": 1,
+      "gap": 0
+    },
+    "import-dock": {
+      "verified": 0,
+      "represented_unverified": 0,
+      "broken": 2,
+      "gap": 0
+    },
+    "Running game": {
+      "verified": 0,
+      "represented_unverified": 0,
+      "broken": 12,
+      "gap": 0
+    }
+  },
+  "byPath": {
+    "baseline": {
+      "verified": 0,
+      "represented_unverified": 1,
+      "broken": 7,
+      "gap": 1
+    },
+    "editor_plugin": {
+      "verified": 0,
+      "represented_unverified": 0,
+      "broken": 12,
+      "gap": 0
+    },
+    "bundled_operation": {
+      "verified": 0,
+      "represented_unverified": 40,
+      "broken": 291,
+      "gap": 0
+    },
+    "direct_godot": {
+      "verified": 0,
+      "represented_unverified": 0,
+      "broken": 3,
+      "gap": 0
+    },
+    "runtime": {
+      "verified": 0,
+      "represented_unverified": 0,
+      "broken": 12,
+      "gap": 0
+    }
+  },
+  "registry": {
+    "full": {
+      "toolCount": 966
+    },
+    "discovery": {
+      "toolCount": 20
+    },
+    "dispatch": {
+      "toolCount": 1968
+    },
+    "inconsistencies": [
+      {
+        "kind": "advertised_without_dispatch",
+        "tool": "add_node_to_scene",
+        "mode": "discovery"
+      },
+      {
+        "kind": "advertised_without_dispatch",
+        "tool": "get_scene_structure",
+        "mode": "discovery"
+      },
+      {
+        "kind": "advertised_without_dispatch",
+        "tool": "read_script",
+        "mode": "discovery"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_accept_dialog_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_animated_sprite_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_animation_keyframe"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_animation_tree_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_area_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_area_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_aspect_ratio_container"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_aspect_ratio_container_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_audio_effect_to_bus"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_audio_listener_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_audio_stream_player"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_audio_stream_player_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_audio_stream_player_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_autoload"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_back_buffer_copy"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_billboard_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_bone_attachment_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_bone_attachment_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_box_container_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_camera_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_camera_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_camera_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_canvas_layer_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_canvas_modulate"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_center_container_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_character_body_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_character_body_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_character_body_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_character_body_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_check_button_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_child_node_in_game"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_code_edit_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_collision_polygon_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_collision_polygon_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_collision_shape_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_collision_shape_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_collision_shape_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_collision_shape_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_color_picker_button_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_color_rect"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_color_rect_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_cone_twist_joint_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_confirmation_dialog_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_cpu_particles_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_cpu_particles_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_cpu_particles_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_cpu_particles_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_csg_box"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_csg_box_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_csg_combiner"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_csg_combiner_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_csg_cylinder"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_csg_cylinder_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_csg_sphere"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_csg_sphere_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_csg_torus_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_decal_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_decal_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_directional_light_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_directional_light_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_directional_light_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_file_dialog_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_flow_container"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_flow_container_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_fog_volume"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_fog_volume_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_generic_6dof_joint_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_gpu_particles_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_gpu_particles_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_gpu_particles_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_gpu_particles_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_graph_edit_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_graph_node_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_grid_container"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_groove_joint_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_hflow_container_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_hinge_joint_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_hinge_joint_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_http_request"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_http_request_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_input_action"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_item_list_item"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_item_list_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_joint_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_joint_2d_damped_spring_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_joint_2d_groove_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_joint_2d_pin_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_joint_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_label_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_lightmap_gi"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_lightmap_gi_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_line_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_line_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_link_button_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_locale_key"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_margin_container_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_marker_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_marker_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_menu_button_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_mesh_instance"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_mesh_instance_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_multi_mesh_instance_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_multi_mesh_instance_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_multiplayer_spawner_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_multiplayer_synchronizer_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_navigation_agent_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_navigation_agent_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_navigation_agent_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_navigation_region_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_navigation_region_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_navigation_region_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_navigation_region_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_nine_patch_rect"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_nine_patch_rect_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_node"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_node_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_node_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_node_to_group"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_node_to_group_in_game"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_occluder_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_occluder_instance_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_occluder_instance_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_omni_light_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_omni_light_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_open_xr_hand_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_option_button_item"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_option_button_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_panel_container_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_parallax_background"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_parallax_layer"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_path_2d_node"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_path_follow_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_path_follow_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_physics_body_3d_static_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_pin_joint_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_point_light_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_polygon_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_polygon_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_popup_menu_item"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_popup_menu_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_popup_panel_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_ray_cast_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_ray_cast_2d_from_camera"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_ray_cast_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_ray_cast_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_ray_cast_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_reflection_probe"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_reflection_probe_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_remote_transform_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_remote_transform_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_remote_transform_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_rich_text_label_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_rigid_body_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_rigid_body_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_rigid_body_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_scene_instance"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_scene_tree_timer_via_code"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_scroll_container"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_scroll_container_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_separator_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_shape_cast_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_shape_cast_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_signal_connection"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_skeleton_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_skeleton_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_slider_joint_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_soft_body_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_split_container"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_split_container_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_spot_light_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_spot_light_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_spring_arm_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_spring_arm_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_spring_joint_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_sprite_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_static_body_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_static_body_2d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_static_body_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_sub_viewport"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_sub_viewport_container"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_sub_viewport_container_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_sub_viewport_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_tab_bar_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_tab_container"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_tab_container_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_text_edit_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_texture_button_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_texture_progress_bar"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_texture_progress_bar_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_texture_rect_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_tile_map_layer"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_timer_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_to_scene_at_runtime"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_touch_screen_button"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_tree_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_tween"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_tween_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_v_separator_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_vehicle_body_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_vehicle_body_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_vehicle_wheel_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_vehicle_wheel_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_vflow_container_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_video_stream_player"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_visible_on_screen_notifier_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_visible_on_screen_notifier_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_visible_on_screen_notifier_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_visual_shader"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_voxel_gi"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_voxel_gi_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_world_environment"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_world_environment_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_xr_camera_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_xr_camera_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_xr_controller_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_xr_origin_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "add_xr_origin_3d_to_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "align_node_to_path"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "analyze_scene_complexity"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "analyze_signal_flow"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "animation_add_keyframe"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "animation_delete_keyframe"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "animation_get_keyframes"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "animation_set_loop"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "animation_tree_get_state"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "animation_tree_set_param"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "animtree_add_state"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "animtree_add_transition"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "animtree_get_structure"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "animtree_remove_state"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "animtree_remove_transition"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "append_to_file"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "apply_force_to_rigid_body"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "apply_impulse_to_rigid_body"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "area_get_overlapping"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "assert_node_state"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "assert_screen_text"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "attach_script"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "audio_bus_add_effect"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "audio_bus_create"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "audio_bus_list"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "audio_bus_set_volume"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "audio_player_set_bus"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "batch_create_scenes"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "batch_get_properties"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "batch_rename_nodes"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "batch_set_node_property_runtime"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "batch_set_properties"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "batch_set_property"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "blend_shape_get_values"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "blend_shape_set_value"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "call_group_method"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "call_method_on_node"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "camera_2d_set_zoom"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "camera_get_info"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "camera_set_current"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "canvas_layer_set"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "canvas_layer_set_layer"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "capture_frames"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "cast_ray_2d_in_game"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "cast_ray_in_game"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "change_scene_to"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "character_body_set_velocity"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "check_missing_resources"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "clear_item_list"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "clear_popup_menu"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "clear_print_output"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "clear_tilemap_layer"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "click_button"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "click_button_by_text"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "compare_scene_nodes"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "compare_screenshots"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "connect_signal_in_game"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "control_set_size"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "copy_file"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "count_code_lines"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "count_nodes_by_class"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "count_script_lines"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_animation_track"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_array_mesh"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_audio_bus"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_audio_stream_wav"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_curve_resource"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_directory"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_environment_resource"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_gdscript_file"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_gdscript_resource"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_locale_file"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_localization_csv"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_material_override"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_navigation_mesh"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_node_path"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_physics_material"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_project"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_resource"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_resource_file"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_script"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_shader_file"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "create_shader_material"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "cross_scene_set_property"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "curve_create"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "debugger_evaluate"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "debugger_get_stack"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "debugger_list_breakpoints"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "debugger_set_breakpoint"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "delete_file"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "delete_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "detect_circular_dependencies"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "disconnect_multiplayer"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "disconnect_signal_in_game"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "duplicate_node"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "duplicate_node_in_game"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "duplicate_node_runtime"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "duplicate_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "emit_signal_in_game"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "emit_signal_on_node"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "explain_godot_concept"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "export_list_presets"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "export_mesh_library"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "export_project"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "export_project"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "file_exists_in_project"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_all_todos"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_circular_dependencies"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_class_inheritors"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_deprecated_apis"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_large_resources"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_large_textures"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_nearby_nodes"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_node_by_name"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_node_references"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_nodes_by_class"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_nodes_by_property"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_nodes_by_script"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_nodes_by_type"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_nodes_with_property"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_orphan_resources"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_orphan_scripts"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_scene_nodes_by_script"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_scenes_using_resource"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_scenes_with_node_type"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_script_references"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_signal_connections"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "find_unused_resources"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "flip_sprite"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "force_garbage_collect"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "free_node_runtime"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_3d_effects"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_add_collision"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_animation_control"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_animation_tree"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_audio_bus"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_audio_bus_layout"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_audio_effect"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_audio_play"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_audio_spatial"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_await_signal"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_bone_pose"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_call_method"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_camera_attributes"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_canvas"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_canvas_draw"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_change_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_click"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_connect_signal"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_create_animation"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_create_joint"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_create_timer"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_csg"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_debug_draw"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_disconnect_signal"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_emit_signal"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_environment"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_eval"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_find_nodes_by_class"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_gamepad"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_get_audio"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_get_camera"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_get_errors"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_get_fps_history"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_get_logs"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_get_node_info"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_get_nodes_in_group"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_get_property"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_get_scene_tree"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_get_ui"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_get_viewport_info"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_gi"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_gridmap"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_http_request"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_input_action"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_input_state"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_instantiate_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_key_hold"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_key_press"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_key_release"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_light_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_light_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_list_signals"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_locale"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_manage_group"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_mesh_instance"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_mouse_drag"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_mouse_move"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_multimesh"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_multiplayer"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_navigate_path"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_navigation_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_os_info"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_parallax"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_path_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_path_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_pause"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_performance"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_physics_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_physics_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_physics_body"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_play_animation"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_procedural_mesh"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_process_mode"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_quit"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_raycast"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_reload_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_remove_node"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_render_settings"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_reparent_node"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_resource"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_rpc"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_screenshot"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_script"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_scroll"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_serialize_state"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_set_camera"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_set_debug_visible"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_set_particles"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_set_property"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_set_shader_param"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_set_time_scale"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_shape_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_skeleton_ik"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_sky"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_spawn_node"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_terrain"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_tilemap"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_time_scale"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_touch"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_tween_property"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_ui_control"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_ui_item_list"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_ui_menu"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_ui_popup"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_ui_range"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_ui_tabs"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_ui_text"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_ui_theme"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_ui_tree"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_video"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_viewport"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_visual_shader"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_wait"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_websocket"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_window"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "game_world_settings"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "gdextension_list"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "generate_mesh_normals"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_2d_camera_info"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_all_custom_signals"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_all_node_types_in_project"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_animated_sprite_frame"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_animation_length"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_animation_library_info"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_animation_names"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_animation_player_list"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_animation_position"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_animation_track_count"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_animation_tree_active"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_animation_tree_parameter"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_asset_preload_list"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_audio_bus_count"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_audio_bus_effects"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_audio_bus_list"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_audio_bus_name"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_audio_stream_position"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_autoloads"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_beginner_guide"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_blend_shape_count"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_blend_shape_value"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_bone_global_pose"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_button_text"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_canvas_layers"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_character_body_velocity"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_children_count"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_children_of_node"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_class_api"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_clipboard"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_collision_layer_names"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_collision_layers_names"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_collision_shape_info"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_color_in_game"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_color_picker_value"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_color_rect_color"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_connected_peers"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_control_size"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_cpu_count"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_current_camera"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_current_camera_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_debug_output"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_display_info"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_distance_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_editor_plugin_list"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_editor_theme_color"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_engine_version"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_engine_version_in_game"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_environment_properties"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_environment_property"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_file_content"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_file_dependencies"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_file_size"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_font_info"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_gdextension_info"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_gdscript_function_calls"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_gdscript_parse_errors"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_global_mouse_position"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_global_transform_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_godot_project_settings"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_godot_version"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_groups_all"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_http_response"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_import_file"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_import_settings"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_input_action_list"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_input_map"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_input_state"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_item_list_items"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_item_list_selected"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_joy_count"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_joy_name"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_label_font_size"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_label_text"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_light_properties"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_line_edit_text"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_loaded_gdextensions"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_material_properties"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_material_property"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_mesh_surface_count"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_mouse_position"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_navigation_agent_target"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_navigation_agents"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_navigation_path"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_network_info"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_next_path_position"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_2d_position"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_2d_transform"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_3d_transform"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_animation_tracks"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_at_position_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_class"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_constant"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_count_by_type"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_count_in_scene_file"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_count_in_tree"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_custom_minimum_size"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_groups"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_groups_in_game"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_metadata"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_metadata_in_game"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_method_list"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_owner"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_property"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_property_list"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_property_raw"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_rect"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_script_path"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_signal_connections"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_transform"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_node_visibility"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_nodes_in_group"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_nodes_in_group_runtime"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_object_id"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_option_button_selected"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_os_info"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_os_name"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_overlapping_areas"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_overlapping_bodies"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_panel_stylebox"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_parent_of_node"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_particle_state"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_particles_amount"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_particles_info"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_path_2d_length"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_performance_counters"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_physics_bodies"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_physics_bodies_at_point"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_physics_bodies_in_area"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_physics_fps"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_physics_layers"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_physics_settings"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_print_output"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_process_state"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_progress_bar_value"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_project_build_summary"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_project_directory_structure"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_project_export_presets"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_project_file_stats"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_project_info"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_project_layers"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_project_plugins"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_project_setting"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_project_settings_by_category"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_project_statistics"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_project_total_size"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_project_uid_map"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_project_version"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_ray_cast_collider"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_render_info"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_rendering_settings"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_resource_file_content"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_resource_type"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_resource_uid"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_resource_usage"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_rigid_body_linear_velocity"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_runtime_input_actions"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_runtime_scene_list"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_scene_as_tree"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_scene_by_main_script"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_scene_change_history"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_scene_dependencies"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_scene_embedded_scripts"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_scene_external_resources"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_scene_file_connections"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_scene_file_content"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_scene_inheritance_chain"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_scene_inheritance_info"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_scene_metadata"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_scene_node_count"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_scene_node_path"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_scene_node_types"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_scene_resource_paths"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_scene_root_node"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_scene_size"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_scene_statistics_all"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_scene_sub_resources"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_scene_subresources"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_scene_tree_paused"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_screen_count"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_screen_size"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_script_class_info"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_script_constants"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_script_signals"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_script_source"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_script_variables"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_shader_global_parameter"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_shader_params"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_shader_uniforms"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_signal_connections"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_signal_connections_all"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_signal_list"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_skeleton_bone_count"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_skeleton_bone_names"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_slider_value"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_spin_box_value"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_sprite_frame"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_sprite_frames_info"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_sprite_texture"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_tab_container_tab"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_text_edit_text"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_texture_rect_texture"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_tilemap_cell_at"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_tilemap_info"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_tilemap_layer_count"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_tilemap_used_rect"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_tileset_sources"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_time_in_game"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_time_scale"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_time_since_start"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_tree_structure"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_ui_theme_defaults"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_uid"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_vehicle_body_speed"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_viewport_size"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_workflow"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "get_world_environment"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "grab_focus"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "gradient_create"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "gridmap_clear"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "gridmap_get_used_cells"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "gridmap_set_cell"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "has_node_metadata"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "hide_node"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "import_get_config"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "import_list_presets"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "import_reimport"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "import_set_config"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "instantiate_scene_at_runtime"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "is_action_pressed"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "is_audio_bus_muted"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "is_button_pressed"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "is_character_on_floor"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "is_navigation_finished"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "is_ray_cast_colliding"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "item_list_add_item"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "kill_tweens_on_node"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "label_set_text"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "launch_editor"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "line_edit_set_text"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_all_autoloads"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_all_groups"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_animations"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_audio_buses"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_connected_signals_in_game"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_custom_classes"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_export_presets"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_export_variables"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_exported_variables"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_gdscript_classes"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_import_files"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_project_3d_models"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_project_audio"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_project_files"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_project_fonts"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_project_gdscript_files"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_project_images"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_project_import_files"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_project_meshes"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_project_resources"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_project_scenes"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_project_scripts"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_project_shaders"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_project_shaders_glsl"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_project_videos"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_projects"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_resource_types"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_scene_connections"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_scene_unique_names"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_scripts"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_signals_on_node"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_tool_categories"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_tools_in_category"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "list_uid_files"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "load_sprite"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "locale_list_tr_calls"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "look_at_target"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "make_http_request"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "manage_autoloads"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "manage_ci_pipeline"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "manage_docker_export"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "manage_export_presets"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "manage_input_map"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "manage_layers"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "manage_plugins"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "manage_resource"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "manage_scene_signals"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "manage_scene_structure"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "manage_shader"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "manage_theme_resource"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "manage_translations"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "map_to_world"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "material_create"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "modify_project_settings"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "modify_scene_node"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "monitor_properties"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "move_and_slide_character"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "move_node"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "move_toward_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "multimesh_set_instance_count"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "multimesh_set_instance_transform"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "navigation_agent_set_target"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "node_add_to_group_runtime"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "node_get_meta"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "node_get_meta_runtime"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "node_get_visible_runtime"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "node_remove_from_group_runtime"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "node_remove_meta"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "node_set_meta"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "node_set_meta_runtime"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "node_set_modulate"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "node_set_visible_runtime"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "node_set_z_index"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "open_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "open_url_in_browser"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "option_button_add_item"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "overlap_sphere_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "particle_restart"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "particle_set_emitting"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "path_2d_add_point"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "path_3d_add_point"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "path2d_set_points"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "plugin_disable"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "plugin_enable"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "plugin_list"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "popup_menu_add_item"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "print_to_godot_console"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "progress_bar_set_value"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "quit_game"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "ray_cast_force_update"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "raycast_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "read_file"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "read_project_settings"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "read_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "reload_current_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "reload_script_at_runtime"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "remove_animation"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "remove_audio_effect_from_bus"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "remove_autoload"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "remove_input_action"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "remove_node_from_game"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "remove_node_from_group"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "remove_node_from_group_in_game"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "remove_node_in_game"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "remove_scene_node"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "remove_signal_connection"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "rename_file"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "rename_node"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "rename_resource"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "reorder_node"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "reparent_node_in_game"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "replace_in_file"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "replay_recording"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "reset_skeleton_pose"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "resource_set_property"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "restart_particles"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "rich_text_append"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "rigid_body_apply_impulse"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "rotate_node_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "rotate_node_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "run_project"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "run_stress_test"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "save_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "save_scene_at_runtime"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "scale_node_2d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "scale_node_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "scene_batch_rename_nodes"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "scene_create_inherited"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "scene_list_resources"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "scene_list_sub_resources"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "scene_node_count"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "scene_profiler_start"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "scene_profiler_stop"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "scene_replace_node_type"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "scene_set_node_property_batch"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "scene_set_root_type"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "scene_set_unique_name"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "scene_toggle_node_visible"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "script_template"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "search_in_file"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "search_in_files"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "search_in_scripts"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "search_project_text"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "search_tools"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "seek_animation"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "seek_audio_stream"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "send_message_to_game"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "send_multiplayer_rpc"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_angular_velocity"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_animated_sprite_animation"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_animated_sprite_frame"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_animation_length"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_animation_speed_scale"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_animation_tree_active"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_animation_tree_parameter"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_audio_bus_volume"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_audio_effect_parameter"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_audio_stream_pitch_scale"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_audio_stream_player_bus"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_audio_stream_player_stream"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_blend_shape_value"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_bone_pose"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_button_pressed"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_button_text"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_camera_2d_limit"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_camera_2d_zoom"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_camera_3d_current"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_camera_current"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_camera_fov"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_character_body_velocity"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_check_box_pressed"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_clipboard"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_collision_layer"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_collision_layer_name"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_collision_mask"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_color_picker_color"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_color_rect_color"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_control_position"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_control_size"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_display_mode"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_environment_fog"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_environment_glow"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_environment_property"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_environment_ssao"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_global_transform_3d"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_gravity_scale"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_label_color"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_label_font_size"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_label_horizontal_alignment"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_label_text"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_light_3d_color"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_light_3d_energy"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_light_property"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_light_range"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_light_shadow"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_line_edit_text"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_linear_velocity"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_main_scene"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_material_property"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_mesh_surface_material"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_navigation_agent_target"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_node_2d_position"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_node_custom_minimum_size"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_node_groups"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_node_metadata"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_node_metadata_in_game"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_node_name"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_node_process"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_node_property"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_node_transform"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_node_unique_name"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_node_z_index"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_option_button_selected"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_particle_emission_rate"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_particles_amount"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_particles_emitting"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_physics_fps"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_physics_layers"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_process_enabled"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_progress_bar_value"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_project_setting"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_ray_cast_enabled"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_rich_text_label_bbcode"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_rigid_body_freeze"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_rigid_body_linear_velocity"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_rigid_body_sleeping"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_shader_global_parameter"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_shader_param"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_shader_uniform"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_skeleton_bone_pose_rotation"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_sky_material"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_slider_value"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_spin_box_value"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_spot_light_angle"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_sprite_frame"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_sprite_texture"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_tab_container_current"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_tab_container_tab"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_text_edit_text"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_texture_rect_texture"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_tilemap_cell"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_tilemap_layer_enabled"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_time_scale"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_tween_property"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_vehicle_brake"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_vehicle_engine_force"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_vehicle_steering"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_viewport_size"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_window_size"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "set_window_title"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "setup_enet_multiplayer"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "shader_create"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "show_dialog"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "show_node"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "show_popup_menu"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "simulate_input_action"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "skeleton_get_bones"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "skeleton_set_bone_pose"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "slider_set_value"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "spring_arm_3d_set_length"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "spriteframes_add_animation"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "spriteframes_add_frame"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "spriteframes_create"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "start_recording"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "stop_project"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "stop_recording"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "stop_tween"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "subviewport_set_size"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "texture_rect_set_texture"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "theme_set_color_override"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "tilemap_clear"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "tilemap_get_used_cells"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "tilemap_set_cell"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "tileset_add_source"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "tileset_create"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "timer_set_wait_time"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "timer_start"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "timer_stop"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "toggle_node_visibility"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "update_project_uids"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "validate_scene_file"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "validate_script"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "vcs_branch_list"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "vcs_checkout"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "vcs_commit"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "vcs_diff"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "vcs_stage"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "vcs_status"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "visibility_notifier_set_rect"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "wait_for_node"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "wait_for_signal"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "warp_mouse"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "world_to_map"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "write_file"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "write_file_content"
+      },
+      {
+        "kind": "dispatch_not_advertised",
+        "tool": "write_resource_file_content"
+      },
+      {
+        "kind": "duplicate_advertised_name",
+        "tool": "write_debug_overlay_script",
+        "mode": "full"
+      },
+      {
+        "kind": "duplicate_advertised_name",
+        "tool": "write_fps_counter_script",
+        "mode": "full"
+      },
+      {
+        "kind": "duplicate_advertised_name",
+        "tool": "write_game_over_screen_script",
+        "mode": "full"
+      },
+      {
+        "kind": "duplicate_dispatch_name",
+        "tool": "export_project"
+      },
+      {
+        "kind": "duplicate_dispatch_name",
+        "tool": "write_debug_overlay_script"
+      },
+      {
+        "kind": "duplicate_dispatch_name",
+        "tool": "write_fps_counter_script"
+      },
+      {
+        "kind": "duplicate_dispatch_name",
+        "tool": "write_game_over_screen_script"
+      }
+    ]
+  },
+  "mcpOnlyExtras": [
+    "append_to_gdscript_file",
+    "check_resource_exists",
+    "connect_to_godot_editor",
+    "copy_project_file",
+    "count_gdscript_lines",
+    "count_scene_nodes",
+    "create_project_directory",
+    "debugger_evaluate",
+    "debugger_get_stack",
+    "delete_project_file",
+    "disconnect_from_godot_editor",
+    "duplicate_scene_file",
+    "find_gdscript_classes",
+    "find_gdscript_exports",
+    "find_gdscript_function",
+    "find_gdscript_signal_usage",
+    "find_gdscript_signals_defined",
+    "find_nodes_in_group",
+    "find_orphaned_gdscript_files",
+    "game_eval",
+    "game_wait",
+    "get_audio_setup_guide",
+    "get_file_stats",
+    "get_fps_3d_setup_guide",
+    "get_input_map_from_project",
+    "get_platformer_2d_setup_guide",
+    "get_project_autoloads",
+    "get_project_description",
+    "get_project_godot_version",
+    "get_project_main_scene",
+    "get_project_name",
+    "get_project_scene_list",
+    "get_project_structure",
+    "get_project_window_size",
+    "get_resource_file_info",
+    "get_scene_node_list",
+    "get_scene_script_assignments",
+    "get_top_down_2d_setup_guide",
+    "get_ui_scene_setup_guide",
+    "godot_call",
+    "godot_start_here",
+    "godot_suggest",
+    "list_project_audio_files",
+    "list_project_autoloads",
+    "list_project_files_by_extension",
+    "merge_json_file",
+    "read_gdscript_file",
+    "read_json_file",
+    "read_scene_file_raw",
+    "search_in_gdscript_files",
+    "set_project_main_scene",
+    "set_project_name",
+    "set_project_version",
+    "set_project_window_size",
+    "write_2d_lighting_controller",
+    "write_ability_cooldown_script",
+    "write_achievement_system_script",
+    "write_ai_follow_player_script",
+    "write_area_2d_detector_script",
+    "write_area_trigger_script",
+    "write_audio_manager_script",
+    "write_boomerang_script",
+    "write_boss_enemy_script",
+    "write_bouncy_projectile_script",
+    "write_buff_debuff_system_script",
+    "write_bullet_pool_script",
+    "write_camera_2d_smooth_script",
+    "write_camera_follow_3d_script",
+    "write_camera_follow_script",
+    "write_camera_shake_3d_script",
+    "write_card_game_base_script",
+    "write_checkpoint_script",
+    "write_checkpoint_system_script",
+    "write_chunk_loading_script",
+    "write_climbing_system_script",
+    "write_coin_script",
+    "write_combo_system_script",
+    "write_console_command_script",
+    "write_consumable_item_script",
+    "write_conveyor_belt_script",
+    "write_coyote_time_script",
+    "write_crafting_system_script",
+    "write_crosshair_script",
+    "write_currency_system_script",
+    "write_cutscene_player_script",
+    "write_cutscene_trigger_script",
+    "write_dash_ability_script",
+    "write_data_persistence_script",
+    "write_day_night_cycle_script",
+    "write_debug_overlay_script",
+    "write_destructible_object_script",
+    "write_destructible_terrain_script",
+    "write_dialogue_npc_script",
+    "write_dialogue_script",
+    "write_dialogue_system_script",
+    "write_dissolve_shader",
+    "write_door_script",
+    "write_double_buff_pickup_script",
+    "write_double_jump_script",
+    "write_drag_drop_slot_script",
+    "write_enemy_patrol_script",
+    "write_enemy_spawner_wave_script",
+    "write_enemy_state_machine_script",
+    "write_event_bus_script",
+    "write_experience_level_script",
+    "write_explosion_script",
+    "write_fan_push_script",
+    "write_floating_text_script",
+    "write_fog_of_war_script",
+    "write_follow_camera_3d_script",
+    "write_footstep_system_script",
+    "write_fov_cone_script",
+    "write_fps_counter_script",
+    "write_freeze_time_script",
+    "write_game_manager_script",
+    "write_game_over_screen_script",
+    "write_game_settings_script",
+    "write_gamepad_rumble_script",
+    "write_gdshader_file",
+    "write_global_events_script",
+    "write_grappling_hook_script",
+    "write_gravity_zone_script",
+    "write_grid_based_movement_script",
+    "write_grid_movement_script",
+    "write_grid_snap_script",
+    "write_health_bar_script",
+    "write_health_component_script",
+    "write_health_regeneration_script",
+    "write_health_system_script",
+    "write_hit_flash_script",
+    "write_hitbox_hurtbox_script",
+    "write_hitbox_script",
+    "write_homing_missile_script",
+    "write_hotbar_ui_script",
+    "write_hud_script",
+    "write_input_buffer_script",
+    "write_input_handler_script",
+    "write_input_remapping_script",
+    "write_interactable_object_script",
+    "write_interactable_script",
+    "write_interaction_prompt_script",
+    "write_inventory_script",
+    "write_inventory_system_script",
+    "write_item_pickup_script",
+    "write_json_file",
+    "write_key_door_system_script",
+    "write_ladder_script",
+    "write_leaderboard_script",
+    "write_level_manager_script",
+    "write_loading_screen_script",
+    "write_localization_helper_script",
+    "write_loot_drop_script",
+    "write_loot_table_script",
+    "write_magnet_attract_script",
+    "write_match_3_board_script",
+    "write_minimap_dot_script",
+    "write_minimap_icon_script",
+    "write_minimap_script",
+    "write_minimap_ui_script",
+    "write_moving_platform_script",
+    "write_notification_system_script",
+    "write_notifications_ui_script",
+    "write_object_pool_script",
+    "write_object_pooling_script",
+    "write_options_menu_script",
+    "write_outline_shader",
+    "write_parachute_script",
+    "write_parallax_background_script",
+    "write_parallax_layer_script",
+    "write_pathfinding_agent_2d_script",
+    "write_pathfinding_agent_script",
+    "write_pause_menu_script",
+    "write_pickup_script",
+    "write_pixelate_shader",
+    "write_platform_moving_script",
+    "write_platformer_ground_script",
+    "write_platformer_player_script",
+    "write_player_3d_controller_script",
+    "write_player_controller_script",
+    "write_pressure_plate_script",
+    "write_procedural_dungeon_script",
+    "write_projectile_script",
+    "write_pushback_script",
+    "write_quest_manager_script",
+    "write_quest_system_script",
+    "write_ragdoll_setup_script",
+    "write_random_map_generator_script",
+    "write_resource_class_script",
+    "write_resource_gathering_script",
+    "write_resource_loader_script",
+    "write_resource_preloader_script",
+    "write_respawn_system_script",
+    "write_rope_physics_script",
+    "write_rpg_stats_script",
+    "write_rpg_stats_system_script",
+    "write_save_load_script",
+    "write_save_load_system_script",
+    "write_save_screenshot_script",
+    "write_scene_manager_script",
+    "write_scene_transition_script",
+    "write_score_manager_script",
+    "write_screen_border_teleport_script",
+    "write_screen_flash_script",
+    "write_screen_shake_2d_script",
+    "write_screen_shake_script",
+    "write_shadow_clone_script",
+    "write_shield_system_script",
+    "write_shockwave_script",
+    "write_shop_system_script",
+    "write_signal_bus_script",
+    "write_simple_enemy_patrol_script",
+    "write_singleton_autoload_script",
+    "write_singleton_with_events_script",
+    "write_skill_tree_script",
+    "write_slide_puzzle_script",
+    "write_spawner_script",
+    "write_speed_boost_pad_script",
+    "write_speed_boost_script",
+    "write_spike_trap_script",
+    "write_sprite_outline_script",
+    "write_stamina_system_script",
+    "write_state_machine_base_script",
+    "write_state_machine_script",
+    "write_status_bar_ui_script",
+    "write_status_effect_script",
+    "write_stealth_detection_script",
+    "write_sticky_bomb_script",
+    "write_swimming_controller_script",
+    "write_throwable_object_script",
+    "write_timer_helper_script",
+    "write_timer_manager_script",
+    "write_tooltip_system_script",
+    "write_top_down_player_script",
+    "write_top_down_shooter_script",
+    "write_tornado_force_script",
+    "write_tower_defense_base_script",
+    "write_trail_script",
+    "write_trigger_zone_script",
+    "write_turn_based_battle_script",
+    "write_turn_based_combat_script",
+    "write_tween_helper_script",
+    "write_ui_animation_script",
+    "write_vehicle_controller_script",
+    "write_vfx_manager_script",
+    "write_vfx_spawn_script",
+    "write_vignette_shader",
+    "write_wall_jump_script",
+    "write_water_buoyancy_script",
+    "write_water_surface_shader",
+    "write_wave_spawner_script",
+    "write_waypoint_patrol_script",
+    "write_weather_system_script",
+    "write_xp_level_system_script",
+    "write_zipline_script"
+  ],
+  "evidenceLimitations": [
+    {
+      "id": "baseline:inspector-edit-property",
+      "evidenceReason": "Baseline mapping is represented_unverified."
+    },
+    {
+      "id": "baseline:output-panel-view-errors",
+      "evidenceReason": "Baseline mapping is broken."
+    },
+    {
+      "id": "baseline:play-controls-run-project",
+      "evidenceReason": "Baseline mapping is broken."
+    },
+    {
+      "id": "baseline:play-controls-stop-project",
+      "evidenceReason": "Baseline mapping is broken."
+    },
+    {
+      "id": "baseline:project-manager-create-project",
+      "evidenceReason": "Baseline mapping is broken."
+    },
+    {
+      "id": "baseline:project-manager-import-project",
+      "evidenceReason": "Baseline mapping is gap."
+    },
+    {
+      "id": "baseline:scene-dock-create-node",
+      "evidenceReason": "Baseline mapping is broken."
+    },
+    {
+      "id": "baseline:scene-dock-save-scene",
+      "evidenceReason": "Baseline mapping is broken."
+    },
+    {
+      "id": "baseline:script-editor-create-script",
+      "evidenceReason": "Baseline mapping is broken."
+    },
+    {
+      "id": "editor:editor-filesystem-browsing",
+      "evidenceReason": "Editor evidence records this capability as broken; represented_unverified."
+    },
+    {
+      "id": "editor:editor-inspector-access",
+      "evidenceReason": "Editor evidence records this capability as broken; represented_unverified."
+    },
+    {
+      "id": "editor:editor-resource-reimport",
+      "evidenceReason": "Editor evidence records this capability as broken; represented_unverified."
+    },
+    {
+      "id": "editor:editor-scene-execution",
+      "evidenceReason": "Editor evidence records this capability as broken; represented_unverified."
+    },
+    {
+      "id": "editor:editor-scene-lifecycle",
+      "evidenceReason": "Editor evidence records this capability as broken; represented_unverified."
+    },
+    {
+      "id": "editor:editor-scene-saving",
+      "evidenceReason": "Editor evidence records this capability as broken; represented_unverified."
+    },
+    {
+      "id": "editor:editor-scene-tree-inspection",
+      "evidenceReason": "Editor evidence records this capability as broken; represented_unverified."
+    },
+    {
+      "id": "editor:editor-scene-tree-mutation",
+      "evidenceReason": "Editor evidence records this capability as broken; represented_unverified."
+    },
+    {
+      "id": "editor:editor-scene-tree-selection",
+      "evidenceReason": "Editor evidence records this capability as broken; represented_unverified."
+    },
+    {
+      "id": "editor:editor-script-authoring",
+      "evidenceReason": "Editor evidence records this capability as broken; represented_unverified."
+    },
+    {
+      "id": "editor:editor-undo-redo",
+      "evidenceReason": "Editor evidence records this capability as broken; represented_unverified."
+    },
+    {
+      "id": "editor:editor-viewport-focus",
+      "evidenceReason": "Editor evidence records this capability as broken; represented_unverified."
+    },
+    {
+      "id": "headless:add_accept_dialog_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_anchor_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_animatable_body_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_animatable_body_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_animated_sprite_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_animation_key_value",
+      "evidenceReason": "Bundled operation add_animation_key_value is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:add_animation_keyframe",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_animation_track",
+      "evidenceReason": "Bundled operation add_animation_track is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:add_animation_tree_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_area_2d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_area_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_aspect_ratio_container",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_aspect_ratio_container_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_audio_listener_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_audio_listener_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_audio_stream_player",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_audio_stream_player_2d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_audio_stream_player_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_back_buffer_copy",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_billboard_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_bone_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_bone_attachment_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_bone_attachment_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_box_container_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_camera_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_camera_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_camera_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_canvas_group_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_canvas_layer_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_canvas_modulate",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_center_container_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_character_body_2d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_character_body_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_character_body_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_character_body_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_check_box_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_check_button_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_code_edit_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_collision_polygon_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_collision_polygon_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_collision_shape_2d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_collision_shape_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_collision_shape_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_collision_shape_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_color_picker_button_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_color_picker_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_color_rect",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_color_rect_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_cone_twist_joint_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_confirmation_dialog_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_cpu_particles_2d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_cpu_particles_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_cpu_particles_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_cpu_particles_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_csg_box",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_csg_box_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_csg_combiner",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_csg_combiner_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_csg_cylinder",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_csg_cylinder_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_csg_sphere",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_csg_sphere_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_csg_torus_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_decal_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_decal_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_directional_light_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_directional_light_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_directional_light_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_file_dialog_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_flow_container",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_flow_container_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_fog_volume",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_fog_volume_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_generic_6dof_joint_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_gpu_particles_2d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_gpu_particles_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_gpu_particles_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_gpu_particles_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_graph_edit_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_graph_node_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_grid_container",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_grid_container_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_groove_joint_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_h_scroll_bar_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_h_separator_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_h_slider_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_h_split_container_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_hflow_container_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_hinge_joint_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_hinge_joint_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_http_request",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_http_request_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_input_action_to_project",
+      "evidenceReason": "Bundled operation add_input_action is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:add_item_list_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_joint_2d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_joint_2d_damped_spring_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_joint_2d_groove_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_joint_2d_pin_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_joint_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_label_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_label_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_light_occluder_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_lightmap_gi",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_lightmap_gi_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_line_2d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_line_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_link_button_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_margin_container_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_marker_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_marker_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_menu_button_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_mesh_instance",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_mesh_instance_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_mesh_instance_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_multi_mesh_instance_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_multi_mesh_instance_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_multiplayer_spawner_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_multiplayer_synchronizer_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_navigation_agent_2d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_navigation_agent_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_navigation_agent_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_navigation_link_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_navigation_link_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_navigation_obstacle_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_navigation_obstacle_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_navigation_region_2d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_navigation_region_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_navigation_region_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_navigation_region_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_nine_patch_rect",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_nine_patch_rect_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_node",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_node_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_node_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_occluder_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_occluder_instance_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_occluder_instance_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_omni_light_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_omni_light_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_open_xr_camera_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_open_xr_controller_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_open_xr_hand_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_open_xr_hand_tracker_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_open_xr_origin_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_option_button_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_panel_container_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_panel_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_parallax_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_parallax_background",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_parallax_layer",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_path_2d_node",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_path_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_path_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_path_follow_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_path_follow_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_physical_bone_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_physical_bone_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_physics_body_3d_static_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_pin_joint_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_point_light_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_polygon_2d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_polygon_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_popup_menu_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_popup_panel_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_ray_cast_2d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_ray_cast_2d_from_camera",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_ray_cast_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_ray_cast_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_ray_cast_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_reflection_probe",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_reflection_probe_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_remote_transform_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_remote_transform_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_remote_transform_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_rich_text_label_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_rigid_body_2d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_rigid_body_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_rigid_body_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_scene_instance",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_scroll_container",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_scroll_container_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_separator_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_shape_cast_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_shape_cast_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_skeleton_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_skeleton_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_skeleton_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_skeleton_ik_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_slider_joint_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_soft_body_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_split_container",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_split_container_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_spot_light_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_spot_light_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_spring_arm_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_spring_arm_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_spring_joint_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_sprite_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_sprite_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_static_body_2d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_static_body_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_static_body_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_sub_viewport",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_sub_viewport_container",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_sub_viewport_container_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_sub_viewport_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_tab_bar_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_tab_container",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_tab_container_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_text_edit_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_texture_button_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_texture_progress_bar",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_texture_progress_bar_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_texture_rect_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_tile_map_layer",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_tile_map_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_tileset_custom_data_layer",
+      "evidenceReason": "Bundled operation add_tileset_custom_data_layer is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:add_tileset_physics_layer",
+      "evidenceReason": "Bundled operation add_tileset_physics_layer is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:add_tileset_source",
+      "evidenceReason": "Bundled operation add_tileset_source is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:add_tileset_terrain_set",
+      "evidenceReason": "Bundled operation add_tileset_terrain_set is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:add_timer_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_touch_screen_button",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_tree_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_tween_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_v_scroll_bar_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_v_separator_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_v_slider_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_v_split_container_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_vehicle_body_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_vehicle_body_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_vehicle_wheel_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_vehicle_wheel_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_vflow_container_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_video_stream_player",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_visibility_notifier_2d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_visible_on_screen_notifier_2d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_visible_on_screen_notifier_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_visible_on_screen_notifier_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_visual_instance_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_voxel_gi",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_voxel_gi_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_window_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_world_environment",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_world_environment_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_xr_camera_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_xr_camera_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_xr_controller_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_xr_origin_3d",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:add_xr_origin_3d_to_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:attach_script",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:check_node_has_children",
+      "evidenceReason": "Bundled operation check_node_has_children is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:create_animation_library_resource",
+      "evidenceReason": "Bundled operation create_animation_library_resource is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:create_animation_track",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:create_audio_stream_ogg",
+      "evidenceReason": "Bundled operation create_audio_stream_ogg is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:create_audio_stream_wav_resource",
+      "evidenceReason": "Bundled operation create_audio_stream_wav_resource is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:create_bitmap_font_resource",
+      "evidenceReason": "Bundled operation create_bitmap_font_resource is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:create_dynamic_font_resource",
+      "evidenceReason": "Bundled operation create_dynamic_font_resource is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:create_gdscript_resource",
+      "evidenceReason": "Bundled operation create_gdscript_resource is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:create_gradient_texture_resource",
+      "evidenceReason": "Bundled operation create_gradient_texture_resource is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:create_image_from_color",
+      "evidenceReason": "Bundled operation create_image_from_color is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:create_packed_scene_from_script",
+      "evidenceReason": "Bundled operation create_packed_scene_from_script is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:create_resource",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:create_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:create_standard_material_3d",
+      "evidenceReason": "Bundled operation create_standard_material_3d is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:create_tileset_resource",
+      "evidenceReason": "Bundled operation create_tileset_resource is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:curve_create",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:delete_node_from_scene",
+      "evidenceReason": "Bundled operation delete_node_from_scene is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:duplicate_node_in_scene",
+      "evidenceReason": "Bundled operation duplicate_node_in_scene is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:export_mesh_library",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:export_project",
+      "evidenceReason": "Direct headless Godot route is registered but has no recorded production artifact read-back."
+    },
+    {
+      "id": "headless:find_node_by_type_in_scene",
+      "evidenceReason": "Bundled operation find_node_by_type_in_scene is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:generate_mesh_normals",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:get_animation_key_count",
+      "evidenceReason": "Bundled operation get_animation_key_count is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:get_animation_names",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:get_animation_track_count",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:get_class_api",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:get_font_glyph_count",
+      "evidenceReason": "Bundled operation get_font_glyph_count is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:get_gdscript_class_hierarchy",
+      "evidenceReason": "Bundled operation get_gdscript_class_hierarchy is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:get_gdscript_parse_errors",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:get_node_property_in_scene",
+      "evidenceReason": "Bundled operation get_node_property_in_scene is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:get_resource_import_metadata",
+      "evidenceReason": "Bundled operation get_resource_import_metadata is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:get_scene_resource_dependencies",
+      "evidenceReason": "Bundled operation get_scene_resource_dependencies is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:get_scene_root_type",
+      "evidenceReason": "Bundled operation get_scene_root_type is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:get_script_exported_properties",
+      "evidenceReason": "Bundled operation get_script_exported_properties is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:get_tileset_source_count",
+      "evidenceReason": "Bundled operation get_tileset_source_count is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:get_uid",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:gradient_create",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:import_reimport",
+      "evidenceReason": "Direct headless Godot route is registered but has no recorded production artifact read-back."
+    },
+    {
+      "id": "headless:inspect_resource_properties",
+      "evidenceReason": "Bundled operation inspect_resource_properties is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:list_gdscript_classes",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:list_node_properties_in_scene",
+      "evidenceReason": "Bundled operation list_node_properties_in_scene is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:list_nodes_without_scripts",
+      "evidenceReason": "Bundled operation list_nodes_without_scripts is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:list_resources_of_type",
+      "evidenceReason": "Bundled operation list_resources_of_type is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:list_scene_signals",
+      "evidenceReason": "Bundled operation list_scene_signals is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:list_system_fonts",
+      "evidenceReason": "Bundled operation list_system_fonts is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:load_sprite",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:manage_resource",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:manage_scene_signals",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:manage_scene_structure",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:manage_theme_resource",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:modify_scene_node",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:path_2d_add_point",
+      "evidenceReason": "Bundled operation path_2d_add_point is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:path_3d_add_point",
+      "evidenceReason": "Bundled operation path_3d_add_point is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:read_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:remove_scene_node",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:rename_node_in_scene",
+      "evidenceReason": "Bundled operation rename_node_in_scene is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:reparent_node_in_scene",
+      "evidenceReason": "Bundled operation reparent_node_in_scene is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:save_scene",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:scene_create_inherited",
+      "evidenceReason": "Bundled operation create_inherited_scene is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:set_animation_loop_mode",
+      "evidenceReason": "Bundled operation set_animation_loop_mode is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:set_collision_box_3d_size",
+      "evidenceReason": "Bundled operation set_collision_box_3d_size is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:set_collision_capsule_2d",
+      "evidenceReason": "Bundled operation set_collision_capsule_2d is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:set_collision_capsule_3d",
+      "evidenceReason": "Bundled operation set_collision_capsule_3d is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:set_collision_rect_extents",
+      "evidenceReason": "Bundled operation set_collision_rect_extents is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:set_collision_shape_2d_radius",
+      "evidenceReason": "Bundled operation set_collision_shape_2d_radius is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:set_collision_shape_2d_type",
+      "evidenceReason": "Bundled operation set_collision_shape_2d_type is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:set_collision_shape_3d_type",
+      "evidenceReason": "Bundled operation set_collision_shape_3d_type is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:set_collision_sphere_3d_radius",
+      "evidenceReason": "Bundled operation set_collision_sphere_3d_radius is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:set_font_default_size",
+      "evidenceReason": "Bundled operation set_font_default_size is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:set_node_position_in_scene",
+      "evidenceReason": "Bundled operation set_node_position_in_scene is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:set_node_property_in_scene",
+      "evidenceReason": "Bundled operation set_node_property_in_scene is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:set_node_rotation_in_scene",
+      "evidenceReason": "Bundled operation set_node_rotation_in_scene is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:set_node_scale_in_scene",
+      "evidenceReason": "Bundled operation set_node_scale_in_scene is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:set_project_gravity",
+      "evidenceReason": "Bundled operation set_project_setting_value is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:set_project_physics_fps",
+      "evidenceReason": "Bundled operation set_project_setting_value is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:set_project_window_mode",
+      "evidenceReason": "Bundled operation set_project_setting_value is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:spriteframes_add_animation",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:spriteframes_add_frame",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:spriteframes_create",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:tileset_add_source",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:tileset_create",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:update_project_uids",
+      "evidenceReason": "No recorded production MCP execution and artifact read-back."
+    },
+    {
+      "id": "headless:validate_scene_physics",
+      "evidenceReason": "Bundled operation validate_scene_physics is missing from src/scripts/godot_operations.gd."
+    },
+    {
+      "id": "headless:validate_script",
+      "evidenceReason": "Direct headless Godot route is registered but has no recorded production artifact read-back."
+    },
+    {
+      "id": "runtime:runtime-animation-control",
+      "evidenceReason": "No production MCP invocation through port 9090 with a concrete running-fixture state mutation or read-back is recorded."
+    },
+    {
+      "id": "runtime:runtime-audio-control",
+      "evidenceReason": "No production MCP invocation through port 9090 with a concrete running-fixture state mutation or read-back is recorded."
+    },
+    {
+      "id": "runtime:runtime-debugging",
+      "evidenceReason": "No production MCP invocation through port 9090 with a concrete running-fixture state mutation or read-back is recorded."
+    },
+    {
+      "id": "runtime:runtime-game-control",
+      "evidenceReason": "TypeScript port-9090 commands lack shipped bridge handlers: terrain, video."
+    },
+    {
+      "id": "runtime:runtime-input-control",
+      "evidenceReason": "No production MCP invocation through port 9090 with a concrete running-fixture state mutation or read-back is recorded."
+    },
+    {
+      "id": "runtime:runtime-live-node-mutation",
+      "evidenceReason": "TypeScript port-9090 commands lack shipped bridge handlers: release_focus, set_button_group, set_control_focus_owner, set_mouse_mode, set_multimesh_instance_color, set_multimesh_instance_transform_3d, set_scroll_container_scroll."
+    },
+    {
+      "id": "runtime:runtime-network-system-control",
+      "evidenceReason": "No production MCP invocation through port 9090 with a concrete running-fixture state mutation or read-back is recorded."
+    },
+    {
+      "id": "runtime:runtime-performance-monitoring",
+      "evidenceReason": "No production MCP invocation through port 9090 with a concrete running-fixture state mutation or read-back is recorded."
+    },
+    {
+      "id": "runtime:runtime-physics-control",
+      "evidenceReason": "No production MCP invocation through port 9090 with a concrete running-fixture state mutation or read-back is recorded."
+    },
+    {
+      "id": "runtime:runtime-remote-inspection",
+      "evidenceReason": "TypeScript port-9090 commands lack shipped bridge handlers: get_astar3d_point_path, get_button_group, get_control_focus_owner, get_mouse_button_state, get_nine_patch_rect_info, get_scroll_container_scroll."
+    },
+    {
+      "id": "runtime:runtime-rendering-visual-control",
+      "evidenceReason": "TypeScript port-9090 commands lack shipped bridge handlers: assign_shader_to_mesh, visual_shader."
+    },
+    {
+      "id": "runtime:runtime-scene-execution-control",
+      "evidenceReason": "No production MCP invocation through port 9090 with a concrete running-fixture state mutation or read-back is recorded."
+    }
+  ]
+}
