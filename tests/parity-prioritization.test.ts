@@ -86,6 +86,14 @@ describe("parity prioritization", () => {
     expect(audit.recommendations.add).toHaveLength(1);
     expect(audit.recommendations.repair).toHaveLength(21);
     expect(audit.recommendations.verify).toHaveLength(19);
+    expect(
+      [...new Set(audit.recommendations.repair.map(({ state }: any) => state))],
+      "repair recommendations must preserve the broken evidence state rather than their action label",
+    ).toEqual(["broken"]);
+    expect(
+      [...new Set(audit.recommendations.verify.map(({ state }: any) => state))],
+      "verify recommendations must preserve the represented-unverified evidence state rather than their action label",
+    ).toEqual(["represented_unverified"]);
     expect(keys("repair")).toEqual([
       "repair:editor:editor-filesystem-browsing",
       "repair:editor:editor-inspector-access",
