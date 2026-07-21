@@ -1,0 +1,226 @@
+{
+  "requiredPluginFiles": [
+    "src/scripts/editor_mcp_server.gd",
+    "src/scripts/plugin.cfg"
+  ],
+  "summary": {
+    "denominator": 12,
+    "numerator": 0,
+    "states": {
+      "verified": 0,
+      "represented_unverified": 0,
+      "broken": 12,
+      "gap": 0
+    }
+  },
+  "records": [
+    {
+      "disposition": "mcp_only",
+      "mcpTools": ["connect_to_godot_editor", "disconnect_from_godot_editor"],
+      "handlerCommands": [],
+      "mcpOnlyReason": "These tools manage the localhost port-9091 transport rather than a Godot editor UI action."
+    },
+    {
+      "capabilityId": "editor-scene-tree-inspection",
+      "disposition": "ui_capability",
+      "mcpTools": [
+        "editor_get_scene_info",
+        "editor_get_scene_tree",
+        "get_editor_current_scene_path"
+      ],
+      "handlerCommands": [
+        "get_scene_info",
+        "get_scene_tree",
+        "get_editor_current_scene_path"
+      ],
+      "state": "broken",
+      "representation": "represented_unverified",
+      "dogfood": {
+        "setup": "Install and enable the Godot MCP Editor plugin, open a scene with a root and child node, then connect the MCP client to the editor.",
+        "action": "Call editor_get_scene_tree and get_editor_current_scene_path.",
+        "observableResult": "The response names the open scene path and lists the root and child node hierarchy visible in the Scene dock."
+      }
+    },
+    {
+      "capabilityId": "editor-scene-tree-selection",
+      "disposition": "ui_capability",
+      "mcpTools": [
+        "editor_get_selected_node",
+        "get_editor_selected_nodes",
+        "editor_select_node",
+        "editor_select_node_by_path"
+      ],
+      "handlerCommands": [
+        "get_selected_node",
+        "get_editor_selected_nodes",
+        "select_node",
+        "editor_select_node_by_path"
+      ],
+      "state": "broken",
+      "representation": "represented_unverified",
+      "dogfood": {
+        "setup": "With the enabled plugin and an open scene containing a child named Sprite2D, leave a different node selected in the Scene dock.",
+        "action": "Call editor_select_node with nodePath set to Sprite2D, then call get_editor_selected_nodes.",
+        "observableResult": "Sprite2D is highlighted in the Scene dock and the returned selected-node list includes Sprite2D rather than the previously selected node."
+      }
+    },
+    {
+      "capabilityId": "editor-scene-tree-mutation",
+      "disposition": "ui_capability",
+      "mcpTools": [
+        "editor_add_node",
+        "editor_delete_node",
+        "editor_duplicate_node",
+        "editor_move_node"
+      ],
+      "handlerCommands": [
+        "add_node",
+        "delete_node",
+        "duplicate_node",
+        "move_node"
+      ],
+      "state": "broken",
+      "representation": "represented_unverified",
+      "dogfood": {
+        "setup": "Open a disposable scene with a Node2D root and enable the plugin connection.",
+        "action": "Call editor_add_node for a Sprite2D child, duplicate it, move the duplicate under a second Node2D, and delete the original.",
+        "observableResult": "The Scene dock ends with only the duplicate Sprite2D under the second Node2D, matching the mutation sequence."
+      }
+    },
+    {
+      "capabilityId": "editor-inspector-access",
+      "disposition": "ui_capability",
+      "mcpTools": [
+        "editor_set_node_property",
+        "editor_get_node_property",
+        "get_editor_inspector_object"
+      ],
+      "handlerCommands": [
+        "set_node_property",
+        "get_node_property",
+        "get_editor_inspector_object"
+      ],
+      "state": "broken",
+      "representation": "represented_unverified",
+      "dogfood": {
+        "setup": "Open a scene with a Sprite2D named Icon and select it so its Inspector is visible.",
+        "action": "Call editor_set_node_property for Icon.visible=false, then call editor_get_node_property and get_editor_inspector_object.",
+        "observableResult": "The Icon row becomes hidden in the viewport, the property read reports false, and the Inspector response identifies Icon."
+      }
+    },
+    {
+      "capabilityId": "editor-viewport-focus",
+      "disposition": "ui_capability",
+      "mcpTools": ["editor_focus_node"],
+      "handlerCommands": ["focus_node"],
+      "state": "broken",
+      "representation": "represented_unverified",
+      "dogfood": {
+        "setup": "Open a large 2D scene with a named node positioned away from the current viewport center.",
+        "action": "Call editor_focus_node with the distant node path.",
+        "observableResult": "The editor viewport centers the named node and makes it visible without manually panning."
+      }
+    },
+    {
+      "capabilityId": "editor-scene-lifecycle",
+      "disposition": "ui_capability",
+      "mcpTools": ["editor_open_scene", "editor_create_scene"],
+      "handlerCommands": ["open_scene", "create_scene"],
+      "state": "broken",
+      "representation": "represented_unverified",
+      "dogfood": {
+        "setup": "Keep a saved res://Existing.tscn scene available in a project with the plugin enabled.",
+        "action": "Call editor_create_scene with rootType Node2D, then call editor_open_scene for res://Existing.tscn.",
+        "observableResult": "A new Node2D scene is created and then the Scene dock switches back to Existing.tscn."
+      }
+    },
+    {
+      "capabilityId": "editor-scene-saving",
+      "disposition": "ui_capability",
+      "mcpTools": ["editor_save_scene"],
+      "handlerCommands": ["save_scene"],
+      "state": "broken",
+      "representation": "represented_unverified",
+      "dogfood": {
+        "setup": "Open a saved scene, make an unsaved property change, and confirm the scene tab shows its modified indicator.",
+        "action": "Call editor_save_scene.",
+        "observableResult": "The Scene tab's modified indicator clears and reopening the scene preserves the changed property."
+      }
+    },
+    {
+      "capabilityId": "editor-undo-redo",
+      "disposition": "ui_capability",
+      "mcpTools": [
+        "editor_undo",
+        "editor_redo",
+        "get_editor_undo_redo_history"
+      ],
+      "handlerCommands": ["undo", "redo", "get_editor_undo_redo_history"],
+      "state": "broken",
+      "representation": "represented_unverified",
+      "dogfood": {
+        "setup": "Open a disposable scene, add a node through the editor, and leave that change unsaved.",
+        "action": "Call get_editor_undo_redo_history, editor_undo, and editor_redo in that order.",
+        "observableResult": "The node disappears after undo, returns after redo, and the history response changes consistently with the available editor action."
+      }
+    },
+    {
+      "capabilityId": "editor-filesystem-browsing",
+      "disposition": "ui_capability",
+      "mcpTools": [
+        "editor_get_filesystem_files",
+        "get_editor_filesystem_files"
+      ],
+      "handlerCommands": [
+        "get_filesystem_files",
+        "get_editor_filesystem_files"
+      ],
+      "state": "broken",
+      "representation": "represented_unverified",
+      "dogfood": {
+        "setup": "Create res://art/icon.svg in a project and refresh the editor FileSystem dock with the plugin enabled.",
+        "action": "Call editor_get_filesystem_files for res://art and get_editor_filesystem_files for the same folder.",
+        "observableResult": "Both responses list icon.svg, matching the file visible under res://art in the FileSystem dock."
+      }
+    },
+    {
+      "capabilityId": "editor-scene-execution",
+      "disposition": "ui_capability",
+      "mcpTools": ["editor_run_scene", "editor_stop_scene"],
+      "handlerCommands": ["run_scene", "stop_scene"],
+      "state": "broken",
+      "representation": "represented_unverified",
+      "dogfood": {
+        "setup": "Open a runnable scene with a visible Label and enable the editor plugin connection.",
+        "action": "Call editor_run_scene, wait for the game window to appear, then call editor_stop_scene.",
+        "observableResult": "The current scene opens in a game window and that window closes after the stop command."
+      }
+    },
+    {
+      "capabilityId": "editor-script-authoring",
+      "disposition": "ui_capability",
+      "mcpTools": ["editor_create_script", "editor_attach_script"],
+      "handlerCommands": ["create_script", "attach_script"],
+      "state": "broken",
+      "representation": "represented_unverified",
+      "dogfood": {
+        "setup": "Open a scene with a Node2D named Actor and enable the plugin connection.",
+        "action": "Call editor_create_script for res://actor.gd with a minimal Node2D script, then call editor_attach_script for Actor.",
+        "observableResult": "actor.gd appears in the FileSystem dock and Actor shows the attached-script icon in the Scene dock."
+      }
+    },
+    {
+      "capabilityId": "editor-resource-reimport",
+      "disposition": "ui_capability",
+      "mcpTools": ["editor_reimport_file"],
+      "handlerCommands": ["reimport_file"],
+      "state": "broken",
+      "representation": "represented_unverified",
+      "dogfood": {
+        "setup": "Place a PNG at res://art/test.png, open its Import dock, and change an import option without applying it.",
+        "action": "Call editor_reimport_file with filePath set to res://art/test.png.",
+        "observableResult": "Godot reimports test.png and the Import dock reflects the applied option with the resource refreshed."
+      }
+    }
+  ]
+}
