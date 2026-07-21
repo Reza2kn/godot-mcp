@@ -9,6 +9,9 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const entryPoint = join(root, "build", "index.js");
 const baseline = readJson("audit/ui-baseline.json");
 const mappings = readJson("audit/mappings.json").mappings;
+const editorEvidence = readJson("audit/editor-evidence.json");
+const runtimeEvidence = readJson("audit/runtime-evidence.json");
+const headlessEvidence = readJson("audit/headless-evidence.json");
 const readmeClaims = readReadmeClaims(
   readFileSync(join(root, "README.md"), "utf8"),
 );
@@ -42,6 +45,141 @@ function hasProductionEvidence(mapping, fullTools, dispatchTools) {
     mapping.tools.every((tool) => fullTools.includes(tool)) &&
     mapping.tools.every((tool) => dispatchTools.includes(tool))
   );
+}
+
+function recommendationAction(state) {
+  if (state === "gap") return "add";
+  if (state === "broken") return "repair";
+  if (state === "represented_unverified") return "verify";
+  return undefined;
+}
+
+function recommendationDetails(record) {
+  return (
+    record.reason ??
+    record.dogfood?.observableResult ??
+    record.userAction ??
+    "no successful production verification is recorded"
+  );
+}
+
+function addRecommendationFinding(groups, finding) {
+  const action = recommendationAction(finding.state);
+  if (!action) return;
+  const key = `${action}:${finding.source}:${finding.capabilityId}`;
+  const group = groups.get(key) ?? {
+    action,
+    source: finding.source,
+    capabilityId: finding.capabilityId,
+    state: finding.state,
+    affectedTools: new Set(),
+    evidenceRefs: new Set(),
+    details: new Set(),
+  };
+  for (const tool of finding.tools) group.affectedTools.add(tool);
+  for (const evidenceRef of finding.evidenceRefs)
+    group.evidenceRefs.add(evidenceRef);
+  group.details.add(finding.detail);
+  groups.set(key, group);
+}
+
+function createRationale(group) {
+  const detail = [...group.details].sort().join(" ");
+  if (group.action === "add")
+    return `${detail} has no MCP tool mapping, so MCP needs an addition.`;
+  if (group.action === "repair")
+    return `${group.capabilityId} has broken ${group.source} evidence and needs repair: ${detail}`;
+  return `${group.capabilityId} is represented by MCP but still needs production verification: ${detail}`;
+}
+
+export function createRecommendations({
+  capabilities,
+  mappings: mappingRows,
+  editorRecords,
+  runtimeRecords,
+  headlessRecords,
+}) {
+  const groups = new Map();
+  const mappingByCapability = new Map(
+    mappingRows.map((mapping) => [mapping.capabilityId, mapping]),
+  );
+  for (const capability of capabilities) {
+    const mapping = mappingByCapability.get(capability.id) ?? {
+      tools: [],
+      state: "gap",
+    };
+    const userAction =
+      capability.id === "project-manager-import-project"
+        ? "Import an existing Godot project"
+        : capability.userAction;
+    addRecommendationFinding(groups, {
+      source: "baseline",
+      capabilityId: capability.id,
+      state: mapping.state,
+      tools: mapping.tools,
+      evidenceRefs: ["audit/ui-baseline.json", "audit/mappings.json"],
+      detail: `${userAction} in the ${capability.editorSurface}`,
+    });
+  }
+  for (const record of editorRecords) {
+    if (record.disposition !== "ui_capability") continue;
+    addRecommendationFinding(groups, {
+      source: "editor",
+      capabilityId: record.capabilityId,
+      state: record.state,
+      tools: record.mcpTools,
+      evidenceRefs: ["audit/editor-evidence.json"],
+      detail: recommendationDetails(record),
+    });
+  }
+  for (const record of runtimeRecords) {
+    if (record.disposition !== "ui_capability") continue;
+    addRecommendationFinding(groups, {
+      source: "runtime",
+      capabilityId: record.capabilityId,
+      state: record.state,
+      tools: record.tools,
+      evidenceRefs: ["audit/runtime-evidence.json"],
+      detail: recommendationDetails(record),
+    });
+  }
+  for (const record of headlessRecords) {
+    if (record.disposition !== "ui_capability") continue;
+    addRecommendationFinding(groups, {
+      source: "headless",
+      capabilityId: record.capability,
+      state: record.state,
+      tools: [record.tool],
+      evidenceRefs: ["audit/headless-evidence.json"],
+      detail: recommendationDetails(record),
+    });
+  }
+
+  const lanes = { add: [], repair: [], verify: [] };
+  for (const group of groups.values()) {
+    lanes[group.action].push({
+      action: group.action,
+      source: group.source,
+      capabilityId: group.capabilityId,
+      state: group.state,
+      affectedTools: unique([...group.affectedTools]),
+      evidenceRefs: unique([...group.evidenceRefs]),
+      rationale: createRationale(group),
+    });
+  }
+  for (const lane of Object.values(lanes)) {
+    lane.sort(
+      (left, right) =>
+        right.affectedTools.length - left.affectedTools.length ||
+        `${left.action}:${left.source}:${left.capabilityId}`.localeCompare(
+          `${right.action}:${right.source}:${right.capabilityId}`,
+        ),
+    );
+    lane.forEach((recommendation, index) => {
+      recommendation.rank = index + 1;
+    });
+  }
+  return lanes;
 }
 
 export function readReadmeClaims(source) {
@@ -198,6 +336,13 @@ export async function createAuditReport() {
       claimedTotals: readmeClaims,
     },
     findings,
+    recommendations: createRecommendations({
+      capabilities: baseline.capabilities,
+      mappings,
+      editorRecords: editorEvidence.records,
+      runtimeRecords: runtimeEvidence.records,
+      headlessRecords: headlessEvidence.records,
+    }),
     summary: summarizeParity({
       capabilities: baseline.capabilities,
       mappings,
