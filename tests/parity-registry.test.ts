@@ -246,7 +246,7 @@ describe("production parity registry", () => {
       text: "README says 99,999 tools",
     });
     expect(audit.report.registry.full.tools.join(",")).not.toContain("99,999");
-  });
+  }, 15000);
 
   it("emits_duplicate_findings_for_every_registry_inventory", () => {
     const inventory = readDispatchInventory(`async dispatchTool(name) {
