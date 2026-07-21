@@ -206,4 +206,50 @@ describe("parity prioritization", () => {
       "a state change must create exactly one verification recommendation",
     ).toHaveLength(1);
   });
+
+  it("uses_the_stable_key_tie_break_for_equal_breadth_groups", () => {
+    const input = {
+      capabilities: [],
+      mappings: [],
+      editorRecords: [
+        {
+          disposition: "ui_capability",
+          capabilityId: "editor-zulu",
+          state: "broken",
+          mcpTools: ["zulu_tool"],
+          reason: "zulu editor route is broken",
+        },
+        {
+          disposition: "ui_capability",
+          capabilityId: "editor-alpha",
+          state: "broken",
+          mcpTools: ["alpha_tool"],
+          reason: "alpha editor route is broken",
+        },
+      ],
+      runtimeRecords: [],
+      headlessRecords: [],
+    };
+
+    const recommendations = createRecommendations(input);
+    const reorderedRecommendations = createRecommendations({
+      ...input,
+      editorRecords: [...input.editorRecords].reverse(),
+    });
+
+    expect(
+      recommendations.repair.map(({ capabilityId, rank }) => ({
+        capabilityId,
+        rank,
+      })),
+      "equal breadth repair groups must use their stable key rather than evidence insertion order",
+    ).toEqual([
+      { capabilityId: "editor-alpha", rank: 1 },
+      { capabilityId: "editor-zulu", rank: 2 },
+    ]);
+    expect(
+      reorderedRecommendations.repair,
+      "reordered equal breadth evidence must retain the canonical recommendation ranks",
+    ).toEqual(recommendations.repair);
+  });
 });
