@@ -3767,7 +3767,7 @@ func _cmd_navigate_path(params: Dictionary) -> void:
 	if is_3d:
 		var start_pos: Vector3 = Vector3(float(start_dict.get("x", 0)), float(start_dict.get("y", 0)), float(start_dict.get("z", 0)))
 		var end_pos: Vector3 = Vector3(float(end_dict.get("x", 0)), float(end_dict.get("y", 0)), float(end_dict.get("z", 0)))
-		var map_rid: RID = get_tree().root.get_world_3d().get_navigation_map()
+		var map_rid: RID = get_tree().root.world_3d.get_navigation_map()
 		var path: PackedVector3Array = NavigationServer3D.map_get_path(map_rid, start_pos, end_pos, optimize)
 		var total_length: float = 0.0
 		for i in range(1, path.size()):
@@ -6790,8 +6790,12 @@ func _cmd_animtree_get_structure(params: Dictionary) -> void:
 	for from_name in node_names:
 		for to_name in node_names:
 			if root_sm.has_transition(from_name, to_name):
-				var t = root_sm.get_transition(from_name, to_name)
-				transitions.append({"from": from_name, "to": to_name, "switch_mode": t.switch_mode})
+				var t = null
+				for ti in range(root_sm.get_transition_count()):
+					if str(root_sm.get_transition_from(ti)) == str(from_name) and str(root_sm.get_transition_to(ti)) == str(to_name):
+						t = root_sm.get_transition(ti)
+						break
+				transitions.append({"from": from_name, "to": to_name, "switch_mode": t.switch_mode if t != null else 0})
 	_send_response({"success": true, "states": states, "transitions": transitions, "active_state": str(tree.get("parameters/playback").get_current_node()) if tree.get("parameters/playback") else ""})
 
 
@@ -6918,7 +6922,7 @@ func _cmd_get_performance_counters(params: Dictionary) -> void:
 	var counters_to_get = requested if not requested.is_empty() else ALL_COUNTERS
 	var results: Dictionary = {}
 	for name in counters_to_get:
-		var idx: int = Performance.MONITOR_NAMES.find(name) if "MONITOR_NAMES" in Performance else -1
+		var idx: int = -1
 		if idx >= 0:
 			results[name] = Performance.get_monitor(idx)
 		else:
@@ -7864,32 +7868,6 @@ func _cmd_get_tilemap_info(params: Dictionary) -> void:
 		var cells = tm.get_used_cells(i)
 		layers.append({"index": i, "name": tm.get_layer_name(i), "enabled": tm.is_layer_enabled(i), "cell_count": cells.size()})
 	_send_response({"success": true, "tile_set": str(tm.tile_set), "cell_quadrant_size": tm.rendering_quadrant_size, "layers": layers})
-
-func _cmd_tilemap_set_cell(params: Dictionary) -> void:
-	var node_path: String = params.get("node_path", "")
-	var layer: int = params.get("layer", 0)
-	var x: int = params.get("x", 0)
-	var y: int = params.get("y", 0)
-	var source_id: int = params.get("source_id", 0)
-	var atlas_x: int = params.get("atlas_x", 0)
-	var atlas_y: int = params.get("atlas_y", 0)
-	var node = get_tree().root.get_node_or_null(NodePath(node_path))
-	if node == null or not node is TileMap:
-		_send_response({"error": "TileMap not found: " + node_path})
-		return
-	(node as TileMap).set_cell(layer, Vector2i(x, y), source_id, Vector2i(atlas_x, atlas_y))
-	_send_response({"success": true, "coords": {"x": x, "y": y}, "layer": layer})
-
-func _cmd_tilemap_clear(params: Dictionary) -> void:
-	var node_path: String = params.get("node_path", "")
-	var layer: int = params.get("layer", 0)
-	var node = get_tree().root.get_node_or_null(NodePath(node_path))
-	if node == null or not node is TileMap:
-		_send_response({"error": "TileMap not found: " + node_path})
-		return
-	(node as TileMap).clear_layer(layer)
-	_send_response({"success": true, "layer": layer})
-
 func _cmd_animation_tree_get_state(params: Dictionary) -> void:
 	var node_path: String = params.get("node_path", "")
 	var node = get_tree().root.get_node_or_null(NodePath(node_path))
@@ -7909,23 +7887,6 @@ func _cmd_animation_tree_set_param(params: Dictionary) -> void:
 		return
 	(node as AnimationTree).set(param_path, value)
 	_send_response({"success": true, "param_path": param_path, "value": str(value)})
-
-func _cmd_label_set_text(params: Dictionary) -> void:
-	var node_path: String = params.get("node_path", "")
-	var text: String = params.get("text", "")
-	var node = get_tree().root.get_node_or_null(NodePath(node_path))
-	if node == null:
-		_send_response({"error": "Node not found: " + node_path})
-		return
-	if node is Label:
-		(node as Label).text = text
-	elif node is RichTextLabel:
-		(node as RichTextLabel).text = text
-	else:
-		_send_response({"error": "Node is not a Label: " + node.get_class()})
-		return
-	_send_response({"success": true, "text": text})
-
 func _cmd_progress_bar_set_value(params: Dictionary) -> void:
 	var node_path: String = params.get("node_path", "")
 	var value: float = params.get("value", 0.0)
@@ -9409,7 +9370,7 @@ func _cmd_set_sky_material(params: Dictionary) -> void:
 	if env == null:
 		_send_response({"error": "No Environment resource"})
 		return
-	var sky_mat = load(sky_material_path) as SkyMaterial
+	var sky_mat = load(sky_material_path) as Material
 	if sky_mat == null:
 		_send_response({"error": "Cannot load SkyMaterial: " + sky_material_path})
 		return
@@ -10067,7 +10028,7 @@ func _cmd_get_node_at_position_2d(params: Dictionary) -> void:
 func _cmd_raycast_3d(params: Dictionary) -> void:
 	var from = Vector3(params.get("from_x", 0.0), params.get("from_y", 0.0), params.get("from_z", 0.0))
 	var to = Vector3(params.get("to_x", 0.0), params.get("to_y", 0.0), params.get("to_z", 0.0))
-	var space_state = get_tree().root.get_world_3d().direct_space_state
+	var space_state = get_tree().root.world_3d.direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(from, to)
 	var result = space_state.intersect_ray(query)
 	if result.is_empty():
@@ -10078,7 +10039,7 @@ func _cmd_raycast_3d(params: Dictionary) -> void:
 func _cmd_overlap_sphere_3d(params: Dictionary) -> void:
 	var center = Vector3(params.get("x", 0.0), params.get("y", 0.0), params.get("z", 0.0))
 	var radius: float = params.get("radius", 1.0)
-	var space_state = get_tree().root.get_world_3d().direct_space_state
+	var space_state = get_tree().root.world_3d.direct_space_state
 	var shape = SphereShape3D.new()
 	shape.radius = radius
 	var query = PhysicsShapeQueryParameters3D.new()
@@ -10169,7 +10130,7 @@ func _cmd_get_navigation_path_3d(params: Dictionary) -> void:
 	_send_response({"success": true, "point_count": points.size(), "path": points})
 
 func _cmd_get_resource_usage(params: Dictionary) -> void:
-	_send_response({"success": true, "static_memory": Performance.get_monitor(Performance.MEMORY_STATIC), "static_memory_max": Performance.get_monitor(Performance.MEMORY_STATIC_MAX), "message_buffer": Performance.get_monitor(Performance.OBJECT_MESSAGE_BUFFER_SIZE), "object_count": Performance.get_monitor(Performance.OBJECT_COUNT), "resource_count": Performance.get_monitor(Performance.OBJECT_RESOURCE_COUNT), "node_count": Performance.get_monitor(Performance.OBJECT_NODE_COUNT)})
+	_send_response({"success": true, "static_memory": Performance.get_monitor(Performance.MEMORY_STATIC), "static_memory_max": Performance.get_monitor(Performance.MEMORY_STATIC_MAX), "message_buffer": Performance.get_monitor(Performance.MEMORY_MESSAGE_BUFFER_MAX), "object_count": Performance.get_monitor(Performance.OBJECT_COUNT), "resource_count": Performance.get_monitor(Performance.OBJECT_RESOURCE_COUNT), "node_count": Performance.get_monitor(Performance.OBJECT_NODE_COUNT)})
 
 func _cmd_force_garbage_collect(params: Dictionary) -> void:
 	var before = Performance.get_monitor(Performance.OBJECT_COUNT)
@@ -10637,12 +10598,6 @@ func _cmd_get_screen_size(params: Dictionary) -> void:
 	var size = DisplayServer.window_get_size()
 	var screen_size = DisplayServer.screen_get_size()
 	_send_response({"success": true, "window_size": {"width": size.x, "height": size.y}, "screen_size": {"width": screen_size.x, "height": screen_size.y}})
-
-func _cmd_set_window_title(params: Dictionary) -> void:
-	var title: String = params.get("title", "")
-	DisplayServer.window_set_title(title)
-	_send_response({"success": true, "title": title})
-
 func _cmd_get_screen_count(params: Dictionary) -> void:
 	var count = DisplayServer.get_screen_count()
 	_send_response({"success": true, "screen_count": count})
@@ -10665,20 +10620,6 @@ func _cmd_set_display_mode(params: Dictionary) -> void:
 func _cmd_get_global_mouse_position(params: Dictionary) -> void:
 	var pos = get_viewport().get_mouse_position()
 	_send_response({"success": true, "x": pos.x, "y": pos.y})
-
-func _cmd_warp_mouse(params: Dictionary) -> void:
-	var x: float = params.get("x", 0.0)
-	var y: float = params.get("y", 0.0)
-	DisplayServer.warp_mouse(Vector2i(int(x), int(y)))
-	_send_response({"success": true, "x": x, "y": y})
-
-func _cmd_is_action_pressed(params: Dictionary) -> void:
-	var action: String = params.get("action", "")
-	var pressed = Input.is_action_pressed(action)
-	var just_pressed = Input.is_action_just_pressed(action)
-	var just_released = Input.is_action_just_released(action)
-	_send_response({"success": true, "action": action, "pressed": pressed, "just_pressed": just_pressed, "just_released": just_released})
-
 func _cmd_get_joy_count(params: Dictionary) -> void:
 	var count = Input.get_connected_joypads().size()
 	_send_response({"success": true, "count": count, "connected_ids": Input.get_connected_joypads()})
@@ -10816,7 +10757,7 @@ func _cmd_get_node_class(params: Dictionary) -> void:
 func _cmd_cast_ray_in_game(params: Dictionary) -> void:
 	var from = Vector3(params.get("from_x", 0.0), params.get("from_y", 0.0), params.get("from_z", 0.0))
 	var to = Vector3(params.get("to_x", 0.0), params.get("to_y", 0.0), params.get("to_z", 0.0))
-	var space_state = get_tree().root.get_world_3d().direct_space_state
+	var space_state = get_tree().root.world_3d.direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(from, to)
 	var result = space_state.intersect_ray(query)
 	if result.is_empty():
@@ -10842,7 +10783,7 @@ func _cmd_get_physics_bodies_at_point(params: Dictionary) -> void:
 	var y: float = params.get("y", 0.0)
 	var z: float = params.get("z", 0.0)
 	var radius: float = params.get("radius", 0.1)
-	var space_state = get_tree().root.get_world_3d().direct_space_state
+	var space_state = get_tree().root.world_3d.direct_space_state
 	var sphere = SphereShape3D.new()
 	sphere.radius = radius
 	var query = PhysicsShapeQueryParameters3D.new()
@@ -11311,37 +11252,6 @@ func _cmd_set_control_size(params: Dictionary) -> void:
 		return
 	(node as Control).size = Vector2(width, height)
 	_send_response({"success": true, "width": width, "height": height})
-
-func _cmd_get_node_visibility(params: Dictionary) -> void:
-	var node_path: String = params.get("node_path", "")
-	var node = get_tree().root.get_node_or_null(NodePath(node_path))
-	if node == null:
-		_send_response({"error": "Node not found: " + node_path})
-		return
-	if node is CanvasItem:
-		var ci := node as CanvasItem
-		_send_response({"success": true, "visible": ci.visible, "is_visible_in_tree": ci.is_visible_in_tree()})
-	elif node is Node3D:
-		var n3 := node as Node3D
-		_send_response({"success": true, "visible": n3.visible, "is_visible_in_tree": n3.is_visible_in_tree()})
-	else:
-		_send_response({"success": true, "visible": true, "class": node.get_class()})
-
-func _cmd_toggle_node_visibility(params: Dictionary) -> void:
-	var node_path: String = params.get("node_path", "")
-	var node = get_tree().root.get_node_or_null(NodePath(node_path))
-	if node == null:
-		_send_response({"error": "Node not found: " + node_path})
-		return
-	if node is CanvasItem:
-		(node as CanvasItem).visible = not (node as CanvasItem).visible
-		_send_response({"success": true, "visible": (node as CanvasItem).visible})
-	elif node is Node3D:
-		(node as Node3D).visible = not (node as Node3D).visible
-		_send_response({"success": true, "visible": (node as Node3D).visible})
-	else:
-		_send_response({"error": "Node does not have visible property: " + node.get_class()})
-
 func _cmd_get_children_of_node(params: Dictionary) -> void:
 	var node_path: String = params.get("node_path", "")
 	var include_internal: bool = params.get("include_internal", false)
@@ -11376,19 +11286,6 @@ func _cmd_count_nodes_by_class(params: Dictionary) -> void:
 			count += 1
 		queue.append_array(node.get_children())
 	_send_response({"success": true, "class_name": class_name_str, "count": count})
-
-func _cmd_find_nodes_by_class(params: Dictionary) -> void:
-	var class_name_str: String = params.get("class_name", "")
-	var max_results: int = params.get("max_results", 50)
-	var results: Array = []
-	var queue: Array = [get_tree().root]
-	while queue.size() > 0 and results.size() < max_results:
-		var node = queue.pop_front()
-		if node.is_class(class_name_str):
-			results.append({"path": str(node.get_path()), "name": node.name, "class": node.get_class()})
-		queue.append_array(node.get_children())
-	_send_response({"success": true, "class_name": class_name_str, "count": results.size(), "nodes": results})
-
 func _cmd_get_node_property(params: Dictionary) -> void:
 	var node_path: String = params.get("node_path", "")
 	var property: String = params.get("property", "")
@@ -11409,59 +11306,6 @@ func _cmd_set_node_property(params: Dictionary) -> void:
 		return
 	node.set(property, value)
 	_send_response({"success": true, "property": property, "value": value})
-
-func _cmd_call_node_method(params: Dictionary) -> void:
-	var node_path: String = params.get("node_path", "")
-	var method: String = params.get("method", "")
-	var args: Array = params.get("args", [])
-	var node = get_tree().root.get_node_or_null(NodePath(node_path))
-	if node == null:
-		_send_response({"error": "Node not found: " + node_path})
-		return
-	if not node.has_method(method):
-		_send_response({"error": "Method not found: " + method})
-		return
-	var result = node.callv(method, args)
-	_send_response({"success": true, "method": method, "result": result})
-
-func _cmd_get_node_property_list(params: Dictionary) -> void:
-	var node_path: String = params.get("node_path", "")
-	var node = get_tree().root.get_node_or_null(NodePath(node_path))
-	if node == null:
-		_send_response({"error": "Node not found: " + node_path})
-		return
-	var props: Array = []
-	for p in node.get_property_list():
-		if p["usage"] & PROPERTY_USAGE_EDITOR:
-			props.append({"name": p["name"], "type": p["type"], "hint": p.get("hint", 0)})
-	_send_response({"success": true, "count": props.size(), "properties": props})
-
-func _cmd_get_node_method_list(params: Dictionary) -> void:
-	var node_path: String = params.get("node_path", "")
-	var node = get_tree().root.get_node_or_null(NodePath(node_path))
-	if node == null:
-		_send_response({"error": "Node not found: " + node_path})
-		return
-	var methods: Array = []
-	for m in node.get_method_list():
-		var name_str: String = m["name"]
-		if not name_str.begins_with("_"):
-			methods.append({"name": name_str, "arg_count": m["args"].size()})
-	_send_response({"success": true, "count": methods.size(), "methods": methods})
-
-func _cmd_duplicate_node_in_game(params: Dictionary) -> void:
-	var node_path: String = params.get("node_path", "")
-	var new_name: String = params.get("new_name", "")
-	var node = get_tree().root.get_node_or_null(NodePath(node_path))
-	if node == null:
-		_send_response({"error": "Node not found: " + node_path})
-		return
-	var dup = node.duplicate()
-	if new_name != "":
-		dup.name = new_name
-	node.get_parent().add_child(dup)
-	_send_response({"success": true, "new_path": str(dup.get_path()), "new_name": dup.name})
-
 func _cmd_remove_node_from_game(params: Dictionary) -> void:
 	var node_path: String = params.get("node_path", "")
 	var node = get_tree().root.get_node_or_null(NodePath(node_path))
@@ -11489,21 +11333,6 @@ func _cmd_add_child_node_in_game(params: Dictionary) -> void:
 		child.name = child_name
 	parent.add_child(child)
 	_send_response({"success": true, "child_path": str(child.get_path()), "child_name": child.name})
-
-func _cmd_reparent_node_in_game(params: Dictionary) -> void:
-	var node_path: String = params.get("node_path", "")
-	var new_parent_path: String = params.get("new_parent_path", "")
-	var node = get_tree().root.get_node_or_null(NodePath(node_path))
-	if node == null:
-		_send_response({"error": "Node not found: " + node_path})
-		return
-	var new_parent = get_tree().root.get_node_or_null(NodePath(new_parent_path))
-	if new_parent == null:
-		_send_response({"error": "New parent not found: " + new_parent_path})
-		return
-	node.reparent(new_parent)
-	_send_response({"success": true, "new_path": str(node.get_path())})
-
 func _cmd_change_scene_to(params: Dictionary) -> void:
 	var scene_path: String = params.get("scene_path", "")
 	get_tree().change_scene_to_file(scene_path)
@@ -12284,7 +12113,7 @@ func _cmd_queue_animation(params: Dictionary) -> void:
 func _cmd_get_performance_monitor(params: Dictionary) -> void:
 	var monitor_name: String = params.get("monitor", "render/fps")
 	var monitor_map = {
-		"render/fps": Performance.RENDER_FPS,
+		"render/fps": Performance.TIME_FPS,
 		"render/total_draw_calls": Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME,
 		"render/total_objects": Performance.RENDER_TOTAL_OBJECTS_IN_FRAME,
 		"render/total_vertices": Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME,
@@ -14356,7 +14185,7 @@ func _cmd_cast_ray_from_camera(params: Dictionary) -> void:
 	var screen_pos = Vector2(screen_x * vp_size.x, screen_y * vp_size.y)
 	var from = (node as Camera3D).project_ray_origin(screen_pos)
 	var to = from + (node as Camera3D).project_ray_normal(screen_pos) * 1000.0
-	var space = get_world_3d().direct_space_state
+	var space = get_tree().root.world_3d.direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(from, to)
 	var result = space.intersect_ray(query)
 	if result.is_empty():
@@ -17590,7 +17419,7 @@ func _cmd_create_websocket_peer(params: Dictionary) -> void:
 		_send_response({"error": "url is required"})
 		return
 	var peer = WebSocketPeer.new()
-	var err = peer.connect_to_url(url, PackedStringArray(protocols))
+	var err = peer.connect_to_url(url)  # Godot 4: protocols are not a connect_to_url() argument
 	if err != OK:
 		_send_response({"error": "Failed to connect WebSocket: " + str(err)})
 		return
@@ -18703,7 +18532,7 @@ func _cmd_sphere_cast_3d(params: Dictionary) -> void:
 	var from = Vector3(params.get("from_x", 0.0), params.get("from_y", 0.0), params.get("from_z", 0.0))
 	var to = Vector3(params.get("to_x", 0.0), params.get("to_y", 10.0), params.get("to_z", 0.0))
 	var radius: float = params.get("radius", 0.5)
-	var space = get_tree().root.get_world_3d().direct_space_state
+	var space = get_tree().root.world_3d.direct_space_state
 	var shape = SphereShape3D.new()
 	shape.radius = radius
 	var query = PhysicsShapeQueryParameters3D.new()
