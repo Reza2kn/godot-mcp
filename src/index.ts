@@ -36852,7 +36852,17 @@ class GodotServer {
     if (!args.nodeName) return createErrorResponse('nodeName is required.');
     if (!args.propertyName) return createErrorResponse('propertyName is required.');
     if (args.propertyValue === undefined) return createErrorResponse('propertyValue is required.');
-    return this.headlessOp('set_node_property_in_scene', args, a => ({ projectPath: a.projectPath, params: { scene_path: a.scenePath, node_name: a.nodeName ?? '', property_name: a.propertyName ?? '', property_value: a.propertyValue ?? '' } }));
+    // `set_node_property_in_scene` is not implemented in godot_operations.gd (the
+    // bridge only knows `modify_node`), so this tool used to silently do nothing.
+    // Route it through `modify_node`, which handles value conversion + saving.
+    return this.headlessOp('modify_node', args, a => ({
+      projectPath: a.projectPath,
+      params: {
+        scenePath: a.scenePath,
+        nodePath: a.nodeName ?? '',
+        properties: { [String(a.propertyName)]: a.propertyValue },
+      },
+    }));
   }
 
   private async handleGetNodePropertyInScene(args: any) {
