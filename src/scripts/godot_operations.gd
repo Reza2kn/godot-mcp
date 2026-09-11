@@ -175,6 +175,122 @@ func _init():
             list_classdb_classes(params)
         "generate_mesh_normals":
             generate_mesh_normals(params)
+        "delete_node_from_scene":
+            delete_node_from_scene(params)
+        "rename_node_in_scene":
+            rename_node_in_scene(params)
+        "duplicate_node_in_scene":
+            duplicate_node_in_scene(params)
+        "reparent_node_in_scene":
+            reparent_node_in_scene(params)
+        "get_node_property_in_scene":
+            get_node_property_in_scene(params)
+        "set_node_property_in_scene":
+            set_node_property_in_scene(params)
+        "set_node_position_in_scene":
+            set_node_position_in_scene(params)
+        "set_node_rotation_in_scene":
+            set_node_rotation_in_scene(params)
+        "set_node_scale_in_scene":
+            set_node_scale_in_scene(params)
+        "list_node_properties_in_scene":
+            list_node_properties_in_scene(params)
+        "find_node_by_type_in_scene":
+            find_node_by_type_in_scene(params)
+        "get_scene_root_type":
+            get_scene_root_type(params)
+        "list_scene_signals":
+            list_scene_signals(params)
+        "get_scene_resource_dependencies":
+            get_scene_resource_dependencies(params)
+        "validate_scene_physics":
+            validate_scene_physics(params)
+        "check_node_has_children":
+            check_node_has_children(params)
+        "create_inherited_scene":
+            create_inherited_scene(params)
+        "path_2d_add_point":
+            path_2d_add_point(params)
+        "path_3d_add_point":
+            path_3d_add_point(params)
+        "add_input_action":
+            add_input_action(params)
+        "set_project_setting_value":
+            set_project_setting_value(params)
+        "create_standard_material_3d":
+            create_standard_material_3d(params)
+        "create_gradient_texture_resource":
+            create_gradient_texture_resource(params)
+        "create_dynamic_font_resource":
+            create_dynamic_font_resource(params)
+        "create_bitmap_font_resource":
+            create_bitmap_font_resource(params)
+        "create_audio_stream_ogg":
+            create_audio_stream_ogg(params)
+        "create_audio_stream_wav_resource":
+            create_audio_stream_wav_resource(params)
+        "create_gdscript_resource":
+            create_gdscript_resource(params)
+        "create_image_from_color":
+            create_image_from_color(params)
+        "create_packed_scene_from_script":
+            create_packed_scene_from_script(params)
+        "create_tileset_resource":
+            create_tileset_resource(params)
+        "create_animation_library_resource":
+            create_animation_library_resource(params)
+        "get_font_glyph_count":
+            get_font_glyph_count(params)
+        "get_resource_import_metadata":
+            get_resource_import_metadata(params)
+        "inspect_resource_properties":
+            inspect_resource_properties(params)
+        "list_resources_of_type":
+            list_resources_of_type(params)
+        "list_system_fonts":
+            list_system_fonts(params)
+        "set_font_default_size":
+            set_font_default_size(params)
+        "get_gdscript_class_hierarchy":
+            get_gdscript_class_hierarchy(params)
+        "get_script_exported_properties":
+            get_script_exported_properties(params)
+        "list_nodes_without_scripts":
+            list_nodes_without_scripts(params)
+        "add_tileset_source":
+            add_tileset_source(params)
+        "add_tileset_physics_layer":
+            add_tileset_physics_layer(params)
+        "add_tileset_custom_data_layer":
+            add_tileset_custom_data_layer(params)
+        "add_tileset_terrain_set":
+            add_tileset_terrain_set(params)
+        "get_tileset_source_count":
+            get_tileset_source_count(params)
+        "add_animation_track":
+            add_animation_track(params)
+        "add_animation_key_value":
+            add_animation_key_value(params)
+        "get_animation_key_count":
+            get_animation_key_count(params)
+        "set_animation_loop_mode":
+            set_animation_loop_mode(params)
+        "set_collision_shape_2d_type":
+            set_collision_shape_2d_type(params)
+        "set_collision_shape_2d_radius":
+            set_collision_shape_2d_radius(params)
+        "set_collision_rect_extents":
+            set_collision_rect_extents(params)
+        "set_collision_capsule_2d":
+            set_collision_capsule_2d(params)
+        "set_collision_shape_3d_type":
+            set_collision_shape_3d_type(params)
+        "set_collision_sphere_3d_radius":
+            set_collision_sphere_3d_radius(params)
+        "set_collision_box_3d_size":
+            set_collision_box_3d_size(params)
+        "set_collision_capsule_3d":
+            set_collision_capsule_3d(params)
         _:
             log_error("Unknown operation: " + operation)
             quit(1)
@@ -2963,4 +3079,1327 @@ func generate_mesh_normals(params: Dictionary) -> void:
         print(JSON.stringify({"success": true, "mesh_path": mesh_path, "surfaces": arr_mesh.get_surface_count()}))
     else:
         print(JSON.stringify({"error": "Not an ArrayMesh: " + res.get_class()}))
+    quit()
+
+
+# ══════════════════════════════════════════════════════════════
+# Operations that were advertised but not implemented
+# (scene node editing / paths / project settings)
+# ══════════════════════════════════════════════════════════════
+
+func _abs_scene_path(scene_path) -> String:
+    var sp := str(scene_path)
+    if not sp.begins_with("res://"):
+        sp = "res://" + sp
+    return sp
+
+func _instantiate_scene(scene_path):
+    var full := _abs_scene_path(scene_path)
+    if not FileAccess.file_exists(full):
+        printerr("Scene file does not exist at: " + full)
+        return null
+    var scene = load(full)
+    if scene == null:
+        printerr("Failed to load scene: " + full)
+        return null
+    return scene.instantiate()
+
+func _find_scene_node(root, node_name):
+    var np := str(node_name)
+    if np == "" or np == "root" or np == ".":
+        return root
+    if np.begins_with("root/"):
+        np = np.substr(5)
+    return root.get_node_or_null(np)
+
+func _pack_and_save(root, scene_path) -> bool:
+    var full := _abs_scene_path(scene_path)
+    var packed := PackedScene.new()
+    var pr := packed.pack(root)
+    if pr != OK:
+        printerr("Failed to pack scene: " + str(pr))
+        return false
+    var sr := ResourceSaver.save(packed, full)
+    if sr != OK:
+        printerr("Failed to save scene: " + str(sr))
+        return false
+    return true
+
+func _has_property(obj, prop_name) -> bool:
+    for p in obj.get_property_list():
+        if str(p.get("name", "")) == prop_name:
+            return true
+    return false
+
+
+func delete_node_from_scene(params):
+    var scene_path = params.get("scene_path", "")
+    var node_name = params.get("node_name", "")
+    var root = _instantiate_scene(scene_path)
+    if root == null:
+        quit(1)
+        return
+    var target = _find_scene_node(root, node_name)
+    if target == null:
+        printerr("Node not found: " + str(node_name))
+        quit(1)
+        return
+    if target == root:
+        printerr("Cannot delete the scene root node")
+        quit(1)
+        return
+    target.get_parent().remove_child(target)
+    target.free()
+    if _pack_and_save(root, scene_path):
+        print(JSON.stringify({"success": true, "deleted": str(node_name), "scene_path": scene_path}))
+    quit()
+
+
+func rename_node_in_scene(params):
+    var scene_path = params.get("scene_path", "")
+    var node_name = params.get("node_name", "")
+    var new_name = str(params.get("new_name", ""))
+    if new_name == "":
+        printerr("new_name is required")
+        quit(1)
+        return
+    var root = _instantiate_scene(scene_path)
+    if root == null:
+        quit(1)
+        return
+    var target = _find_scene_node(root, node_name)
+    if target == null:
+        printerr("Node not found: " + str(node_name))
+        quit(1)
+        return
+    target.name = new_name
+    if _pack_and_save(root, scene_path):
+        print(JSON.stringify({"success": true, "renamed": str(node_name), "new_name": new_name}))
+    quit()
+
+
+func duplicate_node_in_scene(params):
+    var scene_path = params.get("scene_path", "")
+    var node_name = params.get("node_name", "")
+    var new_name = str(params.get("new_name", ""))
+    var root = _instantiate_scene(scene_path)
+    if root == null:
+        quit(1)
+        return
+    var target = _find_scene_node(root, node_name)
+    if target == null:
+        printerr("Node not found: " + str(node_name))
+        quit(1)
+        return
+    if target == root:
+        printerr("Cannot duplicate the scene root node")
+        quit(1)
+        return
+    var dup = target.duplicate()
+    if new_name != "":
+        dup.name = new_name
+    target.get_parent().add_child(dup)
+    dup.owner = root
+    if _pack_and_save(root, scene_path):
+        print(JSON.stringify({"success": true, "duplicated": str(node_name), "new_name": str(dup.name)}))
+    quit()
+
+
+func reparent_node_in_scene(params):
+    var scene_path = params.get("scene_path", "")
+    var node_name = params.get("node_name", "")
+    var new_parent_path = str(params.get("new_parent_path", "."))
+    var root = _instantiate_scene(scene_path)
+    if root == null:
+        quit(1)
+        return
+    var target = _find_scene_node(root, node_name)
+    if target == null:
+        printerr("Node not found: " + str(node_name))
+        quit(1)
+        return
+    if target == root:
+        printerr("Cannot reparent the scene root node")
+        quit(1)
+        return
+    var new_parent = _find_scene_node(root, new_parent_path)
+    if new_parent == null:
+        printerr("New parent not found: " + new_parent_path)
+        quit(1)
+        return
+    var old_parent = target.get_parent()
+    if old_parent != null:
+        old_parent.remove_child(target)
+    new_parent.add_child(target)
+    target.owner = root
+    if _pack_and_save(root, scene_path):
+        print(JSON.stringify({"success": true, "node": str(node_name), "new_parent": new_parent_path}))
+    quit()
+
+
+func get_node_property_in_scene(params):
+    var scene_path = params.get("scene_path", "")
+    var node_name = params.get("node_name", "")
+    var property_name = str(params.get("property_name", ""))
+    var root = _instantiate_scene(scene_path)
+    if root == null:
+        quit(1)
+        return
+    var target = _find_scene_node(root, node_name)
+    if target == null:
+        printerr("Node not found: " + str(node_name))
+        quit(1)
+        return
+    if not _has_property(target, property_name):
+        printerr("Property not found: " + property_name)
+        quit(1)
+        return
+    var value = target.get(property_name)
+    print(JSON.stringify({
+        "success": true,
+        "node": str(node_name),
+        "property": property_name,
+        "value": _variant_to_string(value),
+        "type": type_string(typeof(value)),
+    }))
+    quit()
+
+
+func set_node_property_in_scene(params):
+    var scene_path = params.get("scene_path", "")
+    var node_name = params.get("node_name", "")
+    var property_name = str(params.get("property_name", ""))
+    var root = _instantiate_scene(scene_path)
+    if root == null:
+        quit(1)
+        return
+    var target = _find_scene_node(root, node_name)
+    if target == null:
+        printerr("Node not found: " + str(node_name))
+        quit(1)
+        return
+    if not _has_property(target, property_name):
+        printerr("Property not found: " + property_name)
+        quit(1)
+        return
+    var converted = _convert_property_value(target, property_name, params.get("property_value", null))
+    target.set(property_name, converted)
+    if _pack_and_save(root, scene_path):
+        print(JSON.stringify({"success": true, "node": str(node_name), "property": property_name}))
+    quit()
+
+
+func set_node_position_in_scene(params):
+    var root = _instantiate_scene(params.get("scene_path", ""))
+    if root == null:
+        quit(1)
+        return
+    var target = _find_scene_node(root, params.get("node_name", ""))
+    if target == null:
+        printerr("Node not found: " + str(params.get("node_name", "")))
+        quit(1)
+        return
+    var x = float(params.get("x", 0))
+    var y = float(params.get("y", 0))
+    var z = float(params.get("z", 0))
+    if target is Node3D:
+        target.position = Vector3(x, y, z)
+    elif target is Node2D:
+        target.position = Vector2(x, y)
+    else:
+        printerr("Node has no position: " + target.get_class())
+        quit(1)
+        return
+    if _pack_and_save(root, params.get("scene_path", "")):
+        print(JSON.stringify({"success": true, "position": [x, y, z]}))
+    quit()
+
+
+func set_node_rotation_in_scene(params):
+    var root = _instantiate_scene(params.get("scene_path", ""))
+    if root == null:
+        quit(1)
+        return
+    var target = _find_scene_node(root, params.get("node_name", ""))
+    if target == null:
+        printerr("Node not found: " + str(params.get("node_name", "")))
+        quit(1)
+        return
+    var rx = float(params.get("rx", 0))
+    var ry = float(params.get("ry", 0))
+    var rz = float(params.get("rz", 0))
+    if target is Node3D:
+        target.rotation_degrees = Vector3(rx, ry, rz)
+    elif target is Node2D:
+        target.rotation_degrees = rz
+    else:
+        printerr("Node has no rotation: " + target.get_class())
+        quit(1)
+        return
+    if _pack_and_save(root, params.get("scene_path", "")):
+        print(JSON.stringify({"success": true, "rotation_degrees": [rx, ry, rz]}))
+    quit()
+
+
+func set_node_scale_in_scene(params):
+    var root = _instantiate_scene(params.get("scene_path", ""))
+    if root == null:
+        quit(1)
+        return
+    var target = _find_scene_node(root, params.get("node_name", ""))
+    if target == null:
+        printerr("Node not found: " + str(params.get("node_name", "")))
+        quit(1)
+        return
+    var sx = float(params.get("sx", 1))
+    var sy = float(params.get("sy", 1))
+    var sz = float(params.get("sz", 1))
+    if target is Node3D:
+        target.scale = Vector3(sx, sy, sz)
+    elif target is Node2D:
+        target.scale = Vector2(sx, sy)
+    else:
+        printerr("Node has no scale: " + target.get_class())
+        quit(1)
+        return
+    if _pack_and_save(root, params.get("scene_path", "")):
+        print(JSON.stringify({"success": true, "scale": [sx, sy, sz]}))
+    quit()
+
+
+func list_node_properties_in_scene(params):
+    var root = _instantiate_scene(params.get("scene_path", ""))
+    if root == null:
+        quit(1)
+        return
+    var target = _find_scene_node(root, params.get("node_name", ""))
+    if target == null:
+        printerr("Node not found: " + str(params.get("node_name", "")))
+        quit(1)
+        return
+    var out = []
+    for p in target.get_property_list():
+        var pname = str(p.get("name", ""))
+        var usage = int(p.get("usage", 0))
+        if pname == "script" or pname.begins_with("_") or (usage & PROPERTY_USAGE_EDITOR) == 0:
+            continue
+        out.append({"name": pname, "type": type_string(int(p.get("type", 0))), "value": _variant_to_string(target.get(pname))})
+    print(JSON.stringify({"success": true, "node": str(params.get("node_name", "")), "count": out.size(), "properties": out}))
+    quit()
+
+
+func _collect_nodes_by_type(node, type_name, out) -> void:
+    if node.is_class(type_name):
+        out.append(str(node.name))
+    for c in node.get_children():
+        _collect_nodes_by_type(c, type_name, out)
+
+
+func find_node_by_type_in_scene(params):
+    var root = _instantiate_scene(params.get("scene_path", ""))
+    if root == null:
+        quit(1)
+        return
+    var type_name = str(params.get("node_type", ""))
+    if type_name == "":
+        printerr("node_type is required")
+        quit(1)
+        return
+    var out: Array = []
+    _collect_nodes_by_type(root, type_name, out)
+    print(JSON.stringify({"success": true, "node_type": type_name, "count": out.size(), "nodes": out}))
+    quit()
+
+
+func get_scene_root_type(params):
+    var root = _instantiate_scene(params.get("scene_path", ""))
+    if root == null:
+        quit(1)
+        return
+    print(JSON.stringify({"success": true, "root_name": str(root.name), "root_type": root.get_class()}))
+    quit()
+
+
+func _collect_signal_connections(node, root, out) -> void:
+    for s in node.get_signal_list():
+        var sig = str(s.get("name", ""))
+        for c in node.get_signal_connection_list(sig):
+            var cb = c.get("callable", null)
+            var to_path = ""
+            var method = ""
+            if cb is Callable:
+                var obj = cb.get_object()
+                if obj != null and obj is Node:
+                    to_path = str(root.get_path_to(obj))
+                method = str(cb.get_method())
+            out.append({"signal": sig, "from": str(root.get_path_to(node)), "to": to_path, "method": method})
+    for ch in node.get_children():
+        _collect_signal_connections(ch, root, out)
+
+
+func list_scene_signals(params):
+    var root = _instantiate_scene(params.get("scene_path", ""))
+    if root == null:
+        quit(1)
+        return
+    var out: Array = []
+    _collect_signal_connections(root, root, out)
+    print(JSON.stringify({"success": true, "count": out.size(), "connections": out}))
+    quit()
+
+
+func get_scene_resource_dependencies(params):
+    var full := _abs_scene_path(params.get("scene_path", ""))
+    if not FileAccess.file_exists(full):
+        printerr("Scene file does not exist at: " + full)
+        quit(1)
+        return
+    var f = FileAccess.open(full, FileAccess.READ)
+    var txt = f.get_as_text()
+    f.close()
+    var re := RegEx.new()
+    re.compile('path="(res://[^"]+)"')
+    var deps: Array = []
+    for m in re.search_all(txt):
+        var dep = m.get_string(1)
+        if not deps.has(dep):
+            deps.append(dep)
+    print(JSON.stringify({"success": true, "count": deps.size(), "dependencies": deps}))
+    quit()
+
+
+func _validate_physics_node(node, root, issues) -> void:
+    if node is CollisionObject2D or node is CollisionObject3D:
+        var has_shape := false
+        for c in node.get_children():
+            if c is CollisionShape2D or c is CollisionShape3D or c is CollisionPolygon2D or c is CollisionPolygon3D:
+                has_shape = true
+                break
+        if not has_shape:
+            issues.append({"node": str(root.get_path_to(node)), "issue": "CollisionObject without a collision shape child"})
+    if node is CollisionShape2D and node.shape == null:
+        issues.append({"node": str(root.get_path_to(node)), "issue": "CollisionShape2D has no Shape resource"})
+    if node is CollisionShape3D and node.shape == null:
+        issues.append({"node": str(root.get_path_to(node)), "issue": "CollisionShape3D has no Shape resource"})
+    for c in node.get_children():
+        _validate_physics_node(c, root, issues)
+
+
+func validate_scene_physics(params):
+    var root = _instantiate_scene(params.get("scene_path", ""))
+    if root == null:
+        quit(1)
+        return
+    var issues: Array = []
+    _validate_physics_node(root, root, issues)
+    print(JSON.stringify({"success": true, "valid": issues.is_empty(), "count": issues.size(), "issues": issues}))
+    quit()
+
+
+func check_node_has_children(params):
+    var root = _instantiate_scene(params.get("scene_path", ""))
+    if root == null:
+        quit(1)
+        return
+    var target = _find_scene_node(root, params.get("node_name", ""))
+    if target == null:
+        printerr("Node not found: " + str(params.get("node_name", "")))
+        quit(1)
+        return
+    print(JSON.stringify({"success": true, "has_children": target.get_child_count() > 0, "child_count": target.get_child_count()}))
+    quit()
+
+
+func create_inherited_scene(params):
+    var base_path = str(params.get("base_scene_path", ""))
+    var new_path = str(params.get("new_scene_path", ""))
+    if base_path == "" or new_path == "":
+        printerr("base_scene_path and new_scene_path are required")
+        quit(1)
+        return
+    if not base_path.begins_with("res://"):
+        base_path = "res://" + base_path
+    var abs_new := _abs_scene_path(new_path)
+    var dir := abs_new.get_base_dir()
+    if not DirAccess.dir_exists_absolute(dir):
+        DirAccess.make_dir_recursive_absolute(dir)
+    var f = FileAccess.open(abs_new, FileAccess.WRITE)
+    if f == null:
+        printerr("Cannot write scene: " + abs_new)
+        quit(1)
+        return
+    var text = '[gd_scene load_steps=2 format=3]\n\n[ext_resource type="PackedScene" path="%s" id="1_root"]\n\n[node name="%s" instance=ExtResource("1_root")]\n' % [base_path, base_path.get_file().get_basename()]
+    f.store_string(text)
+    f.close()
+    if ResourceLoader.exists(new_path):
+        print(JSON.stringify({"success": true, "new_scene": new_path, "base_scene": base_path}))
+    else:
+        print(JSON.stringify({"success": true, "new_scene": new_path, "base_scene": base_path, "note": "written; reimport may be required"}))
+    quit()
+
+
+func path_2d_add_point(params):
+    var scene_path = params.get("scene_path", "")
+    var root = _instantiate_scene(scene_path)
+    if root == null:
+        quit(1)
+        return
+    var parent = _find_scene_node(root, params.get("parent_node_path", "."))
+    if parent == null:
+        printerr("Parent node not found: " + str(params.get("parent_node_path", ".")))
+        quit(1)
+        return
+    var path_node = null
+    for c in parent.get_children():
+        if c is Path2D:
+            path_node = c
+            break
+    if path_node == null:
+        path_node = Path2D.new()
+        path_node.name = "Path2D"
+        parent.add_child(path_node)
+        path_node.owner = root
+    if path_node.curve == null:
+        path_node.curve = Curve2D.new()
+    path_node.curve.add_point(Vector2(float(params.get("x", 0)), float(params.get("y", 0))))
+    if _pack_and_save(root, scene_path):
+        print(JSON.stringify({"success": true, "points": path_node.curve.get_point_count()}))
+    quit()
+
+
+func path_3d_add_point(params):
+    var scene_path = params.get("scene_path", "")
+    var root = _instantiate_scene(scene_path)
+    if root == null:
+        quit(1)
+        return
+    var parent = _find_scene_node(root, params.get("parent_node_path", "."))
+    if parent == null:
+        printerr("Parent node not found: " + str(params.get("parent_node_path", ".")))
+        quit(1)
+        return
+    var path_node = null
+    for c in parent.get_children():
+        if c is Path3D:
+            path_node = c
+            break
+    if path_node == null:
+        path_node = Path3D.new()
+        path_node.name = "Path3D"
+        parent.add_child(path_node)
+        path_node.owner = root
+    if path_node.curve == null:
+        path_node.curve = Curve3D.new()
+    path_node.curve.add_point(Vector3(float(params.get("x", 0)), float(params.get("y", 0)), float(params.get("z", 0))))
+    if _pack_and_save(root, scene_path):
+        print(JSON.stringify({"success": true, "points": path_node.curve.get_point_count()}))
+    quit()
+
+
+func _coerce_setting_value(s: String):
+    if s == "true":
+        return true
+    if s == "false":
+        return false
+    if s.is_valid_int():
+        return int(s)
+    if s.is_valid_float():
+        return float(s)
+    return s
+
+
+func set_project_setting_value(params):
+    var key = str(params.get("key", ""))
+    if key == "":
+        printerr("key is required")
+        quit(1)
+        return
+    var value = params.get("value", null)
+    if value is String:
+        value = _coerce_setting_value(value)
+    ProjectSettings.set_setting(key, value)
+    var err = ProjectSettings.save()
+    if err != OK:
+        printerr("Failed to save project settings: " + str(err))
+        quit(1)
+        return
+    print(JSON.stringify({"success": true, "key": key, "value": _variant_to_string(value)}))
+    quit()
+
+
+func _make_input_event(key):
+    var k := str(key)
+    var ev := InputEventKey.new()
+    var code := OS.find_keycode_from_string(k)
+    if code == 0 and k.begins_with("KEY_"):
+        code = OS.find_keycode_from_string(k.substr(4))
+    if code != 0:
+        ev.physical_keycode = code
+        return ev
+    if k.length() == 1:
+        ev.keycode = k.to_upper().unicode_at(0)
+        return ev
+    return null
+
+
+func add_input_action(params):
+    var action_name = str(params.get("action_name", ""))
+    var key = str(params.get("key", ""))
+    if action_name == "" or key == "":
+        printerr("action_name and key are required")
+        quit(1)
+        return
+    var ev = _make_input_event(key)
+    if ev == null:
+        printerr("Unsupported key: " + key)
+        quit(1)
+        return
+    ProjectSettings.set_setting("input/" + action_name, {"deadzone": 0.5, "events": [ev]})
+    var err = ProjectSettings.save()
+    if err != OK:
+        printerr("Failed to save project settings: " + str(err))
+        quit(1)
+        return
+    print(JSON.stringify({"success": true, "action": action_name, "key": key}))
+    quit()
+
+
+# ══════════════════════════════════════════════════════════════
+# Batch B: resources / gdscript / tileset / animation / collision
+# ══════════════════════════════════════════════════════════════
+
+func _abs_path(p) -> String:
+    var s := str(p)
+    if not s.begins_with("res://") and not s.begins_with("user://"):
+        s = "res://" + s
+    return s
+
+func _globalize(p) -> String:
+    return ProjectSettings.globalize_path(_abs_path(p))
+
+func _save_resource(res, path) -> bool:
+    var err = ResourceSaver.save(res, _abs_path(path))
+    if err != OK:
+        printerr("Failed to save resource to " + str(path) + " (error " + str(err) + ")")
+        return false
+    return true
+
+func _load_res(path):
+    var full := _abs_path(path)
+    if not ResourceLoader.exists(full):
+        printerr("Resource does not exist: " + full)
+        return null
+    return load(full)
+
+func _color_from(v) -> Color:
+    var t := str(v)
+    if t.begins_with("#"):
+        return Color.html(t)
+    if t == "":
+        return Color(0, 0, 0, 1)
+    return Color(t)
+
+
+# ── resources ──────────────────────────────────────────────────
+
+func create_standard_material_3d(params):
+    var mat := StandardMaterial3D.new()
+    mat.albedo_color = Color(float(params.get("r", 1)), float(params.get("g", 1)), float(params.get("b", 1)), 1.0)
+    if _save_resource(mat, params.get("save_path", "res://material.tres")):
+        print(JSON.stringify({"success": true, "save_path": params.get("save_path", "")}))
+    quit()
+
+
+func create_gradient_texture_resource(params):
+    var g := Gradient.new()
+    g.offsets = PackedFloat32Array([0.0, 1.0])
+    g.colors = PackedColorArray([_color_from(params.get("color_a", "#000000")), _color_from(params.get("color_b", "#ffffff"))])
+    var gt := GradientTexture1D.new()
+    gt.gradient = g
+    gt.width = 256
+    if _save_resource(gt, params.get("output_path", "")):
+        print(JSON.stringify({"success": true, "output_path": params.get("output_path", "")}))
+    quit()
+
+
+func create_dynamic_font_resource(params):
+    var src_path = _abs_path(params.get("font_file_path", ""))
+    if not FileAccess.file_exists(src_path):
+        printerr("Font file does not exist: " + src_path)
+        quit(1)
+        return
+    var ff := FontFile.new()
+    var err = ff.load_dynamic_font(src_path)
+    if err != OK:
+        printerr("Failed to load dynamic font: " + str(err))
+        quit(1)
+        return
+    ff.fixed_size = int(params.get("font_size", 16))
+    if _save_resource(ff, params.get("output_path", "")):
+        print(JSON.stringify({"success": true, "output_path": params.get("output_path", "")}))
+    quit()
+
+
+func create_bitmap_font_resource(params):
+    var src_path = _abs_path(params.get("image_file_path", ""))
+    if not FileAccess.file_exists(src_path):
+        printerr("Image file does not exist: " + src_path)
+        quit(1)
+        return
+    var ff := FontFile.new()
+    var err = ff.load_bitmap_font(src_path)
+    if err != OK:
+        printerr("Failed to load bitmap font: " + str(err))
+        quit(1)
+        return
+    if _save_resource(ff, params.get("output_path", "")):
+        print(JSON.stringify({"success": true, "output_path": params.get("output_path", "")}))
+    quit()
+
+
+func create_audio_stream_ogg(params):
+    var res = _load_res(params.get("ogg_path", ""))
+    if res == null:
+        quit(1)
+        return
+    if not (res is AudioStream):
+        printerr("Not an AudioStream: " + res.get_class())
+        quit(1)
+        return
+    if _save_resource(res, params.get("save_path", "res://audio.ogg")):
+        print(JSON.stringify({"success": true, "save_path": params.get("save_path", "")}))
+    quit()
+
+
+func create_audio_stream_wav_resource(params):
+    var stream := AudioStreamWAV.new()
+    if _save_resource(stream, params.get("output_path", "")):
+        print(JSON.stringify({"success": true, "output_path": params.get("output_path", "")}))
+    quit()
+
+
+func create_gdscript_resource(params):
+    var script_path := _abs_path(params.get("script_path", ""))
+    var code = str(params.get("code", "extends Resource\n"))
+    var dir := script_path.get_base_dir()
+    if not DirAccess.dir_exists_absolute(dir):
+        DirAccess.make_dir_recursive_absolute(dir)
+    var f = FileAccess.open(script_path, FileAccess.WRITE)
+    if f == null:
+        printerr("Cannot write script: " + script_path)
+        quit(1)
+        return
+    f.store_string(code)
+    f.close()
+    print(JSON.stringify({"success": true, "script_path": params.get("script_path", "")}))
+    quit()
+
+
+func create_image_from_color(params):
+    var w = int(params.get("width", 64))
+    var h = int(params.get("height", 64))
+    var img = Image.create(w, h, false, Image.FORMAT_RGBA8)
+    img.fill(Color(float(params.get("r", 0)), float(params.get("g", 0)), float(params.get("b", 0)), 1.0))
+    var out := _abs_path(params.get("output_path", ""))
+    var dir := out.get_base_dir()
+    if not DirAccess.dir_exists_absolute(dir):
+        DirAccess.make_dir_recursive_absolute(dir)
+    var err = img.save_png(ProjectSettings.globalize_path(out))
+    if err != OK:
+        printerr("Failed to save image: " + str(err))
+        quit(1)
+        return
+    print(JSON.stringify({"success": true, "output_path": params.get("output_path", ""), "width": w, "height": h}))
+    quit()
+
+
+func create_packed_scene_from_script(params):
+    var sc = _load_res(params.get("script_path", ""))
+    if not (sc is Script):
+        printerr("Script not found: " + str(params.get("script_path", "")))
+        quit(1)
+        return
+    var base_type := "Node"
+    if sc is GDScript:
+        base_type = sc.get_instance_base_type()
+    if not ClassDB.class_exists(base_type) or not ClassDB.is_parent_class(base_type, "Node"):
+        printerr("Script base type is not a Node, cannot be a scene root: " + base_type)
+        quit(1)
+        return
+    var node = ClassDB.instantiate(base_type)
+    if node == null:
+        node = Node.new()
+    node.name = str(params.get("script_path", "Root")).get_file().get_basename()
+    node.set_script(sc)
+    var ps := PackedScene.new()
+    var pr = ps.pack(node)
+    if pr != OK:
+        printerr("Failed to pack scene: " + str(pr))
+        quit(1)
+        return
+    if _save_resource(ps, params.get("output_path", "")):
+        print(JSON.stringify({"success": true, "output_path": params.get("output_path", "")}))
+    quit()
+
+
+func create_tileset_resource(params):
+    var ts := TileSet.new()
+    if _save_resource(ts, params.get("output_path", "")):
+        print(JSON.stringify({"success": true, "output_path": params.get("output_path", "")}))
+    quit()
+
+
+func create_animation_library_resource(params):
+    var lib := AnimationLibrary.new()
+    if _save_resource(lib, params.get("output_path", "")):
+        print(JSON.stringify({"success": true, "output_path": params.get("output_path", "")}))
+    quit()
+
+
+func get_font_glyph_count(params):
+    var font = _load_res(params.get("font_path", ""))
+    if not (font is Font):
+        printerr("Font not found: " + str(params.get("font_path", "")))
+        quit(1)
+        return
+    var chars = font.get_supported_chars()
+    print(JSON.stringify({"success": true, "count": chars.length()}))
+    quit()
+
+
+func get_resource_import_metadata(params):
+    var imp := _abs_path(params.get("file_path", "")) + ".import"
+    if not FileAccess.file_exists(imp):
+        printerr("No .import file for: " + str(params.get("file_path", "")))
+        quit(1)
+        return
+    var f = FileAccess.open(imp, FileAccess.READ)
+    var txt = f.get_as_text()
+    f.close()
+    print(JSON.stringify({"success": true, "import_path": imp.trim_prefix("res://"), "content": txt}))
+    quit()
+
+
+func inspect_resource_properties(params):
+    var res = _load_res(params.get("resource_path", ""))
+    if res == null:
+        quit(1)
+        return
+    var out: Array = []
+    for p in res.get_property_list():
+        var pname = str(p.get("name", ""))
+        var usage = int(p.get("usage", 0))
+        if pname.begins_with("_") or pname == "script" or (usage & PROPERTY_USAGE_EDITOR) == 0:
+            continue
+        out.append({"name": pname, "type": type_string(int(p.get("type", 0))), "value": _variant_to_string(res.get(pname))})
+    print(JSON.stringify({"success": true, "resource_class": res.get_class(), "count": out.size(), "properties": out}))
+    quit()
+
+
+var _res_scan_out: Array = []
+
+func _scan_resources(dir_path: String, type_name: String) -> void:
+    var d = DirAccess.open(dir_path)
+    if d == null:
+        return
+    d.list_dir_begin()
+    var name = d.get_next()
+    while name != "":
+        if name.begins_with("."):
+            name = d.get_next()
+            continue
+        var full = dir_path.path_join(name)
+        if d.current_is_dir():
+            _scan_resources(full, type_name)
+        else:
+            var ext = name.get_extension().to_lower()
+            if ext == "tres" or ext == "res":
+                var res = load(full)
+                if res != null and (res.is_class(type_name) or res.get_class() == type_name):
+                    _res_scan_out.append(full)
+        name = d.get_next()
+    d.list_dir_end()
+
+
+func list_resources_of_type(params):
+    var type_name = str(params.get("resource_type", ""))
+    if type_name == "":
+        printerr("resource_type is required")
+        quit(1)
+        return
+    _res_scan_out = []
+    _scan_resources("res://", type_name)
+    print(JSON.stringify({"success": true, "resource_type": type_name, "count": _res_scan_out.size(), "resources": _res_scan_out}))
+    quit()
+
+
+func list_system_fonts(params):
+    var fonts = OS.get_system_fonts()
+    print(JSON.stringify({"success": true, "count": fonts.size(), "fonts": fonts}))
+    quit()
+
+
+func set_font_default_size(params):
+    var font = _load_res(params.get("font_path", ""))
+    if not (font is FontFile):
+        printerr("FontFile not found: " + str(params.get("font_path", "")))
+        quit(1)
+        return
+    font.fixed_size = int(params.get("size", 16))
+    if _save_resource(font, params.get("font_path", "")):
+        print(JSON.stringify({"success": true, "font_path": params.get("font_path", ""), "size": int(params.get("size", 16))}))
+    quit()
+
+
+# ── gdscript ───────────────────────────────────────────────────
+
+func get_script_exported_properties(params):
+    var sc = _load_res(params.get("script_path", ""))
+    if not (sc is Script):
+        printerr("Script not found: " + str(params.get("script_path", "")))
+        quit(1)
+        return
+    var out: Array = []
+    for p in sc.get_script_property_list():
+        var pname = str(p.get("name", ""))
+        if pname.begins_with("_") or pname == "script":
+            continue
+        if (int(p.get("usage", 0)) & PROPERTY_USAGE_EDITOR) == 0:
+            continue
+        out.append({"name": pname, "type": type_string(int(p.get("type", 0))), "hint": int(p.get("hint", 0))})
+    print(JSON.stringify({"success": true, "script_path": params.get("script_path", ""), "count": out.size(), "properties": out}))
+    quit()
+
+
+func get_gdscript_class_hierarchy(params):
+    var cn = str(params.get("class_name", ""))
+    if cn == "":
+        printerr("class_name is required")
+        quit(1)
+        return
+    var chain: Array = []
+    for e in ProjectSettings.get_global_class_list():
+        if str(e.get("class", "")) == cn:
+            var sc = load(str(e.get("path", "")))
+            while sc is Script:
+                chain.append(str(sc.resource_path))
+                sc = sc.get_base_script()
+            if ClassDB.class_exists(str(e.get("base", ""))):
+                chain.append(str(e.get("base", "")))
+            print(JSON.stringify({"success": true, "class_name": cn, "chain": chain}))
+            quit()
+            return
+    if ClassDB.class_exists(cn):
+        var c = cn
+        while c != "":
+            chain.append(c)
+            c = ClassDB.get_parent_class(c)
+        print(JSON.stringify({"success": true, "class_name": cn, "engine_chain": chain}))
+        quit()
+        return
+    printerr("Class not found: " + cn)
+    quit(1)
+
+
+func _collect_nodes_without_script(node, root, out) -> void:
+    if node.get_script() == null:
+        out.append(str(root.get_path_to(node)))
+    for c in node.get_children():
+        _collect_nodes_without_script(c, root, out)
+
+
+func list_nodes_without_scripts(params):
+    var root = _instantiate_scene(params.get("scene_path", ""))
+    if root == null:
+        quit(1)
+        return
+    var out: Array = []
+    _collect_nodes_without_script(root, root, out)
+    print(JSON.stringify({"success": true, "count": out.size(), "nodes": out}))
+    quit()
+
+
+# ── tileset ────────────────────────────────────────────────────
+
+func add_tileset_source(params):
+    var ts = _load_res(params.get("tileset_path", ""))
+    if not (ts is TileSet):
+        printerr("TileSet not found: " + str(params.get("tileset_path", "")))
+        quit(1)
+        return
+    var tex = _load_res(params.get("texture_atlas_path", ""))
+    if not (tex is Texture2D):
+        printerr("Texture not found: " + str(params.get("texture_atlas_path", "")))
+        quit(1)
+        return
+    var src := TileSetAtlasSource.new()
+    src.texture = tex
+    src.texture_region_size = Vector2i(int(params.get("tile_width", 16)), int(params.get("tile_height", 16)))
+    src.create_tile(Vector2i(0, 0))
+    var id = ts.add_source(src)
+    if _save_resource(ts, params.get("tileset_path", "")):
+        print(JSON.stringify({"success": true, "source_id": id, "source_count": ts.get_source_count()}))
+    quit()
+
+
+func add_tileset_physics_layer(params):
+    var ts = _load_res(params.get("tileset_path", ""))
+    if not (ts is TileSet):
+        printerr("TileSet not found")
+        quit(1)
+        return
+    ts.add_physics_layer()
+    var idx = ts.get_physics_layers_count() - 1
+    ts.set_physics_layer_collision_layer(idx, int(params.get("collision_layer", 1)))
+    ts.set_physics_layer_collision_mask(idx, int(params.get("collision_mask", 1)))
+    if _save_resource(ts, params.get("tileset_path", "")):
+        print(JSON.stringify({"success": true, "layer_index": idx, "layers": ts.get_physics_layers_count()}))
+    quit()
+
+
+func add_tileset_custom_data_layer(params):
+    var ts = _load_res(params.get("tileset_path", ""))
+    if not (ts is TileSet):
+        printerr("TileSet not found")
+        quit(1)
+        return
+    ts.add_custom_data_layer()
+    var idx = ts.get_custom_data_layers_count() - 1
+    ts.set_custom_data_layer_name(idx, str(params.get("layer_name", "")))
+    var t = str(params.get("layer_type", "TYPE_INT"))
+    var map = {"TYPE_INT": TYPE_INT, "TYPE_FLOAT": TYPE_FLOAT, "TYPE_STRING": TYPE_STRING, "TYPE_BOOL": TYPE_BOOL, "TYPE_COLOR": TYPE_COLOR}
+    ts.set_custom_data_layer_type(idx, int(map.get(t, TYPE_INT)))
+    if _save_resource(ts, params.get("tileset_path", "")):
+        print(JSON.stringify({"success": true, "layer_index": idx, "layers": ts.get_custom_data_layers_count()}))
+    quit()
+
+
+func add_tileset_terrain_set(params):
+    var ts = _load_res(params.get("tileset_path", ""))
+    if not (ts is TileSet):
+        printerr("TileSet not found")
+        quit(1)
+        return
+    ts.add_terrain_set()
+    var idx = ts.get_terrain_sets_count() - 1
+    ts.set_terrain_set_mode(idx, int(params.get("mode", 0)))
+    if _save_resource(ts, params.get("tileset_path", "")):
+        print(JSON.stringify({"success": true, "terrain_set_index": idx, "terrain_sets": ts.get_terrain_sets_count()}))
+    quit()
+
+
+func get_tileset_source_count(params):
+    var ts = _load_res(params.get("tileset_path", ""))
+    if not (ts is TileSet):
+        printerr("TileSet not found")
+        quit(1)
+        return
+    print(JSON.stringify({"success": true, "source_count": ts.get_source_count()}))
+    quit()
+
+
+# ── animation ──────────────────────────────────────────────────
+
+func _load_animation(animation_path):
+    var res = _load_res(animation_path)
+    if res is Animation:
+        return res
+    return null
+
+
+func add_animation_track(params):
+    var anim = _load_animation(params.get("animation_path", ""))
+    if anim == null:
+        printerr("Animation not found: " + str(params.get("animation_path", "")))
+        quit(1)
+        return
+    var tt = str(params.get("track_type", "value")).to_lower()
+    var type = Animation.TYPE_VALUE
+    match tt:
+        "position": type = Animation.TYPE_POSITION_3D
+        "rotation": type = Animation.TYPE_ROTATION_3D
+        "scale": type = Animation.TYPE_SCALE_3D
+        "method": type = Animation.TYPE_METHOD
+        "bezier": type = Animation.TYPE_BEZIER
+        _: type = Animation.TYPE_VALUE
+    var idx = anim.add_track(type)
+    anim.track_set_path(idx, NodePath(str(params.get("node_path", "."))))
+    if _save_resource(anim, params.get("animation_path", "")):
+        print(JSON.stringify({"success": true, "track_index": idx, "track_type": tt, "track_count": anim.get_track_count()}))
+    quit()
+
+
+func add_animation_key_value(params):
+    var anim = _load_animation(params.get("animation_path", ""))
+    if anim == null:
+        printerr("Animation not found")
+        quit(1)
+        return
+    var idx = int(params.get("track_index", 0))
+    if idx < 0 or idx >= anim.get_track_count():
+        printerr("track_index out of range: " + str(idx))
+        quit(1)
+        return
+    var time = float(params.get("time", 0.0))
+    var value = params.get("value", 0)
+    if value is String:
+        var iv := int(value)
+        var fv := float(value)
+        if str(iv) == str(value):
+            value = iv
+        elif str(fv) == str(value):
+            value = fv
+    anim.track_insert_key(idx, time, value)
+    if _save_resource(anim, params.get("animation_path", "")):
+        print(JSON.stringify({"success": true, "track_index": idx, "key_count": anim.track_get_key_count(idx)}))
+    quit()
+
+
+func get_animation_key_count(params):
+    var anim = _load_animation(params.get("animation_path", ""))
+    if anim == null:
+        printerr("Animation not found")
+        quit(1)
+        return
+    var idx = int(params.get("track_index", 0))
+    if idx < 0 or idx >= anim.get_track_count():
+        printerr("track_index out of range: " + str(idx))
+        quit(1)
+        return
+    print(JSON.stringify({"success": true, "track_index": idx, "key_count": anim.track_get_key_count(idx), "track_count": anim.get_track_count()}))
+    quit()
+
+
+func set_animation_loop_mode(params):
+    var anim = _load_animation(params.get("animation_path", ""))
+    if anim == null:
+        printerr("Animation not found")
+        quit(1)
+        return
+    var lm = str(params.get("loop_mode", "none")).to_lower()
+    match lm:
+        "linear": anim.loop_mode = Animation.LOOP_LINEAR
+        "pingpong", "ping_pong": anim.loop_mode = Animation.LOOP_PINGPONG
+        _: anim.loop_mode = Animation.LOOP_NONE
+    if _save_resource(anim, params.get("animation_path", "")):
+        print(JSON.stringify({"success": true, "loop_mode": lm}))
+    quit()
+
+
+# ── collision shapes ───────────────────────────────────────────
+
+func _collision_target(root, node_name, is_2d: bool):
+    var target = _find_scene_node(root, node_name)
+    if target == null:
+        printerr("Node not found: " + str(node_name))
+        return null
+    if is_2d and not (target is CollisionShape2D):
+        printerr("Not a CollisionShape2D: " + target.get_class())
+        return null
+    if not is_2d and not (target is CollisionShape3D):
+        printerr("Not a CollisionShape3D: " + target.get_class())
+        return null
+    return target
+
+
+func set_collision_shape_2d_type(params):
+    var scene_path = params.get("scene_path", "")
+    var root = _instantiate_scene(scene_path)
+    if root == null:
+        quit(1)
+        return
+    var target = _collision_target(root, params.get("node_name", ""), true)
+    if target == null:
+        quit(1)
+        return
+    var st = str(params.get("shape_type", "circle")).to_lower()
+    var p1 = float(params.get("param1", 10))
+    var p2 = float(params.get("param2", 10))
+    match st:
+        "rect", "rectangle":
+            var r := RectangleShape2D.new()
+            r.size = Vector2(p1, p2)
+            target.shape = r
+        "capsule":
+            var c := CapsuleShape2D.new()
+            c.radius = p1
+            c.height = max(p2, p1 * 2.0)
+            target.shape = c
+        _:
+            var ci := CircleShape2D.new()
+            ci.radius = p1
+            target.shape = ci
+    if _pack_and_save(root, scene_path):
+        print(JSON.stringify({"success": true, "shape_type": st, "shape_class": target.shape.get_class()}))
+    quit()
+
+
+func set_collision_shape_2d_radius(params):
+    var scene_path = params.get("scene_path", "")
+    var root = _instantiate_scene(scene_path)
+    if root == null:
+        quit(1)
+        return
+    var target = _collision_target(root, params.get("node_name", ""), true)
+    if target == null:
+        quit(1)
+        return
+    var radius = float(params.get("radius", 16))
+    if target.shape is CircleShape2D:
+        target.shape.radius = radius
+    else:
+        var c := CircleShape2D.new()
+        c.radius = radius
+        target.shape = c
+    if _pack_and_save(root, scene_path):
+        print(JSON.stringify({"success": true, "radius": radius}))
+    quit()
+
+
+func set_collision_rect_extents(params):
+    var scene_path = params.get("scene_path", "")
+    var root = _instantiate_scene(scene_path)
+    if root == null:
+        quit(1)
+        return
+    var target = _collision_target(root, params.get("node_name", ""), true)
+    if target == null:
+        quit(1)
+        return
+    var sz := Vector2(float(params.get("w", 16)), float(params.get("h", 16)))
+    if target.shape is RectangleShape2D:
+        target.shape.size = sz
+    else:
+        var r := RectangleShape2D.new()
+        r.size = sz
+        target.shape = r
+    if _pack_and_save(root, scene_path):
+        print(JSON.stringify({"success": true, "size": [sz.x, sz.y]}))
+    quit()
+
+
+func set_collision_capsule_2d(params):
+    var scene_path = params.get("scene_path", "")
+    var root = _instantiate_scene(scene_path)
+    if root == null:
+        quit(1)
+        return
+    var target = _collision_target(root, params.get("node_name", ""), true)
+    if target == null:
+        quit(1)
+        return
+    var radius = float(params.get("radius", 16))
+    var height = float(params.get("height", 32))
+    if target.shape is CapsuleShape2D:
+        target.shape.radius = radius
+        target.shape.height = max(height, radius * 2.0)
+    else:
+        var c := CapsuleShape2D.new()
+        c.radius = radius
+        c.height = max(height, radius * 2.0)
+        target.shape = c
+    if _pack_and_save(root, scene_path):
+        print(JSON.stringify({"success": true, "radius": radius, "height": max(height, radius * 2.0)}))
+    quit()
+
+
+func set_collision_shape_3d_type(params):
+    var scene_path = params.get("scene_path", "")
+    var root = _instantiate_scene(scene_path)
+    if root == null:
+        quit(1)
+        return
+    var target = _collision_target(root, params.get("node_name", ""), false)
+    if target == null:
+        quit(1)
+        return
+    var st = str(params.get("shape_type", "box")).to_lower()
+    var p1 = float(params.get("param1", 1))
+    var p2 = float(params.get("param2", 1))
+    var p3 = float(params.get("param3", 1))
+    match st:
+        "sphere":
+            var s := SphereShape3D.new()
+            s.radius = p1
+            target.shape = s
+        "capsule":
+            var c := CapsuleShape3D.new()
+            c.radius = p1
+            c.height = max(p2, p1 * 2.0)
+            target.shape = c
+        _:
+            var b := BoxShape3D.new()
+            b.size = Vector3(p1, p2, p3)
+            target.shape = b
+    if _pack_and_save(root, scene_path):
+        print(JSON.stringify({"success": true, "shape_type": st, "shape_class": target.shape.get_class()}))
+    quit()
+
+
+func set_collision_sphere_3d_radius(params):
+    var scene_path = params.get("scene_path", "")
+    var root = _instantiate_scene(scene_path)
+    if root == null:
+        quit(1)
+        return
+    var target = _collision_target(root, params.get("node_name", ""), false)
+    if target == null:
+        quit(1)
+        return
+    var radius = float(params.get("radius", 0.5))
+    if target.shape is SphereShape3D:
+        target.shape.radius = radius
+    else:
+        var s := SphereShape3D.new()
+        s.radius = radius
+        target.shape = s
+    if _pack_and_save(root, scene_path):
+        print(JSON.stringify({"success": true, "radius": radius}))
+    quit()
+
+
+func set_collision_box_3d_size(params):
+    var scene_path = params.get("scene_path", "")
+    var root = _instantiate_scene(scene_path)
+    if root == null:
+        quit(1)
+        return
+    var target = _collision_target(root, params.get("node_name", ""), false)
+    if target == null:
+        quit(1)
+        return
+    var sz := Vector3(float(params.get("sx", 1)), float(params.get("sy", 1)), float(params.get("sz", 1)))
+    if target.shape is BoxShape3D:
+        target.shape.size = sz
+    else:
+        var b := BoxShape3D.new()
+        b.size = sz
+        target.shape = b
+    if _pack_and_save(root, scene_path):
+        print(JSON.stringify({"success": true, "size": [sz.x, sz.y, sz.z]}))
+    quit()
+
+
+func set_collision_capsule_3d(params):
+    var scene_path = params.get("scene_path", "")
+    var root = _instantiate_scene(scene_path)
+    if root == null:
+        quit(1)
+        return
+    var target = _collision_target(root, params.get("node_name", ""), false)
+    if target == null:
+        quit(1)
+        return
+    var radius = float(params.get("radius", 0.5))
+    var height = float(params.get("height", 2.0))
+    if target.shape is CapsuleShape3D:
+        target.shape.radius = radius
+        target.shape.height = max(height, radius * 2.0)
+    else:
+        var c := CapsuleShape3D.new()
+        c.radius = radius
+        c.height = max(height, radius * 2.0)
+        target.shape = c
+    if _pack_and_save(root, scene_path):
+        print(JSON.stringify({"success": true, "radius": radius, "height": max(height, radius * 2.0)}))
     quit()
